@@ -1,8 +1,22 @@
 import SwiftData
 import SwiftUI
 
+/// Entry tab: chat-style quick input, with the full form one tap away.
 struct EntryView: View {
+    @State private var manual = false
+
+    var body: some View {
+        NavigationStack {
+            QuickInputView()
+                .toolbar { Button("Nhập chi tiết", systemImage: "square.and.pencil") { manual = true } }
+                .sheet(isPresented: $manual) { ManualEntryView() }
+        }
+    }
+}
+
+struct ManualEntryView: View {
     @Environment(\.modelContext) private var context
+    @Environment(\.dismiss) private var dismiss
     @Query(sort: \Category.name) private var categories: [Category]
     @Query(sort: \Wallet.order) private var wallets: [Wallet]
 
@@ -113,6 +127,7 @@ struct EntryView: View {
         note = ""
         focus = nil
         savedTick += 1
+        dismiss()
     }
 }
 
