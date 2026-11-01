@@ -26,12 +26,14 @@ struct BankLinkView: View {
             if sync.isLinked {
                 Button("Huỷ liên kết SePay", role: .destructive) { confirmUnlink = true }
                     .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.red)
                     .padding(.top, 4)
             }
         }
         .foregroundStyle(Color.mooneeInk)
         .mooneeScreen("Liên kết ngân hàng")
-        .refreshable { await sync.sync(context, force: true) }
+        // Own Task: SwiftUI cancels the refresh task when the view re-renders mid-sync.
+        .refreshable { await Task { await sync.sync(context, force: true) }.value }
         .fileImporter(isPresented: $importing, allowedContentTypes: [.commaSeparatedText, .tabSeparatedText, .plainText], onCompletion: open)
         .sheet(item: $statement) { StatementImportView(statement: $0) }
         .alert("Không đọc được file", isPresented: .constant(importError != nil)) {
@@ -118,6 +120,7 @@ struct BankLinkView: View {
                         ForEach(wallets.filter { $0.type == .bank }) { Text($0.name).tag(Optional($0.persistentModelID)) }
                     }
                     .labelsHidden()
+                    .fixedSize()
                     .tint(.mooneeDark)
                 }
                 .padding(.vertical, 8)

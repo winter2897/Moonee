@@ -98,7 +98,9 @@ enum Keychain {
         Keychain.set(token, for: Self.tokenKey)
         isLinked = true
         for a in accounts where !state.accounts.contains(where: { $0.number == a.accountNumber }) {
-            state.accounts.append(LinkedAccount(number: a.accountNumber, bank: a.bankShortName ?? a.label ?? "Ngân hàng"))
+            let bank = a.bankShortName ?? a.label ?? "Ngân hàng"
+            let existing = Self.existingWallet(named: Self.walletName(bank, a.accountNumber), in: context)
+            state.accounts.append(LinkedAccount(number: a.accountNumber, bank: bank, walletID: existing?.persistentModelID))
         }
         await sync(context, force: true)
     }
@@ -122,27 +124,40 @@ enum Keychain {
             state.lastImported = try BankImporter.insert(drafts, into: context) { wallet(for: $0, in: context) }
             state.lastSync = .now
             state.lastError = nil
+        } catch is CancellationError {
+        } catch let error as URLError where error.code == .cancelled {
         } catch {
             state.lastError = error.localizedDescription
         }
     }
 
-    /// The wallet mapped to the draft's account, creating a `.bank` wallet when none is mapped or it was deleted.
+    /// The wallet mapped to the draft's account, else one an earlier link created, else a new `.bank` wallet.
     private func wallet(for d: BankDraft, in context: ModelContext) -> Wallet {
         if let id = state.accounts.first(where: { $0.number == d.account })?.walletID,
            let w = try? context.fetch(FetchDescriptor<Wallet>(predicate: #Predicate { $0.persistentModelID == id })).first {
             return w
         }
         let bank = state.accounts.first(where: { $0.number == d.account })?.bank ?? d.bank
-        let w = Wallet(name: "\(bank) ••\(d.account.suffix(4))", type: .bank, order: (try? context.fetchCount(FetchDescriptor<Wallet>())) ?? 0)
-        context.insert(w)
-        try? context.save() // permanent id before we remember it
+        let name = Self.walletName(bank, d.account)
+        let w = Self.existingWallet(named: name, in: context) ?? {
+            let w = Wallet(name: name, type: .bank, order: (try? context.fetchCount(FetchDescriptor<Wallet>())) ?? 0)
+            context.insert(w)
+            try? context.save() // permanent id before we remember it
+            return w
+        }()
         if let i = state.accounts.firstIndex(where: { $0.number == d.account }) {
             state.accounts[i].walletID = w.persistentModelID
         } else {
             state.accounts.append(LinkedAccount(number: d.account, bank: bank, walletID: w.persistentModelID))
         }
         return w
+    }
+
+    private static func walletName(_ bank: String, _ number: String) -> String { "\(bank) ••\(number.suffix(4))" }
+
+    /// Re-linking adopts the wallet an earlier link created instead of making a duplicate.
+    private static func existingWallet(named name: String, in context: ModelContext) -> Wallet? {
+        (try? context.fetch(FetchDescriptor<Wallet>(predicate: #Predicate { $0.name == name })))?.first { $0.type == .bank }
     }
 
     static func scheduleRefresh() {
