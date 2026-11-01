@@ -8,7 +8,7 @@ enum ReceiptScanner {
         // Redraw so the CGImage is upright whatever the camera orientation was.
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1
-        guard let cgImage = UIGraphicsImageRenderer(size: image.size, format: format).image { _ in image.draw(at: .zero) }.cgImage else { return [] }
+        guard let cgImage = UIGraphicsImageRenderer(size: image.size, format: format).image(actions: { _ in image.draw(at: .zero) }).cgImage else { return [] }
 
         return try await Task.detached(priority: .userInitiated) {
             let request = VNRecognizeTextRequest()

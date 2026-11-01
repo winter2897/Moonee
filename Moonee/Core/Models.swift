@@ -52,6 +52,8 @@ enum WalletType: String, Codable, CaseIterable {
     var rawInput: String?
     var category: Category?
     var wallet: Wallet?
+    /// Bank/statement transaction id (e.g. "sepay:<uuid>", "csv:<ref>") so re-imports are skipped.
+    var externalID: String?
     var createdAt = Date()
 
     init(amount: Int, kind: TxKind, date: Date = .now, note: String = "", source: TxSource = .manual,

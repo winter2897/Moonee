@@ -1,5 +1,5 @@
 import AVFoundation
-import Speech
+@preconcurrency import Speech
 
 /// Live vi-VN dictation (on-device when the model is installed). `transcript` updates as the user speaks.
 @Observable @MainActor final class SpeechInput {
