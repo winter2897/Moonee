@@ -77,6 +77,7 @@ struct SpendingView: View {
                 .padding(.horizontal, 12)
 
                 totalCard(s)
+                JarSummaryCard(anchor: anchor)
 
                 VStack(alignment: .leading, spacing: 14) {
                     Text("Chi tiêu theo danh mục").font(.headline)

@@ -130,11 +130,9 @@ enum WalletType: String, Codable, CaseIterable {
 }
 
 enum Seed {
-    /// First launch: default jars, categories and a cash wallet.
-    @MainActor static func ifNeeded(_ context: ModelContext) {
-        guard (try? context.fetchCount(FetchDescriptor<Jar>())) == 0 else { return }
-
-        let jars = [
+    /// The 6-jar rule, also used by "Khôi phục mặc định".
+    static var defaultJars: [Jar] {
+        [
             Jar(name: "Thiết yếu", icon: "house.fill", colorHex: 0x22C55E, percent: 55, order: 0),
             Jar(name: "Đầu tư", icon: "chart.line.uptrend.xyaxis", colorHex: 0x3B82F6, percent: 10, order: 1),
             Jar(name: "Tiết kiệm", icon: "banknote.fill", colorHex: 0x14B8A6, percent: 10, order: 2),
@@ -142,6 +140,13 @@ enum Seed {
             Jar(name: "Hưởng thụ", icon: "sparkles", colorHex: 0xF59E0B, percent: 10, order: 4),
             Jar(name: "Từ thiện", icon: "heart.fill", colorHex: 0xEF4444, percent: 5, order: 5),
         ]
+    }
+
+    /// First launch: default jars, categories and a cash wallet.
+    @MainActor static func ifNeeded(_ context: ModelContext) {
+        guard (try? context.fetchCount(FetchDescriptor<Jar>())) == 0 else { return }
+
+        let jars = defaultJars
         jars.forEach(context.insert)
         let (needs, edu, play, give) = (jars[0], jars[3], jars[4], jars[5])
 
