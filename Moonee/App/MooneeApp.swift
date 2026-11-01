@@ -7,7 +7,7 @@ struct MooneeApp: App {
 
     init() {
         do {
-            container = try ModelContainer(for: Txn.self, Wallet.self, Category.self, Jar.self)
+            container = try ModelContainer(for: Txn.self, Wallet.self, Category.self, Jar.self, MonthlyReport.self)
         } catch {
             fatalError("SwiftData: \(error)")
         }
@@ -18,8 +18,10 @@ struct MooneeApp: App {
         WindowGroup {
             RootView()
                 .preferredColorScheme(.light) // ponytail: light-only like the mockups, add dark palette later
+                .task { await Accountant.runDaily(container) }
         }
         .modelContainer(container)
+        .backgroundTask(.appRefresh(Accountant.refreshTaskID)) { await Accountant.runDaily(container) }
     }
 }
 
