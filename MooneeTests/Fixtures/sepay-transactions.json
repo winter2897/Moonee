@@ -1,0 +1,10 @@
+{
+  "status": "success",
+  "data": [
+    {"id": "7d1c0000-0000-4000-8000-000000000001", "transaction_date": "2026-10-30 08:15:00", "account_number": "0001234567", "va": null, "transfer_type": "out", "amount_in": 0, "amount_out": 45000, "accumulated": 12455000, "transaction_content": "THANH TOAN QR HIGHLANDS COFFEE", "reference_number": "FT26303000001", "code": null, "bank_brand_name": "VCB", "bank_account_id": "0b9a6f3e-1111-4c1a-9a51-000000000001", "va_id": null, "webhook_success": null},
+    {"id": "7d1c0000-0000-4000-8000-000000000002", "transaction_date": "2026-10-31 17:02:11", "account_number": "0001234567", "va": null, "transfer_type": "in", "amount_in": 15000000, "amount_out": 0, "accumulated": 27455000, "transaction_content": "CONG TY ABC TRA LUONG T10", "reference_number": "FT26304000002", "code": null, "bank_brand_name": "VCB", "bank_account_id": "0b9a6f3e-1111-4c1a-9a51-000000000001", "va_id": null, "webhook_success": null},
+    {"id": "7d1c0000-0000-4000-8000-000000000003", "transaction_date": "2026-11-01 09:40:05", "account_number": "1900998877", "va": null, "transfer_type": "out", "amount_in": "0.00", "amount_out": "320000.00", "accumulated": "2880000.00", "transaction_content": "GRAB*TRIP HCM", "reference_number": "TCB26305000003", "code": null, "bank_brand_name": "TCB", "bank_account_id": "0b9a6f3e-2222-4c1a-9a51-000000000002", "va_id": null, "webhook_success": null},
+    {"id": "7d1c0000-0000-4000-8000-000000000004", "transaction_date": "2026-11-01 09:41:00", "account_number": "1900998877", "va": null, "transfer_type": "in", "amount_in": 0, "amount_out": 0, "accumulated": 2880000, "transaction_content": "ZERO AMOUNT CHECK", "reference_number": "TCB26305000004", "code": null, "bank_brand_name": "TCB", "bank_account_id": "0b9a6f3e-2222-4c1a-9a51-000000000002", "va_id": null, "webhook_success": null}
+  ],
+  "meta": {"pagination": {"total": 4, "per_page": 100, "current_page": 1, "last_page": 1, "has_more": false}}
+}

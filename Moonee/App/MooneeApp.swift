@@ -18,8 +18,10 @@ struct MooneeApp: App {
         WindowGroup {
             RootView()
                 .preferredColorScheme(.light) // ponytail: light-only like the mockups, add dark palette later
+                .modifier(BankAutoSync())
         }
         .modelContainer(container)
+        .backgroundTask(.appRefresh(BankSync.taskID)) { [container] in await BankSync.backgroundRefresh(container) }
     }
 }
 
