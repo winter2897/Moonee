@@ -217,7 +217,7 @@ struct ComponentGallery: View {
                 QuickReplyChip(title: "Nói chi tiêu", symbol: "mic") {}
                 QuickReplyChip(title: "Chụp hóa đơn", symbol: "camera") {}
             }
-            ChatBubble(.user, "Ăn trưa 65k, mua sách 120k hôm nay")
+            ChatBubble(.user, "Ăn trưa 65k, mua sách 120k hôm nay", sent: true)
             ChatBubble(.moonee, "Mình đã ghi nhận 2 giao dịch cho bạn:")
             title("Grouped · saved")
             ChatTransactionCard(items: [Self.lunch, Self.book])

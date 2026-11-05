@@ -8,6 +8,8 @@ struct ChatBubble<Content: View>: View {
     let sender: Sender
     /// Hide the avatar on consecutive Moonee messages; the space is kept so bubbles line up.
     var showsAvatar = true
+    /// User messages: a ✓✓ at the bubble's bottom-right once saved (mockup).
+    var sent = false
     @ViewBuilder let content: Content
 
     var body: some View {
@@ -24,7 +26,17 @@ struct ChatBubble<Content: View>: View {
     }
 
     private var bubble: some View {
-        content
+        HStack(alignment: .bottom, spacing: 6) {
+            content
+            if sent && sender == .user {
+                // ponytail: SF Symbols has no double tick; two checkmarks overlap.
+                HStack(spacing: -5) { Image(systemName: "checkmark"); Image(systemName: "checkmark") }
+                    .font(.caption2.weight(.bold))
+                    .foregroundStyle(Color.brandDeep)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(Text("Sent", tableName: "Components"))
+            }
+        }
             .font(.bodyText)
             .foregroundStyle(Color.ink)
             .padding(.horizontal, 14).padding(.vertical, 10)
@@ -35,9 +47,10 @@ struct ChatBubble<Content: View>: View {
 
 extension ChatBubble where Content == Text {
     /// Plain message; `**bold**` markdown is rendered (Moonee bolds the amounts).
-    init(_ sender: Sender, _ message: String, showsAvatar: Bool = true) {
+    init(_ sender: Sender, _ message: String, showsAvatar: Bool = true, sent: Bool = false) {
         self.sender = sender
         self.showsAvatar = showsAvatar
+        self.sent = sent
         let md = try? AttributedString(markdown: message, options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace))
         self.content = Text(md ?? AttributedString(message))
     }
