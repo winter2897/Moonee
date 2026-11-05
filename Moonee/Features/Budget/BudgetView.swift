@@ -11,6 +11,7 @@ struct BudgetView: View {
     #else
     @State private var segment = Segment.jars
     #endif
+    @State private var showChart = false
     #if DEBUG
     @Environment(\.modelContext) private var context
     #endif
@@ -34,6 +35,7 @@ struct BudgetView: View {
             .foregroundStyle(Color.ink)
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: BudgetRoute.self) { $0.view }
+            .sheet(isPresented: $showChart) { JarSpendingChart() }
         }
         #if DEBUG
         .task { BudgetDemo.seedIfRequested(context) }
@@ -42,31 +44,18 @@ struct BudgetView: View {
 
     private var header: some View {
         VStack(spacing: 6) {
-            HStack {
-                Color.clear.frame(width: 44, height: 44)
-                Spacer()
-                HStack(spacing: 4) {
-                    Text(verbatim: "Moonee").font(.system(.title, design: .rounded, weight: .bold))
-                    Image(systemName: "sparkles").foregroundStyle(Color.brandYellow).font(.title3)
-                }
-                Spacer()
+            MooneeHeader(Text(loc("Budget & jars"))) {
+                Button { showChart = true } label: { HeaderCircle("chart.bar") }
+                    .accessibilityLabel(loc("Spending by jar"))
+            } trailing: {
                 Menu {
                     NavigationLink(value: BudgetRoute.reminders) { Label(loc("Reminders"), systemImage: "bell") }
                     NavigationLink(value: BudgetRoute.jarSettings(add: false, edit: nil)) { Label(loc("Customize jars"), systemImage: "square.stack.3d.up") }
                     NavigationLink(value: BudgetRoute.mapping) { Label(loc("Assign categories to jars"), systemImage: "arrow.triangle.branch") }
-                } label: {
-                    Image(systemName: "ellipsis").font(.headline)
-                        .frame(width: 44, height: 44)
-                        .background(Color.surface.opacity(0.85), in: .circle)
-                        .shadow(color: .brandDeep.opacity(0.08), radius: 6, y: 2)
-                }
-                .accessibilityLabel(loc("More"))
+                } label: { HeaderCircle("ellipsis") }
+                    .accessibilityLabel(loc("More"))
             }
-            Text(loc("Budget & jars"))
-                .font(.subheadline.weight(.medium)).foregroundStyle(Color.brandDeep)
-                .padding(.horizontal, 14).padding(.vertical, 4)
-                .background(Color.brandMintSoft, in: .capsule)
-            MooneeCharacter(mood: .happy).frame(height: 110)
+            MooneeHero(mood: .happy, compact: true)
         }
         .padding(.top, 8)
     }
@@ -90,7 +79,7 @@ struct BudgetView: View {
             Spacer(minLength: 2)
             pill(.bills, loc("Recurring & Bills"), icons ? "calendar" : nil)
         }
-        .font(.footnote.weight(.medium))
+        .font(.chip)
     }
 
     private func pill(_ value: Segment, _ title: String, _ symbol: String?) -> some View {
@@ -134,9 +123,9 @@ struct BudgetSectionHeader<Trailing: View>: View {
 
     var body: some View {
         HStack(alignment: .firstTextBaseline) {
-            Text(title).font(.title3.weight(.bold))
+            Text(title).font(.sectionTitle)
             Spacer(minLength: 8)
-            trailing.font(.subheadline).foregroundStyle(Color.brandDeep)
+            trailing.font(.secondaryText).foregroundStyle(Color.brandDeep)
         }
         .padding(.horizontal, 4)
         .padding(.top, 4)
@@ -151,7 +140,7 @@ struct ActionTile: View {
     var body: some View {
         VStack(spacing: 8) {
             Image(systemName: symbol).font(.title2).foregroundStyle(Color.brandPrimary)
-            Text(title).font(.footnote.weight(.medium)).multilineTextAlignment(.center).lineLimit(2).minimumScaleFactor(0.8)
+            Text(title).font(.chip).multilineTextAlignment(.center).lineLimit(2).minimumScaleFactor(0.8)
         }
         .foregroundStyle(Color.ink)
         .frame(maxWidth: .infinity, minHeight: 92)

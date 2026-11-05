@@ -20,11 +20,11 @@ struct BillsSection: View {
         let paid = bills.filter { $0.lastPaid.map(month.contains) ?? false }
         VStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 8) {
-                Text(loc("Due in the next 30 days")).font(.subheadline.weight(.semibold))
+                Text(loc("Due in the next 30 days")).font(.rowTitle)
                 AmountText(dueSoon.reduce(0) { $0 + $1.amount }, currency: Money.defaultCurrency)
-                    .font(.system(size: 34, weight: .bold, design: .rounded))
+                    .heroAmountFont()
                 Text(String(localized: "\(dueSoon.count) due · \(paid.count) paid this month", table: "Budget"))
-                    .font(.subheadline).foregroundStyle(Color.inkSecondary)
+                    .font(.secondaryText).foregroundStyle(Color.inkSecondary)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .card(padding: 18)
