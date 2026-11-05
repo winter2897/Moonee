@@ -1,8 +1,38 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@ / %@ per 1M": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ / %2$@ mỗi 1 triệu token"
+          }
+        }
+      }
+    },
+    "%@ context": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngữ cảnh %@"
+          }
+        }
+      }
+    },
     "%@ · %@": {
       "shouldTranslate": false
+    },
+    "%lld models": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld model"
+          }
+        }
+      }
     },
     "%lld transactions. Column names stay in English so the file imports back in any language.": {
       "localizations": {
@@ -204,6 +234,16 @@
         }
       }
     },
+    "Can't reach the provider. Check your internet connection.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không kết nối được tới nhà cung cấp. Kiểm tra kết nối mạng."
+          }
+        }
+      }
+    },
     "Cancel": {
       "localizations": {
         "vi": {
@@ -230,16 +270,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Danh mục, lọ & ví"
-          }
-        }
-      }
-    },
-    "Change the base URL to use any OpenAI-compatible server.": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Đổi Base URL để dùng bất kỳ server nào tương thích OpenAI."
           }
         }
       }
@@ -280,6 +310,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tiền tệ"
+          }
+        }
+      }
+    },
+    "Custom (OpenAI-compatible)": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tuỳ chỉnh (tương thích OpenAI)"
           }
         }
       }
@@ -404,6 +444,26 @@
         }
       }
     },
+    "For servers that don't list their models.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cho các server không liệt kê model."
+          }
+        }
+      }
+    },
+    "Free": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Miễn phí"
+          }
+        }
+      }
+    },
     "From your region": {
       "localizations": {
         "vi": {
@@ -494,6 +554,16 @@
         }
       }
     },
+    "Key works. %lld models available.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Key dùng được. Có %lld model."
+          }
+        }
+      }
+    },
     "Language": {
       "localizations": {
         "vi": {
@@ -520,6 +590,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mức nhắc, giờ, loại"
+          }
+        }
+      }
+    },
+    "Loading models…": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang tải danh sách model…"
           }
         }
       }
@@ -694,6 +774,16 @@
         }
       }
     },
+    "No list yet. Pull to refresh, or type a model ID.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa có danh sách. Kéo xuống để tải lại, hoặc nhập ID model."
+          }
+        }
+      }
+    },
     "No model is set up for this mode yet.": {
       "localizations": {
         "vi": {
@@ -854,6 +944,16 @@
         }
       }
     },
+    "Refresh": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tải lại"
+          }
+        }
+      }
+    },
     "Reminders": {
       "localizations": {
         "vi": {
@@ -874,6 +974,16 @@
         }
       }
     },
+    "Search models": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tìm model"
+          }
+        }
+      }
+    },
     "Security & privacy": {
       "localizations": {
         "vi": {
@@ -884,12 +994,12 @@
         }
       }
     },
-    "Sent to your provider: what you type to Moonee, the chat so far, and the numbers Moonee looks up to answer (totals, jar balances, matching transactions). Sent with your key, straight from this iPhone; Moonee has no server.": {
+    "Sent to %@: what you type to Moonee, the chat so far, and the numbers Moonee looks up to answer (totals, jar balances, matching transactions). Sent with your key, straight from this iPhone; Moonee has no server.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gửi tới nhà cung cấp của bạn: những gì bạn gõ cho Moonee, đoạn chat trước đó và số liệu Moonee tra để trả lời (tổng chi, số dư lọ, các giao dịch liên quan). Gửi bằng key của bạn, thẳng từ iPhone này; Moonee không có server."
+            "value": "Gửi tới %@: những gì bạn gõ cho Moonee, đoạn chat trước đó và số liệu Moonee tra để trả lời (tổng chi, số dư lọ, các giao dịch liên quan). Gửi bằng key của bạn, thẳng từ iPhone này; Moonee không có server."
           }
         }
       }
@@ -1004,6 +1114,16 @@
         }
       }
     },
+    "Test key": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kiểm tra key"
+          }
+        }
+      }
+    },
     "Thanks": {
       "localizations": {
         "vi": {
@@ -1034,12 +1154,42 @@
         }
       }
     },
+    "The provider rejected this key. Check it and try again.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhà cung cấp từ chối key này. Kiểm tra lại rồi thử lần nữa."
+          }
+        }
+      }
+    },
     "This iPhone does not support Apple Intelligence": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "iPhone này không hỗ trợ Apple Intelligence"
+          }
+        }
+      }
+    },
+    "This server has no model list. Type a model ID instead.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server này không có danh sách model. Hãy nhập ID model."
+          }
+        }
+      }
+    },
+    "Tools": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Công cụ"
           }
         }
       }
@@ -1074,12 +1224,22 @@
         }
       }
     },
-    "Typed transactions stay on this iPhone. For questions, advice and reports, your message, the chat so far and the numbers Moonee looks up are sent to your provider with your key. Moonee has no server.": {
+    "Type a model ID": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Giao dịch bạn gõ ở lại trên iPhone này. Với câu hỏi, tư vấn và báo cáo, tin nhắn của bạn, đoạn chat trước đó và số liệu Moonee tra được gửi tới nhà cung cấp bằng key của bạn. Moonee không có server."
+            "value": "Nhập ID model"
+          }
+        }
+      }
+    },
+    "Typed transactions stay on this iPhone. For questions, advice and reports, your message, the chat so far and the numbers Moonee looks up are sent to %@ with your key. Moonee has no server.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giao dịch bạn gõ ở lại trên iPhone này. Với câu hỏi, tư vấn và báo cáo, tin nhắn của bạn, đoạn chat trước đó và số liệu Moonee tra được gửi tới %@ bằng key của bạn. Moonee không có server."
           }
         }
       }
@@ -1100,6 +1260,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mở khoá bằng %@"
+          }
+        }
+      }
+    },
+    "Use": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dùng"
           }
         }
       }

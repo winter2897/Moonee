@@ -15,6 +15,7 @@ struct MooneeApp: App {
         }
         Seed.ifNeeded(container.mainContext)
         Seed.mergeDuplicates(container.mainContext)
+        LLMSettings.migrate() // one-time: old openAICompatible provider → OpenRouter / Custom
     }
 
     var body: some Scene {

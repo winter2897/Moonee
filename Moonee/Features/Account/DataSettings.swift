@@ -57,6 +57,7 @@ enum DataReset {
     @MainActor static func eraseEverything(_ context: ModelContext) throws {
         try deleteAll(context)
         CloudProvider.allCases.forEach { LLMSettings.setAPIKey(nil, for: $0) }
+        ModelCache().clear()
     }
 }
 

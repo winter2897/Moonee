@@ -102,7 +102,7 @@ struct CloudLLMTests {
     @Test func httpErrorsSurface() async {
         let stub = StubTransport(status: 401, body: ["error": ["message": "invalid x-api-key"]])
         let llm = AnthropicLLM(apiKey: "bad", model: "m", send: stub.send)
-        await #expect(throws: LLMError("HTTP 401: invalid x-api-key")) { try await llm.respond(request([])) }
+        await #expect(throws: LLMError("HTTP 401: invalid x-api-key", status: 401)) { try await llm.respond(request([])) }
     }
 
     @Test func schemaFormats() throws {

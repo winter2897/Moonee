@@ -31,7 +31,9 @@ struct LLMRequest: Sendable {
 
 struct LLMError: LocalizedError, Equatable {
     let errorDescription: String?
-    init(_ message: String) { errorDescription = message }
+    /// HTTP status when the provider answered with an error (401/403 = bad key).
+    var status: Int?
+    init(_ message: String, status: Int? = nil) { (errorDescription, self.status) = (message, status) }
 }
 
 extension LLM {
@@ -156,14 +158,23 @@ enum HTTP {
         var req = URLRequest(url: url, timeoutInterval: 120)
         req.httpMethod = "POST"
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        for (k, v) in headers { req.setValue(v, forHTTPHeaderField: k) }
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
+        return try await json(req, headers: headers, send: send)
+    }
+
+    static func getJSON(_ url: URL, headers: [String: String], send: HTTPTransport) async throws -> [String: Any] {
+        try await json(URLRequest(url: url, timeoutInterval: 30), headers: headers, send: send)
+    }
+
+    private static func json(_ request: URLRequest, headers: [String: String], send: HTTPTransport) async throws -> [String: Any] {
+        var req = request
+        for (k, v) in headers { req.setValue(v, forHTTPHeaderField: k) }
         let (data, resp) = try await send(req)
         let json = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any]
         let code = (resp as? HTTPURLResponse)?.statusCode ?? 200
         guard (200..<300).contains(code), let json else {
             let message = ((json?["error"] as? [String: Any])?["message"] as? String) ?? String(decoding: data.prefix(200), as: UTF8.self)
-            throw LLMError("HTTP \(code): \(message)")
+            throw LLMError("HTTP \(code): \(message)", status: code)
         }
         return json
     }
@@ -181,17 +192,35 @@ enum AIMode: String, CaseIterable, Sendable {
     case onDevice, local, byok, hybrid
 }
 
-/// BYOK providers. OpenRouter and any OpenAI-style server use `openAICompatible`.
+/// BYOK providers (spec §6.2). Each has its own Keychain account, stored model and base URL;
+/// all but Anthropic and Gemini speak OpenAI's `/chat/completions`.
 enum CloudProvider: String, CaseIterable, Sendable {
-    case openAICompatible, anthropic, gemini
+    case openRouter, deepSeek, openAI, anthropic, gemini, custom
 
-    var keychainAccount: String { self == .openAICompatible ? "openrouter" : rawValue }
-    var modelKey: String { self == .openAICompatible ? LLMSettings.modelKey : "ai.model.\(rawValue)" }
+    var keychainAccount: String { rawValue.lowercased() } // "openrouter" is where the first screen kept its key
+    var modelKey: String { self == .openRouter ? LLMSettings.modelKey : "ai.model.\(rawValue)" }
+    var isOpenAICompatible: Bool { self != .anthropic && self != .gemini }
+
     var defaultModel: String {
         switch self {
-        case .openAICompatible: LLMSettings.defaultModel
+        case .openRouter: LLMSettings.defaultModel
+        case .deepSeek: "deepseek-chat"
+        case .openAI: "gpt-5-mini"
         case .anthropic: "claude-sonnet-5-5"
         case .gemini: "gemini-3.5-flash"
+        case .custom: ""
+        }
+    }
+
+    /// Fixed for every provider but Custom, whose URL the user types (`LLMSettings.baseURLKey`).
+    var defaultBaseURL: String {
+        switch self {
+        case .openRouter: LLMSettings.defaultBaseURL
+        case .deepSeek: "https://api.deepseek.com"
+        case .openAI: "https://api.openai.com/v1"
+        case .anthropic: "https://api.anthropic.com"
+        case .gemini: "https://generativelanguage.googleapis.com/v1beta"
+        case .custom: ""
         }
     }
 }
@@ -218,7 +247,32 @@ enum LLMSettings {
     }
 
     static var cloudProvider: CloudProvider {
-        CloudProvider(rawValue: UserDefaults.standard.string(forKey: cloudKey) ?? "") ?? .openAICompatible
+        CloudProvider(rawValue: UserDefaults.standard.string(forKey: cloudKey) ?? "") ?? .openRouter
+    }
+
+    static func baseURL(_ p: CloudProvider, defaults: UserDefaults = .standard) -> String {
+        p == .custom ? (defaults.string(forKey: baseURLKey) ?? "").trimmingCharacters(in: .whitespaces) : p.defaultBaseURL
+    }
+
+    static func model(_ p: CloudProvider, defaults: UserDefaults = .standard) -> String {
+        defaults.string(forKey: p.modelKey).flatMap { $0.isEmpty ? nil : $0 } ?? p.defaultModel
+    }
+
+    /// Before DeepSeek & co. there was one `openAICompatible` provider: with OpenRouter's URL (or none) it is
+    /// OpenRouter; with another URL it becomes Custom, taking the key (Keychain) and model along. Runs once at launch.
+    static func migrate(_ d: UserDefaults = .standard, moveKey: (_ from: String, _ to: String) -> Void = Keychain.move) {
+        guard d.string(forKey: cloudKey) == "openAICompatible" else { return }
+        let url = (d.string(forKey: baseURLKey) ?? "").trimmingCharacters(in: .whitespaces)
+        guard !url.isEmpty, url.trimmingCharacters(in: .init(charactersIn: "/")) != defaultBaseURL else {
+            d.set(CloudProvider.openRouter.rawValue, forKey: cloudKey)
+            return
+        }
+        moveKey(CloudProvider.openRouter.keychainAccount, CloudProvider.custom.keychainAccount)
+        if let model = d.string(forKey: modelKey) {
+            d.set(model, forKey: CloudProvider.custom.modelKey)
+            d.removeObject(forKey: modelKey)
+        }
+        d.set(CloudProvider.custom.rawValue, forKey: cloudKey)
     }
 
     /// The models the current settings allow, for `Assistant`.
@@ -228,14 +282,17 @@ enum LLMSettings {
 
     /// A configured BYOK model, or nil when it has no key.
     static func cloud(_ p: CloudProvider) -> (any LLM)? {
-        guard let key = apiKey(for: p), !key.isEmpty else { return nil }
-        let model = UserDefaults.standard.string(forKey: p.modelKey).flatMap { $0.isEmpty ? nil : $0 } ?? p.defaultModel
+        guard let key = apiKey(for: p), !key.isEmpty, !model(p).isEmpty, !baseURL(p).isEmpty else { return nil }
+        return client(p, key: key, model: model(p))
+    }
+
+    /// The BYOK client for a provider. `send` is injectable for tests.
+    static func client(_ p: CloudProvider, key: String, model: String, baseURL url: String? = nil, send: @escaping HTTPTransport = HTTP.live) -> any CloudLLM {
+        let base = url ?? baseURL(p)
         switch p {
-        case .openAICompatible:
-            let base = UserDefaults.standard.string(forKey: baseURLKey).flatMap { $0.isEmpty ? nil : $0 } ?? defaultBaseURL
-            return OpenAICompatibleLLM(baseURL: base, apiKey: key, model: model)
-        case .anthropic: return AnthropicLLM(apiKey: key, model: model)
-        case .gemini: return GeminiLLM(apiKey: key, model: model)
+        case .anthropic: return AnthropicLLM(apiKey: key, model: model, baseURL: base, send: send)
+        case .gemini: return GeminiLLM(apiKey: key, model: model, baseURL: base, send: send)
+        default: return OpenAICompatibleLLM(baseURL: base, apiKey: key, model: model, send: send)
         }
     }
 
@@ -254,10 +311,10 @@ enum LLMSettings {
         }
     }
 
-    /// OpenRouter / OpenAI-compatible key (older settings screen).
+    /// OpenRouter key (filled from `.env` by DevSecrets).
     static var apiKey: String? {
-        get { apiKey(for: .openAICompatible) }
-        set { setAPIKey(newValue, for: .openAICompatible) }
+        get { apiKey(for: .openRouter) }
+        set { setAPIKey(newValue, for: .openRouter) }
     }
 
     static func apiKey(for p: CloudProvider) -> String? { Keychain.get(p.keychainAccount) }
@@ -284,5 +341,11 @@ enum Keychain {
         q[kSecValueData as String] = Data(value.utf8)
         q[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlock // readable by background refresh
         SecItemAdd(q as CFDictionary, nil)
+    }
+
+    static func move(_ from: String, to: String) {
+        guard let value = get(from) else { return }
+        set(value, account: to)
+        set(nil, account: from)
     }
 }
