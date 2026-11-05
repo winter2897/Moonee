@@ -246,7 +246,7 @@ enum ReminderPlanner {
         return switch r.kind {
         case .jarOver: (loc("A jar went over"), String(localized: "\(names) went past this month's budget. Moonee can help you move money from another jar.", table: "Budget"))
         case .jarWarning: (loc("Heads up: 80% used"), String(localized: "\(names) has used 80% of this month's budget. Go easy for a bit!", table: "Budget"))
-        case .bill: (loc("Bill reminder"), String(localized: "\(names) is due soon. Tap Paid in Budget once it's done.", table: "Budget"))
+        case .bill: (loc("Bill reminder"), String(localized: "\(names) is due soon. Tap Mark paid in Budget once it's done.", table: "Budget"))
         case .debt: (loc("Debt due today"), String(localized: "Today is the due date with \(names).", table: "Budget"))
         case .weeklyReport: (loc("Your week with Moonee"), loc("Your weekly report is ready. Take a quick look?"))
         case .monthlyReport: (loc("New month, fresh jars"), loc("Last month's report is ready. See how your jars did!"))

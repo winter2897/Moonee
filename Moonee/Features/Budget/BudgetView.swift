@@ -74,15 +74,15 @@ struct BudgetView: View {
     private var segments: some View {
         // Long labels (vi: "Định kỳ & Hoá đơn") drop the icons, then shrink, before they get cut.
         ViewThatFits(in: .horizontal) {
-            pills(icons: true, font: .subheadline.weight(.semibold))
-            pills(icons: false, font: .subheadline.weight(.semibold))
-            pills(icons: false, font: .footnote.weight(.semibold))
+            pills(icons: true)
+            pills(icons: false)
+            ScrollView(.horizontal, showsIndicators: false) { pills(icons: true) } // large Dynamic Type: scroll, never truncate
         }
         .padding(4)
         .background(Color.surface.opacity(0.7), in: .capsule)
     }
 
-    private func pills(icons: Bool, font: Font) -> some View {
+    private func pills(icons: Bool) -> some View {
         HStack(spacing: 0) {
             pill(.jars, loc("Jars"), icons ? "square.stack.3d.up" : nil)
             Spacer(minLength: 2)
@@ -90,16 +90,17 @@ struct BudgetView: View {
             Spacer(minLength: 2)
             pill(.bills, loc("Recurring & Bills"), icons ? "calendar" : nil)
         }
-        .font(font)
+        .font(.footnote.weight(.medium))
     }
 
     private func pill(_ value: Segment, _ title: String, _ symbol: String?) -> some View {
         Button { withAnimation(.snappy) { segment = value } } label: {
-            HStack(spacing: 5) {
-                if let symbol { Image(systemName: symbol) }
+            HStack(spacing: 4) {
+                if let symbol { Image(systemName: symbol).imageScale(.small) }
                 Text(title).lineLimit(1)
             }
-            .padding(.horizontal, 14).padding(.vertical, 11)
+            .padding(.horizontal, 8).padding(.vertical, 7)
+            .frame(minHeight: 36)
             .foregroundStyle(segment == value ? .white : Color.ink)
             .background { if segment == value { Capsule().fill(LinearGradient.brand) } }
             .contentShape(.capsule)

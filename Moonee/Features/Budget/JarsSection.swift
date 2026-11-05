@@ -62,18 +62,32 @@ struct JarsSection: View {
         let progress = BudgetLevel.progress(spent: spent, budget: budget)
         let level = BudgetLevel(progress: progress)
         return VStack(alignment: .leading, spacing: 10) {
-            HStack(alignment: .top) {
-                Text(loc("Total budget this month")).font(.subheadline.weight(.semibold))
-                Spacer(minLength: 8)
-                monthPicker
+            // Title and month chip share a line when they fit, else stack (large Dynamic Type).
+            ViewThatFits(in: .horizontal) {
+                ForEach([Font.subheadline.weight(.semibold), .footnote.weight(.semibold)], id: \.self) { font in
+                    HStack {
+                        Text(loc("Total budget this month")).font(font).fixedSize()
+                        Spacer(minLength: 8)
+                        monthPicker
+                    }
+                }
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(loc("Total budget this month")).font(.subheadline.weight(.semibold))
+                    monthPicker
+                }
             }
             AmountText(budget, currency: currency).font(.system(size: 34, weight: .bold, design: .rounded))
-            HStack(spacing: 4) {
+            let spentLine = HStack(spacing: 4) {
                 Text(loc("Spent")).foregroundStyle(Color.inkSecondary)
                 AmountText(spent, currency: currency).fontWeight(.semibold)
-                Text(verbatim: "·").foregroundStyle(Color.inkSecondary)
+            }
+            let leftLine = HStack(spacing: 4) {
                 Text(loc("Left")).foregroundStyle(Color.inkSecondary)
                 AmountText(budget - spent, currency: currency).fontWeight(.semibold)
+            }
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 4) { spentLine.fixedSize(); Text(verbatim: "·").foregroundStyle(Color.inkSecondary); leftLine.fixedSize() }
+                VStack(alignment: .leading, spacing: 4) { spentLine; leftLine }
             }
             .font(.subheadline)
             HStack(spacing: 12) {
@@ -89,20 +103,27 @@ struct JarsSection: View {
         let recent = (0..<12).compactMap { cal.date(byAdding: .month, value: -$0, to: .now).flatMap { cal.dateInterval(of: .month, for: $0) } }
         return Menu {
             Picker(selection: $month) {
-                ForEach(recent, id: \.start) { Text($0.start.formatted(.dateTime.month(.wide).year())).tag($0) }
+                ForEach(recent, id: \.start) { Text(Self.monthTitle($0.start)).tag($0) }
             } label: { EmptyView() }
         } label: {
-            HStack(spacing: 6) {
+            HStack(spacing: 5) {
                 Image(systemName: "calendar").foregroundStyle(Color.brandDeep)
-                Text(month.start.formatted(.dateTime.month(.wide).year())).lineLimit(1).fixedSize()
+                Text(Self.monthTitle(month.start)).lineLimit(1)
                 Image(systemName: "chevron.down").font(.caption.weight(.semibold))
             }
             .font(.footnote.weight(.medium))
             .foregroundStyle(Color.ink)
-            .padding(.horizontal, 12).padding(.vertical, 8)
+            .padding(.horizontal, 10).padding(.vertical, 7)
             .background(Color.surface, in: .capsule)
             .overlay(Capsule().stroke(Color.track))
         }
+    }
+
+    /// "Tháng 11, 2026" / "November 2026" (ICU's vi "tháng 11 năm 2026" is too long for the chip).
+    static func monthTitle(_ date: Date) -> String {
+        let name = date.formatted(.dateTime.month(.wide))
+        let month = name.prefix(1).uppercased() + name.dropFirst()
+        return String(localized: "\(month) \(date.formatted(.dateTime.year()))", table: "Budget", comment: "Month and year on the month chip")
     }
 
     /// Spec §4.1: a negative jar gets a warning and a suggested transfer from the jar with the most money.

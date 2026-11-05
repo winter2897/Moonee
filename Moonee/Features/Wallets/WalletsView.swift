@@ -69,18 +69,18 @@ private struct WalletRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            IconBadge(symbol: wallet.type.symbol, color: wallet.type.color, size: 44)
+            IconBadge(symbol: wallet.type.symbol, color: wallet.type.color, size: 34)
             VStack(alignment: .leading, spacing: 2) {
-                Text(wallet.name).font(.headline)
+                Text(wallet.name).font(.subheadline.weight(.semibold))
                 Text(wallet.type.title).font(.caption).foregroundStyle(Color.inkSecondary)
             }
             Spacer()
             AmountText(balance, currency: wallet.currencyCode)
-                .font(.headline)
+                .font(.subheadline.weight(.semibold))
                 .foregroundStyle(balance < 0 ? Color.danger : Color.ink)
             Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(Color.inkSecondary)
         }
-        .padding(.vertical, 12).padding(.horizontal, 14)
+        .padding(.vertical, 10).padding(.horizontal, 14)
         .background(Color.surface.opacity(0.85), in: .rect(cornerRadius: 20))
         .contentShape(.rect)
     }
@@ -99,13 +99,13 @@ private struct CreditCardRow: View {
         VStack(alignment: .leading, spacing: 10) {
             Button(action: onEdit) {
                 HStack(spacing: 12) {
-                    IconBadge(symbol: card.type.symbol, color: card.type.color, size: 44)
+                    IconBadge(symbol: card.type.symbol, color: card.type.color, size: 34)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(card.name).font(.headline)
+                        Text(card.name).font(.subheadline.weight(.semibold))
                         Text(loc("Current debt")).font(.caption).foregroundStyle(Color.inkSecondary)
                     }
                     Spacer()
-                    AmountText(debt, currency: card.currencyCode).font(.headline)
+                    AmountText(debt, currency: card.currencyCode).font(.subheadline.weight(.semibold))
                     Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(Color.inkSecondary)
                 }
                 .contentShape(.rect)

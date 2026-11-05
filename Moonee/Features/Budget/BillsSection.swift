@@ -60,7 +60,7 @@ struct BillsSection: View {
         .alert(loc("How much was it?"), isPresented: Binding(get: { confirming != nil }, set: { if !$0 { confirming = nil } })) {
             TextField(loc("Amount"), value: $paidAmount, format: .number).keyboardType(.decimalPad)
             Button(loc("Cancel"), role: .cancel) {}
-            Button(loc("Paid")) {
+            Button(loc("Mark paid")) {
                 if let b = confirming, paidAmount > 0 {
                     BudgetActions.markPaid(b, amount: Money(major: paidAmount, b.currencyCode).minor, jars: jars, in: context)
                 }
