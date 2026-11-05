@@ -14,6 +14,7 @@ struct MooneeApp: App {
             fatalError("SwiftData: \(error)")
         }
         Seed.ifNeeded(container.mainContext)
+        LLMSettings.migrate() // one-time: old openAICompatible provider → OpenRouter / Custom
     }
 
     var body: some Scene {
