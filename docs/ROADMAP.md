@@ -87,5 +87,9 @@ Bản 2 (mục tiêu, sổ nợ, widget, import CSV, giá live…) lên kế ho�
 - Sở hữu file: S1 giữ `Core/Models.swift` + model mới; S2 giữ `Core/Theme.swift` + `Assets.xcassets` + `Core/Components/`; S3 giữ `Features/AI/` + `Features/QuickInput/`. Cần sửa file của session khác thì sửa tối thiểu cho build được và ghi rõ trong PR.
 - Merge thứ tự: S1 → S2 → S3, rồi đợt 2. PR phải pass `xcodebuild test`.
 
+## Trạng thái (06/11/2026)
+MVP đã vào `main` (PR #2–#24): đợt 1–3, UI review, tab bar glass, BYOK DeepSeek + chọn model, chat có lịch sử / ô nhập mới / tìm web / mức nỗ lực / skill riêng. Bản build App Store đóng gói được; việc của owner ở `docs/RELEASE.md` (tải lên, giá bán, deploy schema CloudKit, gửi duyệt).
+Đã cân nhắc và bỏ: tab bar hệ thống iOS 26 (PR #25) vì làm mất (+) nổi của mockup.
+
 ## Còn chờ quyết định
 - Giá bán trên App Store (chốt ở S11).
