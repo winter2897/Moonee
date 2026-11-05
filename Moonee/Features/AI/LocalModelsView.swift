@@ -32,6 +32,7 @@ struct LocalModelsView: View {
                 Section { row(model) }
             }
         }
+        .listSectionSpacing(.compact)
         .scrollContentBackground(.hidden)
         .background(MooneeBackground())
         .foregroundStyle(Color.mooneeInk)
@@ -79,7 +80,7 @@ struct LocalModelsView: View {
             Link(destination: m.licenceURL) { Text("Licence: \(m.licence)", tableName: "LocalModels") }.font(.caption)
             if !fits {
                 Text("Needs an iPhone with \(m.minDeviceRAMGB) GB of RAM or more.", tableName: "LocalModels")
-                    .font(.caption).foregroundStyle(.orange)
+                    .font(.caption).foregroundStyle(Color.warningText)
             }
         }
         .padding(.vertical, 4)
@@ -110,7 +111,7 @@ struct LocalModelsView: View {
             }
             deleteButton(m)
         case .failed(let message):
-            Text(message).font(.caption).foregroundStyle(.red)
+            Text(message).font(.caption).foregroundStyle(Color.danger)
             Button { downloads.start(m) } label: { Label { Text("Try again", tableName: "LocalModels") } icon: { Image(systemName: "arrow.clockwise.circle") } }
             deleteButton(m)
         case .downloaded:
