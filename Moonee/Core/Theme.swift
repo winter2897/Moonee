@@ -99,28 +99,52 @@ struct MooneeBackground: View {
     }
 }
 
-/// Green/yellow hills used on the hero cards.
+/// Soft mint and yellow hills behind the hero (S4's chat hills, approved by the owner): each hill pales toward its foot,
+/// and the whole fades out at the bottom, so there is no hard edge. Place it from the character's coin height downward.
 struct Hills: View {
     var body: some View {
-        GeometryReader { g in
-            let w = g.size.width, h = g.size.height
-            ZStack {
-                hill(w, h, peak: 0.55, height: 0.55).fill(LinearGradient(colors: [.mooneeYellow, .mooneeYellow.opacity(0.6)], startPoint: .trailing, endPoint: .leading))
-                hill(w, h, peak: 0.3, height: 0.35).fill(LinearGradient(colors: [.brandPrimaryLight.opacity(0.7), .mooneeGreen.opacity(0.5)], startPoint: .top, endPoint: .bottom))
+        Canvas { ctx, size in
+            let (w, h) = (size.width, size.height)
+            func hill(_ color: Color, _ build: (inout Path) -> Void) {
+                var p = Path()
+                build(&p)
+                p.closeSubpath()
+                // Each hill is deeper at its crest and pales toward its foot, like the mockup's soft mounds.
+                let top = p.boundingRect.minY
+                ctx.fill(p, with: .linearGradient(Gradient(colors: [color, color.opacity(0.25)]),
+                                                  startPoint: .init(x: 0, y: top), endPoint: .init(x: 0, y: h)))
+            }
+            // Far mint hill: high on the left, rolling down behind the character.
+            hill(Color.brandPrimaryLight.opacity(0.4)) { p in
+                p.move(to: .init(x: 0, y: h))
+                p.addLine(to: .init(x: 0, y: h * 0.12))
+                p.addCurve(to: .init(x: w * 0.68, y: h * 0.78), control1: .init(x: w * 0.16, y: h * -0.02), control2: .init(x: w * 0.4, y: h * 0.62))
+                p.addLine(to: .init(x: w * 0.68, y: h))
+            }
+            // Warm yellow hill rising to the right edge.
+            hill(Color.brandYellow.opacity(0.5)) { p in
+                p.move(to: .init(x: w * 0.42, y: h))
+                p.addCurve(to: .init(x: w, y: h * 0.14), control1: .init(x: w * 0.66, y: h * 0.74), control2: .init(x: w * 0.84, y: h * 0.16))
+                p.addLine(to: .init(x: w, y: h))
+            }
+            // A second, lighter mint wave across the screen.
+            hill(Color.brandPrimaryLight.opacity(0.22)) { p in
+                p.move(to: .init(x: 0, y: h))
+                p.addLine(to: .init(x: 0, y: h * 0.32))
+                p.addCurve(to: .init(x: w, y: h * 0.58), control1: .init(x: w * 0.3, y: h * 0.2), control2: .init(x: w * 0.6, y: h * 0.72))
+                p.addLine(to: .init(x: w, y: h))
+            }
+            // Pale ground the character stands on.
+            hill(Color.white.opacity(0.7)) { p in
+                p.move(to: .init(x: 0, y: h))
+                p.addLine(to: .init(x: 0, y: h * 0.5))
+                p.addCurve(to: .init(x: w, y: h * 0.6), control1: .init(x: w * 0.35, y: h * 0.42), control2: .init(x: w * 0.62, y: h * 0.78))
+                p.addLine(to: .init(x: w, y: h))
             }
         }
+        .mask(LinearGradient(stops: [.init(color: .black, location: 0.55), .init(color: .clear, location: 1)], startPoint: .top, endPoint: .bottom))
         .allowsHitTesting(false)
-    }
-
-    private func hill(_ w: CGFloat, _ h: CGFloat, peak: CGFloat, height: CGFloat) -> Path {
-        Path { p in
-            p.move(to: CGPoint(x: 0, y: h))
-            p.addCurve(to: CGPoint(x: w, y: h * (1 - height)),
-                       control1: CGPoint(x: w * peak, y: h * (1 - height * 0.2)),
-                       control2: CGPoint(x: w * 0.75, y: h * (1 - height * 1.3)))
-            p.addLine(to: CGPoint(x: w, y: h))
-            p.closeSubpath()
-        }
+        .accessibilityHidden(true)
     }
 }
 

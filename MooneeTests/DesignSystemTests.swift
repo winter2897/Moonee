@@ -91,3 +91,11 @@ struct DesignSystemTests {
         }.min()!
     }
 }
+
+/// Animated frames are scaled by their mean fill, so the hero shows the same body size with or without Reduce Motion.
+@MainActor @Test func animationFillIsMeasured() {
+    for mood in MooneeMood.allCases {
+        guard let anim = MooneeAnimation.load(mood) else { Issue.record("no animation for \(mood)"); continue }
+        #expect((0.6...1).contains(anim.meanFill), "\(mood): \(anim.meanFill)")
+    }
+}
