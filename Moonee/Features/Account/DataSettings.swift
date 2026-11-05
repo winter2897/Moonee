@@ -92,7 +92,7 @@ struct DataView: View {
 
             Section {
                 Button(role: .destructive) { confirmStep = 1 } label: {
-                    Label { Text("Delete all data", tableName: "Account") } icon: { Image(systemName: "trash") }
+                    Label { Text("Delete all data", tableName: "Account") } icon: { Image(systemName: "trash").foregroundStyle(Color.danger) }
                 }
             } footer: {
                 if let error { Text(error).foregroundStyle(Color.danger) }

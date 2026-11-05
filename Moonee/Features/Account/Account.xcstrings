@@ -64,6 +64,16 @@
         }
       }
     },
+    "About": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Về Moonee"
+          }
+        }
+      }
+    },
     "About Moonee": {
       "localizations": {
         "vi": {
@@ -224,6 +234,16 @@
         }
       }
     },
+    "Change the base URL to use any OpenAI-compatible server.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đổi Base URL để dùng bất kỳ server nào tương thích OpenAI."
+          }
+        }
+      }
+    },
     "Choose avatar": {
       "localizations": {
         "vi": {
@@ -344,12 +364,12 @@
         }
       }
     },
-    "Downloadable models are coming soon.": {
+    "Edit profile": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Model tải về sẽ có sớm."
+            "value": "Sửa hồ sơ"
           }
         }
       }
@@ -490,6 +510,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ngôn ngữ & Tiền tệ"
+          }
+        }
+      }
+    },
+    "Level, times, kinds": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mức nhắc, giờ, loại"
           }
         }
       }
@@ -734,16 +764,6 @@
         }
       }
     },
-    "OpenRouter / OpenAI-compatible": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OpenRouter / tương thích OpenAI"
-          }
-        }
-      }
-    },
     "Opens Moonee in the Settings app, where iOS lets you pick the app's language.": {
       "localizations": {
         "vi": {
@@ -834,37 +854,7 @@
         }
       }
     },
-    "Reminder level, times, kinds": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mức nhắc nhở, thời gian, loại thông báo"
-          }
-        }
-      }
-    },
-    "Reminder settings are coming soon.": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cài đặt nhắc nhở sẽ có sớm."
-          }
-        }
-      }
-    },
     "Reminders": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nhắc nhở"
-          }
-        }
-      }
-    },
-    "Reminders & notifications": {
       "localizations": {
         "vi": {
           "stringUnit": {
@@ -1200,6 +1190,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "iCloud, xuất CSV, xoá toàn bộ"
+          }
+        }
+      }
+    },
+    "iOS Settings": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cài đặt iOS"
           }
         }
       }
