@@ -312,22 +312,32 @@
         }
       }
     },
+    "Type today's price for each asset. Only changed prices get today's date.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhập giá hôm nay cho từng tài sản. Chỉ giá đã đổi mới được ghi ngày hôm nay."
+          }
+        }
+      }
+    },
+    "Update assets": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cập nhật tài sản"
+          }
+        }
+      }
+    },
     "Value": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Giá trị"
-          }
-        }
-      }
-    },
-    "Wallets + assets + money lent − card debt − money borrowed": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ví + tài sản + tiền cho vay − nợ thẻ − tiền đi vay"
           }
         }
       }
@@ -348,6 +358,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tài sản đang giữ"
+          }
+        }
+      }
+    },
+    "billion %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tỷ %@"
+          }
+        }
+      }
+    },
+    "million %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "triệu %@"
+          }
+        }
+      }
+    },
+    "thousand %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nghìn %@"
           }
         }
       }

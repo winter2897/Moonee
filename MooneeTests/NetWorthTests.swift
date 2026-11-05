@@ -42,18 +42,35 @@ struct NetWorthTests {
         #expect(assets[1].value == 29_763) // 1.5 × $198.42, rounded to cents
     }
 
-    @Test func historyKeepsTwelveMonthsAndUsesTheLiveTotalForNow() {
+    @Test func historyFillsMonthsWithoutSnapshotFromTheEstimate() {
         let now = day(2026, 11, 5)
-        let snaps = [(month(2025, 10), 1), (month(2025, 12), 2), (month(2026, 10), 3), (month(2026, 11), 999)]
-        let points = NetWorthHistory.points(snaps.map { (month: $0.0, total: $0.1) }, current: 4, now: now, calendar: cal)
-        #expect(points.map(\.total) == [2, 3, 4]) // Oct 2025 is 13 months back; Nov's stored value is replaced
-        #expect(points.map(\.month) == [month(2025, 12), month(2026, 10), month(2026, 11)])
+        let snaps = [(month(2026, 7), 70), (month(2026, 9), 90), (month(2026, 11), 999)]
+        var asked: [Date] = []
+        let points = NetWorthHistory.points(snaps.map { (month: $0.0, total: $0.1) }, current: 4, since: day(2026, 3),
+                                            estimate: { asked.append($0); return -1 }, now: now, calendar: cal)
+        // 6 months: Jun–Oct, then Nov at the live total (its stored snapshot is replaced).
+        #expect(points.map(\.month) == [6, 7, 8, 9, 10, 11].map { month(2026, $0) })
+        #expect(points.map(\.total) == [-1, 70, -1, 90, -1, 4])
+        #expect(asked == [month(2026, 7), month(2026, 9), month(2026, 11)]) // estimated at each month's end
+    }
+
+    @Test func historyStartsAtTheFirstData() {
+        let now = day(2026, 11, 5)
+        let p = { (since: Date?, snaps: [(Date, Int)]) in
+            NetWorthHistory.points(snaps.map { (month: $0.0, total: $0.1) }, current: 4, since: since,
+                                   estimate: { _ in 0 }, now: now, calendar: self.cal).map(\.month)
+        }
+        #expect(p(nil, []) == [month(2026, 11)])               // new user: one point, no sparkline
+        #expect(p(day(2026, 11, 2), []) == [month(2026, 11)])  // first txn this month
+        #expect(p(day(2026, 10, 20), []) == [month(2026, 10), month(2026, 11)])
+        #expect(p(nil, [(month(2026, 9), 1)]) == [9, 10, 11].map { month(2026, $0) })
     }
 
     @Test func changeIsAgainstLastMonthOnly() throws {
         let now = day(2026, 11, 5)
         let p = { (snaps: [(Date, Int)], current: Int) in
-            NetWorthHistory.points(snaps.map { (month: $0.0, total: $0.1) }, current: current, now: now, calendar: self.cal)
+            NetWorthHistory.points(snaps.map { (month: $0.0, total: $0.1) }, current: current, since: nil,
+                                   estimate: { _ in 0 }, now: now, calendar: self.cal)
         }
         let up = try #require(NetWorthHistory.change(p([(month(2026, 10), 200)], 250), now: now, calendar: cal))
         #expect(up.amount == 50)
@@ -61,7 +78,7 @@ struct NetWorthTests {
         let fromNegative = try #require(NetWorthHistory.change(p([(month(2026, 10), -200)], -100), now: now, calendar: cal))
         #expect(fromNegative.percent == 0.5) // less negative = up
         #expect(NetWorthHistory.change(p([(month(2026, 10), 0)], 100), now: now, calendar: cal)?.percent == nil)
-        #expect(NetWorthHistory.change(p([(month(2026, 9), 200)], 250), now: now, calendar: cal) == nil) // gap
+        #expect(NetWorthHistory.change(p([(month(2026, 9), 200)], 250), now: now, calendar: cal)?.amount == 250) // gap: Oct is estimated (0 here)
         #expect(NetWorthHistory.change(p([], 250), now: now, calendar: cal) == nil)
     }
 

@@ -52,8 +52,9 @@ extension Asset {
 
 // MARK: - History
 
-/// Net worth as last seen in a month, one per month and currency. Past months can't be recomputed from
+/// Net worth as last seen in a month, one per month and currency. Past months can't be recomputed exactly from
 /// transactions because asset prices have no history, so the app records the current month whenever it shows it.
+/// Months before the first snapshot fall back to a transaction estimate (see `NetWorthHistory.points`).
 @Model final class NetWorthSnapshot {
     /// Start of the month.
     var month: Date = Date.distantPast
@@ -92,19 +93,23 @@ enum NetWorthHistory {
         var id: Date { month }
     }
 
-    /// The chart: past months (up to `months` back) that have a snapshot, then this month at the live total.
-    static func points(_ snapshots: [(month: Date, total: Int)], current: Int, now: Date = .now,
-                       months: Int = 12, calendar: Calendar = .current) -> [Point] {
-        let thisMonth = calendar.dateInterval(of: .month, for: now)!.start
-        let from = calendar.date(byAdding: .month, value: -(months - 1), to: thisMonth)!
-        let past = Dictionary(snapshots.filter { $0.month >= from && $0.month < thisMonth }
-                                .map { (calendar.dateInterval(of: .month, for: $0.month)!.start, $0.total) },
-                              uniquingKeysWith: { a, _ in a })
-        return past.map { Point(month: $0.key, total: $0.value) }.sorted { $0.month < $1.month }
-            + [Point(month: thisMonth, total: current)]
+    /// The sparkline: the last `months` months, then this month at the live total. A past month uses its snapshot,
+    /// or without one `estimate(end of month)`. Months before `since` (the first transaction) are left out.
+    static func points(_ snapshots: [(month: Date, total: Int)], current: Int, since: Date?, estimate: (Date) -> Int,
+                       now: Date = .now, months: Int = 6, calendar: Calendar = .current) -> [Point] {
+        let start = { (d: Date) in calendar.dateInterval(of: .month, for: d)!.start }
+        let thisMonth = start(now)
+        let stored = Dictionary(snapshots.map { (start($0.month), $0.total) }, uniquingKeysWith: { a, _ in a })
+        let first = ([since].compactMap { $0 } + stored.keys).min().map(start) ?? thisMonth
+        let past = (1..<max(months, 1)).reversed().compactMap { back -> Point? in
+            let m = calendar.date(byAdding: .month, value: -back, to: thisMonth)!
+            guard m >= first else { return nil }
+            return Point(month: m, total: stored[m] ?? estimate(calendar.date(byAdding: .month, value: 1, to: m)!))
+        }
+        return past + [Point(month: thisMonth, total: current)]
     }
 
-    /// Change against last month's snapshot. nil when last month has none (an older one would not be "vs last month").
+    /// Change against last month (snapshot or estimate). nil when there is no last month (new user).
     static func change(_ points: [Point], now: Date = .now, calendar: Calendar = .current) -> (amount: Int, percent: Double?)? {
         let thisMonth = calendar.dateInterval(of: .month, for: now)!.start
         let lastMonth = calendar.date(byAdding: .month, value: -1, to: thisMonth)!

@@ -12,13 +12,20 @@ struct WatchlistView: View {
     @Query(sort: \NetWorthSnapshot.month) private var snapshots: [NetWorthSnapshot]
     @State private var editing: Asset?
     @State private var adding = false
+    @State private var updating = false
 
     private let currency = Money.defaultCurrency
 
     var body: some View {
-        let breakdown = Ledger(txns: txns, wallets: wallets, jars: []).breakdown(assets: Asset.counted(assets, currency: currency))
+        let counted = Asset.counted(assets, currency: currency)
+        let breakdown = Ledger(txns: txns, wallets: wallets, jars: []).breakdown(assets: counted)
+        // ponytail: months without a snapshot replay the transactions at today's asset values (same as Overview).
+        // O(months × txns) per render; cache per month if the ledger gets big.
+        let assetTotal = counted.map(\.value).reduce(0, +)
         let points = NetWorthHistory.points(snapshots.filter { $0.currencyCode == currency }.map { ($0.month, $0.total) },
-                                            current: breakdown.total)
+                                            current: breakdown.total, since: txns.map(\.date).min()) { end in
+            Ledger(txns: txns.filter { $0.date < end }, wallets: wallets, jars: []).netWorth(assets: assetTotal)
+        }
         NavigationStack {
             VStack(spacing: 14) {
                 NetWorthCard(total: breakdown.total, currency: currency, points: points, change: NetWorthHistory.change(points))
@@ -26,6 +33,17 @@ struct WatchlistView: View {
                     CompositionCard(breakdown: breakdown, currency: currency)
                 }
                 AssetsCard(assets: assets, currency: currency, onAdd: { adding = true }, onEdit: { editing = $0 })
+                if !assets.isEmpty {
+                    Button { updating = true } label: {
+                        VStack(spacing: 6) {
+                            Image(systemName: "square.3.layers.3d").font(.title3).foregroundStyle(Color.brandPrimary)
+                            Text("Update assets", tableName: "Watchlist").font(.footnote.weight(.semibold))
+                        }
+                        .frame(maxWidth: .infinity)
+                        .card(padding: 14)
+                    }
+                    .buttonStyle(.plain)
+                }
             }
             .foregroundStyle(Color.ink)
             .mooneeScreen(String(localized: "Watchlist", table: "Watchlist"))
@@ -34,6 +52,7 @@ struct WatchlistView: View {
             }
             .sheet(isPresented: $adding) { AssetForm(asset: nil) }
             .sheet(item: $editing) { AssetForm(asset: $0) }
+            .sheet(isPresented: $updating) { UpdatePricesSheet(assets: assets) }
             .task(id: breakdown.total) { NetWorthSnapshot.record(breakdown.total, currency: currency, in: context) }
         }
     }
@@ -49,10 +68,17 @@ private struct NetWorthCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("Net worth", tableName: "Watchlist").font(.headline)
-            AmountText(total, currency: currency)
-                .font(.system(size: 32, weight: .bold, design: .rounded))
-                .foregroundStyle(total < 0 ? Color.danger : Color.ink)
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Net worth", tableName: "Watchlist").font(.headline)
+                    AmountText(total, currency: currency)
+                        .font(.system(size: 32, weight: .bold, design: .rounded))
+                        .foregroundStyle(total < 0 ? Color.danger : Color.ink)
+                }
+                .layoutPriority(1)
+                Spacer(minLength: 0)
+                if points.count > 1 { Sparkline(points: points).frame(width: 110, height: 56) }
+            }
             if let change {
                 let up = change.amount >= 0
                 HStack(spacing: 4) {
@@ -60,38 +86,45 @@ private struct NetWorthCard: View {
                     if let p = change.percent {
                         Text(p.formatted(.percent.precision(.fractionLength(0...1)).sign(strategy: .always())))
                     }
-                    AmountText(change.amount, currency: currency, plus: true)
-                    Text("vs last month", tableName: "Watchlist").foregroundStyle(Color.inkSecondary)
+                    HStack(spacing: 0) {
+                        Text(verbatim: "(")
+                        AmountText(change.amount, currency: currency, plus: true)
+                        Text(verbatim: ")")
+                    }
+                    Text("vs last month", tableName: "Watchlist").fontWeight(.regular).foregroundStyle(Color.inkSecondary)
                 }
-                .font(.subheadline.weight(.semibold))
+                .font(.footnote.weight(.semibold))
                 .foregroundStyle(up ? Color.income : Color.danger)
-            } else {
-                Text("Wallets + assets + money lent − card debt − money borrowed", tableName: "Watchlist")
-                    .font(.footnote).foregroundStyle(Color.inkSecondary)
-            }
-            if points.count > 1 {
-                // Fit the line to its range (the area would otherwise pull the axis down to 0 and flatten it).
-                let totals = points.map(\.total)
-                let (lo, hi) = (totals.min()!, totals.max()!)
-                let base = lo - max((hi - lo) / 5, 1)
-                Chart(points) { p in
-                    AreaMark(x: .value("Month", p.month, unit: .month), yStart: .value("Base", base), yEnd: .value("Net worth", p.total))
-                        .foregroundStyle(LinearGradient(colors: [.brandPrimary.opacity(0.25), .clear], startPoint: .top, endPoint: .bottom))
-                    LineMark(x: .value("Month", p.month, unit: .month), y: .value("Net worth", p.total))
-                        .foregroundStyle(Color.brandPrimary)
-                        .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round))
-                }
-                .chartXAxis { AxisMarks(values: .automatic(desiredCount: 4)) { AxisValueLabel(format: .dateTime.month(.abbreviated)) } }
-                .chartXScale(range: .plotDimension(padding: 24)) // room for the edge labels
-                .chartYAxis(.hidden)
-                .chartYScale(domain: base...max(hi, base + 1))
-                .frame(height: 90)
-                .padding(.top, 8)
-                .accessibilityLabel(Text("Net worth by month", tableName: "Watchlist"))
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .card()
+    }
+}
+
+/// Mockup sparkline: no axes, area fitted to the line's range, a dot on the latest month.
+private struct Sparkline: View {
+    let points: [NetWorthHistory.Point]
+
+    var body: some View {
+        let totals = points.map(\.total)
+        let (lo, hi) = (totals.min()!, totals.max()!)
+        let base = lo - max((hi - lo) / 5, 1) // keeps the area from pulling the axis down to 0
+        Chart(points) { p in
+            AreaMark(x: .value("Month", p.month, unit: .month), yStart: .value("Base", base), yEnd: .value("Net worth", p.total))
+                .foregroundStyle(LinearGradient(colors: [.brandPrimary.opacity(0.25), .clear], startPoint: .top, endPoint: .bottom))
+            LineMark(x: .value("Month", p.month, unit: .month), y: .value("Net worth", p.total))
+                .foregroundStyle(Color.brandPrimary)
+                .lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round))
+            if p == points.last {
+                PointMark(x: .value("Month", p.month, unit: .month), y: .value("Net worth", p.total))
+                    .foregroundStyle(Color.brandPrimary).symbolSize(30)
+            }
+        }
+        .chartXAxis(.hidden)
+        .chartYAxis(.hidden)
+        .chartYScale(domain: base...max(hi, base + 1))
+        .accessibilityLabel(Text("Net worth by month", tableName: "Watchlist"))
     }
 }
 
@@ -113,34 +146,56 @@ private struct CompositionCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Composition", tableName: "Watchlist").font(.headline)
-            HStack(spacing: 16) {
+            HStack(spacing: 12) {
                 DonutChart(slices: rows.map { .init(label: $0.label, value: Double(abs($0.value)), color: $0.color) }) {
-                    AmountText(breakdown.total, currency: currency, short: true).font(.headline)
+                    DonutCenter(minor: breakdown.total, currency: currency)
                 }
-                .frame(width: 120)
-                VStack(alignment: .leading, spacing: 10) {
+                .frame(width: 96)
+                Grid(alignment: .leading, horizontalSpacing: 5, verticalSpacing: 8) {
                     ForEach(rows, id: \.label) { row in
-                        HStack(alignment: .firstTextBaseline, spacing: 8) {
-                            Circle().fill(row.color).frame(width: 10, height: 10)
-                            VStack(alignment: .leading, spacing: 1) {
-                                Text(row.label).font(.subheadline)
-                                HStack(spacing: 6) {
-                                    AmountText(row.value, currency: currency)
-                                    if breakdown.gross > 0 {
-                                        Text((Double(row.value) / Double(breakdown.gross)).formatted(.percent.precision(.fractionLength(0...1))))
-                                            .foregroundStyle(Color.inkSecondary)
-                                    }
-                                }
-                                .font(.footnote.weight(.semibold))
-                            }
+                        if row.label != rows.first?.label { Divider() }
+                        GridRow {
+                            Circle().fill(row.color).frame(width: 8, height: 8)
+                            Text(row.label).lineLimit(1).minimumScaleFactor(0.7)
+                            AmountText(row.value, currency: currency).fixedSize().gridColumnAlignment(.trailing)
+                            Text(breakdown.gross > 0 ? (Double(row.value) / Double(breakdown.gross)).formatted(.percent.precision(.fractionLength(0...1))) : "")
+                                .monospacedDigit().foregroundStyle(Color.inkSecondary).fixedSize().gridColumnAlignment(.trailing)
                         }
-                        .accessibilityElement(children: .combine)
                     }
                 }
+                .font(.caption)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .card()
+    }
+}
+
+/// "245,6" over "million ₫", as in the mockup.
+private struct DonutCenter: View {
+    let minor: Int
+    let currency: String
+    @Environment(\.balanceHidden) private var hidden
+    @Environment(\.locale) private var locale
+
+    var body: some View {
+        let major = NSDecimalNumber(decimal: AmountFormat.major(minor, currency)).doubleValue
+        let symbol = { let f = NumberFormatter(); f.numberStyle = .currency; f.currencyCode = currency; f.locale = locale; return f.currencySymbol ?? currency }()
+        let (value, unit): (Double, String) = switch abs(major) {
+        case 1e9...: (major / 1e9, String(localized: "billion \(symbol)", table: "Watchlist"))
+        case 1e6...: (major / 1e6, String(localized: "million \(symbol)", table: "Watchlist"))
+        case 1e3...: (major / 1e3, String(localized: "thousand \(symbol)", table: "Watchlist"))
+        default: (major, symbol)
+        }
+        VStack(spacing: 0) {
+            Text(hidden ? AmountFormat.mask : value.formatted(.number.precision(.fractionLength(0...1)).locale(locale)))
+                .font(.subheadline.weight(.bold)).monospacedDigit()
+            if !hidden { Text(unit).font(.caption2) }
+        }
+        .lineLimit(1)
+        .minimumScaleFactor(0.6)
+        .accessibilityElement()
+        .accessibilityLabel(hidden ? String(localized: "Balance hidden", table: "Components") : AmountFormat.spoken(minor, currency, locale: locale))
     }
 }
 
@@ -348,6 +403,63 @@ private struct AssetForm: View {
         a.currencyCode = currency
         a.unitPrice = unitPrice
         a.updatedAt = updated
+        dismiss()
+    }
+}
+
+// MARK: - Update prices
+
+/// "Update assets" tile: one price field per asset. Only changed prices get today's date.
+private struct UpdatePricesSheet: View {
+    let assets: [Asset]
+    @Environment(\.dismiss) private var dismiss
+    @State private var prices: [PersistentIdentifier: Decimal] = [:]
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    ForEach(assets) { a in
+                        LabeledContent {
+                            TextField(String(localized: "Price per unit", table: "Watchlist"), value: Binding(
+                                get: { prices[a.persistentModelID] }, set: { prices[a.persistentModelID] = $0 }), format: .number)
+                                .keyboardType(.decimalPad)
+                                .multilineTextAlignment(.trailing)
+                        } label: {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(a.symbol).font(.subheadline.weight(.semibold))
+                                Text(verbatim: "\(a.currencyCode) · \(a.updatedAt.formatted(.relative(presentation: .numeric)))")
+                                    .font(.caption).foregroundStyle(Color.inkSecondary)
+                            }
+                        }
+                    }
+                } footer: {
+                    Text("Type today's price for each asset. Only changed prices get today's date.", tableName: "Watchlist")
+                }
+            }
+            .scrollContentBackground(.hidden)
+            .background(MooneeBackground())
+            .navigationTitle(String(localized: "Update assets", table: "Watchlist"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) { Button(String(localized: "Cancel", table: "Watchlist"), role: .cancel) { dismiss() } }
+                ToolbarItem(placement: .confirmationAction) { Button(String(localized: "Save", table: "Watchlist"), action: save) }
+            }
+            .onAppear {
+                prices = Dictionary(assets.map { ($0.persistentModelID, Money($0.unitPrice, $0.currencyCode).major) }, uniquingKeysWith: { a, _ in a })
+            }
+        }
+    }
+
+    private func save() {
+        for a in assets {
+            guard let p = prices[a.persistentModelID], p >= 0 else { continue }
+            let minor = Money(major: p, a.currencyCode).minor
+            if minor != a.unitPrice {
+                a.unitPrice = minor
+                a.updatedAt = .now
+            }
+        }
         dismiss()
     }
 }
