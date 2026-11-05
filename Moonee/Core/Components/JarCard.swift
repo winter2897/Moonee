@@ -123,11 +123,13 @@ struct JarCard: View {
             IconBadge(symbol: symbol, color: color)
             layout {
                 VStack(alignment: .leading, spacing: 1) {
-                    Text(name).font(.rowTitle).foregroundStyle(Color.ink).lineLimit(2).minimumScaleFactor(0.85)
+                    // One line, as in the mockup ("Phát triển bản thân" shrinks a little); wraps only at accessibility sizes.
+                    Text(name).font(.rowTitle).foregroundStyle(Color.ink)
+                        .lineLimit(typeSize.isAccessibilitySize ? 2 : 1).minimumScaleFactor(0.8)
                     if let subtitle { Text(subtitle).font(.caption).foregroundStyle(Color.inkSecondary) }
                 }
-                .frame(maxWidth: typeSize.isAccessibilitySize ? nil : 96, alignment: .leading)
-                .layoutPriority(1) // the name takes what it needs (≤ 96 pt), the bar gets the rest
+                .frame(maxWidth: typeSize.isAccessibilitySize ? nil : 120, alignment: .leading)
+                .layoutPriority(1) // the name takes what it needs (≤ 120 pt), the bar gets the rest
                 VStack(alignment: .trailing, spacing: 4) {
                     MooneeProgressBar(progress: progress, tint: level.fill, height: 6)
                     // One Text so both amounts shrink together; full amounts in lists (spec §B).
