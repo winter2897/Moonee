@@ -192,9 +192,9 @@ struct MooneeTools: Sendable {
         return a.amount
     }
 
-    private static let period = Schema.Property("period", .string("Default thisMonth", oneOf: LedgerPeriod.allCases.map(\.rawValue)))
-    private static let category = Schema.Property("categoryKey", .string("Only this category key, e.g. category.food"))
-    private static let jar = Schema.Property("jarKey", .string("Only this jar key, e.g. jar.play"))
+    private static let period = ToolSchema.Property("period", .string("Default thisMonth", oneOf: LedgerPeriod.allCases.map(\.rawValue)))
+    private static let category = ToolSchema.Property("categoryKey", .string("Only this category key, e.g. category.food"))
+    private static let jar = ToolSchema.Property("jarKey", .string("Only this jar key, e.g. jar.play"))
 }
 
 /// One argument bag for every tool: the model sends what a tool's schema asks for; pre-fetching sends the same hints to all.

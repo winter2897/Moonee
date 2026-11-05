@@ -106,7 +106,7 @@ struct CloudLLMTests {
     }
 
     @Test func schemaFormats() throws {
-        let s = Schema.object([.init("n", .integer("count"), required: true), .init("tags", .array(.string()))], "args")
+        let s = ToolSchema.object([.init("n", .integer("count"), required: true), .init("tags", .array(.string()))], "args")
         let json = s.json
         #expect(json["type"] as? String == "object")
         #expect(json["required"] as? [String] == ["n"])

@@ -51,19 +51,19 @@ extension LLM {
 // MARK: - Tools
 
 /// A tiny JSON Schema subset. Becomes JSON Schema for cloud models and `DynamicGenerationSchema` for Foundation Models.
-indirect enum Schema: Sendable {
+indirect enum ToolSchema: Sendable {
     case string(String? = nil, oneOf: [String]? = nil)
     case integer(String? = nil)
     case number(String? = nil)
     case boolean(String? = nil)
-    case array(Schema, String? = nil)
+    case array(ToolSchema, String? = nil)
     case object([Property], String? = nil)
 
     struct Property: Sendable {
         var name: String
-        var schema: Schema
+        var schema: ToolSchema
         var required = false
-        init(_ name: String, _ schema: Schema, required: Bool = false) { (self.name, self.schema, self.required) = (name, schema, required) }
+        init(_ name: String, _ schema: ToolSchema, required: Bool = false) { (self.name, self.schema, self.required) = (name, schema, required) }
     }
 
     var summary: String? {
@@ -112,15 +112,15 @@ struct AITool: Sendable {
     let name: String
     let description: String
     /// Always an `.object`.
-    let parameters: Schema
+    let parameters: ToolSchema
     let run: @Sendable (Data) async throws -> String
 
-    init(name: String, description: String, parameters: Schema, run: @escaping @Sendable (Data) async throws -> String) {
+    init(name: String, description: String, parameters: ToolSchema, run: @escaping @Sendable (Data) async throws -> String) {
         (self.name, self.description, self.parameters, self.run) = (name, description, parameters, run)
     }
 
     /// Typed convenience: decodes `Args` from the model's JSON, encodes the result as JSON.
-    init<Args: Decodable, Out: Encodable>(name: String, description: String, parameters: Schema,
+    init<Args: Decodable, Out: Encodable>(name: String, description: String, parameters: ToolSchema,
                                           typed: @escaping @Sendable (Args) async throws -> Out) {
         self.init(name: name, description: description, parameters: parameters) { data in
             let args = try JSONDecoder().decode(Args.self, from: data.isEmpty ? Data("{}".utf8) : data)
