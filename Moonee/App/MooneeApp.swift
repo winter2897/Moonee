@@ -52,6 +52,7 @@ struct RootView: View {
             .fixedSize(horizontal: false, vertical: true)
         }
         .environment(\.balanceHidden, hideBalances)
+        .reminderScheduling()
         .tint(.mooneeGreen)
     }
 }

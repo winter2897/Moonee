@@ -21,7 +21,8 @@ The project uses file-system synchronized groups: drop a `.swift` file anywhere 
 - `Moonee/Features/QuickInput` — engines only, no screen: `QuickParser` (rule parser for every language in `Lexicon.all`: 7 kinds, several per message, currency-aware, returns plain `ParsedTxn`), `ReceiptScanner` (Vision OCR), `SpeechInput` (vi-VN dictation).
 - `Moonee/Resources/Locales/<lang>/` — per-language parse dictionary (`Lexicon+<lang>.swift`), persona `moonee.<lang>.md` and skill files `<skill>.<lang>.md` (full part, then `<!-- short -->` part for small models). File names must be unique: the bundle is flat.
 - `Moonee/Features/Import/StatementCSV.swift` — bank statement CSV parsing → `ImportDraft`.
-- `Moonee/Features/{Account,Wallets,Jars}` — settings screens reached from the Account tab: categories, wallets, jar percents, category → jar mapping.
+- `Moonee/Features/Budget` — Budget tab (spec §4.1–4.3): `BudgetView` (3 segments) + `JarsSection` (jar cards, jar detail, `JarTransferSheet`), `BillsSection` (`RecurringForm`, "Paid"), `BudgetActions` (every Budget write: `moveBetweenJars`, `payCard`, `markPaid`, percent validation), `Reminders` (pure `ReminderPlanner` + local-notification scheduler, attached once in `RootView` via `.reminderScheduling()`), `ReminderSettingsView`. Strings: `Budget.xcstrings` via `loc("…")`. Debug: launch with `-budgetDemo` (empty store) and `-budgetSegment wallets|bills`.
+- `Moonee/Features/{Account,Wallets,Jars}` — settings screens: categories, wallets (`WalletsSection` is also the Budget segment; credit cards with statement/due day and "Pay card"), jar percents/add/rename/recolour (`JarSettingsView`), category → jar mapping.
 
 ## Known gaps vs the spec (fix before building on them)
 - iCloud sync is not switched on: no iCloud capability/entitlements yet (needs the team; S11). The schema is ready.

@@ -275,6 +275,8 @@ private func displayName(key: String?, customName: String?) -> String {
     var frequencyRaw: String = Frequency.monthly.rawValue
     var nextDue: Date = Date.now
     var remindDaysBefore: Int = 1
+    /// When "Paid" was last tapped (Budget shows it under "Paid this month").
+    var lastPaid: Date?
     var wallet: Wallet?
     var category: Category?
 
