@@ -2,15 +2,16 @@
 
 iOS personal-finance app (SwiftUI + SwiftData, iOS 26+, light mode only). Offline-first: data lives on device. **The spec is `docs/FEATURES.md`** — build to it; when code and spec disagree, the spec wins.
 
-## Build & test
+## Build, test, release
 ```bash
 xcodebuild test -project Moonee.xcodeproj -scheme Moonee -destination 'platform=iOS Simulator,name=iPhone 17 Pro' -derivedDataPath build
 ```
 The project uses file-system synchronized groups: drop a `.swift` file anywhere under `Moonee/` or `MooneeTests/` and it is compiled — never edit `project.pbxproj` to add files. Tests use Swift Testing (`import Testing`, `@Test`, `#expect`).
+CI (`.github/workflows/test.yml`) runs the same on every PR and push to `main`. Release: `docs/RELEASE.md` (archive/export, CloudKit, App Store metadata, TestFlight); signing is automatic with team `WXNAFMHDN8`; raise `CURRENT_PROJECT_VERSION` per upload. Model/schema changes must stay CloudKit-additive (no renames/deletes once the schema is in Production).
 MLX compiles Metal shaders: a fresh machine needs `xcodebuild -downloadComponent MetalToolchain` once. MLX cannot run in the Simulator; the local-model eval runs on the Mac (`tools/ParseEval/run.sh`).
 
 ## Layout
-- `Moonee/App` — `MooneeApp` (container from `Schema.moonee`), `RootView` (5 tabs of spec §1 with `MooneeTabBar`; (+) selects the Moonee chat tab; injects `\.balanceHidden`), `Prefs` (shared UserDefaults keys: hide balances, profile name/avatar, reminder level), `DevSecrets` (Debug + Simulator: loads `OPENROUTER_API_KEY` from the gitignored `.env` into Keychain).
+- `Moonee/App` — `MooneeApp` (container from `CloudSync.makeContainer()`: CloudKit private DB, local fallback), `RootView` (5 tabs of spec §1 with `MooneeTabBar`; (+) selects the Moonee chat tab; injects `\.balanceHidden`), `Prefs` (shared UserDefaults keys: hide balances, profile name/avatar, reminder level), `DevSecrets` (Debug + Simulator: loads `OPENROUTER_API_KEY` from the gitignored `.env` into Keychain).
 - Tab roots, one file per feature so nobody edits `RootView`: `Features/Overview/OverviewView`, `Features/Budget/BudgetView`, `Features/Chat/ChatView`, `Features/Watchlist/WatchlistView`, `Features/Account/AccountView`.
 - `Moonee/Core/Models.swift` — data model v2 (spec §11): `Txn` (7 kinds: expense, income, transfer, jarTransfer, lend, borrow, repay; `wallet`/`toWallet`, `jar`/`toJar`, `debt`, `splits`), `IncomeSplit`, `Category`, `Wallet` (cash/bank/ewallet/credit), `Jar` (envelope), `Recurring`, `Goal`, `Debt`, `Asset` (manual quantity × unit price), `MerchantRule`, `Schema.moonee`, first-launch `Seed`. Enums are stored as `…Raw` strings with typed accessors (`kind`, `type`, …) so `#Predicate` works. Default jars/categories are stored by `key` (`jar.essentials`, `category.food`) and shown via `.name` (String Catalog); a user-chosen name goes in `customName`. CloudKit-ready: defaults/optionals everywhere, optional to-many relationships with inverses, no unique constraints — `CloudKitSchemaTests` enforces it.
 - `Moonee/Core/Money.swift` — every amount is a positive `Int` in minor units + a `currencyCode`. `Money(minor, code).formatted()` (FormatStyle), `Money(major:)`, `Money.defaultCurrency` (UserDefaults `money.currency` override, else `Locale.current.currency`).
@@ -31,10 +32,11 @@ MLX compiles Metal shaders: a fresh machine needs `xcodebuild -downloadComponent
 - `Moonee/Features/{Account,Wallets,Jars}` — settings screens: categories, wallets (`WalletsSection` is also the Budget segment; credit cards with statement/due day and "Pay card"), jar percents/add/rename/recolour (`JarSettingsView`), category → jar mapping.
 
 ## Known gaps vs the spec (fix before building on them)
-- iCloud sync is not switched on: no iCloud capability/entitlements yet (needs the team; S11). The schema is ready.
+- iCloud sync is wired (`App/CloudSync.swift`, container `iCloud.com.haiquan.moonee`) but only verified in the simulator without an iCloud account. Before TestFlight the owner must deploy the CloudKit schema to Production (`docs/RELEASE.md` §2). A reinstall's duplicate default jars/categories are merged by `Seed.mergeDuplicates`; its extra empty "Cash wallet" is not.
 - Ledger sums every currency as-is (no FX). Fine while all wallets use the default currency.
 - `SpeechInput` is fixed to vi-VN.
 - Schema v2 has no migration from v1: delete the app from the simulator if it fails to launch with an old store.
+- With the iCloud entitlement, `ModelConfiguration()`'s default `.automatic` turns on CloudKit mirroring, even for in-memory containers. Tests and any scratch container pass `cloudKitDatabase: .none`, or a simulator signed into iCloud syncs test data.
 
 ## Conventions
 - Add new `@Model` types in your feature folder and register them in `Schema.mooneeModels` (Models.swift). Keep them CloudKit-ready (defaults/optionals, optional relationships with inverses, no `.unique`).

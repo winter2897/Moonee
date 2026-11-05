@@ -1,3 +1,5 @@
+import Combine
+import CoreData
 import SwiftData
 import SwiftUI
 
@@ -7,19 +9,21 @@ struct MooneeApp: App {
 
     init() {
         do {
-            // ponytail: local store only. S11 adds the iCloud capability (CloudKit container iCloud.com.haiquan.moonee +
-            // remote-notification background mode) with the team; SwiftData then syncs on its own. CloudKitSchemaTests keeps the schema ready.
-            container = try ModelContainer(for: Schema.moonee)
+            container = try CloudSync.makeContainer() // iCloud (private DB) or the local fallback
         } catch {
             fatalError("SwiftData: \(error)")
         }
         Seed.ifNeeded(container.mainContext)
+        Seed.mergeDuplicates(container.mainContext)
     }
 
     var body: some Scene {
         WindowGroup {
             RootView() // light only: UIUserInterfaceStyle = Light in build settings
                 .task { DevSecrets.load() }
+                // iCloud just delivered records (e.g. a reinstall meeting its old data): fold duplicate defaults.
+                .onReceive(NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange)
+                    .debounce(for: .seconds(2), scheduler: RunLoop.main)) { _ in Seed.mergeDuplicates(container.mainContext) }
         }
         .modelContainer(container)
     }
