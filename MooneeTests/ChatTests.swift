@@ -203,4 +203,92 @@ import Testing
         #expect(try context.fetch(FetchDescriptor<MerchantRule>()).map(\.pattern) == ["highlands"])
         #expect(say("highlands 40k").first?.category?.key == "category.entertainment")
     }
+
+    // MARK: Threads
+
+    static let hcm: Calendar = {
+        var c = Calendar(identifier: .gregorian)
+        c.timeZone = TimeZone(identifier: "Asia/Ho_Chi_Minh")!
+        return c
+    }()
+
+    func at(_ day: Int, _ hour: Int, _ minute: Int = 0) -> Date {
+        Self.hcm.date(from: DateComponents(year: 2026, month: 11, day: day, hour: hour, minute: minute))!
+    }
+
+    @Test func aNewDayStartsANewThread() {
+        let cal = Self.hcm
+        let late = ChatThreads.forNewMessage(open: nil, resumed: false, now: at(5, 23, 58), calendar: cal, in: context)
+        #expect(ChatThreads.forNewMessage(open: late, resumed: false, now: at(5, 23, 59), calendar: cal, in: context) === late)
+
+        let next = ChatThreads.forNewMessage(open: late, resumed: false, now: at(6, 0, 1), calendar: cal, in: context)
+        #expect(next !== late)
+        #expect(next.day == at(6, 0))
+        // Reopened from history, the old thread keeps going.
+        #expect(ChatThreads.forNewMessage(open: late, resumed: true, now: at(6, 9), calendar: cal, in: context) === late)
+        // With nothing open, today's newest thread is reused.
+        #expect(ChatThreads.forNewMessage(open: nil, resumed: false, now: at(6, 10), calendar: cal, in: context) === next)
+    }
+
+    @Test func newChatAddsASecondThreadToday() {
+        let cal = Self.hcm
+        let first = ChatThreads.forNewMessage(open: nil, resumed: false, now: at(6, 9), calendar: cal, in: context)
+        let second = ChatThreads.start(now: at(6, 10), calendar: cal, in: context)
+        #expect(second !== first && second.day == first.day)
+        #expect(ChatThreads.todays(now: at(6, 11), calendar: cal, in: context) === second)
+    }
+
+    @Test func oldMessagesMoveIntoOneThreadPerDay() throws {
+        for (day, hour, user, text) in [(4, 8, true, "phở 45k"), (4, 8, false, "ok"), (5, 9, false, "hi"), (5, 9, true, "cafe 29k\nsáng")] {
+            context.insert(ChatMessage(fromUser: user, text: text, date: at(day, hour, user ? 0 : 1)))
+        }
+        ChatThreads.migrate(calendar: Self.hcm, in: context)
+        let threads = try context.fetch(FetchDescriptor<ChatThread>(sortBy: [SortDescriptor(\.day)]))
+        #expect(threads.map(\.day) == [at(4, 0), at(5, 0)])
+        #expect(threads.map { $0.messages?.count } == [2, 2])
+        #expect(threads.map(\.title) == ["phở 45k", "cafe 29k"]) // first user message, first line
+        ChatThreads.migrate(calendar: Self.hcm, in: context) // runs once
+        #expect(try context.fetchCount(FetchDescriptor<ChatThread>()) == 2)
+    }
+
+    @Test func deletingAThreadKeepsItsTransactions() throws {
+        let t = ChatThreads.start(in: context)
+        let m = ChatMessage(fromUser: false, text: "")
+        context.insert(m)
+        ChatThreads.add(m, to: t)
+        m.txns = say("ăn trưa 65k, mua sách 120k")
+        try context.save()
+
+        context.delete(t)
+        try context.save()
+        #expect(try context.fetchCount(FetchDescriptor<ChatThread>()) == 0)
+        #expect(try context.fetchCount(FetchDescriptor<ChatMessage>()) == 0)
+        let txns = try context.fetch(FetchDescriptor<Txn>())
+        #expect(txns.count == 2 && txns.allSatisfy { $0.chatMessage == nil })
+    }
+
+    @Test func historyListsPinnedFirstThenByDay() {
+        let cal = Self.hcm
+        func thread(_ day: Int, _ title: String, hour: Int = 9, pinned: Bool = false) -> ChatThread {
+            let t = ChatThreads.start(now: at(day, hour), calendar: cal, in: context)
+            let m = ChatMessage(fromUser: true, text: title, date: at(day, hour))
+            context.insert(m)
+            ChatThreads.add(m, to: t)
+            t.isPinned = pinned
+            return t
+        }
+        let a = thread(3, "lương tháng 11"), b = thread(4, "phở 45k", pinned: true), c = thread(5, "cafe 29k"), d = thread(5, "grab 32k", hour: 10)
+        _ = ChatThreads.start(now: at(5, 12), calendar: cal, in: context) // empty: not listed
+
+        let sections = ChatThreads.sections([a, b, c, d], calendar: cal)
+        #expect(sections.map(\.kind) == [.pinned, .day(at(5, 0)), .day(at(3, 0))])
+        #expect(sections.map { $0.threads.map(\.title) } == [["phở 45k"], ["grab 32k", "cafe 29k"], ["lương tháng 11"]])
+        #expect(ChatThreads.sections([a, b, c, d], query: "PHO", calendar: cal).flatMap(\.threads).map(\.title) == ["phở 45k"])
+    }
+
+    @Test func titlesAreShortAndCutOnAWord() {
+        #expect(ChatThreads.title(from: "  phở 45k  ") == "phở 45k")
+        let long = ChatThreads.title(from: "tháng này mình đã chi bao nhiêu cho ăn uống và cafe vậy Moonee")
+        #expect(long.count <= 41 && long.hasSuffix("…") && !long.dropLast().hasSuffix(" "))
+    }
 }

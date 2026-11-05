@@ -12,12 +12,21 @@ import SwiftUI
     var undone: Bool = false
     /// JSON `[ChatCardLine]`: what the card showed when it was undone, since its txns are deleted.
     var undoneLines: Data?
+    /// JSON `[WebSource]`: the pages a web-search answer came from, shown as chips under the bubble.
+    var sourcesData: Data?
     @Relationship(deleteRule: .nullify, inverse: \Txn.chatMessage) var txns: [Txn]? = []
+    /// The conversation it belongs to (inverse declared on `ChatThread.messages`).
+    var thread: ChatThread?
 
     init(fromUser: Bool, text: String, date: Date = .now) {
         self.fromUser = fromUser
         self.text = text
         self.date = date
+    }
+
+    var sources: [WebSource] {
+        get { sourcesData.flatMap { try? JSONDecoder().decode([WebSource].self, from: $0) } ?? [] }
+        set { sourcesData = newValue.isEmpty ? nil : try? JSONEncoder().encode(newValue) }
     }
 
     /// In the order they were saved (SwiftData relationships are unordered).

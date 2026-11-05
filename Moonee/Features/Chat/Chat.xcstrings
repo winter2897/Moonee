@@ -12,12 +12,12 @@
         }
       }
     },
-    "Add a photo": {
+    "Add to chat": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Thêm ảnh"
+            "value": "Thêm vào cuộc trò chuyện"
           }
         }
       }
@@ -32,32 +32,92 @@
         }
       }
     },
-    "Choose from library": {
+    "Camera": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chọn từ thư viện"
+            "value": "Máy ảnh"
           }
         }
       }
     },
-    "Clear chat": {
+    "Change model…": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Xoá trò chuyện"
+            "value": "Đổi model…"
           }
         }
       }
     },
-    "Clear the chat? Your transactions stay in the ledger.": {
+    "Chat history": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Xoá cuộc trò chuyện? Các giao dịch vẫn còn trong sổ."
+            "value": "Lịch sử trò chuyện"
+          }
+        }
+      }
+    },
+    "Choose receipt photo": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chọn ảnh hoá đơn"
+          }
+        }
+      }
+    },
+    "Close": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đóng"
+          }
+        }
+      }
+    },
+    "Delete": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá"
+          }
+        }
+      }
+    },
+    "Delete this chat? Transactions it saved stay in your ledger.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá cuộc trò chuyện này? Các giao dịch đã lưu vẫn còn trong sổ."
+          }
+        }
+      }
+    },
+    "Dictate": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đọc để nhập chữ"
+          }
+        }
+      }
+    },
+    "Done": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xong"
           }
         }
       }
@@ -68,6 +128,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sửa"
+          }
+        }
+      }
+    },
+    "Effort": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mức suy nghĩ"
           }
         }
       }
@@ -126,12 +196,42 @@
         }
       }
     },
+    "High": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cao"
+          }
+        }
+      }
+    },
+    "Higher": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cao hơn"
+          }
+        }
+      }
+    },
     "Hmm, Moonee didn't quite get that 🤔 Try something like “phở 45k” or “how much did I spend this month?”": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Hmm, Moonee chưa hiểu lắm 🤔 Bạn thử nhắn kiểu “phở 45k” hoặc “tháng này mình chi bao nhiêu?” nha."
+          }
+        }
+      }
+    },
+    "Hold to talk": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giữ để nói"
           }
         }
       }
@@ -166,6 +266,56 @@
         }
       }
     },
+    "Listening…": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang nghe…"
+          }
+        }
+      }
+    },
+    "Low": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thấp"
+          }
+        }
+      }
+    },
+    "Max": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tối đa"
+          }
+        }
+      }
+    },
+    "Medium": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trung bình"
+          }
+        }
+      }
+    },
+    "Model: %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Model: %@"
+          }
+        }
+      }
+    },
     "Month-end saving tips": {
       "localizations": {
         "vi": {
@@ -186,12 +336,52 @@
         }
       }
     },
-    "More": {
+    "New chat": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Thêm"
+            "value": "Cuộc trò chuyện mới"
+          }
+        }
+      }
+    },
+    "No chats yet": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa có cuộc trò chuyện nào"
+          }
+        }
+      }
+    },
+    "On-device": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trên máy"
+          }
+        }
+      }
+    },
+    "Pin": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ghim"
+          }
+        }
+      }
+    },
+    "Pinned": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã ghim"
           }
         }
       }
@@ -226,6 +416,16 @@
         }
       }
     },
+    "Search chats": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tìm trong trò chuyện"
+          }
+        }
+      }
+    },
     "See monthly report": {
       "localizations": {
         "vi": {
@@ -236,12 +436,42 @@
         }
       }
     },
-    "Take a photo": {
+    "Send": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chụp ảnh"
+            "value": "Gửi"
+          }
+        }
+      }
+    },
+    "Skills": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kỹ năng"
+          }
+        }
+      }
+    },
+    "Sources": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nguồn"
+          }
+        }
+      }
+    },
+    "Stop recording": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dừng ghi âm"
           }
         }
       }
@@ -282,6 +512,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nhập thông tin"
+          }
+        }
+      }
+    },
+    "Type or hold to talk": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhập hoặc giữ để nói"
+          }
+        }
+      }
+    },
+    "Unpin": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bỏ ghim"
+          }
+        }
+      }
+    },
+    "Web search": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tìm trên web"
           }
         }
       }
@@ -342,6 +602,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bạn đã chi **%@** %@."
+          }
+        }
+      }
+    },
+    "Your conversations with Moonee show up here, one per day.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Các cuộc trò chuyện với Moonee sẽ hiện ở đây, mỗi ngày một cuộc."
           }
         }
       }
