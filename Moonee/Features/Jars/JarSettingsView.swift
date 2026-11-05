@@ -21,10 +21,10 @@ struct JarDraft: Identifiable {
         percent = jar.percent
     }
 
-    init() {
+    init(colorHex: Int = JarPalette.hex[6]) {
         name = String(localized: "New jar")
         icon = "star.fill"
-        colorHex = 0x64748B
+        self.colorHex = colorHex
         percent = 0
     }
 
@@ -36,6 +36,10 @@ struct JarDraft: Identifiable {
 }
 
 struct JarSettingsView: View {
+    /// Opens the editor for a new jar right away (Budget's "Add jar").
+    var startAdding = false
+    /// Opens the editor for this jar right away (jar detail's "Edit").
+    var editJar: PersistentIdentifier?
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Query(sort: \Jar.order) private var jars: [Jar]
@@ -43,9 +47,9 @@ struct JarSettingsView: View {
     @State private var editing: Int?
     @State private var loaded = false
 
-    private var remainder: Int { 100 - drafts.reduce(0) { $0 + $1.percent } }
+    private var remainder: Int { BudgetActions.percentRemainder(drafts.map(\.percent)) }
     private var canSave: Bool {
-        remainder == 0 && !drafts.isEmpty && drafts.allSatisfy { !$0.name.trimmingCharacters(in: .whitespaces).isEmpty }
+        BudgetActions.percentsValid(drafts.map(\.percent)) && drafts.allSatisfy { !$0.name.trimmingCharacters(in: .whitespaces).isEmpty }
     }
 
     var body: some View {
@@ -69,10 +73,7 @@ struct JarSettingsView: View {
                 .onDelete { drafts.remove(atOffsets: $0) }
                 .onMove { drafts.move(fromOffsets: $0, toOffset: $1) }
 
-                Button("Add jar", systemImage: "plus") {
-                    drafts.append(JarDraft())
-                    editing = drafts.count - 1
-                }
+                Button("Add jar", systemImage: "plus") { addJar() }
             } header: {
                 remainderHeader
             }
@@ -100,6 +101,8 @@ struct JarSettingsView: View {
             guard !loaded else { return }
             loaded = true
             drafts = jars.map { JarDraft($0, existing: $0) }
+            if startAdding { addJar() }
+            if let editJar { editing = drafts.firstIndex { $0.jar?.persistentModelID == editJar } }
         }
     }
 
@@ -116,6 +119,13 @@ struct JarSettingsView: View {
         }
         .font(.subheadline.weight(.semibold))
         .textCase(nil)
+    }
+
+    /// New jars take the first palette colour no jar uses yet.
+    private func addJar() {
+        let used = Set(drafts.map(\.colorHex))
+        drafts.append(JarDraft(colorHex: JarPalette.hex.first { !used.contains($0) } ?? JarPalette.hex[drafts.count % JarPalette.hex.count]))
+        editing = drafts.count - 1
     }
 
     /// Reuses jars with a default key so their categories stay linked; other jars are removed on save.
@@ -150,7 +160,8 @@ private struct JarEditor: View {
     static let icons = ["house.fill", "chart.line.uptrend.xyaxis", "banknote.fill", "book.fill", "sparkles", "heart.fill",
                         "star.fill", "gift.fill", "airplane", "car.fill", "graduationcap.fill", "cross.case.fill",
                         "gamecontroller.fill", "cart.fill", "fork.knife", "leaf.fill", "pawprint.fill", "shield.fill"]
-    static let colors = [0x22C55E, 0x3B82F6, 0x14B8A6, 0x8B5CF6, 0xF59E0B, 0xEF4444, 0xEC4899, 0x6366F1, 0xEAB308, 0x64748B]
+    /// S2's colour-blind-safe jar palette.
+    static let colors = JarPalette.hex
 
     var body: some View {
         NavigationStack {
@@ -170,7 +181,7 @@ private struct JarEditor: View {
                     .padding(.vertical, 4)
                 }
                 Section("Color") {
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 5), spacing: 12) {
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 6), spacing: 12) {
                         ForEach(Self.colors, id: \.self) { hex in
                             Circle().fill(Color(hex: hex)).frame(width: 34, height: 34)
                                 .overlay { if hex == draft.colorHex { Image(systemName: "checkmark").font(.caption.bold()).foregroundStyle(.white) } }

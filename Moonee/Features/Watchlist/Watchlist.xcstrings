@@ -1,0 +1,406 @@
+{
+  "sourceLanguage": "en",
+  "version": "1.0",
+  "strings": {
+    "Add asset": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm tài sản"
+          }
+        }
+      }
+    },
+    "Add gold, stocks, crypto or foreign currency with the price you know. Moonee adds them to your net worth.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm vàng, cổ phiếu, crypto hay ngoại tệ với giá bạn biết. Moonee sẽ cộng vào tài sản ròng của bạn."
+          }
+        }
+      }
+    },
+    "Assets · Investing · Watch": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tài sản · Đầu tư · Theo dõi"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Huỷ"
+          }
+        }
+      }
+    },
+    "Cash & equivalents": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiền & tương đương"
+          }
+        }
+      }
+    },
+    "Composition": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cơ cấu tài sản"
+          }
+        }
+      }
+    },
+    "Crypto": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crypto"
+          }
+        }
+      }
+    },
+    "Currency": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiền tệ"
+          }
+        }
+      }
+    },
+    "Debts (−)": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nợ (−)"
+          }
+        }
+      }
+    },
+    "Delete": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá"
+          }
+        }
+      }
+    },
+    "Delete %@?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá %@?"
+          }
+        }
+      }
+    },
+    "Delete asset": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá tài sản"
+          }
+        }
+      }
+    },
+    "Edit asset": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sửa tài sản"
+          }
+        }
+      }
+    },
+    "Foreign currency": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngoại tệ"
+          }
+        }
+      }
+    },
+    "Gold": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vàng"
+          }
+        }
+      }
+    },
+    "Investments": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đầu tư"
+          }
+        }
+      }
+    },
+    "Moonee has no live prices yet: type the price you know, e.g. 2 taels of gold at today's price per tael.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee chưa có giá trực tiếp: hãy nhập giá bạn biết, ví dụ 2 lượng vàng với giá một lượng hôm nay."
+          }
+        }
+      }
+    },
+    "Name, e.g. SJC gold, FPT, USD, BTC": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tên, ví dụ Vàng SJC, FPT, USD, BTC"
+          }
+        }
+      }
+    },
+    "Net worth": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tài sản ròng"
+          }
+        }
+      }
+    },
+    "Net worth by month": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tài sản ròng theo tháng"
+          }
+        }
+      }
+    },
+    "No assets yet": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa có tài sản nào"
+          }
+        }
+      }
+    },
+    "Not in net worth: priced in %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa tính vào tài sản ròng: giá theo %@"
+          }
+        }
+      }
+    },
+    "Other": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khác"
+          }
+        }
+      }
+    },
+    "Other assets": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tài sản khác"
+          }
+        }
+      }
+    },
+    "Price per unit": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giá mỗi đơn vị"
+          }
+        }
+      }
+    },
+    "Price updated": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngày cập nhật giá"
+          }
+        }
+      }
+    },
+    "Price updated %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cập nhật giá %@"
+          }
+        }
+      }
+    },
+    "Quantity": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Số lượng"
+          }
+        }
+      }
+    },
+    "Save": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lưu"
+          }
+        }
+      }
+    },
+    "Silver": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạc"
+          }
+        }
+      }
+    },
+    "Stock": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cổ phiếu"
+          }
+        }
+      }
+    },
+    "Type": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loại"
+          }
+        }
+      }
+    },
+    "Type today's price for each asset. Only changed prices get today's date.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhập giá hôm nay cho từng tài sản. Chỉ giá đã đổi mới được ghi ngày hôm nay."
+          }
+        }
+      }
+    },
+    "Update assets": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cập nhật tài sản"
+          }
+        }
+      }
+    },
+    "Value": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giá trị"
+          }
+        }
+      }
+    },
+    "Your assets": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tài sản đang giữ"
+          }
+        }
+      }
+    },
+    "billion %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tỷ %@"
+          }
+        }
+      }
+    },
+    "million %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "triệu %@"
+          }
+        }
+      }
+    },
+    "thousand %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nghìn %@"
+          }
+        }
+      }
+    },
+    "vs last month": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "so với tháng trước"
+          }
+        }
+      }
+    }
+  }
+}

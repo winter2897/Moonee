@@ -1,0 +1,1219 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "%@ · %@": {
+      "shouldTranslate": false
+    },
+    "%lld transactions. Column names stay in English so the file imports back in any language.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld giao dịch. Tên cột giữ bằng tiếng Anh để file nhập lại được với mọi ngôn ngữ."
+          }
+        }
+      }
+    },
+    "A cloud model with your own key. Smartest, needs internet.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Model cloud dùng key của bạn. Thông minh nhất, cần mạng."
+          }
+        }
+      }
+    },
+    "A skill that is off never calls a model: Moonee shows the plain numbers instead.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skill đã tắt sẽ không gọi model: Moonee chỉ hiện số liệu."
+          }
+        }
+      }
+    },
+    "AI assistant": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trợ lý AI"
+          }
+        }
+      }
+    },
+    "AI mode": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chế độ AI"
+          }
+        }
+      }
+    },
+    "API key": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API key"
+          }
+        }
+      }
+    },
+    "About Moonee": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Về Moonee"
+          }
+        }
+      }
+    },
+    "Account & Settings": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tài khoản & Cài đặt"
+          }
+        }
+      }
+    },
+    "Added to every answer, e.g. “Keep answers under three sentences.” Numbers are always computed by the app.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm vào mọi câu trả lời, ví dụ “Trả lời không quá ba câu.” Số liệu luôn do app tính."
+          }
+        }
+      }
+    },
+    "Advanced": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nâng cao"
+          }
+        }
+      }
+    },
+    "An open model (Gemma, Qwen…) you download. Private, offline, free.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Model mở (Gemma, Qwen…) tải về máy. Riêng tư, offline, miễn phí."
+          }
+        }
+      }
+    },
+    "App settings": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cài đặt ứng dụng"
+          }
+        }
+      }
+    },
+    "Apple Intelligence on this iPhone. Private, offline, free.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Intelligence trên iPhone này. Riêng tư, offline, miễn phí."
+          }
+        }
+      }
+    },
+    "Apple on-device": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple trên máy"
+          }
+        }
+      }
+    },
+    "Asks when Moonee opens and when you come back after this long.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hỏi khi mở Moonee và khi bạn quay lại sau khoảng thời gian này."
+          }
+        }
+      }
+    },
+    "Assign categories to jars": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gán danh mục vào lọ"
+          }
+        }
+      }
+    },
+    "Automatic (%@)": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tự động (%@)"
+          }
+        }
+      }
+    },
+    "Avatar %lld": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avatar %lld"
+          }
+        }
+      }
+    },
+    "Base URL": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Base URL"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Huỷ"
+          }
+        }
+      }
+    },
+    "Categories": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Danh mục"
+          }
+        }
+      }
+    },
+    "Categories, jars & wallets": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Danh mục, lọ & ví"
+          }
+        }
+      }
+    },
+    "Choose avatar": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chọn avatar"
+          }
+        }
+      }
+    },
+    "Connected: %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kết nối được: %@"
+          }
+        }
+      }
+    },
+    "Continue": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiếp tục"
+          }
+        }
+      }
+    },
+    "Currency": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiền tệ"
+          }
+        }
+      }
+    },
+    "Custom instructions": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prompt tuỳ chỉnh"
+          }
+        }
+      }
+    },
+    "Customize jars": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tuỳ chỉnh lọ"
+          }
+        }
+      }
+    },
+    "Data": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dữ liệu"
+          }
+        }
+      }
+    },
+    "Delete all data": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá toàn bộ dữ liệu"
+          }
+        }
+      }
+    },
+    "Delete all data?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá toàn bộ dữ liệu?"
+          }
+        }
+      }
+    },
+    "Delete everything": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá tất cả"
+          }
+        }
+      }
+    },
+    "Delete everything for good?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá vĩnh viễn mọi thứ?"
+          }
+        }
+      }
+    },
+    "Display name": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tên hiển thị"
+          }
+        }
+      }
+    },
+    "Downloadable models are coming soon.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Model tải về sẽ có sớm."
+          }
+        }
+      }
+    },
+    "Export CSV": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xuất CSV"
+          }
+        }
+      }
+    },
+    "Export a CSV first if you may want your data later.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hãy xuất CSV trước nếu sau này bạn có thể cần dữ liệu."
+          }
+        }
+      }
+    },
+    "Face ID, hide balances, delete data": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID, ẩn số dư, xoá dữ liệu"
+          }
+        }
+      }
+    },
+    "From your region": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Theo vùng của máy"
+          }
+        }
+      }
+    },
+    "Help & feedback": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trợ giúp & Góp ý"
+          }
+        }
+      }
+    },
+    "Hidden amounts show as •••••.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Số tiền bị ẩn hiện thành •••••."
+          }
+        }
+      }
+    },
+    "Hide balances": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ẩn số dư"
+          }
+        }
+      }
+    },
+    "Hide content in App Switcher": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Che nội dung khi chuyển app"
+          }
+        }
+      }
+    },
+    "High": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhiều"
+          }
+        }
+      }
+    },
+    "Hybrid": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lai"
+          }
+        }
+      }
+    },
+    "Immediately": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngay lập tức"
+          }
+        }
+      }
+    },
+    "Jar budgeting": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cân đối lọ"
+          }
+        }
+      }
+    },
+    "Language": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngôn ngữ"
+          }
+        }
+      }
+    },
+    "Language & currency": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngôn ngữ & Tiền tệ"
+          }
+        }
+      }
+    },
+    "Local": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Local"
+          }
+        }
+      }
+    },
+    "Local model": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Model local"
+          }
+        }
+      }
+    },
+    "Local models": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Model local"
+          }
+        }
+      }
+    },
+    "Lock after": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khoá sau"
+          }
+        }
+      }
+    },
+    "Lock with %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khoá bằng %@"
+          }
+        }
+      }
+    },
+    "Low": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ít"
+          }
+        }
+      }
+    },
+    "Medium": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vừa"
+          }
+        }
+      }
+    },
+    "Mode, model and skills": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chế độ, model & kỹ năng"
+          }
+        }
+      }
+    },
+    "Model": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Model"
+          }
+        }
+      }
+    },
+    "Month-end checklist and report.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Checklist và báo cáo cuối tháng."
+          }
+        }
+      }
+    },
+    "Month-end close": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chốt sổ cuối tháng"
+          }
+        }
+      }
+    },
+    "Moonee has no server and no account. Your data stays on this iPhone (and in your own iCloud when sync is on). Nothing is sent anywhere unless you pick a cloud AI with your own key; AI settings show exactly what is sent.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee không có server và không cần tài khoản. Dữ liệu nằm trên iPhone này (và trong iCloud của bạn khi bật đồng bộ). Không có gì được gửi đi trừ khi bạn chọn AI cloud bằng key của mình; phần cài đặt AI ghi rõ những gì được gửi."
+          }
+        }
+      }
+    },
+    "Moonee is locked": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee đang khoá"
+          }
+        }
+      }
+    },
+    "Moonee starts again like a new install.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee sẽ bắt đầu lại như mới cài."
+          }
+        }
+      }
+    },
+    "Moonee's finance skills adapt ideas from the finance plugin of anthropics/knowledge-work-plugins (Apache-2.0).": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Các skill tài chính của Moonee dựa trên ý tưởng từ plugin finance của anthropics/knowledge-work-plugins (Apache-2.0)."
+          }
+        }
+      }
+    },
+    "Moonee: a friendly money assistant": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee: trợ lý tài chính thân thiện"
+          }
+        }
+      }
+    },
+    "More": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ứng dụng khác"
+          }
+        }
+      }
+    },
+    "No model is set up for this mode yet.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chế độ này chưa có model nào được thiết lập."
+          }
+        }
+      }
+    },
+    "None": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không"
+          }
+        }
+      }
+    },
+    "Nothing is sent to the cloud. Moonee has no server.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không gửi gì lên cloud. Moonee không có server."
+          }
+        }
+      }
+    },
+    "Off": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tắt"
+          }
+        }
+      }
+    },
+    "Off: only Moonee's built-in rules read what you type.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khi tắt: chỉ bộ quy tắc có sẵn của Moonee đọc những gì bạn gõ."
+          }
+        }
+      }
+    },
+    "On": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bật"
+          }
+        }
+      }
+    },
+    "On-device": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On-device"
+          }
+        }
+      }
+    },
+    "OpenRouter / OpenAI-compatible": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OpenRouter / tương thích OpenAI"
+          }
+        }
+      }
+    },
+    "Opens Moonee in the Settings app, where iOS lets you pick the app's language.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mở Moonee trong app Cài đặt, nơi iOS cho bạn chọn ngôn ngữ của app."
+          }
+        }
+      }
+    },
+    "Passcode": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mật mã"
+          }
+        }
+      }
+    },
+    "Privacy": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quyền riêng tư"
+          }
+        }
+      }
+    },
+    "Profile": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hồ sơ"
+          }
+        }
+      }
+    },
+    "Provider": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhà cung cấp"
+          }
+        }
+      }
+    },
+    "Questions about your spending, with tips.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hỏi đáp về chi tiêu, kèm lời khuyên."
+          }
+        }
+      }
+    },
+    "Rate the app": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đánh giá ứng dụng"
+          }
+        }
+      }
+    },
+    "Read transactions": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đọc giao dịch"
+          }
+        }
+      }
+    },
+    "Ready (Apple Intelligence, managed by iOS)": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sẵn sàng (Apple Intelligence, do iOS quản lý)"
+          }
+        }
+      }
+    },
+    "Reminder level, times, kinds": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mức nhắc nhở, thời gian, loại thông báo"
+          }
+        }
+      }
+    },
+    "Reminder settings are coming soon.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cài đặt nhắc nhở sẽ có sớm."
+          }
+        }
+      }
+    },
+    "Reminders": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhắc nhở"
+          }
+        }
+      }
+    },
+    "Reminders & notifications": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhắc nhở & Thông báo"
+          }
+        }
+      }
+    },
+    "Removes every transaction, wallet, jar, goal and setting from this iPhone. This cannot be undone.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá mọi giao dịch, ví, lọ, mục tiêu và cài đặt khỏi iPhone này. Không thể hoàn tác."
+          }
+        }
+      }
+    },
+    "Security & privacy": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bảo mật & Quyền riêng tư"
+          }
+        }
+      }
+    },
+    "Sent to your provider: what you type to Moonee, the chat so far, and the numbers Moonee looks up to answer (totals, jar balances, matching transactions). Sent with your key, straight from this iPhone; Moonee has no server.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gửi tới nhà cung cấp của bạn: những gì bạn gõ cho Moonee, đoạn chat trước đó và số liệu Moonee tra để trả lời (tổng chi, số dư lọ, các giao dịch liên quan). Gửi bằng key của bạn, thẳng từ iPhone này; Moonee không có server."
+          }
+        }
+      }
+    },
+    "Set a passcode on this iPhone first.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hãy đặt mật mã cho iPhone này trước."
+          }
+        }
+      }
+    },
+    "Set up your budget": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thiết lập ngân sách"
+          }
+        }
+      }
+    },
+    "Set up your profile": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thiết lập hồ sơ"
+          }
+        }
+      }
+    },
+    "Share Moonee": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chia sẻ Moonee"
+          }
+        }
+      }
+    },
+    "Skills": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kỹ năng"
+          }
+        }
+      }
+    },
+    "Spending coach": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Huấn luyện chi tiêu"
+          }
+        }
+      }
+    },
+    "Splitting income and balancing jars.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chia thu nhập và cân đối các lọ."
+          }
+        }
+      }
+    },
+    "Stored on this device only": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chỉ lưu trên máy"
+          }
+        }
+      }
+    },
+    "Stored on this device only · No account needed": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chỉ lưu trên máy · Không cần tài khoản"
+          }
+        }
+      }
+    },
+    "Test connection": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kiểm tra kết nối"
+          }
+        }
+      }
+    },
+    "Thanks": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cảm ơn"
+          }
+        }
+      }
+    },
+    "The key is kept in this iPhone's Keychain. You pay your provider directly.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Key được lưu trong Keychain của iPhone này. Bạn trả phí trực tiếp cho nhà cung cấp."
+          }
+        }
+      }
+    },
+    "The on-device model is not ready": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Model trên máy chưa sẵn sàng"
+          }
+        }
+      }
+    },
+    "This iPhone does not support Apple Intelligence": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPhone này không hỗ trợ Apple Intelligence"
+          }
+        }
+      }
+    },
+    "Transactions are read on this iPhone; advice and reports use your cloud key.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giao dịch được đọc trên iPhone này; tư vấn và báo cáo dùng key cloud của bạn."
+          }
+        }
+      }
+    },
+    "Turn on Apple Intelligence in Settings": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hãy bật Apple Intelligence trong Cài đặt"
+          }
+        }
+      }
+    },
+    "Turn on the app lock": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bật khoá ứng dụng"
+          }
+        }
+      }
+    },
+    "Typed transactions stay on this iPhone. For questions, advice and reports, your message, the chat so far and the numbers Moonee looks up are sent to your provider with your key. Moonee has no server.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giao dịch bạn gõ ở lại trên iPhone này. Với câu hỏi, tư vấn và báo cáo, tin nhắn của bạn, đoạn chat trước đó và số liệu Moonee tra được gửi tới nhà cung cấp bằng key của bạn. Moonee không có server."
+          }
+        }
+      }
+    },
+    "Unlock Moonee": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mở khoá Moonee"
+          }
+        }
+      }
+    },
+    "Unlock with %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mở khoá bằng %@"
+          }
+        }
+      }
+    },
+    "Used for new transactions and for amounts like “45k”. Amounts already saved keep their currency.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dùng cho giao dịch mới và cách hiểu số tiền như “45k”. Số tiền đã lưu giữ nguyên tiền tệ."
+          }
+        }
+      }
+    },
+    "Version %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phiên bản %@"
+          }
+        }
+      }
+    },
+    "Wallets": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ví"
+          }
+        }
+      }
+    },
+    "What leaves this iPhone": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dữ liệu nào rời khỏi iPhone"
+          }
+        }
+      }
+    },
+    "Your API key": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API key của bạn"
+          }
+        }
+      }
+    },
+    "Your API key (BYOK)": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API key của bạn (BYOK)"
+          }
+        }
+      }
+    },
+    "Your data is stored on this iPhone only. iCloud backup and sync come in a later update.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dữ liệu chỉ được lưu trên iPhone này. Sao lưu và đồng bộ iCloud sẽ có ở bản cập nhật sau."
+          }
+        }
+      }
+    },
+    "Your name": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tên của bạn"
+          }
+        }
+      }
+    },
+    "iCloud sync": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đồng bộ iCloud"
+          }
+        }
+      }
+    },
+    "iCloud, CSV export, delete all": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud, xuất CSV, xoá toàn bộ"
+          }
+        }
+      }
+    },
+    "iOS is still downloading the model, try again later": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iOS đang tải model, thử lại sau"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

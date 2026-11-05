@@ -72,41 +72,33 @@ struct BillCard: View {
     }
 
     var body: some View {
-        HStack(spacing: 12) {
-            IconBadge(symbol: symbol, color: paid ? .inkSecondary : .brandDeep, size: 40)
-            VStack(alignment: .leading, spacing: 3) {
-                Text(name).font(.headline).foregroundStyle(Color.ink)
+        HStack(spacing: 10) {
+            IconBadge(symbol: symbol, color: paid ? .inkSecondary : .brandDeep)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(name).font(.rowTitle).foregroundStyle(Color.ink)
                 ViewThatFits(in: .horizontal) {
                     HStack(spacing: 4) { dateText; Text(verbatim: "·"); statusText }
                     VStack(alignment: .leading, spacing: 2) { dateText; statusText }
                 }
-                .font(.footnote)
+                .font(.secondaryText)
                 .foregroundStyle(Color.inkSecondary)
             }
             .accessibilityElement(children: .combine)
             Spacer(minLength: 8)
-            VStack(alignment: .trailing, spacing: 6) {
+            VStack(alignment: .trailing, spacing: 0) {
                 HStack(spacing: 2) {
                     if estimate { Text(verbatim: "≈").accessibilityLabel(Text("about", tableName: "Components")) }
                     AmountText(amount, currency: currency)
                 }
-                .font(.body.weight(.semibold))
+                .font(.rowTitle)
                 .foregroundStyle(paid ? Color.inkSecondary : Color.ink)
                 if let onMarkPaid, !paid {
-                    Button(action: onMarkPaid) {
-                        Text("Mark paid", tableName: "Components")
-                            .font(.footnote.weight(.semibold))
-                            .padding(.horizontal, 12)
-                            .frame(minHeight: 32)
-                            .foregroundStyle(Color.brandDeep)
-                            .background(Color.brandMintSoft, in: .capsule)
-                            .contentShape(.rect.inset(by: -6)) // 44 pt touch target
-                    }
-                    .buttonStyle(.plain)
+                    Button(action: onMarkPaid) { Text("Mark paid", tableName: "Components") }
+                        .buttonStyle(OutlinePillStyle())
                 }
             }
         }
-        .padding(.vertical, 10).padding(.horizontal, 14)
+        .padding(.vertical, 10).padding(.horizontal, 12)
         .background(Color.surface.opacity(paid ? 0.6 : 0.85), in: .rect(cornerRadius: 18))
     }
 }

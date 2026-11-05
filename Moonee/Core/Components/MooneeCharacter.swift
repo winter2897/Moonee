@@ -36,6 +36,30 @@ struct MooneeCharacter: View {
     }
 }
 
+/// The character on a tab's hills, under the header. 104 pt visible (mockups); `compact` 76 pt (Budget).
+/// The images are cropped to the character, so the frame height is the visible height.
+struct MooneeHero: View {
+    let mood: MooneeMood
+    var compact = false
+
+    var body: some View {
+        let height: CGFloat = compact ? 76 : 104
+        MooneeCharacter(mood: mood)
+            .frame(height: height)
+            .frame(maxWidth: .infinity)
+            .padding(.bottom, 6)
+            .background(alignment: .bottom) {
+                // Hills run edge to edge behind the lower half and fade out, so there is no seam under the hero.
+                Hills()
+                    .frame(height: height * 0.72)
+                    .padding(.horizontal, -16)
+                    .opacity(0.55)
+                    .mask(LinearGradient(stops: [.init(color: .black, location: 0), .init(color: .black, location: 0.45), .init(color: .clear, location: 1)],
+                                         startPoint: .top, endPoint: .bottom))
+            }
+    }
+}
+
 /// Small face for the chat and the tab bar; reads at 24–28 pt.
 struct MooneeAvatar: View {
     var size: CGFloat = 36
