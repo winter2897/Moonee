@@ -8,7 +8,7 @@ struct CloudSyncTests {
     /// A reinstall seeds new defaults, then iCloud delivers the old ones (with history): the old copies win,
     /// whatever pointed at the new copies moves over, and user-made jars are kept.
     @Test func mergeDuplicatesKeepsOldestDefaultsAndMovesReferences() throws {
-        let container = try ModelContainer(for: Schema.moonee, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        let container = try ModelContainer(for: Schema.moonee, configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none))
         let context = container.mainContext
         Seed.ifNeeded(context) // the old install
         let oldFood = try #require(try context.fetch(FetchDescriptor<Moonee.Category>()).first { $0.key == "category.food" })

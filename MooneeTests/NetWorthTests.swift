@@ -83,7 +83,7 @@ struct NetWorthTests {
     }
 
     @Test func recordKeepsOneSnapshotPerMonth() throws {
-        let context = ModelContext(try ModelContainer(for: Schema.moonee, configurations: .init(isStoredInMemoryOnly: true)))
+        let context = ModelContext(try ModelContainer(for: Schema.moonee, configurations: .init(isStoredInMemoryOnly: true, cloudKitDatabase: .none)))
         func snaps() throws -> [NetWorthSnapshot] { try context.fetch(FetchDescriptor<NetWorthSnapshot>(sortBy: [SortDescriptor(\.month)])) }
 
         NetWorthSnapshot.record(100, currency: "VND", now: day(2026, 10, 3), calendar: cal, in: context)

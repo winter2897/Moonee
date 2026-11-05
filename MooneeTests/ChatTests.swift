@@ -8,7 +8,7 @@ import Testing
     var context: ModelContext { container.mainContext }
 
     init() throws {
-        container = try ModelContainer(for: Schema.moonee, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        container = try ModelContainer(for: Schema.moonee, configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none))
         Seed.ifNeeded(container.mainContext)
     }
 
