@@ -25,8 +25,9 @@ Nằm ngoài git, ở `/Users/haiquan/Ultra/moonee/asset/` (chỉ đọc, sessio
   01 lỗi/bối rối · 02 buồn ngủ · 03 lo lắng · 04 ăn mừng · 05 vui/đã lưu · 06 đang nghĩ · 07 đang nghe · 08 chào/idle.
 - `gif/` — 9 GIF động (~309×623) cùng nhân vật: idle, cầm đồng xu, cầm cúp, cầm mic, dấu hỏi, cầm vật phẩm.
 - `logo/Moonee App Icon.png` (1254², không alpha).
+- `avatar/` — 7 avatar cho màn Thiết lập hồ sơ (1254², nền trắng, đã có vòng tròn viền mint; app cắt tròn và thu nhỏ khoảng 256px): Cậu bé đẹp trai, Cô gái áo vàng, Cậu bé đội mũ, Cô gái áo hồng, Mèo cam tinh nghịch, Chú chó hài hước, Cây tiền.
 
-Thiếu: **avatar nhỏ** (đầu nhân vật) cho tab bar / chat — S2 tự cắt từ ảnh sẵn có. **7 avatar có sẵn** cho màn Thiết lập hồ sơ (nam áo xanh, nữ mũ vàng, nam đeo kính, nữ búi tóc, mèo, chó, chậu cây) mới chỉ có trong mockup, cần file riêng (nền trong). Đồng xu trung tính: tạm bỏ qua.
+Thiếu: **avatar nhỏ** (đầu nhân vật) cho tab bar / chat — S2 tự cắt từ ảnh sẵn có. Đồng xu trung tính: tạm bỏ qua.
 
 ## Sơ đồ phụ thuộc
 
