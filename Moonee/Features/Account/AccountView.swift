@@ -27,6 +27,10 @@ struct AccountView: View {
                     AccountRow(symbol: "arrow.triangle.branch", title: "Gán danh mục vào lọ") { JarMappingView() }
                     Divider().padding(.leading, 44)
                     AccountRow(symbol: "brain.head.profile", title: "Trợ lý Moonee (AI)") { AISettingsView() }
+                    #if DEBUG
+                    Divider().padding(.leading, 44)
+                    AccountRow(symbol: "swatchpalette", title: "Component Gallery") { ComponentGallery() }
+                    #endif
                 }
                 .card(padding: 12)
             }

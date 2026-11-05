@@ -5,10 +5,51 @@ extension Color {
         self.init(red: Double((hex >> 16) & 0xFF) / 255, green: Double((hex >> 8) & 0xFF) / 255, blue: Double(hex & 0xFF) / 255)
     }
 
-    static let mooneeGreen = Color(hex: 0x22C55E)
-    static let mooneeDark = Color(hex: 0x15803D)
-    static let mooneeInk = Color(hex: 0x0F3D2E)
-    static let mooneeYellow = Color(hex: 0xFACC15)
+}
+
+// MARK: - Tokens (spec "Lưu ý cho Design System" A). Screens use these, never hex.
+
+extension ShapeStyle where Self == Color {
+    // brand
+    static var brandPrimary: Color { Color(hex: 0x22C55E) }      // pills, FAB, progress
+    static var brandPrimaryLight: Color { Color(hex: 0x4ADE80) } // gradient top
+    static var brandDeep: Color { Color(hex: 0x15803D) }         // green text/icons on white (5:1)
+    static var brandMint: Color { Color(hex: 0xE7FBF1) }         // screen background
+    static var brandMintSoft: Color { Color(hex: 0xDCFCE7) }     // chips, user bubble, saved banner
+    static var brandYellow: Color { Color(hex: 0xFACC15) }       // coin, sparkles, hills
+    static var ink: Color { Color(hex: 0x0A3824) }               // primary text
+    static var inkSecondary: Color { Color(hex: 0x5B6B63) }      // secondary text (5.4:1 on white)
+    static var track: Color { Color(hex: 0xE4E9E9) }             // empty progress track
+    static var surface: Color { .white }                         // cards
+
+    // semantic: never the only signal; pair with +/− or an icon (spec F)
+    static var income: Color { Color(hex: 0x15803D) }
+    static var expense: Color { Color(hex: 0x0A3824) }  // mockups show spending in ink with a "−"
+    static var warning: Color { Color(hex: 0xF97316) }  // fills: ≥80% bars, worried states
+    static var warningText: Color { Color(hex: 0xC2410C) } // warning on white text (5.2:1)
+    static var danger: Color { Color(hex: 0xDC2626) }   // over budget, overdue, negative (4.8:1)
+}
+
+/// 12 jar colours. Checked in tests: every pair stays apart (ΔE ≥ 9) under normal,
+/// protan, deutan and tritan vision, and none sits near brand green, warning or danger.
+/// Default jars take 0…5 in spec order (essentials, investing, savings, growth, play, giving).
+enum JarPalette {
+    static let hex = [0xEAB308, 0x0D9488, 0x60A5FA, 0x9333EA, 0xF472B6, 0xA3E635,
+                      0x4338CA, 0x22D3EE, 0x92400E, 0xE879F9, 0x64748B, 0xBE185D]
+    static func color(_ index: Int) -> Color { Color(hex: hex[((index % hex.count) + hex.count) % hex.count]) }
+}
+
+extension Color {
+    // ponytail: legacy names kept so files owned by other sessions still compile; new code uses the tokens above.
+    static let mooneeGreen = Color.brandPrimary
+    static let mooneeDark = Color.brandDeep
+    static let mooneeInk = Color.ink
+    static let mooneeYellow = Color.brandYellow
+}
+
+extension LinearGradient {
+    /// The one green gradient of pills, FAB and primary buttons.
+    static let brand = LinearGradient(colors: [.brandPrimaryLight, Color(hex: 0x16A34A)], startPoint: .top, endPoint: .bottom)
 }
 
 extension Int {
@@ -21,7 +62,7 @@ extension Int {
 struct MooneeBackground: View {
     var body: some View {
         ZStack {
-            LinearGradient(colors: [Color(hex: 0xE6F6EB), Color(hex: 0xF5FBF7)], startPoint: .top, endPoint: .bottom)
+            LinearGradient(colors: [.brandMint, Color(hex: 0xF6FCF9)], startPoint: .top, endPoint: .bottom)
             RadialGradient(colors: [.mooneeYellow.opacity(0.22), .clear], center: .bottomLeading, startRadius: 0, endRadius: 340)
             RadialGradient(colors: [.mooneeGreen.opacity(0.14), .clear], center: .topTrailing, startRadius: 0, endRadius: 300)
         }
@@ -36,7 +77,7 @@ struct Hills: View {
             let w = g.size.width, h = g.size.height
             ZStack {
                 hill(w, h, peak: 0.55, height: 0.55).fill(LinearGradient(colors: [.mooneeYellow, .mooneeYellow.opacity(0.6)], startPoint: .trailing, endPoint: .leading))
-                hill(w, h, peak: 0.3, height: 0.35).fill(LinearGradient(colors: [Color(hex: 0x86EFAC), .mooneeGreen.opacity(0.5)], startPoint: .top, endPoint: .bottom))
+                hill(w, h, peak: 0.3, height: 0.35).fill(LinearGradient(colors: [.brandPrimaryLight.opacity(0.7), .mooneeGreen.opacity(0.5)], startPoint: .top, endPoint: .bottom))
             }
         }
         .allowsHitTesting(false)
@@ -101,7 +142,7 @@ struct PillPicker<T: Hashable>: View {
                         .foregroundStyle(selection == value ? .white : .mooneeInk)
                         .background {
                             if selection == value {
-                                Capsule().fill(LinearGradient(colors: [.mooneeGreen, .mooneeDark], startPoint: .top, endPoint: .bottom))
+                                Capsule().fill(LinearGradient.brand)
                             }
                         }
                 }
@@ -121,7 +162,7 @@ struct MooneeButtonStyle: ButtonStyle {
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 16)
-            .background(LinearGradient(colors: [.mooneeGreen, .mooneeDark], startPoint: .top, endPoint: .bottom), in: .capsule)
+            .background(LinearGradient.brand, in: .capsule)
             .shadow(color: .mooneeGreen.opacity(0.35), radius: 10, y: 5)
             .scaleEffect(configuration.isPressed ? 0.97 : 1)
     }
