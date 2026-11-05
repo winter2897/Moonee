@@ -35,6 +35,8 @@ struct ChatView: View {
                         ForEach(messages.indices, id: \.self) { i in row(i) }
                         if busy {
                             ChatBubble(.moonee, "…").transition(.opacity)
+                        } else if !choices.isEmpty {
+                            choiceChips
                         } else if let last = messages.last, !last.fromUser {
                             tiles
                         }
@@ -81,7 +83,7 @@ struct ChatView: View {
         .fullScreenCover(isPresented: $showCamera) {
             CameraPicker { image in Task { await scan(image) } }.ignoresSafeArea()
         }
-        .sheet(item: $editTxn) { TxnEditSheet(txn: $0) }
+        .sheet(item: $editTxn) { TxnEditForm(txn: $0) }
         .confirmationDialog(Text("Clear the chat? Your transactions stay in the ledger.", tableName: "Chat"),
                             isPresented: $confirmClear, titleVisibility: .visible) {
             Button(role: .destructive) { messages.forEach(context.delete) } label: { Text("Clear chat", tableName: "Chat") }
@@ -169,6 +171,22 @@ struct ChatView: View {
         }
     }
 
+    /// Wallets or jars to pick when Moonee asked where a transfer goes.
+    private var choices: [String] {
+        guard let p = pending else { return [] }
+        let book = ChatBook.Lookup(context)
+        return book.unresolved(p).map { book.choices($0, for: p) } ?? []
+    }
+
+    private var choiceChips: some View {
+        let chips = ForEach(choices, id: \.self) { name in QuickReplyChip(title: name) { send(name) } }
+        return ViewThatFits(in: .horizontal) {
+            HStack(spacing: 8) { chips }
+            VStack(alignment: .leading, spacing: 8) { chips }
+        }
+        .padding(.leading, 48)
+    }
+
     private var tiles: some View {
         HStack(alignment: .top, spacing: 10) {
             QuickReplyChip(title: String(localized: "See monthly report", table: "Chat"), symbol: "chart.bar.fill", style: .tile) {
@@ -196,10 +214,12 @@ struct ChatView: View {
         context.insert(ChatMessage(fromUser: true, text: input))
         let parser = ParserContext(context)
 
-        // Answer to "how much?": a lone amount fills the waiting transaction.
-        if var p = pending, let a = QuickParser.amount(in: input, context: parser), QuickParser.parse(input, context: parser).count <= 1 {
+        // An answer to Moonee's question ("45k", "Vietcombank") fills the waiting transaction;
+        // an amount only counts when the message is not a new transaction of its own.
+        if var p = pending, let field = ChatBook.Lookup(context).unresolved(p),
+           field != .amount || QuickParser.parse(input, context: parser).count <= 1,
+           ChatBook.fill(&p, field, from: input, context: parser) {
             pending = nil
-            (p.amount, p.currency) = (a.amount, a.currency)
             record([p], source: source, raw: input)
             return
         }
@@ -219,7 +239,7 @@ struct ChatView: View {
         }
     }
 
-    /// Saves right away (spec §3.2) and shows the card; asks for a missing amount instead of guessing.
+    /// Saves right away (spec §3.2) and shows the card; asks for what is missing instead of guessing.
     private func record(_ parsed: [ParsedTxn], source: TxSource, raw: String) {
         let saved = ChatBook.save(parsed, source: source, rawInput: raw, in: context)
         if !saved.isEmpty {
@@ -229,16 +249,30 @@ struct ChatView: View {
             mood = .happy
             savedCount += 1
         }
-        if let ask = parsed.first(where: { $0.amount == nil }) {
-            pending = ask
-            let what = ask.note.trimmingCharacters(in: .whitespaces)
-            reply(what.isEmpty ? String(localized: "How much was it? Tell Moonee the amount, e.g. 45k.", table: "Chat")
-                               : String(localized: "How much was **\(what)**? Tell Moonee the amount, e.g. 45k.", table: "Chat"),
-                  mood: .confused)
+        let book = ChatBook.Lookup(context)
+        if let ask = parsed.first(where: { book.unresolved($0) != nil }), let field = book.unresolved(ask) {
+            if [.toWallet, .jar, .toJar].contains(field), book.choices(field, for: ask).isEmpty {
+                reply(String(localized: "You only have one wallet so far. Add another in Budget, then tell Moonee again.", table: "Chat"), mood: .confused)
+            } else {
+                pending = ask
+                reply(Self.question(field, ask), mood: .confused)
+            }
         } else if saved.isEmpty {
             reply(Self.confused, mood: .confused)
         }
         try? context.save()
+    }
+
+    private static func question(_ field: ParsedTxn.Field, _ p: ParsedTxn) -> String {
+        switch field {
+        case .toWallet: return String(localized: "Which wallet did the money go to?", table: "Chat")
+        case .jar: return String(localized: "Which jar should Moonee take it from?", table: "Chat")
+        case .toJar: return String(localized: "Which jar should it go into?", table: "Chat")
+        case .amount, .person:
+            let what = p.note.trimmingCharacters(in: .whitespaces)
+            return what.isEmpty ? String(localized: "How much was it? Tell Moonee the amount, e.g. 45k.", table: "Chat")
+                                : String(localized: "How much was **\(what)**? Tell Moonee the amount, e.g. 45k.", table: "Chat")
+        }
     }
 
     private func reply(_ text: String, mood: MooneeMood) {

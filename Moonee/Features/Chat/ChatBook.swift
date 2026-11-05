@@ -78,15 +78,74 @@ struct ChatCardLine: Codable, Equatable {
 
 /// The chat's writes to the books (spec §3.2): save right away, undo, learn from edits.
 @MainActor enum ChatBook {
-    /// Saves every parsed transaction that has an amount and allocates it to jars once. Amountless ones are skipped:
-    /// the chat asks for the amount first instead of guessing.
-    static func save(_ parsed: [ParsedTxn], source: TxSource, rawInput: String, in context: ModelContext) -> [Txn] {
-        let categories = (try? context.fetch(FetchDescriptor<Category>())) ?? []
-        let wallets = (try? context.fetch(FetchDescriptor<Wallet>(sortBy: [SortDescriptor(\.order)]))) ?? []
-        let jars = (try? context.fetch(FetchDescriptor<Jar>(sortBy: [SortDescriptor(\.order)]))) ?? []
-        var debts = (try? context.fetch(FetchDescriptor<Debt>())) ?? []
+    /// The user's wallets and jars, to resolve what the parser read (names, jar keys).
+    struct Lookup {
+        let wallets: [Wallet]
+        let jars: [Jar]
+
+        init(_ context: ModelContext) {
+            wallets = (try? context.fetch(FetchDescriptor<Wallet>(sortBy: [SortDescriptor(\.order)]))) ?? []
+            jars = (try? context.fetch(FetchDescriptor<Jar>(sortBy: [SortDescriptor(\.order)]))) ?? []
+        }
+
         func wallet(_ name: String?) -> Wallet? { name.flatMap { n in wallets.first { $0.name == n } } }
         func jar(_ key: String?) -> Jar? { key.flatMap { k in jars.first { $0.parserKey == k } } }
+        /// Money leaves this wallet; the default wallet when the message named none.
+        func source(_ p: ParsedTxn) -> Wallet? { wallet(p.wallet) ?? wallets.first }
+
+        /// What Moonee must ask before saving (spec §3.2): no amount, a transfer going nowhere, a jar move without both jars.
+        // ponytail: a lend/borrow without a person still saves (no debt); ask for .person too if that matters.
+        func unresolved(_ p: ParsedTxn) -> ParsedTxn.Field? {
+            guard let amount = p.amount, amount > 0 else { return .amount }
+            switch p.kind {
+            case .transfer:
+                guard let to = wallet(p.toWallet), to != source(p) else { return .toWallet }
+            case .jarTransfer:
+                guard let from = jar(p.jar) else { return .jar }
+                guard let to = jar(p.toJar), to != from else { return .toJar }
+            default: break
+            }
+            return nil
+        }
+
+        /// Names to offer as quick replies for `field`.
+        func choices(_ field: ParsedTxn.Field, for p: ParsedTxn) -> [String] {
+            switch field {
+            case .toWallet: wallets.filter { $0 != source(p) }.map(\.name)
+            case .jar: jars.map(\.name)
+            case .toJar: jars.filter { $0 != jar(p.jar) }.map(\.name)
+            case .amount, .person: []
+            }
+        }
+    }
+
+    /// Fills the field Moonee asked about from the user's answer ("45k", "Vietcombank", "hưởng thụ"). False = no answer in it.
+    nonisolated static func fill(_ p: inout ParsedTxn, _ field: ParsedTxn.Field, from input: String, context: ParserContext) -> Bool {
+        func mentions(_ name: String) -> Bool { input.range(of: name, options: [.caseInsensitive, .diacriticInsensitive]) != nil }
+        switch field {
+        case .amount:
+            guard let a = QuickParser.amount(in: input, context: context) else { return false }
+            (p.amount, p.currency) = (a.amount, a.currency)
+        case .toWallet:
+            guard let name = context.wallets.first(where: mentions) else { return false }
+            p.toWallet = name
+        case .jar, .toJar:
+            guard let key = context.jars.first(where: { mentions($0.key) })?.value ?? QuickParser.hints(in: input, context: context).jarKey
+            else { return false }
+            if field == .jar { p.jar = key } else { p.toJar = key }
+        case .person:
+            return false
+        }
+        p.missing = ParsedTxn.missing(of: p)
+        return true
+    }
+
+    /// Saves every parsed transaction that is complete and allocates it to jars once. The rest are skipped:
+    /// the chat asks for what is missing (`Lookup.unresolved`) instead of guessing.
+    static func save(_ parsed: [ParsedTxn], source: TxSource, rawInput: String, in context: ModelContext) -> [Txn] {
+        let categories = (try? context.fetch(FetchDescriptor<Category>())) ?? []
+        let book = Lookup(context)
+        var debts = (try? context.fetch(FetchDescriptor<Debt>())) ?? []
         func debt(_ person: String?, _ kind: TxKind, _ currency: String) -> Debt? {
             guard let person else { return nil }
             let direction: DebtDirection? = kind == .lend ? .lent : kind == .borrow ? .borrowed : nil // repay settles either
@@ -101,60 +160,38 @@ struct ChatCardLine: Codable, Equatable {
         }
 
         var out: [Txn] = []
-        for p in parsed {
-            guard let amount = p.amount, amount > 0 else { continue }
+        for p in parsed where book.unresolved(p) == nil {
             let kind = TxKind(rawValue: p.kind.rawValue) ?? .expense
-            let t = Txn(amount: amount, kind: kind, currencyCode: p.currency, date: p.date, note: p.note, source: source, rawInput: rawInput,
+            let t = Txn(amount: p.amount ?? 0, kind: kind, currencyCode: p.currency, date: p.date, note: p.note, source: source, rawInput: rawInput,
                         category: p.categoryKey.flatMap { k in categories.first { $0.parserKey == k } },
-                        wallet: wallet(p.wallet) ?? wallets.first)
+                        wallet: book.source(p))
             context.insert(t)
             switch kind {
-            case .transfer: t.toWallet = wallet(p.toWallet)
-            case .jarTransfer: (t.jar, t.toJar) = (jar(p.jar), jar(p.toJar))
+            case .transfer: t.toWallet = book.wallet(p.toWallet)
+            case .jarTransfer: (t.jar, t.toJar) = (book.jar(p.jar), book.jar(p.toJar))
             case .lend, .borrow, .repay: t.debt = debt(p.person, kind, p.currency)
             case .expense, .income: break
             }
-            t.allocate(jars: jars, in: context)
+            t.allocate(jars: book.jars, in: context)
             out.append(t)
         }
         return out
     }
 
     /// Removes the message's transactions from the books; the card stays, struck through.
+    /// A debt left with no transactions (made by this message's lend/borrow) goes too.
     static func undo(_ message: ChatMessage, in context: ModelContext) {
         let txns = message.savedTxns
+        let ids = Set(txns.map(\.persistentModelID))
         message.undoneLines = try? JSONEncoder().encode(txns.map(ChatCardLine.init))
         message.undone = true
+        let emptied = Set(txns.compactMap(\.debt)).filter { ($0.txns ?? []).allSatisfy { ids.contains($0.persistentModelID) } }
         txns.forEach(context.delete)
+        emptied.forEach(context.delete)
     }
 
     static func undoneLines(_ message: ChatMessage) -> [ChatCardLine] {
         message.undoneLines.flatMap { try? JSONDecoder().decode([ChatCardLine].self, from: $0) } ?? []
-    }
-
-    /// The user corrected a category: re-pin this expense's jar and remember note → category for the next parse (spec §3.2).
-    // ponytail: the pattern is the whole note ("highlands"); a note with extra words only matches itself.
-    static func setCategory(_ category: Category?, of txn: Txn, in context: ModelContext) {
-        guard txn.category != category else { return }
-        txn.category = category
-        if txn.kind == .expense { txn.jar = category?.jar }
-        let pattern = txn.note.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
-        guard let category, !pattern.isEmpty else { return }
-        let rules = (try? context.fetch(FetchDescriptor<MerchantRule>(predicate: #Predicate { $0.pattern == pattern }))) ?? []
-        if let rule = rules.first {
-            rule.category = category
-            rule.updatedAt = .now
-        } else {
-            context.insert(MerchantRule(pattern: pattern, category: category))
-        }
-    }
-
-    /// An income's amount changed: split it again by the current percents.
-    static func resplit(_ txn: Txn, in context: ModelContext) {
-        guard txn.kind == .income else { return }
-        (txn.splits ?? []).forEach(context.delete)
-        txn.splits = []
-        txn.allocate(jars: (try? context.fetch(FetchDescriptor<Jar>())) ?? [], in: context)
     }
 
     // MARK: Receipts
