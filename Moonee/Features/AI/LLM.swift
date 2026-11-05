@@ -25,6 +25,8 @@ struct LLMRequest: Sendable {
     var tools: [AITool] = []
     /// Ask for one JSON object and nothing else.
     var json = false
+    /// Thinking effort for reasoning models; clients send it only when `supportedEfforts` lists it.
+    var effort: ReasoningEffort?
 
     static let maxToolRounds = 6
 }
@@ -292,7 +294,7 @@ enum LLMSettings {
         switch p {
         case .anthropic: return AnthropicLLM(apiKey: key, model: model, baseURL: base, send: send)
         case .gemini: return GeminiLLM(apiKey: key, model: model, baseURL: base, send: send)
-        default: return OpenAICompatibleLLM(baseURL: base, apiKey: key, model: model, send: send)
+        default: return OpenAICompatibleLLM(baseURL: base, apiKey: key, model: model, provider: p, send: send)
         }
     }
 

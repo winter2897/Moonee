@@ -43,6 +43,10 @@ struct Assistant: Sendable {
     var skillsOff = LLMSettings.skillsOff
     /// The user's own instructions (Settings → Advanced), added to every answer prompt.
     var customPrompt = LLMSettings.customPrompt
+    /// User skills and overrides of built-in text; pass `SkillCatalog(context)` to use them.
+    var catalog = SkillCatalog.builtIn
+    /// Thinking effort for answers (the chat chip); clients drop levels the model can't take. Parsing never thinks.
+    var effort: ReasoningEffort? = LLMSettings.effort
 
     enum Output: Sendable, Equatable {
         /// Save right away and show cards (spec §3.2); ask for `missing` fields first. `usedModel` false = rule parser.
@@ -64,7 +68,7 @@ struct Assistant: Sendable {
     }
 
     func handle(_ text: String, history: [LLMMessage] = [], context: ParserContext) async -> Output {
-        let skill = Skill.route(text, context: context)
+        let skill = Skill.route(text, context: context, catalog: catalog)
         guard skill != .transactionParser else {
             let r = await parse(text, context: context)
             return .transactions(r.txns, usedModel: r.usedModel)
@@ -100,6 +104,7 @@ struct Assistant: Sendable {
                 system: Skill.persona(language: language) + "\n\n" + skill.instructions(language: language, short: model.isSmall),
                 messages: history + [.init(role: .user, text: text)])
             if !customPrompt.isEmpty { request.system += "\n\nThe user's own instructions:\n" + customPrompt }
+            request.effort = effort
             if model.isSmall {
                 let lines = await prefetched().map { "\($0.tool): \($0.json)" }.joined(separator: "\n")
                 request.system += "\n\nFACTS (computed by the app; use only these numbers):\n" + lines
@@ -123,6 +128,8 @@ struct Assistant: Sendable {
         args.jarKey = h.jarKey
         args.amountText = text // tools read the amount from the user's words themselves
         args.targetText = text
+        args.query = text
+        args.symbol = MarketPrices.symbol(in: text)
         let data = (try? JSONEncoder().encode(args)) ?? Data("{}".utf8)
         var out: [ToolResult] = []
         for tool in tools {
@@ -134,7 +141,7 @@ struct Assistant: Sendable {
     private func parseInstructions(short: Bool, context: ParserContext) -> String {
         let categories = DefaultKeys.categories + context.categories.values
         let jars = DefaultKeys.jars + context.jars.values
-        return Skill.transactionParser.instructions(language: language, short: short) + """
+        return catalog.resolved(.transactionParser).instructions(language: language, short: short) + """
 
 
             Category keys: \(Array(Set(categories)).sorted().joined(separator: ", "))

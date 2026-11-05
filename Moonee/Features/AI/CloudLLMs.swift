@@ -8,6 +8,8 @@ struct OpenAICompatibleLLM: LLM {
     var baseURL: String
     var apiKey: String
     var model: String
+    /// Which service this is: decides effort and web-search support.
+    var provider: CloudProvider = .custom
     var send: HTTPTransport = HTTP.live
 
     func respond(_ r: LLMRequest) async throws -> String {
@@ -17,7 +19,12 @@ struct OpenAICompatibleLLM: LLM {
         var messages: [[String: Any]] = [["role": "system", "content": r.system]]
             + r.messages.map { ["role": $0.role.rawValue, "content": $0.text] }
         for _ in 0..<LLMRequest.maxToolRounds {
-            var body: [String: Any] = ["model": model, "temperature": 0.2, "messages": messages]
+            var body: [String: Any] = ["model": model, "messages": messages]
+            // OpenAI's reasoning models (o-series, gpt-5) reject any temperature but the default.
+            if !(provider == .openAI && EffortModels.openAIReasoning(model.lowercased())) { body["temperature"] = 0.2 }
+            if let e = r.effort, supportedEfforts(provider: provider, model: model).contains(e), let value = e.openAIValue {
+                if provider == .openRouter { body["reasoning"] = ["effort": value] } else { body["reasoning_effort"] = value }
+            }
             if !r.tools.isEmpty {
                 body["tools"] = r.tools.map {
                     ["type": "function", "function": ["name": $0.name, "description": $0.description, "parameters": $0.parameters.json]]
@@ -54,6 +61,10 @@ struct AnthropicLLM: LLM {
         let system = r.json ? r.system + "\n\nReply with one JSON object and nothing else." : r.system
         for _ in 0..<LLMRequest.maxToolRounds {
             var body: [String: Any] = ["model": model, "max_tokens": 2048, "system": system, "messages": messages]
+            if let e = r.effort, supportedEfforts(provider: .anthropic, model: model).contains(e) {
+                body["thinking"] = ["type": "enabled", "budget_tokens": e.anthropicBudget]
+                body["max_tokens"] = e.anthropicBudget + 4096 // must exceed the thinking budget
+            }
             if !r.tools.isEmpty {
                 body["tools"] = r.tools.map { ["name": $0.name, "description": $0.description, "input_schema": $0.parameters.json] }
             }
@@ -87,6 +98,9 @@ struct GeminiLLM: LLM {
         for _ in 0..<LLMRequest.maxToolRounds {
             var config: [String: Any] = ["temperature": 0.2]
             if r.json { config["responseMimeType"] = "application/json" }
+            if let e = r.effort, supportedEfforts(provider: .gemini, model: model).contains(e) {
+                config["thinkingConfig"] = ["thinkingBudget": e.geminiBudget]
+            }
             var body: [String: Any] = ["systemInstruction": ["parts": [["text": r.system]]], "contents": contents, "generationConfig": config]
             if !r.tools.isEmpty {
                 body["tools"] = [["functionDeclarations": r.tools.map { tool -> [String: Any] in
@@ -99,7 +113,7 @@ struct GeminiLLM: LLM {
             guard let content = (reply["candidates"] as? [[String: Any]])?.first?["content"] as? [String: Any],
                   let parts = content["parts"] as? [[String: Any]] else { throw LLMError("Unexpected reply") }
             let calls = parts.compactMap { $0["functionCall"] as? [String: Any] }
-            if calls.isEmpty { return parts.compactMap { $0["text"] as? String }.joined() }
+            if calls.isEmpty { return parts.filter { $0["thought"] as? Bool != true }.compactMap { $0["text"] as? String }.joined() }
             contents.append(content) // echoed as-is: keeps Gemini's thought signatures
             var responses: [[String: Any]] = []
             for call in calls {

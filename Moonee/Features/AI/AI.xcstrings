@@ -1,0 +1,406 @@
+{
+  "sourceLanguage": "en",
+  "version": "1.0",
+  "strings": {
+    "%@ API key": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API key %@"
+          }
+        }
+      }
+    },
+    "%lld on": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld đang bật"
+          }
+        }
+      }
+    },
+    "Add at least one trigger word, or Moonee will never use the skill.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm ít nhất một từ kích hoạt, nếu không Moonee sẽ không bao giờ dùng skill này."
+          }
+        }
+      }
+    },
+    "Built-in": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Có sẵn"
+          }
+        }
+      }
+    },
+    "Can't use this skill": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không dùng được skill này"
+          }
+        }
+      }
+    },
+    "Crypto prices": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giá tiền ảo"
+          }
+        }
+      }
+    },
+    "Delete skill": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá skill"
+          }
+        }
+      }
+    },
+    "Edited": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã sửa"
+          }
+        }
+      }
+    },
+    "For questions about gold, exchange rates, crypto and news. OpenRouter, OpenAI, Anthropic and Gemini search on their own; with other providers or on-device, add a Tavily or Brave key.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dùng khi bạn hỏi giá vàng, tỷ giá, tiền ảo và tin tức. OpenRouter, OpenAI, Anthropic và Gemini tự tìm được; với nhà cung cấp khác hoặc model trên máy, hãy thêm key Tavily hoặc Brave."
+          }
+        }
+      }
+    },
+    "Give the skill a name.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hãy đặt tên cho skill."
+          }
+        }
+      }
+    },
+    "Gold, exchange rates, crypto and news, with sources. Uses web search.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giá vàng, tỷ giá, tiền ảo và tin tức, kèm nguồn. Có dùng tìm kiếm web."
+          }
+        }
+      }
+    },
+    "Import a .md file": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhập file .md"
+          }
+        }
+      }
+    },
+    "Instructions": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hướng dẫn"
+          }
+        }
+      }
+    },
+    "Jar balances": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Số dư các lọ"
+          }
+        }
+      }
+    },
+    "Market lookup": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tra cứu thị trường"
+          }
+        }
+      }
+    },
+    "Moonee uses your skill when a question contains one of its trigger words. Numbers still come from the app.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee dùng skill của bạn khi câu hỏi có một trong các từ kích hoạt. Mọi con số vẫn do app tính."
+          }
+        }
+      }
+    },
+    "Name": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tên"
+          }
+        }
+      }
+    },
+    "New skill": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skill mới"
+          }
+        }
+      }
+    },
+    "Off": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tắt"
+          }
+        }
+      }
+    },
+    "Recent transactions": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giao dịch gần đây"
+          }
+        }
+      }
+    },
+    "Remove the API key, password or token from the skill: it would be sent to the AI.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hãy xoá API key, mật khẩu hoặc token khỏi skill: chúng sẽ bị gửi cho AI."
+          }
+        }
+      }
+    },
+    "Reset to default": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khôi phục mặc định"
+          }
+        }
+      }
+    },
+    "Save": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lưu"
+          }
+        }
+      }
+    },
+    "Savings plan": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kế hoạch tiết kiệm"
+          }
+        }
+      }
+    },
+    "Search key": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Key tìm kiếm"
+          }
+        }
+      }
+    },
+    "Short version for on-device models": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bản rút gọn cho model trên máy"
+          }
+        }
+      }
+    },
+    "Spending summary": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tổng chi tiêu"
+          }
+        }
+      }
+    },
+    "Split an income": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chia một khoản thu"
+          }
+        }
+      }
+    },
+    "The file needs a front matter block between --- lines with name, description, triggers and tools.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "File cần phần đầu nằm giữa hai dòng --- gồm name, description, triggers và tools."
+          }
+        }
+      }
+    },
+    "The skill is too long (20 KB at most).": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skill quá dài (tối đa 20 KB)."
+          }
+        }
+      }
+    },
+    "Tools it may use": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tool được phép dùng"
+          }
+        }
+      }
+    },
+    "Trigger words, separated by commas": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Từ kích hoạt, cách nhau bằng dấu phẩy"
+          }
+        }
+      }
+    },
+    "Unknown tools: %@.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tool không có trong Moonee: %@."
+          }
+        }
+      }
+    },
+    "Web search": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tìm kiếm web"
+          }
+        }
+      }
+    },
+    "Web search is off. Add a Tavily or Brave key below, or use a provider with built-in search.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tìm kiếm web đang tắt. Thêm key Tavily hoặc Brave bên dưới, hoặc dùng nhà cung cấp có sẵn tìm kiếm."
+          }
+        }
+      }
+    },
+    "What it is for": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dùng để làm gì"
+          }
+        }
+      }
+    },
+    "When you ask about prices, rates or news, your search query is sent to %@.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khi bạn hỏi về giá cả, tỷ giá hay tin tức, nội dung tìm kiếm được gửi tới %@."
+          }
+        }
+      }
+    },
+    "Write the skill's instructions.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hãy viết hướng dẫn cho skill."
+          }
+        }
+      }
+    },
+    "Written for the AI. Never put API keys or passwords here.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Viết cho AI đọc. Đừng bao giờ để API key hay mật khẩu ở đây."
+          }
+        }
+      }
+    },
+    "Your skills": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skill của bạn"
+          }
+        }
+      }
+    }
+  }
+}
