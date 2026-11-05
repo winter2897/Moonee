@@ -36,6 +36,7 @@ struct OverviewView: View {
                     } else {
                         hero(note)
                         spending(stats)
+                        ReportCard(txns: txns) // last month's report (Features/Report)
                         jarsCard(stats)
                         let pair = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 14)) : AnyLayout(HStackLayout(alignment: .top, spacing: 12))
                         pair {

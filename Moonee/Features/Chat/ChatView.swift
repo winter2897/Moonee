@@ -24,6 +24,7 @@ struct ChatView: View {
     @State private var showCamera = false
     @State private var confirmClear = false
     @State private var savedCount = 0
+    @State private var showReport = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -82,6 +83,7 @@ struct ChatView: View {
             CameraPicker { image in Task { await scan(image) } }.ignoresSafeArea()
         }
         .sheet(item: $editTxn) { TxnEditSheet(txn: $0) }
+        .sheet(isPresented: $showReport) { ReportSheet() }
         .confirmationDialog(Text("Clear the chat? Your transactions stay in the ledger.", tableName: "Chat"),
                             isPresented: $confirmClear, titleVisibility: .visible) {
             Button(role: .destructive) { messages.forEach(context.delete) } label: { Text("Clear chat", tableName: "Chat") }
@@ -172,7 +174,7 @@ struct ChatView: View {
     private var tiles: some View {
         HStack(alignment: .top, spacing: 10) {
             QuickReplyChip(title: String(localized: "See monthly report", table: "Chat"), symbol: "chart.bar.fill", style: .tile) {
-                send(String(localized: "See monthly report", table: "Chat"))
+                showReport = true // S10: opens the report screen (Features/Report)
             }
             QuickReplyChip(title: String(localized: "How much is left in my Play jar?", table: "Chat"), symbol: "takeoutbag.and.cup.and.straw.fill", style: .tile) {
                 send(String(localized: "How much is left in my Play jar?", table: "Chat"))

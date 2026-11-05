@@ -35,11 +35,11 @@ struct ProfileForm: View {
     @Binding var avatar: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 12) {
             Label { Text("Display name", tableName: "Account").font(.headline) } icon: { IconBadge(symbol: "person.fill", color: .brandDeep, size: 32) }
             TextField(String(localized: "Your name", table: "Account"), text: $name)
                 .textContentType(.name)
-                .padding(14)
+                .padding(.horizontal, 14).padding(.vertical, 11)
                 .background(Color.track.opacity(0.5), in: .rect(cornerRadius: 14))
                 .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.track))
 

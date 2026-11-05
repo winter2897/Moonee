@@ -1,0 +1,316 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "%@ ended in the red: move %@ from %@ to cover it.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lọ %1$@ đang âm: chuyển %2$@ từ lọ %3$@ sang để bù nhé."
+          }
+        }
+      }
+    },
+    "By category": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Theo danh mục"
+          }
+        }
+      }
+    },
+    "Carried over to next month": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chuyển sang tháng sau"
+          }
+        }
+      }
+    },
+    "Done": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xong"
+          }
+        }
+      }
+    },
+    "Every jar's balance carries over to next month.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Số dư các lọ được cộng dồn sang tháng sau."
+          }
+        }
+      }
+    },
+    "Income": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thu nhập"
+          }
+        }
+      }
+    },
+    "Monthly report": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Báo cáo tháng"
+          }
+        }
+      }
+    },
+    "Moonee's take": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee nhận xét"
+          }
+        }
+      }
+    },
+    "Most of it went to %@ (%@).": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhiều nhất là %1$@ (%2$@)."
+          }
+        }
+      }
+    },
+    "Next month": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tháng sau"
+          }
+        }
+      }
+    },
+    "No data for this month": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tháng này chưa có dữ liệu"
+          }
+        }
+      }
+    },
+    "No jar": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa có lọ"
+          }
+        }
+      }
+    },
+    "Nothing logged this month yet. Tell Moonee your first spend and the report fills itself in.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tháng này chưa có ghi chép nào. Kể Moonee khoản chi đầu tiên là báo cáo tự có ngay."
+          }
+        }
+      }
+    },
+    "Previous month": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tháng trước"
+          }
+        }
+      }
+    },
+    "Saved": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Để dành"
+          }
+        }
+      }
+    },
+    "Savings rate": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tỷ lệ để dành"
+          }
+        }
+      }
+    },
+    "Spending by jar": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chi theo lọ"
+          }
+        }
+      }
+    },
+    "Spending by jar, top expenses and Moonee's take": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chi theo lọ, khoản chi lớn nhất và nhận xét của Moonee"
+          }
+        }
+      }
+    },
+    "Spending trend": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xu hướng chi tiêu"
+          }
+        }
+      }
+    },
+    "Spending was %@ more than your income.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chi tiêu nhiều hơn thu nhập %@."
+          }
+        }
+      }
+    },
+    "Spent": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã chi"
+          }
+        }
+      }
+    },
+    "Top expenses": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khoản chi lớn nhất"
+          }
+        }
+      }
+    },
+    "Uncategorized": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa phân loại"
+          }
+        }
+      }
+    },
+    "Wrap up last month for me in two or three sentences.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tóm tắt tháng trước giúp mình trong hai, ba câu nhé."
+          }
+        }
+      }
+    },
+    "Wrap up this month for me in two or three sentences.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tóm tắt tháng này giúp mình trong hai, ba câu nhé."
+          }
+        }
+      }
+    },
+    "You kept %@, %lld%% of your income.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn để dành được %1$@, bằng %2$lld%% thu nhập."
+          }
+        }
+      }
+    },
+    "You spent %@, %lld%% less than the month before. Nice work! 🎉": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn đã chi %1$@, ít hơn tháng trước đó %2$lld%%. Giỏi lắm! 🎉"
+          }
+        }
+      }
+    },
+    "You spent %@, %lld%% more than the month before.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn đã chi %1$@, nhiều hơn tháng trước đó %2$lld%%."
+          }
+        }
+      }
+    },
+    "You spent %@.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn đã chi %@."
+          }
+        }
+      }
+    },
+    "Your %@ report is ready": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Báo cáo %@ đã sẵn sàng"
+          }
+        }
+      }
+    },
+    "vs the month before": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "so với tháng trước đó"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}
