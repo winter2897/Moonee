@@ -184,6 +184,8 @@ private func displayName(key: String?, customName: String?) -> String {
     /// .expense or .income only.
     var kindRaw: String = TxKind.expense.rawValue
     var order: Int = 0
+    /// Picks which copy of a default survives when two installs meet in iCloud (`Seed.mergeDuplicates`).
+    var createdAt: Date = Date.now
     var jar: Jar?
     @Relationship(deleteRule: .nullify, inverse: \Txn.category) var txns: [Txn]? = []
     @Relationship(deleteRule: .nullify, inverse: \Recurring.category) var recurrings: [Recurring]? = []
@@ -249,6 +251,8 @@ private func displayName(key: String?, customName: String?) -> String {
     var order: Int = 0
     /// Opening balance in the default currency's minor units (onboarding).
     var initialBalance: Int = 0
+    /// Picks which copy of a default survives when two installs meet in iCloud (`Seed.mergeDuplicates`).
+    var createdAt: Date = Date.now
     @Relationship(deleteRule: .nullify, inverse: \Category.jar) var categories: [Category]? = []
     @Relationship(deleteRule: .nullify, inverse: \Txn.jar) var txns: [Txn]? = []
     @Relationship(deleteRule: .nullify, inverse: \Txn.toJar) var incoming: [Txn]? = []
@@ -399,7 +403,7 @@ enum Seed {
     }
 
     /// First launch: default jars, categories and a cash wallet.
-    // ponytail: count check; with iCloud sync two fresh devices both seed — dedupe by key when S11 turns CloudKit on.
+    /// Count check: a fresh install seeds before iCloud has synced, so `Seed.mergeDuplicates` folds the copies later.
     @MainActor static func ifNeeded(_ context: ModelContext) {
         guard (try? context.fetchCount(FetchDescriptor<Jar>())) == 0 else { return }
 

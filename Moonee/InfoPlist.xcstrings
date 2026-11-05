@@ -37,6 +37,17 @@
         }
       }
     },
+    "NSPhotoLibraryUsageDescription": {
+      "extractionState": "extracted_with_value",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee đọc ảnh hoá đơn bạn chọn để điền số tiền."
+          }
+        }
+      }
+    },
     "NSSpeechRecognitionUsageDescription": {
       "extractionState": "extracted_with_value",
       "localizations": {
