@@ -39,7 +39,7 @@ struct MooneeCharacter: View {
     }
 }
 
-/// The character on a tab's hills, under the header. 104 pt visible (mockups); `compact` 76 pt (Budget).
+/// The character on its hills, under the header. 104 pt visible (mockups); `compact` 76 pt (Budget, chat while typing).
 /// The images are cropped to the character, so the frame height is the visible height.
 struct MooneeHero: View {
     let mood: MooneeMood
@@ -52,18 +52,13 @@ struct MooneeHero: View {
         let headroom = reduceMotion ? 0 : MooneeAnimation.load(mood).map { height * ($0.maxFill / $0.meanFill - 1) } ?? 0
         MooneeCharacter(mood: mood)
             .frame(height: height)
-            .padding(.top, headroom)
             .frame(maxWidth: .infinity)
-            .padding(.bottom, 6)
-            .background(alignment: .bottom) {
-                // Hills run edge to edge behind the lower half and fade out, so there is no seam under the hero.
-                Hills()
-                    .frame(height: height * 0.72)
-                    .padding(.horizontal, -16)
-                    .opacity(0.55)
-                    .mask(LinearGradient(stops: [.init(color: .black, location: 0), .init(color: .black, location: 0.45), .init(color: .clear, location: 1)],
-                                         startPoint: .top, endPoint: .bottom))
+            // Hills from coin height down, edge to edge, running on behind the content below (chat mockup).
+            .background(alignment: .top) {
+                Hills().frame(height: height * 1.05).padding(.horizontal, -16).offset(y: height * 0.36)
             }
+            .padding(.top, headroom)
+            .padding(.bottom, 8)
     }
 }
 
