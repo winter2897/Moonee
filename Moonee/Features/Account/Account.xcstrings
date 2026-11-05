@@ -64,6 +64,16 @@
         }
       }
     },
+    "About": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Về Moonee"
+          }
+        }
+      }
+    },
     "About Moonee": {
       "localizations": {
         "vi": {
@@ -354,6 +364,16 @@
         }
       }
     },
+    "Edit profile": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sửa hồ sơ"
+          }
+        }
+      }
+    },
     "Export CSV": {
       "localizations": {
         "vi": {
@@ -490,6 +510,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ngôn ngữ & Tiền tệ"
+          }
+        }
+      }
+    },
+    "Level, times, kinds": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mức nhắc, giờ, loại"
           }
         }
       }
@@ -824,17 +854,7 @@
         }
       }
     },
-    "Reminder level, times, kinds": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mức nhắc nhở, thời gian, loại thông báo"
-          }
-        }
-      }
-    },
-    "Reminders & notifications": {
+    "Reminders": {
       "localizations": {
         "vi": {
           "stringUnit": {
@@ -1170,6 +1190,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "iCloud, xuất CSV, xoá toàn bộ"
+          }
+        }
+      }
+    },
+    "iOS Settings": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cài đặt iOS"
           }
         }
       }
