@@ -31,19 +31,20 @@ struct LedgerTests {
 
     @Test func walletAndJarBalances() {
         let l = L(entries: [
-            e(.income, 10_000_000),
+            e(.income, 10_000_000, splits: L.split(10_000_000, by: percents)),
             e(.expense, 45_000, jar: "needs"),
             e(.expense, 30_000), // no jar: wallet only
-        ], walletOpening: ["cash": 500_000], jarPercents: percents)
+        ], walletOpening: ["cash": 500_000])
         #expect(l.walletBalance("cash") == 500_000 + 10_000_000 - 45_000 - 30_000)
         #expect(l.jarBalance("needs") == 5_500_000 - 45_000)
         #expect(l.jarBalance("play") == 1_000_000)
     }
 
-    @Test func manualSplitOverridesPercents() {
-        let l = L(entries: [e(.income, 5_000_000, splits: ["invest": 5_000_000])], jarPercents: percents)
+    @Test func incomeMovesJarsOnlyByItsSplits() {
+        let l = L(entries: [e(.income, 5_000_000, splits: ["invest": 5_000_000]), e(.income, 1_000)])
         #expect(l.jarBalance("invest") == 5_000_000)
-        #expect(l.jarBalance("needs") == 0)
+        #expect(l.jarBalances.values.reduce(0, +) == 5_000_000) // no splits = unallocated
+        #expect(l.walletBalance("cash") == 5_001_000)
     }
 
     @Test func jarsCarryOverAndCardNumbers() {
@@ -54,7 +55,7 @@ struct LedgerTests {
             e(.jarTransfer, 100_000, day(11, 3), wallet: nil, jar: "needs", toJar: "play"),
             e(.expense, 450_000, day(11, 5), jar: "play"),
             e(.expense, 1, day(12, 1), jar: "play"),                 // next month: not in November's card
-        ], jarOpening: ["play": 50_000], jarPercents: percents)
+        ], jarOpening: ["play": 50_000])
         let m = l.jarMonth("play", in: november)
         #expect(m.start == 650_000)
         #expect(m.added == 300_000)
@@ -75,10 +76,10 @@ struct LedgerTests {
 
     @Test func creditCardSwipeAndPayment() {
         let l = L(entries: [
-            e(.income, 10_000_000, wallet: "bank"),
+            e(.income, 10_000_000, wallet: "bank", splits: ["needs": 10_000_000]),
             e(.expense, 2_000_000, wallet: "card", jar: "needs"),  // swipe: jar −, card debt +
             e(.transfer, 2_000_000, wallet: "bank", to: "card"),   // pay the card: not a second expense
-        ], jarPercents: [("needs", 100)])
+        ])
         #expect(l.walletBalance("card") == 0)
         #expect(l.walletBalance("bank") == 8_000_000)
         #expect(l.jarBalance("needs") == 8_000_000)
@@ -91,12 +92,12 @@ struct LedgerTests {
 
     @Test func lendBorrowRepayNeverTouchJars() {
         let l = L(entries: [
-            e(.income, 10_000_000),
+            e(.income, 10_000_000, splits: L.split(10_000_000, by: percents)),
             e(.lend, 2_000_000, debt: "nam"),
             e(.repay, 500_000, debt: "nam"),      // Nam pays me back: money in
             e(.borrow, 5_000_000, debt: "mom"),
             e(.repay, 1_000_000, debt: "mom"),    // I pay Mom back: money out
-        ], jarPercents: percents, debtDirections: ["nam": .lent, "mom": .borrowed])
+        ], debtDirections: ["nam": .lent, "mom": .borrowed])
         #expect(l.walletBalance("cash") == 10_000_000 - 2_000_000 + 500_000 + 5_000_000 - 1_000_000)
         #expect(l.debtRemaining["nam"] == 1_500_000)
         #expect(l.debtRemaining["mom"] == 4_000_000)
@@ -110,21 +111,39 @@ struct LedgerTests {
         #expect(l.netWorth(assets: 170_000_000) == 173_000_000)
     }
 
-    @MainActor @Test func swiftDataAdapterUsesCategoryJarAndDebtDirection() throws {
+    @MainActor @Test func savedHistoryIgnoresLaterPercentEditsAndRemaps() throws {
         let context = ModelContext(try ModelContainer(for: Schema.moonee, configurations: ModelConfiguration(isStoredInMemoryOnly: true)))
-        let jar = Jar(key: "jar.essentials", icon: "house.fill", colorHex: 0, percent: 100, order: 0)
-        let food = Category(key: "category.food", icon: "fork.knife", colorHex: 0, jar: jar)
+        let needs = Jar(key: "jar.essentials", icon: "house.fill", colorHex: 0, percent: 60, order: 0)
+        let play = Jar(key: "jar.play", icon: "sparkles", colorHex: 0, percent: 40, order: 1)
+        let food = Category(key: "category.food", icon: "fork.knife", colorHex: 0, jar: needs)
         let cash = Wallet(name: "Cash", type: .cash, initialBalance: 100_000)
         let debt = Debt(person: "Nam", direction: .lent)
-        context.insert(jar); context.insert(food); context.insert(cash); context.insert(debt)
+        context.insert(needs); context.insert(play); context.insert(food); context.insert(cash); context.insert(debt)
+
+        let salary = Txn(amount: 1_000_000, kind: .income, wallet: cash)
         let pho = Txn(amount: 45_000, kind: .expense, category: food, wallet: cash)
         let repaid = Txn(amount: 20_000, kind: .repay, wallet: cash)
         repaid.debt = debt
-        [pho, repaid].forEach { context.insert($0) }
+        for t in [salary, pho, repaid] {
+            context.insert(t)
+            t.allocate(jars: [needs, play], in: context)
+        }
+        func balances() -> [Int] {
+            let l = Ledger(txns: [salary, pho, repaid], wallets: [cash], jars: [needs, play])
+            return [l.jarBalance(needs.persistentModelID), l.jarBalance(play.persistentModelID), l.walletBalance(cash.persistentModelID)]
+        }
+        let before = balances()
+        #expect(before == [600_000 - 45_000, 400_000, 100_000 + 1_000_000 - 45_000 + 20_000])
 
-        let l = Ledger(txns: [pho, repaid], wallets: [cash], jars: [jar])
-        #expect(l.jarBalance(jar.persistentModelID) == -45_000)
-        #expect(l.walletBalance(cash.persistentModelID) == 100_000 - 45_000 + 20_000)
+        needs.percent = 10
+        play.percent = 90
+        food.jar = play
+        #expect(balances() == before)
+
+        // A new income uses the new percents; allocate never overwrites a txn's existing split or jar.
+        salary.allocate(jars: [needs, play], in: context)
+        #expect(balances() == before)
+        #expect(pho.jar == needs)
         #expect(food.name == "Food & Drinks")
     }
 }

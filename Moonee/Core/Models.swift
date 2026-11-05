@@ -109,13 +109,13 @@ private func displayName(key: String?, customName: String?) -> String {
     var wallet: Wallet?
     /// transfer only (a credit-card payment is a transfer into the card).
     var toWallet: Wallet?
-    /// Expense jar, pinned. Nil = the category's jar. jarTransfer: the source jar.
+    /// Expense jar, pinned at save by `allocate` (nil = no jar). jarTransfer: the source jar.
     var jar: Jar?
     /// jarTransfer only.
     var toJar: Jar?
     /// lend/borrow/repay.
     var debt: Debt?
-    /// income only: how it was split into jars. Empty = split by the jars' current percents.
+    /// income only: how it was split into jars, written at save by `allocate`. Empty = unallocated.
     @Relationship(deleteRule: .cascade, inverse: \IncomeSplit.txn) var splits: [IncomeSplit]? = []
 
     init(amount: Int, kind: TxKind, currencyCode: String = Money.defaultCurrency, date: Date = .now, note: String = "",
@@ -142,6 +142,23 @@ private func displayName(key: String?, customName: String?) -> String {
     }
 
     var money: Money { Money(amount, currencyCode) }
+
+    /// Call once whenever a txn is created (chat, form, import, onboarding): pins an expense to its category's jar
+    /// and splits an income by the jars' current percents, so later percent edits or category remaps keep history.
+    /// Skips what is already set, so a manual split or jar choice wins.
+    func allocate(jars: [Jar], in context: ModelContext) {
+        switch kind {
+        case .expense:
+            if jar == nil { jar = category?.jar }
+        case .income where (splits ?? []).isEmpty:
+            for (jar, share) in Ledger<Jar>.split(amount, by: jars.sorted { $0.order < $1.order }.map { ($0, $0.percent) }) {
+                let s = IncomeSplit(amount: share, jar: jar)
+                context.insert(s)
+                s.txn = self
+            }
+        default: break
+        }
+    }
 }
 
 /// One jar's share of one income (spec §4.1: split per income, editable per income).
@@ -408,12 +425,12 @@ enum Seed {
 }
 
 extension Ledger where ID == PersistentIdentifier {
-    /// The ledger for the stored data. An expense with no pinned jar uses its category's jar.
+    /// The ledger for the stored data. Jars move only through what `Txn.allocate` pinned.
     init(txns: [Txn], wallets: [Wallet], jars: [Jar]) {
         let entries = txns.map { t in
             Entry(kind: t.kind, amount: t.amount, date: t.date,
                   wallet: t.wallet?.persistentModelID, toWallet: t.toWallet?.persistentModelID,
-                  jar: (t.jar ?? (t.kind == .expense ? t.category?.jar : nil))?.persistentModelID,
+                  jar: t.jar?.persistentModelID,
                   toJar: t.toJar?.persistentModelID, debt: t.debt?.persistentModelID,
                   splits: Dictionary((t.splits ?? []).compactMap { s in s.jar.map { ($0.persistentModelID, s.amount) } },
                                      uniquingKeysWith: +))
@@ -421,7 +438,6 @@ extension Ledger where ID == PersistentIdentifier {
         self.init(entries: entries,
                   walletOpening: Dictionary(uniqueKeysWithValues: wallets.map { ($0.persistentModelID, $0.initialBalance) }),
                   jarOpening: Dictionary(uniqueKeysWithValues: jars.map { ($0.persistentModelID, $0.initialBalance) }),
-                  jarPercents: jars.sorted { $0.order < $1.order }.map { ($0.persistentModelID, $0.percent) },
                   debtDirections: Dictionary(txns.compactMap { $0.debt.map { ($0.persistentModelID, $0.direction) } }, uniquingKeysWith: { a, _ in a }))
     }
 }

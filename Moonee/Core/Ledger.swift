@@ -5,7 +5,8 @@ import Foundation
 ///
 /// Rules:
 /// - expense: wallet −, jar − (a credit-card swipe is an expense on the card wallet: its balance goes negative = card debt).
-/// - income: wallet +, jars + by its stored splits, else by the jars' current percents.
+/// - income: wallet +, jars + by its stored splits only (no splits = unallocated). Splits and the expense jar are
+///   fixed when the txn is saved (`Txn.allocate`), so editing percents or remapping a category never rewrites history.
 /// - transfer: wallet → toWallet (paying a card is a transfer into it, not a second expense).
 /// - jarTransfer: jar → toJar, no wallet moves.
 /// - lend/borrow/repay: wallet and debt book only, never jars.
@@ -20,7 +21,7 @@ struct Ledger<ID: Hashable> {
         var jar: ID?
         var toJar: ID?
         var debt: ID?
-        /// income only; empty = split by percents.
+        /// income only; empty = unallocated.
         var splits: [ID: Int] = [:]
     }
 
@@ -42,7 +43,6 @@ struct Ledger<ID: Hashable> {
     }
 
     let entries: [Entry]
-    let jarPercents: [(ID, Int)]
     private(set) var walletBalances: [ID: Int]
     private(set) var jarBalances: [ID: Int]
     /// What is still owed on each debt (positive), by its direction.
@@ -50,10 +50,8 @@ struct Ledger<ID: Hashable> {
     private let debtDirections: [ID: DebtDirection]
     private let jarOpening: [ID: Int]
 
-    init(entries: [Entry], walletOpening: [ID: Int] = [:], jarOpening: [ID: Int] = [:],
-         jarPercents: [(ID, Int)] = [], debtDirections: [ID: DebtDirection] = [:]) {
+    init(entries: [Entry], walletOpening: [ID: Int] = [:], jarOpening: [ID: Int] = [:], debtDirections: [ID: DebtDirection] = [:]) {
         self.entries = entries
-        self.jarPercents = jarPercents
         self.debtDirections = debtDirections
         self.jarOpening = jarOpening
         walletBalances = walletOpening
@@ -120,7 +118,7 @@ struct Ledger<ID: Hashable> {
     private func jarDeltas(_ e: Entry) -> [(ID, Int)] {
         switch e.kind {
         case .expense: e.jar.map { [($0, -e.amount)] } ?? []
-        case .income: (e.splits.isEmpty ? Self.split(e.amount, by: jarPercents) : e.splits).map { ($0.key, $0.value) }
+        case .income: e.splits.map { ($0.key, $0.value) }
         case .jarTransfer: [(e.jar, -e.amount), (e.toJar, e.amount)].compactMap { id, d in id.map { ($0, d) } }
         case .transfer, .lend, .borrow, .repay: []
         }
