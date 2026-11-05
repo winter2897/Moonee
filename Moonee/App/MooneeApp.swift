@@ -25,22 +25,51 @@ struct MooneeApp: App {
     }
 }
 
-/// The 5 tabs from docs/FEATURES.md §1. Tabs without a screen yet show a placeholder.
+enum AppTab: Hashable { case overview, budget, moonee, watchlist, account }
+
+/// The 5 tabs from docs/FEATURES.md §1 with the mockups' floating bar; (+) opens the Moonee chat.
+/// Each tab's root view lives in its feature folder, so feature sessions never need to edit this file.
 struct RootView: View {
+    @State private var tab = AppTab.overview
+    @AppStorage(Prefs.hideBalances) private var hideBalances = false
+
     var body: some View {
-        TabView {
-            Tab("Overview", systemImage: "house.fill") { Placeholder(title: "Overview", spec: "§2") }
-            Tab("Budget", systemImage: "square.stack.3d.up.fill") { Placeholder(title: "Budget", spec: "§4") }
-            Tab("Moonee", systemImage: "plus.circle.fill") { Placeholder(title: "Moonee", spec: "§3") }
-            Tab("Watchlist", systemImage: "chart.line.uptrend.xyaxis") { Placeholder(title: "Watchlist", spec: "§5") }
-            Tab("Account", systemImage: "person.fill") { AccountView() }
+        TabView(selection: $tab) {
+            Tab(value: .overview) { OverviewView() }
+            Tab(value: .budget) { BudgetView() }
+            Tab(value: .moonee) { ChatView() }
+            Tab(value: .watchlist) { WatchlistView() }
+            Tab(value: .account) { AccountView() }
         }
+        .toolbar(.hidden, for: .tabBar)
+        .safeAreaInset(edge: .bottom) {
+            MooneeTabBar(items: [
+                .init(tab: .overview, title: String(localized: "Overview"), symbol: "house"),
+                .init(tab: .budget, title: String(localized: "Budget"), symbol: "wallet.bifold"),
+                .init(tab: .watchlist, title: String(localized: "Watchlist"), symbol: "chart.bar"),
+                .init(tab: .account, title: String(localized: "Account"), symbol: "person"),
+            ], selection: $tab) { tab = .moonee }
+            .fixedSize(horizontal: false, vertical: true)
+        }
+        .environment(\.balanceHidden, hideBalances)
         .tint(.mooneeGreen)
     }
 }
 
+/// UserDefaults keys shared across features (plain settings; secrets go in Keychain).
+enum Prefs {
+    /// Bool. Hide every amount (spec §6.4); `AmountText` reads it via `\.balanceHidden`.
+    static let hideBalances = "privacy.hideBalances"
+    /// String. Display name from profile setup (spec §7 step 0), on device only.
+    static let profileName = "profile.name"
+    /// String. Asset name of the chosen avatar (`avatar.*`).
+    static let profileAvatar = "profile.avatar"
+    /// String: "low" | "medium" | "high". Reminder level (spec §3.4), default medium.
+    static let reminderLevel = "reminders.level"
+}
+
 // ponytail: delete once every tab has its real screen
-private struct Placeholder: View {
+struct Placeholder: View {
     let title: LocalizedStringKey
     let spec: String
 
