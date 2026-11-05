@@ -11,7 +11,7 @@
 |---|---|
 | Người dùng | Cả hai: mặc định cho người phổ thông, có mục **Nâng cao** cho power user |
 | Nền tảng | Chỉ iOS (SwiftUI + SwiftData + CloudKit) |
-| Kiếm tiền | **Mua đứt một lần** |
+| Kiếm tiền | **Mua đứt một lần**: trả tiền khi tải trên App Store, không IAP |
 | AI chạy ở đâu | User chọn trong Cài đặt: on-device (Apple Foundation Models hoặc model mở như Gemma, Qwen... chạy trên máy) hoặc BYOK. Moonee **không** trả phí LLM thay user |
 | Skill của trợ lý | Dựa trên bộ skill Finance của Anthropic, custom lại cho tài chính cá nhân (mục 9.4) |
 | Lưu giao dịch | Lưu ngay, kèm thẻ sửa/hoàn tác |
@@ -42,7 +42,7 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 ```
 
 - Mở app thì vào **Tổng quan**.
-- Nút **(+)** ở giữa là logo Moonee, nhấn vào là mở chat và ô nhập sẵn sàng (focus bàn phím hoặc mic).
+- Nút **(+)** ở giữa nhấn vô là truy cập vô trợ lý Moonee, nhấn vào là mở chat và ô nhập sẵn sàng (focus bàn phím hoặc mic).
 - **Sổ giao dịch** (xem, tìm, lọc, sửa lịch sử) nằm trong Tổng quan, dạng "Giao dịch gần đây → Xem tất cả".
 ---
 
@@ -167,6 +167,7 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 
 ## 7. Onboarding (qua chat)
 
+0. **Thiết lập hồ sơ** (màn riêng, không phải chat): tên hiển thị + chọn avatar có sẵn, chỉ lưu trên máy, không đăng nhập. Có nút "Để sau".
 1. Moonee chào và giới thiệu ngắn (nhân vật xuất hiện).
 2. Hỏi thu nhập hằng tháng (khoảng) và cố định hay không đều.
 3. Hỏi các ví đang dùng, số dư ban đầu (bỏ qua được).
