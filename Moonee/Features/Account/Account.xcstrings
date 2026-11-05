@@ -354,16 +354,6 @@
         }
       }
     },
-    "Downloadable models are coming soon.": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Model tải về sẽ có sớm."
-          }
-        }
-      }
-    },
     "Export CSV": {
       "localizations": {
         "vi": {
@@ -840,26 +830,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mức nhắc nhở, thời gian, loại thông báo"
-          }
-        }
-      }
-    },
-    "Reminder settings are coming soon.": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cài đặt nhắc nhở sẽ có sớm."
-          }
-        }
-      }
-    },
-    "Reminders": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nhắc nhở"
           }
         }
       }
