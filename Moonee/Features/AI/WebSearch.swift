@@ -32,12 +32,18 @@ protocol SearchBackend: Sendable {
 struct WebSearch: Sendable {
     var backend: (any SearchBackend)?
     var now: @Sendable () -> Date = { .now }
+    /// The user's switch (`LLMSettings.webSearch`, also in the chat composer). Off = nothing is searched.
+    var enabled = true
 
     static let maxHits = 5
 
     /// Never throws: failures come back as a message the model can relay.
     func run(_ query: String) async -> SearchResult {
         let at = now().formatted(.iso8601)
+        guard enabled else {
+            return SearchResult(configured: false, searchedAt: at, message:
+                "The user turned web search off. Answer without outside data, and say they can turn search on in the chat or in Account → AI assistant.")
+        }
         guard let backend else {
             return SearchResult(configured: false, searchedAt: at, message:
                 "Web search is not set up. Tell the user: open Account → AI assistant → Web search and add a Tavily or Brave key, or use OpenRouter, OpenAI, Anthropic or Gemini as the AI provider.")
@@ -53,7 +59,64 @@ struct WebSearch: Sendable {
 
     /// From the settings: provider search only when answers already go to that provider (BYOK / hybrid).
     static func current() -> WebSearch {
-        WebSearch(backend: SearchSettings.backend())
+        WebSearch(backend: SearchSettings.backend(), enabled: LLMSettings.webSearch)
+    }
+}
+
+/// A web source behind an answer, for the chat's source chips.
+struct WebSource: Equatable, Hashable, Sendable {
+    var title: String
+    var url: URL
+    /// Host without "www." ("sjc.com.vn").
+    var site: String
+    /// Parsed when the source gives an ISO-style date; nil for "2 hours ago" and the like.
+    var date: Date?
+
+    init?(_ hit: SearchHit) {
+        guard let url = URL(string: hit.url), let host = url.host() else { return nil }
+        title = hit.title
+        self.url = url
+        site = host.hasPrefix("www.") ? String(host.dropFirst(4)) : host
+        date = hit.date.flatMap(WebSource.date(from:))
+    }
+
+    init(title: String, url: URL, site: String, date: Date? = nil) {
+        (self.title, self.url, self.site, self.date) = (title, url, site, date)
+    }
+
+    static func date(from s: String) -> Date? {
+        if let d = try? Date(s, strategy: .iso8601) { return d }
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.timeZone = TimeZone(identifier: "UTC")
+        for format in ["yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd", "MMMM d, yyyy", "EEE, dd MMM yyyy HH:mm:ss zzz"] {
+            f.dateFormat = format
+            if let d = f.date(from: s) { return d }
+        }
+        return nil
+    }
+}
+
+/// Collects the hits `webSearch` returned while one answer was made.
+final class SourceLog: @unchecked Sendable {
+    private let lock = NSLock()
+    private var hits: [SearchHit] = []
+
+    var sources: [WebSource] {
+        lock.withLock {
+            var seen = Set<String>()
+            return hits.filter { seen.insert($0.url).inserted }.compactMap(WebSource.init)
+        }
+    }
+
+    /// The same tool, recording the results it hands to the model. Other tools pass through.
+    func wrap(_ tool: AITool) -> AITool {
+        guard tool.name == "webSearch" else { return tool }
+        return AITool(name: tool.name, description: tool.description, parameters: tool.parameters) { [self] data in
+            let out = try await tool.run(data)
+            if let r = try? JSONDecoder().decode(SearchResult.self, from: Data(out.utf8)) { lock.withLock { hits += r.results } }
+            return out
+        }
     }
 }
 

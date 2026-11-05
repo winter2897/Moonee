@@ -276,7 +276,7 @@ struct ReportView: View {
         let router = LLMSettings.router()
         guard !router.candidates(for: Skill.closeManagement.job).isEmpty else { return }
         let assistant = Assistant(router: router, tools: MooneeTools(ledger: StoreLedger(context)))
-        if case .answer(let text, _) = await assistant.answer(ask, skill: .closeManagement, context: ParserContext(context)) {
+        if case .answer(let text, _, _) = await assistant.answer(ask, skill: .closeManagement, context: ParserContext(context)) {
             aiComment = (r.month.start, text)
         }
     }

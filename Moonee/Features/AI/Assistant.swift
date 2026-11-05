@@ -51,8 +51,8 @@ struct Assistant: Sendable {
     enum Output: Sendable, Equatable {
         /// Save right away and show cards (spec §3.2); ask for `missing` fields first. `usedModel` false = rule parser.
         case transactions([ParsedTxn], usedModel: Bool)
-        /// Moonee's reply, from the skill `skill`.
-        case answer(String, skill: String)
+        /// Moonee's reply, from the skill `skill`, with the web sources it was given (market lookups; else empty).
+        case answer(String, skill: String, sources: [WebSource] = [])
         /// No model could answer: the skill's tool results (JSON per tool) for the screen to show as numbers.
         case facts([ToolResult], skill: String)
     }
@@ -91,7 +91,8 @@ struct Assistant: Sendable {
 
     /// Answers with a skill. Big models call the skill's tools; small ones get the tool results in the prompt.
     func answer(_ text: String, skill: Skill, history: [LLMMessage] = [], context: ParserContext) async -> Output {
-        let skillTools = tools.named(skill.tools)
+        let log = SourceLog()
+        let skillTools = tools.named(skill.tools).map(log.wrap)
         var facts: [ToolResult]?
         func prefetched() async -> [ToolResult] {
             if let facts { return facts }
@@ -112,7 +113,7 @@ struct Assistant: Sendable {
                 request.tools = skillTools
             }
             if let reply = try? await model.respond(request), !reply.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                return .answer(reply, skill: skill.id)
+                return .answer(reply, skill: skill.id, sources: log.sources)
             }
         }
         return .facts(await prefetched(), skill: skill.id)
