@@ -1,3 +1,4 @@
+import CloudKit
 import SwiftData
 import SwiftUI
 
@@ -66,18 +67,23 @@ struct DataView: View {
     @State private var exportURL: URL?
     @State private var confirmStep = 0
     @State private var error: String?
+    @State private var cloud = CloudSync.Status.off
 
     var body: some View {
         Form {
             Section {
                 LabeledContent {
-                    Text("Off", tableName: "Account")
+                    Text(cloud == .on ? "On" : "Off", tableName: "Account")
                 } label: {
-                    Label { Text("iCloud sync", tableName: "Account") } icon: { Image(systemName: "icloud") }
+                    Label { Text("iCloud sync", tableName: "Account") } icon: { Image(systemName: cloud == .on ? "checkmark.icloud" : "icloud.slash") }
                 }
             } footer: {
-                // ponytail: static until S11 adds the iCloud capability; then read the real sync state.
-                Text("Your data is stored on this iPhone only. iCloud backup and sync come in a later update.", tableName: "Account")
+                switch cloud {
+                case .on: Text("Your data syncs to your own private iCloud, so a new iPhone or a reinstall gets it back. Nobody else, Moonee included, can read it.", tableName: "Account")
+                case .noAccount: Text("Sign in to iCloud (or turn on iCloud for Moonee) in the Settings app to sync. Until then your data stays on this iPhone.", tableName: "Account")
+                case .unavailable: Text("iCloud is not available right now. Your data is safe on this iPhone and syncs when iCloud is back.", tableName: "Account")
+                case .off: Text("Your data is stored on this iPhone only.", tableName: "Account")
+                }
             }
 
             Section {
@@ -103,6 +109,8 @@ struct DataView: View {
         .background(MooneeBackground())
         .navigationTitle(Text("Data", tableName: "Account"))
         .task(id: txns.count) { exportURL = try? CSVExport.file(txns) }
+        .task { cloud = await CloudSync.status() }
+        .onReceive(NotificationCenter.default.publisher(for: .CKAccountChanged)) { _ in Task { cloud = await CloudSync.status() } }
         .confirmationDialog(Text("Delete all data?", tableName: "Account"), isPresented: Binding(get: { confirmStep == 1 }, set: { if !$0 && confirmStep == 1 { confirmStep = 0 } }), titleVisibility: .visible) {
             Button(String(localized: "Continue", table: "Account"), role: .destructive) { confirmStep = 2 }
         } message: {

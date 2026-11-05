@@ -6,7 +6,7 @@ import Testing
 @MainActor
 struct AccountDataTests {
     private func container() throws -> ModelContainer {
-        try ModelContainer(for: Schema.moonee, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        try ModelContainer(for: Schema.moonee, configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none))
     }
 
     @Test func csvExportUsesFixedEnglishHeadersAndKeys() throws {

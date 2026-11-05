@@ -171,7 +171,10 @@ struct MooneeTools: Sendable {
             .map { (name: $0.key, sum: $0.value.sum) }
             .sorted { $0.sum > $1.sum }
             .prefix(3)
-            .map { .init(name: $0.name, spent: money($0.sum), share: total > 0 ? "\(Int((Double($0.sum) * 100 / Double(total)).rounded()))%" : "0%") }
+            .map { row -> Summary.Category in
+                let percent = total > 0 ? Int((Double(row.sum) * 100 / Double(total)).rounded()) : 0
+                return .init(name: row.name, spent: money(row.sum), share: "\(percent)%")
+            }
     }
 
     private func money(_ minor: Int) -> String { Money(minor, ledger.currency).formatted(locale: locale) }

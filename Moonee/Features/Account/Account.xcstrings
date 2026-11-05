@@ -934,6 +934,16 @@
         }
       }
     },
+    "Sign in to iCloud (or turn on iCloud for Moonee) in the Settings app to sync. Until then your data stays on this iPhone.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đăng nhập iCloud (hoặc bật iCloud cho Moonee) trong ứng dụng Cài đặt để đồng bộ. Trong lúc đó dữ liệu vẫn nằm trên iPhone này."
+          }
+        }
+      }
+    },
     "Skills": {
       "localizations": {
         "vi": {
@@ -1154,12 +1164,22 @@
         }
       }
     },
-    "Your data is stored on this iPhone only. iCloud backup and sync come in a later update.": {
+    "Your data is stored on this iPhone only.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dữ liệu chỉ được lưu trên iPhone này. Sao lưu và đồng bộ iCloud sẽ có ở bản cập nhật sau."
+            "value": "Dữ liệu chỉ được lưu trên iPhone này."
+          }
+        }
+      }
+    },
+    "Your data syncs to your own private iCloud, so a new iPhone or a reinstall gets it back. Nobody else, Moonee included, can read it.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dữ liệu được đồng bộ vào iCloud riêng của bạn, nên iPhone mới hay khi cài lại vẫn có lại dữ liệu. Không ai khác, kể cả Moonee, đọc được."
           }
         }
       }
@@ -1170,6 +1190,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tên của bạn"
+          }
+        }
+      }
+    },
+    "iCloud is not available right now. Your data is safe on this iPhone and syncs when iCloud is back.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud hiện không dùng được. Dữ liệu vẫn an toàn trên iPhone này và sẽ đồng bộ khi iCloud hoạt động lại."
           }
         }
       }

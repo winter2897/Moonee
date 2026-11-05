@@ -1,0 +1,52 @@
+name: Test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode 26
+        run: |
+          sudo xcode-select -s "$(ls -d /Applications/Xcode_26*.app | sort -V | tail -1)"
+          xcodebuild -version
+
+      # MLX compiles Metal shaders.
+      - name: Metal toolchain
+        run: xcodebuild -downloadComponent MetalToolchain
+
+      # Packages + compiled MLX; app sources rebuild anyway (fresh checkout timestamps).
+      - uses: actions/cache@v4
+        with:
+          path: |
+            build/SourcePackages
+            build/Build
+            build/ModuleCache.noindex
+          key: dd-${{ runner.os }}-xcode26-${{ hashFiles('Moonee.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}-${{ github.sha }}
+          restore-keys: dd-${{ runner.os }}-xcode26-${{ hashFiles('Moonee.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}-
+
+      - name: Test
+        run: |
+          status=0
+          xcodebuild test -project Moonee.xcodeproj -scheme Moonee \
+            -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=latest' \
+            -derivedDataPath build -skipPackagePluginValidation -skipMacroValidation \
+            > build.log 2>&1 || status=$?
+          grep -E 'error:|✘|Test run|\*\* TEST' build.log | tail -60
+          exit $status
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: build-log
+          path: build.log
