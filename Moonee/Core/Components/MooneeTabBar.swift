@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Floating tab bar of the mockups: 4 tabs around a raised green (+) that opens the Moonee chat.
-/// Use it in place of the system bar: `TabView(selection:)` + `.toolbar(.hidden, for: .tabBar)` + `.safeAreaInset(edge: .bottom)`.
+/// Use it in place of the system bar: `TabView(selection:)` + `.toolbarVisibility(.hidden, for: .tabBar)` on each tab's content + `.safeAreaInset(edge: .bottom)`.
 struct MooneeTabBar<Tab: Hashable>: View {
     struct Item {
         let tab: Tab
@@ -14,6 +14,9 @@ struct MooneeTabBar<Tab: Hashable>: View {
     @Binding var selection: Tab
     let onPlus: () -> Void
 
+    @Namespace private var glass
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     var body: some View {
         let half = items.count / 2
         HStack(spacing: 0) {
@@ -24,7 +27,7 @@ struct MooneeTabBar<Tab: Hashable>: View {
         }
         .padding(.horizontal, 8)
         .frame(minHeight: 72)
-        .background(Color.surface.opacity(0.94), in: .rect(cornerRadius: 30))
+        .background(Color.surface, in: .rect(cornerRadius: 30))
         .shadow(color: .brandDeep.opacity(0.10), radius: 16, y: 6)
         .overlay(alignment: .top) {
             Button(action: onPlus) {
@@ -37,7 +40,7 @@ struct MooneeTabBar<Tab: Hashable>: View {
                     .shadow(color: .brandPrimary.opacity(0.45), radius: 14, y: 6)
             }
             .buttonStyle(FABStyle())
-            .offset(y: -20)
+            .offset(y: -10)
             .accessibilityLabel(Text("Add with Moonee", tableName: "Components"))
         }
         .padding(.horizontal, 16)
@@ -45,7 +48,9 @@ struct MooneeTabBar<Tab: Hashable>: View {
 
     private func tabButton(_ item: Item) -> some View {
         let selected = item.tab == selection
-        return Button { selection = item.tab } label: {
+        return Button {
+            withAnimation(reduceMotion ? nil : .smooth(duration: 0.35)) { selection = item.tab }
+        } label: {
             VStack(spacing: 4) {
                 Image(systemName: item.symbol).font(.system(size: 22, weight: selected ? .semibold : .regular))
                 Text(item.title).font(.caption.weight(selected ? .semibold : .regular)).lineLimit(1).minimumScaleFactor(0.7)
@@ -53,6 +58,15 @@ struct MooneeTabBar<Tab: Hashable>: View {
             .foregroundStyle(selected ? Color.brandDeep : Color.ink.opacity(0.75))
             .frame(maxWidth: .infinity, minHeight: 56)
             .contentShape(.rect)
+            .background {
+                // Selected tab sits on an interactive Liquid Glass pill that slides to the tapped tab.
+                if selected {
+                    Capsule()
+                        .fill(Color.brandPrimary.opacity(0.10))
+                        .glassEffect(.regular.tint(Color.brandPrimary.opacity(0.12)).interactive(), in: .capsule)
+                        .matchedGeometryEffect(id: "selection", in: glass)
+                }
+            }
         }
         .buttonStyle(PressScaleStyle())
         .accessibilityAddTraits(selected ? .isSelected : [])
