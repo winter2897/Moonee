@@ -2,6 +2,24 @@
   "sourceLanguage": "en",
   "version": "1.0",
   "strings": {
+    "%@ %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@"
+          }
+        }
+      },
+      "comment": "Month and year on the month chip"
+    },
     "%@ has used 80%% of this month's budget. Go easy for a bit!": {
       "extractionState": "manual",
       "localizations": {
@@ -24,13 +42,13 @@
         }
       }
     },
-    "%@ is due soon. Tap Paid in Budget once it's done.": {
+    "%@ is due soon. Tap Mark paid in Budget once it's done.": {
       "extractionState": "manual",
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ sắp đến hạn. Trả xong thì bấm \"Đã trả\" trong Ngân sách nha."
+            "value": "%@ sắp đến hạn. Trả xong thì bấm \"Đánh dấu đã trả\" trong Ngân sách nha."
           }
         }
       }
@@ -750,6 +768,17 @@
         }
       }
     },
+    "Mark paid": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đánh dấu đã trả"
+          }
+        }
+      }
+    },
     "Medium": {
       "extractionState": "manual",
       "localizations": {
@@ -955,17 +984,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Số dư ban đầu"
-          }
-        }
-      }
-    },
-    "Paid": {
-      "extractionState": "manual",
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Đã trả"
           }
         }
       }
