@@ -57,6 +57,8 @@ extension Lexicon {
         skillCues: [
             ("close-management", ["close the month", "month end", "month-end", "monthly report", "wrap up the month"]),
             ("jar-budgeting", ["split my income", "split my salary", "split income", "rebalance", "allocate"]),
+            ("market-lookup", ["gold price", "price of gold", "exchange rate", "interest rate", "stock price", "share price",
+                               "bitcoin", "btc", "ethereum", "eth", "crypto", "news", "gas price", "search the web", "look up"]),
         ],
         periods: [
             "today": "today", "this week": "thisWeek", "last week": "lastWeek", "this month": "thisMonth",

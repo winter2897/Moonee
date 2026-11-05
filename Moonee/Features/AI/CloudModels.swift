@@ -12,6 +12,8 @@ struct CloudModel: Codable, Hashable, Identifiable, Sendable {
     /// From OpenRouter's `supported_parameters`; nil = the provider doesn't say.
     var tools: Bool?
     var structuredOutputs: Bool?
+    /// Accepts a reasoning effort (OpenRouter `reasoning`); nil = the provider doesn't say.
+    var reasoning: Bool?
 
     var isFree: Bool { id.hasSuffix(":free") || (promptPrice == 0 && completionPrice == 0) }
     /// Moonee calls tools and asks for JSON; models known to do both sort first.
@@ -38,7 +40,8 @@ extension CloudModel {
             return CloudModel(id: id, name: m["name"] as? String, contextLength: m["context_length"] as? Int,
                               promptPrice: perMillion("prompt"), completionPrice: perMillion("completion"),
                               tools: params.map { $0.contains("tools") },
-                              structuredOutputs: params.map { $0.contains("structured_outputs") || $0.contains("response_format") })
+                              structuredOutputs: params.map { $0.contains("structured_outputs") || $0.contains("response_format") },
+                              reasoning: params.map { $0.contains("reasoning") })
         }
     }
 

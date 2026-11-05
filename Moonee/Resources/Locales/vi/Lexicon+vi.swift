@@ -63,6 +63,9 @@ extension Lexicon {
         skillCues: [
             ("close-management", ["chốt sổ", "cuối tháng", "tổng kết tháng", "báo cáo tháng", "kết thúc tháng"]),
             ("jar-budgeting", ["chia thu nhập", "chia lương", "cân đối", "phân bổ"]),
+            ("market-lookup", ["giá vàng", "vàng sjc", "vàng pnj", "sjc", "pnj", "tỷ giá", "giá đô", "giá usd", "lãi suất",
+                               "giá cổ phiếu", "chứng khoán", "vn-index", "vnindex", "bitcoin", "btc", "ethereum", "eth",
+                               "tiền ảo", "crypto", "tin tức", "giá xăng", "tìm trên mạng", "tra cứu"]),
         ],
         periods: [
             "hôm nay": "today", "tuần này": "thisWeek", "tuần trước": "lastWeek", "tuần rồi": "lastWeek",
