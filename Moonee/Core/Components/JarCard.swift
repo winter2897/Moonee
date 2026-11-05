@@ -77,9 +77,9 @@ struct PercentChip: View {
         }
         .lineLimit(1)
         .fixedSize()
-        .font(.subheadline.weight(.semibold))
+        .font(.caption.weight(.semibold))
         .foregroundStyle(level.text)
-        .padding(.horizontal, 10).padding(.vertical, 5)
+        .padding(.horizontal, 8).padding(.vertical, 3)
         .background(level == .normal ? Color.brandMintSoft : level.fill.opacity(0.14), in: .capsule)
     }
 }
@@ -95,9 +95,11 @@ struct JarCard: View {
     let spent: Int
     let budget: Int
     let currency: String
-    /// Small text under the bar in the row layout, e.g. the income split "55%".
+    /// Small text under the name in the row layout, e.g. the income split "55%".
     var subtitle: String? = nil
     var layout: Layout = .row
+    @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.balanceHidden) private var hidden
 
     private var level: BudgetLevel { BudgetLevel(balance: balance, spent: spent, budget: budget) }
     private var progress: Double { BudgetLevel.progress(spent: spent, budget: budget) }
@@ -113,44 +115,45 @@ struct JarCard: View {
         .accessibilityElement(children: .combine)
     }
 
+    /// One line, as in the Budget mockup: icon · name / split · bar over "spent / budget" · % chip · chevron.
+    /// No background: the screen groups the rows in one `.card()` with dividers. At accessibility sizes the bar block drops under the name.
     private var row: some View {
-        HStack(spacing: 12) {
-            IconBadge(symbol: symbol, color: color, size: 44)
-            VStack(alignment: .leading, spacing: 6) {
-                HStack(alignment: .firstTextBaseline, spacing: 8) {
-                    Text(name).font(.headline).foregroundStyle(Color.ink)
-                    Spacer(minLength: 4)
-                    AmountText(balance, currency: currency)
-                        .font(.headline)
-                        .foregroundStyle(balance < 0 ? Color.danger : Color.ink)
-                        .layoutPriority(1)
+        let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 6)) : AnyLayout(HStackLayout(spacing: 8))
+        return HStack(spacing: 8) {
+            IconBadge(symbol: symbol, color: color)
+            layout {
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(name).font(.rowTitle).foregroundStyle(Color.ink).lineLimit(2).minimumScaleFactor(0.85)
+                    if let subtitle { Text(subtitle).font(.caption).foregroundStyle(Color.inkSecondary) }
                 }
-                HStack(spacing: 8) {
-                    MooneeProgressBar(progress: progress, tint: level.fill)
-                    PercentChip(percent: percent, level: level)
+                .frame(maxWidth: typeSize.isAccessibilitySize ? nil : 96, alignment: .leading)
+                .layoutPriority(1) // the name takes what it needs (≤ 96 pt), the bar gets the rest
+                VStack(alignment: .trailing, spacing: 4) {
+                    MooneeProgressBar(progress: progress, tint: level.fill, height: 6)
+                    // One Text so both amounts shrink together; full amounts in lists (spec §B).
+                    Text(verbatim: hidden ? AmountFormat.mask : "\(AmountFormat.string(spent, currency)) / \(AmountFormat.string(budget, currency))")
+                        .font(.caption2).monospacedDigit()
+                        .foregroundStyle(Color.inkSecondary)
+                        .lineLimit(1).minimumScaleFactor(0.5)
                 }
-                HStack(spacing: 2) {
-                    if let subtitle { Text(subtitle) }
-                    Spacer(minLength: 4)
-                    AmountText(spent, currency: currency, short: true)
-                    Text(verbatim: "/")
-                    AmountText(budget, currency: currency, short: true)
-                }
-                .font(.caption).foregroundStyle(Color.inkSecondary)
+                .frame(maxWidth: .infinity)
             }
-            Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(Color.inkSecondary)
+            PercentChip(percent: percent, level: level)
+            Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(Color.inkSecondary)
                 .accessibilityHidden(true)
         }
-        .padding(.vertical, 12).padding(.horizontal, 14)
-        .background(Color.surface.opacity(0.85), in: .rect(cornerRadius: 20))
+        .padding(.vertical, 6).padding(.horizontal, 12)
+        .frame(minHeight: 46)
+        .contentShape(.rect)
     }
 
+    /// Fits 4 across a card (≈ 80 pt each): give it `maxWidth: .infinity`. Amounts are short here (rule in spec §B).
     private var tile: some View {
-        VStack(spacing: 6) {
-            IconBadge(symbol: symbol, color: color, size: 40)
-            Text(name).font(.subheadline.weight(.semibold)).foregroundStyle(Color.ink).lineLimit(1).minimumScaleFactor(0.8)
-            AmountText(balance, currency: currency)
-                .font(.subheadline.weight(.bold))
+        VStack(spacing: 5) {
+            IconBadge(symbol: symbol, color: color, size: 30)
+            Text(name).font(.secondaryText.weight(.semibold)).foregroundStyle(Color.ink).lineLimit(1).minimumScaleFactor(0.75)
+            AmountText(balance, currency: currency, short: true)
+                .font(.caption.weight(.bold))
                 .foregroundStyle(balance < 0 ? Color.danger : Color.ink)
             HStack(spacing: 6) {
                 MooneeProgressBar(progress: progress, tint: level.fill, height: 6)
@@ -163,9 +166,9 @@ struct JarCard: View {
                 .foregroundStyle(level == .normal ? Color.inkSecondary : level.text)
             }
         }
-        .padding(12)
-        .frame(minWidth: 0) // S5: was 96; four tiles share the Overview jar card (UI review O-3)
-        .background(Color.surface.opacity(0.85), in: .rect(cornerRadius: 18))
+        .padding(.horizontal, 8).padding(.vertical, 10)
+        .frame(maxWidth: .infinity)
+        .background(Color.surface.opacity(0.85), in: .rect(cornerRadius: 16))
         .shadow(color: .brandDeep.opacity(0.06), radius: 8, y: 3)
     }
 }

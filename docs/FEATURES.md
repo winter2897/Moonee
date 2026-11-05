@@ -363,6 +363,8 @@ Bạn đã có thiết kế, màu (xanh lá/mint + vàng) và nhân vật. Dư�
 ## B. Chữ và số
 - [ ] Số tiền dùng **tabular figures** (chữ số đều độ rộng) để các cột không bị nhảy.
 - [ ] Format VND thống nhất: đầy đủ `1.250.000 ₫`, rút gọn `1,25tr` / `850k` (chốt quy tắc cho từng chỗ).
+  - **Quy tắc (UI review 2026-11):** mặc định dùng số **đầy đủ**, kể cả trong danh sách và thẻ (`199.000 ₫`, `3.250.000 ₫ / 5.500.000 ₫`). Chỉ **rút gọn** ở tâm biểu đồ (ring, donut) và ô nhỏ hẹp hơn 90 pt (ví dụ ô lọ 4 cột ở Tổng quan). Số không vừa thì thu nhỏ chữ (`minimumScaleFactor`), không chuyển sang rút gọn.
+- [ ] **Thang chữ:** màn hình chỉ dùng token trong `Theme.swift` (`screenTitle` 20, `headerPill` 13, `heroAmountFont()` 26, `cardAmount` 20, `greeting` 17, `sectionTitle` 16, `rowTitle` 15, `bodyText` 15, `secondaryText` 13, `caption` 12, `chip` 13), không dùng `.system(size:)` cho chữ.
 - [ ] Trạng thái **ẩn số dư**: `•••••` có độ rộng cố định.
 - [ ] Hỗ trợ **Dynamic Type**: số lớn trên dashboard vẫn phải vừa khung khi chữ to.
 - [ ] Font hiển thị đúng dấu tiếng Việt (ă, ơ, ư, ệ...), nhất là font display hoặc font tròn trang trí.
