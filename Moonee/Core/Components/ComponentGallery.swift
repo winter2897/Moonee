@@ -4,7 +4,7 @@ import SwiftUI
 /// Every design-system component in every state, for review (Debug builds only; Tài khoản → Component Gallery).
 struct ComponentGallery: View {
     enum Section: String, CaseIterable, Identifiable {
-        case colors = "Colours", character = "Moonee", money = "Amounts", tabBar = "Tab bar", jars = "Jars",
+        case colors = "Colours", type = "Type", header = "Header", character = "Moonee", money = "Amounts", tabBar = "Tab bar", jars = "Jars",
              bills = "Bills", chat = "Chat", input = "Input", charts = "Charts", empty = "Empty"
         var id: String { rawValue }
     }
@@ -27,6 +27,7 @@ struct ComponentGallery: View {
                 }
                 .padding(.horizontal, 16).padding(.vertical, 8)
             }
+            .contentMargins(.bottom, 0, for: .scrollContent) // undo the tab bar clearance on a horizontal row
             ScrollView {
                 VStack(alignment: .leading, spacing: 14) { content }
                     .padding(.horizontal, 16).padding(.bottom, 40)
@@ -51,6 +52,8 @@ struct ComponentGallery: View {
     @ViewBuilder private var content: some View {
         switch section {
         case .colors: colors
+        case .type: typeScale
+        case .header: header
         case .character: character
         case .money: money
         case .tabBar: tabBar
@@ -79,6 +82,46 @@ struct ComponentGallery: View {
             title("Buttons")
             Button("Lưu giao dịch") {}.buttonStyle(MooneeButtonStyle())
             PillPicker(options: [(0, "Tuần"), (1, "Tháng"), (2, "Năm")], selection: .constant(1))
+        }
+    }
+
+    private var typeScale: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("screenTitle 20 bold").font(.screenTitle)
+            Text("headerPill 13 medium").font(.headerPill)
+            AmountText(6_450_000, currency: "VND").heroAmountFont()
+            Text("heroAmountFont() 26 bold rounded").font(.caption).foregroundStyle(Color.inkSecondary)
+            Text("cardAmount 20 bold").font(.cardAmount)
+            Text("greeting 17 bold").font(.greeting)
+            Text("sectionTitle 16 semibold").font(.sectionTitle)
+            Text("rowTitle 15 semibold").font(.rowTitle)
+            Text("bodyText 15").font(.bodyText)
+            Text("secondaryText 13").font(.secondaryText)
+            Text("caption 12 (system)").font(.caption)
+            Text("chip 13 medium").font(.chip)
+        }
+        .foregroundStyle(Color.ink)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .card()
+    }
+
+    private var header: some View {
+        VStack(spacing: 18) {
+            VStack(spacing: 0) {
+                MooneeHeader(Text(verbatim: "Trợ lý tài chính AI của bạn")) {
+                    Button {} label: { HeaderCircle("clock") }.accessibilityLabel("Transactions")
+                } trailing: {
+                    Menu { Button("Ẩn số dư") {} } label: { HeaderCircle("ellipsis") }.accessibilityLabel("More")
+                }
+                MooneeHero(mood: .greeting)
+            }
+            VStack(spacing: 0) {
+                MooneeHeader(Text(verbatim: "Ngân sách & các lọ")) {
+                    Menu { Button("Nhắc nhở") {} } label: { HeaderCircle("ellipsis") }.accessibilityLabel("More")
+                }
+                MooneeHero(mood: .happy, compact: true)
+            }
+            MooneeHeader(Text(verbatim: "Tài khoản & Cài đặt"))
         }
     }
 
@@ -131,13 +174,20 @@ struct ComponentGallery: View {
 
     private var jars: some View {
         Group {
-            title("Row: normal / ≥80% / over / negative")
-            JarCard(name: "Thiết yếu", symbol: "fork.knife", color: JarPalette.color(0), balance: 2_250_000, spent: 3_250_000, budget: 5_500_000, currency: "VND", subtitle: "55%")
-            JarCard(name: "Tiết kiệm", symbol: "banknote", color: JarPalette.color(2), balance: 600_000, spent: 2_400_000, budget: 3_000_000, currency: "VND", subtitle: "10%")
-            JarCard(name: "Hưởng thụ", symbol: "gamecontroller", color: JarPalette.color(4), balance: -250_000, spent: 2_250_000, budget: 2_000_000, currency: "VND", subtitle: "10%")
-            JarCard(name: "Phát triển bản thân", symbol: "book", color: JarPalette.color(3), balance: -150_000, spent: 300_000, budget: 500_000, currency: "VND", subtitle: "10%")
-            title("Tile")
+            title("Rows in one card: normal / ≥80% / over / negative")
+            VStack(spacing: 0) {
+                JarCard(name: "Thiết yếu", symbol: "fork.knife", color: JarPalette.color(0), balance: 2_250_000, spent: 3_250_000, budget: 5_500_000, currency: "VND", subtitle: "55%")
+                Divider().padding(.leading, 56)
+                JarCard(name: "Tiết kiệm", symbol: "banknote", color: JarPalette.color(2), balance: 600_000, spent: 2_400_000, budget: 3_000_000, currency: "VND", subtitle: "10%")
+                Divider().padding(.leading, 56)
+                JarCard(name: "Hưởng thụ", symbol: "gamecontroller", color: JarPalette.color(4), balance: -250_000, spent: 2_250_000, budget: 2_000_000, currency: "VND", subtitle: "10%")
+                Divider().padding(.leading, 56)
+                JarCard(name: "Phát triển bản thân", symbol: "book", color: JarPalette.color(3), balance: -150_000, spent: 300_000, budget: 500_000, currency: "VND", subtitle: "10%")
+            }
+            .card(padding: 0)
+            title("Tiles, 4 across")
             HStack(spacing: 8) {
+                JarCard(name: "Đầu tư", symbol: "chart.line.uptrend.xyaxis", color: JarPalette.color(1), balance: 1_000_000, spent: 0, budget: 1_000_000, currency: "VND", layout: .tile)
                 JarCard(name: "Thiết yếu", symbol: "fork.knife", color: JarPalette.color(0), balance: 3_250_000, spent: 3_575_000, budget: 5_500_000, currency: "VND", layout: .tile)
                 JarCard(name: "Tiết kiệm", symbol: "banknote", color: JarPalette.color(2), balance: 2_400_000, spent: 2_400_000, budget: 3_000_000, currency: "VND", layout: .tile)
                 JarCard(name: "Hưởng thụ", symbol: "gamecontroller", color: JarPalette.color(4), balance: -250_000, spent: 2_250_000, budget: 2_000_000, currency: "VND", layout: .tile)
@@ -147,7 +197,7 @@ struct ComponentGallery: View {
 
     private var bills: some View {
         let day: (Int) -> Date = { Calendar.current.date(byAdding: .day, value: $0, to: .now)! }
-        return Group {
+        return VStack(alignment: .leading, spacing: 8) {
             title("upcoming / today / overdue / paid")
             BillCard(name: "Internet", symbol: "wifi", amount: 199_000, currency: "VND", due: day(3)) {}
             BillCard(name: "Tiền điện", symbol: "bolt", amount: 650_000, currency: "VND", due: day(0), estimate: true) {}
