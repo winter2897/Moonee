@@ -42,7 +42,7 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 ```
 
 - Mở app thì vào **Tổng quan**.
-- Nút **(+)** ở giữa nhấn vô là truy cập vô trợ lý Moonee, nhấn vào là mở chat và ô nhập sẵn sàng (focus bàn phím hoặc mic).
+- Nút **(+)** nổi ở giữa thanh tab tự vẽ (giữ layout mockup, có pill glass khi chọn tab; không dùng tab bar hệ thống). Nhấn vào là mở chat, chưa bật bàn phím để thấy các gợi ý; ô nhập và mic sẵn sàng.
 - **Sổ giao dịch** (xem, tìm, lọc, sửa lịch sử) nằm trong Tổng quan, dạng "Giao dịch gần đây → Xem tất cả".
 ---
 
@@ -70,7 +70,14 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 - **Học từ lần sửa:** user đổi danh mục cho "Highlands" thì lần sau Moonee tự gán đúng (lưu cặp merchant → danh mục ở máy).
 - Thiếu thông tin quan trọng (không có số tiền) thì Moonee hỏi lại thay vì đoán.
 
+### 3.1b Lịch sử chat và ô nhập
+- Mỗi ngày một cuộc chat, sang ngày mới tự mở cuộc mới; user tạo cuộc mới, ghim (sao), xoá bất kỳ cuộc nào (xoá chat không xoá giao dịch).
+- Ô nhập: lúc nghỉ là một thanh gọn ((+), "Nhập hoặc giữ để nói", mic, nút giữ để nói); khi gõ mở rộng kèm chip model · mức nỗ lực và nút gửi.
+- (+) mở "Thêm vào cuộc trò chuyện": máy ảnh, ảnh gần đây, ảnh hoá đơn, Skills, bật/tắt tìm web.
+- Mức nỗ lực: Thấp / Trung bình (mặc định) / Cao / Cao hơn / Tối đa, chỉ hiện khi model hỗ trợ.
+
 ### 3.3 Hỏi đáp và tư vấn
+- **Tìm web** khi user hỏi thông tin bên ngoài (giá vàng, Bitcoin...): dùng tìm kiếm có sẵn của nhà cung cấp BYOK, hoặc key Tavily/Brave của user; giá crypto qua CoinGecko. Trả lời kèm nguồn và thời điểm.
 - "Tháng này mình ăn uống hết bao nhiêu?", "Còn bao nhiêu để hưởng thụ?"
 - Gợi ý cân đối lọ cuối tháng dựa trên thu nhập và thói quen chi.
 - Hướng dẫn đạt mục tiêu: "Muốn mua laptop 30tr trước Tết thì mỗi tuần cần để dành bao nhiêu?"
@@ -148,7 +155,8 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 - **Model local:** danh sách model, tải về, xoá (xem mục 9.2)
 - **BYOK:** chọn nhà cung cấp, nhập API key (lưu trong Keychain), chọn model
 - **Skill:** bật/tắt từng skill tài chính của trợ lý (xem mục 9.4)
-- **Nâng cao** (cho power user): import skill tự viết, prompt tuỳ chỉnh
+- **Nâng cao** (cho power user): import skill tự viết (.md), sửa skill có sẵn (có khôi phục mặc định), prompt tuỳ chỉnh
+- **BYOK:** OpenRouter, DeepSeek, OpenAI, Anthropic, Gemini, Custom (OpenAI-compatible); danh sách model lấy theo key, có tìm kiếm
 - Hiện rõ dữ liệu nào được gửi lên cloud (chỉ khi dùng BYOK)
 
 ### 6.3 Dữ liệu
