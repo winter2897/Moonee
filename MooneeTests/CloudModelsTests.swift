@@ -93,9 +93,14 @@ struct CloudModelsTests {
     }
 
     @Test func listErrorsSayWhatToDo() {
-        #expect(ModelPickerView.message(for: LLMError("HTTP 401: x", status: 401)).contains("rejected"))
-        #expect(ModelPickerView.message(for: LLMError("HTTP 404: x", status: 404)).contains("model ID"))
-        #expect(ModelPickerView.message(for: URLError(.notConnectedToInternet)).contains("internet"))
+        // Compared with the catalogue (not English text) so the test passes in every UI language.
+        #expect(ModelPickerView.message(for: LLMError("HTTP 401: x", status: 401))
+                == String(localized: "The provider rejected this key. Check it and try again.", table: "Account"))
+        #expect(ModelPickerView.message(for: LLMError("HTTP 404: x", status: 404))
+                == String(localized: "This server has no model list. Type a model ID instead.", table: "Account"))
+        #expect(ModelPickerView.message(for: URLError(.notConnectedToInternet))
+                == String(localized: "Can't reach the provider. Check your internet connection.", table: "Account"))
+        #expect(ModelPickerView.message(for: LLMError("HTTP 500: boom", status: 500)) == "HTTP 500: boom")
     }
 
     // MARK: - Migration
