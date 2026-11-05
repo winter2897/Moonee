@@ -223,6 +223,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Moonee;
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "Moonee uses Face ID to unlock the app when you turn on the app lock.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Moonee uses the camera to scan receipts and read the amount.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Moonee uses the microphone so you can say a transaction instead of typing it.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Moonee turns your speech into text to log transactions.";
@@ -256,6 +257,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Moonee;
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "Moonee uses Face ID to unlock the app when you turn on the app lock.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Moonee uses the camera to scan receipts and read the amount.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Moonee uses the microphone so you can say a transaction instead of typing it.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Moonee turns your speech into text to log transactions.";

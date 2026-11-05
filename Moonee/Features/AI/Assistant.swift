@@ -39,6 +39,10 @@ struct Assistant: Sendable {
     var tools: MooneeTools
     /// Moonee answers in the UI language (spec §10.4); input may be any language.
     var language = Assistant.uiLanguage
+    /// Skill ids the user switched off in AI settings: no model runs for them (rules / plain numbers instead).
+    var skillsOff = LLMSettings.skillsOff
+    /// The user's own instructions (Settings → Advanced), added to every answer prompt.
+    var customPrompt = LLMSettings.customPrompt
 
     enum Output: Sendable, Equatable {
         /// Save right away and show cards (spec §3.2); ask for `missing` fields first. `usedModel` false = rule parser.
@@ -71,7 +75,7 @@ struct Assistant: Sendable {
     /// Reads transactions with the first model that gives valid output, else the rule parser.
     func parse(_ text: String, context: ParserContext) async -> (txns: [ParsedTxn], usedModel: Bool) {
         let rules = QuickParser.parse(text, context: context)
-        for model in router.candidates(for: .parse) {
+        for model in skillsOff.contains(Skill.transactionParser.id) ? [] : router.candidates(for: .parse) {
             let instructions = parseInstructions(short: model.isSmall, context: context)
             if let items = try? await model.extractTransactions(instructions: instructions, text: text),
                let txns = TransactionExtractor.validate(items, text: text, rules: rules, context: context) {
@@ -91,10 +95,11 @@ struct Assistant: Sendable {
             facts = r
             return r
         }
-        for model in router.candidates(for: skill.job) {
+        for model in skillsOff.contains(skill.id) ? [] : router.candidates(for: skill.job) {
             var request = LLMRequest(
                 system: Skill.persona(language: language) + "\n\n" + skill.instructions(language: language, short: model.isSmall),
                 messages: history + [.init(role: .user, text: text)])
+            if !customPrompt.isEmpty { request.system += "\n\nThe user's own instructions:\n" + customPrompt }
             if model.isSmall {
                 let lines = await prefetched().map { "\($0.tool): \($0.json)" }.joined(separator: "\n")
                 request.system += "\n\nFACTS (computed by the app; use only these numbers):\n" + lines

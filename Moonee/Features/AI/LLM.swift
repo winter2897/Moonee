@@ -171,9 +171,9 @@ enum HTTP {
 
 // MARK: - Settings
 
+/// The first settings screen's two-way switch; only read now to pick the default `AIMode`.
 enum LLMProvider: String, CaseIterable {
     case remote, apple
-    var title: String { self == .remote ? "OpenRouter" : "Trên máy" }
 }
 
 /// AI mode of spec §9.1.
@@ -203,6 +203,8 @@ enum LLMSettings {
     static let baseURLKey = "ai.baseURL"
     static let modeKey = "ai.mode"
     static let cloudKey = "ai.cloud"
+    static let skillsOffKey = "ai.skillsOff"
+    static let customPromptKey = "ai.customPrompt"
     static let defaultModel = "google/gemini-3.5-flash-lite"
     static let defaultBaseURL = "https://openrouter.ai/api/v1"
 
@@ -237,25 +239,18 @@ enum LLMSettings {
         }
     }
 
-    /// The model the older two-way switch picks, or an error saying what to set up (used by the settings test button).
-    static func current() throws -> any LLM {
-        switch provider {
-        case .remote:
-            guard let llm = cloud(.openAICompatible) else { throw LLMError("Chưa nhập API key OpenRouter") }
-            return llm
-        case .apple:
-            guard AppleLLM.isAvailable else { throw LLMError(appleStatus) }
-            return AppleLLM()
-        }
+    static var skillsOff: Set<String> { Set(UserDefaults.standard.stringArray(forKey: skillsOffKey) ?? []) }
+    static var customPrompt: String {
+        (UserDefaults.standard.string(forKey: customPromptKey) ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     static var appleStatus: String {
         switch SystemLanguageModel.default.availability {
-        case .available: "Sẵn sàng (Apple Intelligence, model do hệ thống quản lý)"
-        case .unavailable(.deviceNotEligible): "Thiết bị không hỗ trợ Apple Intelligence"
-        case .unavailable(.appleIntelligenceNotEnabled): "Hãy bật Apple Intelligence trong Cài đặt"
-        case .unavailable(.modelNotReady): "Hệ thống đang tải model, thử lại sau"
-        case .unavailable: "Model trên máy chưa sẵn sàng"
+        case .available: String(localized: "Ready (Apple Intelligence, managed by iOS)", table: "Account")
+        case .unavailable(.deviceNotEligible): String(localized: "This iPhone does not support Apple Intelligence", table: "Account")
+        case .unavailable(.appleIntelligenceNotEnabled): String(localized: "Turn on Apple Intelligence in Settings", table: "Account")
+        case .unavailable(.modelNotReady): String(localized: "iOS is still downloading the model, try again later", table: "Account")
+        case .unavailable: String(localized: "The on-device model is not ready", table: "Account")
         }
     }
 

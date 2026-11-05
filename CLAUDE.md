@@ -23,13 +23,12 @@ MLX compiles Metal shaders: a fresh machine needs `xcodebuild -downloadComponent
 - `Moonee/Resources/Locales/<lang>/` — per-language parse dictionary (`Lexicon+<lang>.swift`), persona `moonee.<lang>.md` and skill files `<skill>.<lang>.md` (full part, then `<!-- short -->` part for small models). File names must be unique: the bundle is flat.
 - `Moonee/Features/Import/StatementCSV.swift` — bank statement CSV parsing → `ImportDraft`.
 - `Moonee/Features/Budget` — Budget tab (spec §4.1–4.3): `BudgetView` (3 segments) + `JarsSection` (jar cards, jar detail, `JarTransferSheet`), `BillsSection` (`RecurringForm`, "Paid"), `BudgetActions` (every Budget write: `moveBetweenJars`, `payCard`, `markPaid`, percent validation), `Reminders` (pure `ReminderPlanner` + local-notification scheduler, attached once in `RootView` via `.reminderScheduling()`), `ReminderSettingsView`. Strings: `Budget.xcstrings` via `loc("…")`. Debug: launch with `-budgetDemo` (empty store) and `-budgetSegment wallets|bills`.
+- `Moonee/Features/Account` — Account tab (spec §6): `ProfileForm`/`AvatarPicker` (reused by onboarding; avatars `avatar.*`), `SecurityView` + `.appLock()` (Face ID lock, App Switcher cover; keys `Prefs.appLock`…), `LanguageCurrencyView`, `DataView` (`CSVExport`, `DataReset.deleteAll`). Strings in `Account.xcstrings` (also used by `AISettingsView`).
 - `Moonee/Features/{Account,Wallets,Jars}` — settings screens: categories, wallets (`WalletsSection` is also the Budget segment; credit cards with statement/due day and "Pay card"), jar percents/add/rename/recolour (`JarSettingsView`), category → jar mapping.
 
 ## Known gaps vs the spec (fix before building on them)
 - iCloud sync is not switched on: no iCloud capability/entitlements yet (needs the team; S11). The schema is ready.
 - Ledger sums every currency as-is (no FX). Fine while all wallets use the default currency.
-- No settings UI for the currency override (`money.currency`) or language yet (S7).
-- `Features/AI` strings (`AISettingsView`, LLM errors) are still hard-coded Vietnamese (S7).
 - `SpeechInput` is fixed to vi-VN.
 - Schema v2 has no migration from v1: delete the app from the simulator if it fails to launch with an old store.
 
