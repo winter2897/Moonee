@@ -12,12 +12,28 @@ import SwiftUI
     var undone: Bool = false
     /// JSON `[ChatCardLine]`: what the card showed when it was undone, since its txns are deleted.
     var undoneLines: Data?
+    /// JSON of the pages a web answer came from (`WebSource`), shown as chips under the bubble.
+    var sourcesData: Data?
     @Relationship(deleteRule: .nullify, inverse: \Txn.chatMessage) var txns: [Txn]? = []
+    /// The conversation it belongs to (inverse declared on `ChatThread.messages`).
+    var thread: ChatThread?
 
     init(fromUser: Bool, text: String, date: Date = .now) {
         self.fromUser = fromUser
         self.text = text
         self.date = date
+    }
+
+    var sources: [WebSource] {
+        get { (sourcesData.flatMap { try? JSONDecoder().decode([StoredSource].self, from: $0) } ?? []).map(\.source) }
+        set { sourcesData = newValue.isEmpty ? nil : try? JSONEncoder().encode(newValue.map(StoredSource.init)) }
+    }
+
+    /// `WebSource` is not Codable; this is its stored form.
+    private struct StoredSource: Codable {
+        var title: String, url: URL, site: String, date: Date?
+        init(_ s: WebSource) { (title, url, site, date) = (s.title, s.url, s.site, s.date) }
+        var source: WebSource { WebSource(title: title, url: url, site: site, date: date) }
     }
 
     /// In the order they were saved (SwiftData relationships are unordered).
@@ -238,12 +254,34 @@ struct ChatCardLine: Codable, Equatable {
             case "splitIncome":
                 let rows = (o["jars"] as? [[String: Any]] ?? []).map { "• \(s("name", $0)) (\(s("percent", $0))): **\(s("amount", $0))**" }
                 return ([String(localized: "Here's how **\(s("amount"))** splits into your jars:", table: "Chat")] + rows).joined(separator: "\n")
+            case "webSearch":
+                guard o["configured"] as? Bool == true else {
+                    return String(localized: "Web search isn't set up yet. Add a Tavily or Brave key in Account › AI assistant, or use a provider with built-in search.", table: "Chat")
+                }
+                if let summary = o["summary"] as? String, !summary.isEmpty { return summary }
+                let hits = (o["results"] as? [[String: Any]] ?? []).prefix(3).map { "• **\(s("title", $0))**" }
+                guard !hits.isEmpty else { return String(localized: "Moonee searched the web but found nothing useful.", table: "Chat") }
+                return ([String(localized: "Here's what Moonee found on the web:", table: "Chat")] + hits).joined(separator: "\n")
+            case "marketPrice":
+                let prices = (o["prices"] as? [[String: Any]] ?? []).map { s("price", $0) }.filter { !$0.isEmpty }
+                guard !prices.isEmpty else { continue }
+                var text = "**\(s("coin").capitalized) (\(s("symbol").uppercased()))**: " + prices.joined(separator: " · ")
+                if !s("source").isEmpty { text += "\n" + String(localized: "Source: \(s("source"))", table: "Chat") }
+                return text
             case "savingsPlan":
                 return String(localized: "Put aside **\(s("perWeek"))** a week (**\(s("perMonth"))** a month) to reach \(s("target")) by \(s("deadline")).", table: "Chat")
             default: continue
             }
         }
         return nil
+    }
+
+    /// The pages behind a web-search fact, for the source chips.
+    nonisolated static func sources(_ facts: [Assistant.ToolResult]) -> [WebSource] {
+        facts.filter { $0.tool == "webSearch" }
+            .compactMap { try? JSONDecoder().decode(SearchResult.self, from: Data($0.json.utf8)) }
+            .flatMap(\.results)
+            .compactMap(WebSource.init)
     }
 
     nonisolated private static func periodName(_ raw: String) -> String {
