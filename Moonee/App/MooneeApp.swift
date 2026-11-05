@@ -7,7 +7,9 @@ struct MooneeApp: App {
 
     init() {
         do {
-            container = try ModelContainer(for: Txn.self, Wallet.self, Category.self, Jar.self)
+            // ponytail: local store only. S11 adds the iCloud capability (CloudKit container iCloud.com.haiquan.moonee +
+            // remote-notification background mode) with the team; SwiftData then syncs on its own. CloudKitSchemaTests keeps the schema ready.
+            container = try ModelContainer(for: Schema.moonee)
         } catch {
             fatalError("SwiftData: \(error)")
         }
@@ -16,8 +18,7 @@ struct MooneeApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView()
-                .preferredColorScheme(.light) // spec: light mode only
+            RootView() // light only: UIUserInterfaceStyle = Light in build settings
                 .task { DevSecrets.load() }
         }
         .modelContainer(container)
@@ -28,11 +29,11 @@ struct MooneeApp: App {
 struct RootView: View {
     var body: some View {
         TabView {
-            Tab("Tổng quan", systemImage: "house.fill") { Placeholder(title: "Tổng quan", spec: "§2") }
-            Tab("Ngân sách", systemImage: "square.stack.3d.up.fill") { Placeholder(title: "Ngân sách", spec: "§4") }
+            Tab("Overview", systemImage: "house.fill") { Placeholder(title: "Overview", spec: "§2") }
+            Tab("Budget", systemImage: "square.stack.3d.up.fill") { Placeholder(title: "Budget", spec: "§4") }
             Tab("Moonee", systemImage: "plus.circle.fill") { Placeholder(title: "Moonee", spec: "§3") }
-            Tab("Quan tâm", systemImage: "chart.line.uptrend.xyaxis") { Placeholder(title: "Quan tâm", spec: "§5") }
-            Tab("Tài khoản", systemImage: "person.fill") { AccountView() }
+            Tab("Watchlist", systemImage: "chart.line.uptrend.xyaxis") { Placeholder(title: "Watchlist", spec: "§5") }
+            Tab("Account", systemImage: "person.fill") { AccountView() }
         }
         .tint(.mooneeGreen)
     }
@@ -40,12 +41,12 @@ struct RootView: View {
 
 // ponytail: delete once every tab has its real screen
 private struct Placeholder: View {
-    let title: String
+    let title: LocalizedStringKey
     let spec: String
 
     var body: some View {
         NavigationStack {
-            ContentUnavailableView(title, systemImage: "hammer", description: Text("Chưa làm – xem docs/FEATURES.md \(spec)"))
+            ContentUnavailableView(title, systemImage: "hammer", description: Text("Not built yet – see docs/FEATURES.md \(spec)"))
                 .background(MooneeBackground())
         }
     }

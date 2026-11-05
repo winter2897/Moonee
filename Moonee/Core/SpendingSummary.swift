@@ -6,9 +6,9 @@ enum Period: CaseIterable {
 
     var title: String {
         switch self {
-        case .week: "Tuần"
-        case .month: "Tháng"
-        case .year: "Năm"
+        case .week: String(localized: "Week")
+        case .month: String(localized: "Month")
+        case .year: String(localized: "Year")
         }
     }
 

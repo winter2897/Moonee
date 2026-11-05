@@ -11,12 +11,6 @@ extension Color {
     static let mooneeYellow = Color(hex: 0xFACC15)
 }
 
-extension Int {
-    /// 250000 → "250.000 đ"
-    var vnd: String { grouped + " đ" }
-    var grouped: String { formatted(.number.locale(Locale(identifier: "vi_VN"))) }
-}
-
 /// Mint gradient with soft yellow/green glows, as in the mockups.
 struct MooneeBackground: View {
     var body: some View {

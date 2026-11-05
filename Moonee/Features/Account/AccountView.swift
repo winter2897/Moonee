@@ -7,8 +7,8 @@ struct AccountView: View {
                 HStack(spacing: 14) {
                     Image("Logo").resizable().frame(width: 64, height: 64).clipShape(.rect(cornerRadius: 16))
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Tài chính cá nhân").font(.title3.weight(.bold))
-                        Label("Dữ liệu lưu trên thiết bị (Offline)", systemImage: "checkmark")
+                        Text("Personal finance").font(.title3.weight(.bold))
+                        Label("Data stays on this device (offline)", systemImage: "checkmark")
                             .labelStyle(TrailingIcon())
                             .font(.caption).foregroundStyle(.secondary)
                     }
@@ -18,27 +18,27 @@ struct AccountView: View {
 
                 // Each feature session owns its destination file; rows here stay stable.
                 VStack(spacing: 0) {
-                    AccountRow(symbol: "tag", title: "Danh mục") { CategoriesView() }
+                    AccountRow(symbol: "tag", title: "Categories") { CategoriesView() }
                     Divider().padding(.leading, 44)
-                    AccountRow(symbol: "wallet.bifold", title: "Ví") { WalletsView() }
+                    AccountRow(symbol: "wallet.bifold", title: "Wallets") { WalletsView() }
                     Divider().padding(.leading, 44)
-                    AccountRow(symbol: "square.stack.3d.up", title: "Tuỳ chỉnh lọ") { JarSettingsView() }
+                    AccountRow(symbol: "square.stack.3d.up", title: "Customize jars") { JarSettingsView() }
                     Divider().padding(.leading, 44)
-                    AccountRow(symbol: "arrow.triangle.branch", title: "Gán danh mục vào lọ") { JarMappingView() }
+                    AccountRow(symbol: "arrow.triangle.branch", title: "Assign categories to jars") { JarMappingView() }
                     Divider().padding(.leading, 44)
-                    AccountRow(symbol: "brain.head.profile", title: "Trợ lý Moonee (AI)") { AISettingsView() }
+                    AccountRow(symbol: "brain.head.profile", title: "Moonee assistant (AI)") { AISettingsView() }
                 }
                 .card(padding: 12)
             }
             .foregroundStyle(Color.mooneeInk)
-            .mooneeScreen("Tài khoản")
+            .mooneeScreen(String(localized: "Account"))
         }
     }
 }
 
 private struct AccountRow<Destination: View>: View {
     let symbol: String
-    let title: String
+    let title: LocalizedStringKey
     @ViewBuilder let destination: () -> Destination
 
     var body: some View {

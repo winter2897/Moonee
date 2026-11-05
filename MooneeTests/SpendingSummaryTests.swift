@@ -30,8 +30,4 @@ struct SpendingSummaryTests {
         let s = SpendingSummary(txns: [Txn(amount: 1, kind: .expense, date: day(11, 2))], period: .year, anchor: day(11, 2), calendar: cal)
         #expect(s.change == nil)
     }
-
-    @Test func vndFormatting() {
-        #expect(250_000.vnd == "250.000 đ")
-    }
 }

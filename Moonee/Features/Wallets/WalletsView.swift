@@ -3,21 +3,24 @@ import SwiftUI
 
 struct WalletsView: View {
     @Query(sort: \Wallet.order) private var wallets: [Wallet]
+    @Query private var txns: [Txn]
     @State private var hidden = false
     @State private var editing: Wallet?
     @State private var adding = false
 
     var body: some View {
+        let ledger = Ledger(txns: txns, wallets: wallets, jars: [])
         VStack(spacing: 14) {
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
-                    Text("Tổng số dư").font(.subheadline)
+                    Text("Total balance").font(.subheadline)
                     Spacer()
                     Button { hidden.toggle() } label: {
                         Image(systemName: hidden ? "eye.slash" : "eye").padding(8).background(.white.opacity(0.2), in: .circle)
                     }
                 }
-                Text(hidden ? "••••••• đ" : wallets.reduce(0) { $0 + $1.balance }.vnd)
+                // ponytail: sums every wallet as the default currency; convert when multi-currency wallets ship
+                Text(hidden ? "•••••••" : Money(wallets.reduce(0) { $0 + ledger.walletBalance($1.persistentModelID) }).formatted())
                     .font(.system(size: 34, weight: .bold, design: .rounded))
                     .contentTransition(.numericText())
                 Spacer(minLength: 40)
@@ -31,14 +34,14 @@ struct WalletsView: View {
 
             VStack(spacing: 0) {
                 ForEach(wallets) { w in
-                    Button { editing = w } label: { WalletRow(wallet: w, hidden: hidden) }
+                    Button { editing = w } label: { WalletRow(wallet: w, balance: ledger.walletBalance(w.persistentModelID), hidden: hidden) }
                         .buttonStyle(.plain)
                     if w != wallets.last { Divider().padding(.leading, 52) }
                 }
             }
             .card(padding: 12)
 
-            Button { adding = true } label: { Label("Thêm ví", systemImage: "plus") }
+            Button { adding = true } label: { Label("Add wallet", systemImage: "plus") }
                 .font(.headline)
                 .foregroundStyle(Color.mooneeDark)
                 .frame(maxWidth: .infinity)
@@ -46,9 +49,9 @@ struct WalletsView: View {
                 .background(Color.mooneeGreen.opacity(0.12), in: .capsule)
         }
         .foregroundStyle(Color.mooneeInk)
-        .mooneeScreen("Ví")
+        .mooneeScreen(String(localized: "Wallets"))
         .toolbar {
-            Button("Thêm ví", systemImage: "plus") { adding = true }
+            Button("Add wallet", systemImage: "plus") { adding = true }
         }
         .sheet(isPresented: $adding) { WalletForm(wallet: nil, nextOrder: wallets.count) }
         .sheet(item: $editing) { WalletForm(wallet: $0, nextOrder: wallets.count) }
@@ -57,6 +60,7 @@ struct WalletsView: View {
 
 private struct WalletRow: View {
     let wallet: Wallet
+    let balance: Int
     let hidden: Bool
 
     var body: some View {
@@ -65,11 +69,11 @@ private struct WalletRow: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(wallet.name).font(.subheadline.weight(.medium))
                 if let limit = wallet.creditLimit {
-                    Text("Hạn mức: \(limit.vnd)").font(.caption).foregroundStyle(.secondary)
+                    Text("Limit: \(Money(limit, wallet.currencyCode).formatted())").font(.caption).foregroundStyle(.secondary)
                 }
             }
             Spacer()
-            Text(hidden ? "•••" : wallet.balance.vnd).font(.subheadline.weight(.semibold))
+            Text(hidden ? "•••" : Money(balance, wallet.currencyCode).formatted()).font(.subheadline.weight(.semibold))
             Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
         }
         .padding(.vertical, 10)
@@ -84,37 +88,37 @@ private struct WalletForm: View {
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
     @State private var type: WalletType = .cash
-    @State private var initial = 0
-    @State private var limit = 0
+    @State private var initial: Decimal = 0
+    @State private var limit: Decimal = 0
     @State private var confirmDelete = false
 
     var body: some View {
         NavigationStack {
             Form {
-                TextField("Tên ví", text: $name)
-                Picker("Loại", selection: $type) {
+                TextField("Wallet name", text: $name)
+                Picker("Type", selection: $type) {
                     ForEach(WalletType.allCases, id: \.self) { Label($0.title, systemImage: $0.symbol).tag($0) }
                 }
-                LabeledContent("Số dư ban đầu") {
-                    TextField("0", value: $initial, format: .number).keyboardType(.numberPad).multilineTextAlignment(.trailing)
+                LabeledContent("Opening balance") {
+                    TextField("0", value: $initial, format: .number).keyboardType(.decimalPad).multilineTextAlignment(.trailing)
                 }
                 if type == .credit {
-                    LabeledContent("Hạn mức") {
-                        TextField("0", value: $limit, format: .number).keyboardType(.numberPad).multilineTextAlignment(.trailing)
+                    LabeledContent("Credit limit") {
+                        TextField("0", value: $limit, format: .number).keyboardType(.decimalPad).multilineTextAlignment(.trailing)
                     }
                 }
                 if wallet != nil {
-                    Button("Xoá ví", role: .destructive) { confirmDelete = true }
+                    Button("Delete wallet", role: .destructive) { confirmDelete = true }
                 }
             }
-            .navigationTitle(wallet == nil ? "Thêm ví" : "Sửa ví")
+            .navigationTitle(wallet == nil ? "Add wallet" as LocalizedStringKey : "Edit wallet")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button("Huỷ") { dismiss() } }
-                ToolbarItem(placement: .confirmationAction) { Button("Lưu", action: save).disabled(name.isEmpty) }
+                ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
+                ToolbarItem(placement: .confirmationAction) { Button("Save", action: save).disabled(name.isEmpty) }
             }
-            .confirmationDialog("Xoá ví sẽ xoá luôn các giao dịch của ví này.", isPresented: $confirmDelete, titleVisibility: .visible) {
-                Button("Xoá ví", role: .destructive) {
+            .confirmationDialog("Deleting a wallet also deletes its transactions.", isPresented: $confirmDelete, titleVisibility: .visible) {
+                Button("Delete wallet", role: .destructive) {
                     if let wallet { context.delete(wallet) }
                     dismiss()
                 }
@@ -123,8 +127,8 @@ private struct WalletForm: View {
                 guard let wallet else { return }
                 name = wallet.name
                 type = wallet.type
-                initial = wallet.initialBalance
-                limit = wallet.creditLimit ?? 0
+                initial = Money(wallet.initialBalance, wallet.currencyCode).major
+                limit = Money(wallet.creditLimit ?? 0, wallet.currencyCode).major
             }
         }
         .presentationDetents([.medium, .large])
@@ -135,8 +139,8 @@ private struct WalletForm: View {
         if wallet == nil { context.insert(w) }
         w.name = name
         w.type = type
-        w.initialBalance = initial
-        w.creditLimit = type == .credit && limit > 0 ? limit : nil
+        w.initialBalance = Money(major: initial, w.currencyCode).minor
+        w.creditLimit = type == .credit && limit > 0 ? Money(major: limit, w.currencyCode).minor : nil
         dismiss()
     }
 }

@@ -15,8 +15,8 @@ struct ClassifierTests {
         let p = Classifier.prompt(items: items, expense: expense, income: income)
         #expect(p.contains("Ăn uống, Di chuyển, Khác"))
         #expect(p.contains("Danh mục thu nhập: Lương"))
-        #expect(p.contains("1 | chi | 35.000 đ | cf sáng"))
-        #expect(p.contains("3 | thu | 20.000.000 đ | lương T10"))
+        #expect(p.contains("1 | chi | \(Money(35_000).formatted()) | cf sáng"))
+        #expect(p.contains("3 | thu | \(Money(20_000_000).formatted()) | lương T10"))
         #expect(p.contains(#""results""#))
     }
 

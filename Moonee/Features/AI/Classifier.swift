@@ -19,7 +19,7 @@ enum Classifier {
     }
 
     static func prompt(items: [Item], expense: [String], income: [String]) -> String {
-        let lines = items.map { "\($0.id) | \($0.kind == .expense ? "chi" : "thu") | \($0.amount.vnd) | \($0.text.replacingOccurrences(of: "\n", with: " "))" }
+        let lines = items.map { "\($0.id) | \($0.kind == .expense ? "chi" : "thu") | \(Money($0.amount).formatted()) | \($0.text.replacingOccurrences(of: "\n", with: " "))" }
         return """
         Danh mục chi tiêu: \(expense.joined(separator: ", "))
         Danh mục thu nhập: \(income.joined(separator: ", "))
