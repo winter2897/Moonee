@@ -153,10 +153,12 @@ enum QuickParser {
 
     private static func receiptAmounts(in line: String, bare: Bool) -> [Int] {
         let tokens = line.split(separator: " ").filter { !$0.contains("/") && !$0.contains(":") } // skip dates, times
-        return tokens.flatMap { $0.matches(of: #/\d{1,3}(?:[.,]\d{3})+|\d+/#).map { String($0.output) } }
-            .filter { bare ? $0.count >= 4 : ($0.contains(".") || $0.contains(",")) }
-            .compactMap { Int($0.filter(\.isNumber)) }
-            .filter { $0 >= 1000 }
+        // Typed steps: Xcode 26 times out type-checking this as one chain.
+        let numbers: [String] = tokens.flatMap { token -> [String] in
+            token.matches(of: #/\d{1,3}(?:[.,]\d{3})+|\d+/#).map { String($0.output) }
+        }
+        let grouped: [String] = numbers.filter { bare ? $0.count >= 4 : ($0.contains(".") || $0.contains(",")) }
+        return grouped.compactMap { Int($0.filter(\.isNumber)) }.filter { $0 >= 1000 }
     }
 }
 

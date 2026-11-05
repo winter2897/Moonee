@@ -3,5 +3,17 @@
 <plist version="1.0">
 <dict>
 	<!-- Merged with the generated Info.plist (GENERATE_INFOPLIST_FILE); keys build settings can't express. -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<!-- CloudKit pushes wake the app to pull iCloud changes (SwiftData sync). -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>LaunchBackground</string>
+	</dict>
 </dict>
 </plist>

@@ -112,7 +112,7 @@ struct LedgerTests {
     }
 
     @MainActor @Test func savedHistoryIgnoresLaterPercentEditsAndRemaps() throws {
-        let context = ModelContext(try ModelContainer(for: Schema.moonee, configurations: ModelConfiguration(isStoredInMemoryOnly: true)))
+        let context = ModelContext(try ModelContainer(for: Schema.moonee, configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)))
         let needs = Jar(key: "jar.essentials", icon: "house.fill", colorHex: 0, percent: 60, order: 0)
         let play = Jar(key: "jar.play", icon: "sparkles", colorHex: 0, percent: 40, order: 1)
         let food = Category(key: "category.food", icon: "fork.knife", colorHex: 0, jar: needs)

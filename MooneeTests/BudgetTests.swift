@@ -15,7 +15,7 @@ import Testing
     }
 
     func makeContext() throws -> ModelContext {
-        ModelContext(try ModelContainer(for: Schema.moonee, configurations: ModelConfiguration(isStoredInMemoryOnly: true)))
+        ModelContext(try ModelContainer(for: Schema.moonee, configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)))
     }
 
     // MARK: - Jars

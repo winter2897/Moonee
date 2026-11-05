@@ -9,7 +9,7 @@ import Testing
         c.timeZone = TimeZone(identifier: "Asia/Ho_Chi_Minh")!
         return c
     }()
-    let context = ModelContext(try! ModelContainer(for: Schema.moonee, configurations: ModelConfiguration(isStoredInMemoryOnly: true)))
+    let context = ModelContext(try! ModelContainer(for: Schema.moonee, configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)))
 
     func day(_ m: Int, _ d: Int, _ h: Int = 12) -> Date { cal.date(from: DateComponents(year: 2026, month: m, day: d, hour: h))! }
 
