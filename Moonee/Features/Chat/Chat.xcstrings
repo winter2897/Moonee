@@ -12,6 +12,16 @@
         }
       }
     },
+    "Add key": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm khoá"
+          }
+        }
+      }
+    },
     "Add to chat": {
       "localizations": {
         "vi": {
@@ -376,12 +386,22 @@
         }
       }
     },
-    "On-device": {
+    "Offline": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Trên máy"
+            "value": "Ngoại tuyến"
+          }
+        }
+      }
+    },
+    "Opens AI settings": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mở cài đặt AI"
           }
         }
       }

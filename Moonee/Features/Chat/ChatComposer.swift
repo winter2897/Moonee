@@ -68,7 +68,10 @@ struct ChatComposer: View {
     }
 
     private var plusButton: some View {
-        Button(action: onPlus) {
+        Button {
+            focus.wrappedValue = false // the sheet opens over a closed keyboard; the field never takes this tap
+            onPlus()
+        } label: {
             Image(systemName: "plus").font(.system(size: 16, weight: .semibold)).foregroundStyle(Color.brandDeep)
                 .frame(width: 34, height: 34).background(Color.brandMintSoft, in: .circle)
                 .frame(width: 44, height: 44).contentShape(.circle)
@@ -118,7 +121,54 @@ struct ChatComposer: View {
     }
 }
 
-/// "DeepSeek · Medium": the model answering, with its reasoning effort. Tap to change the effort or the model.
+/// The engine that actually answers in the chat right now, as the router will pick it (not just the chosen mode).
+enum ChatEngine: Equatable {
+    case apple
+    case local(String)
+    case cloud(CloudProvider, model: String)
+    /// BYOK chosen but no key yet: the rule parser answers until one is added.
+    case needsKey(CloudProvider)
+    /// No model at all: the rule parser and the plain numbers.
+    case offline
+
+    static func current(_ router: AIRouter = LLMSettings.router(), provider: CloudProvider = LLMSettings.cloudProvider,
+                        model: String? = nil) -> ChatEngine {
+        if let first = router.candidates(for: .quickAnswer).first {
+            if first is AppleLLM { return .apple }
+            if let l = first as? LocalLLM { return .local(l.model.name) }
+            return .cloud(provider, model: model ?? LLMSettings.model(provider))
+        }
+        return router.mode == .byok || router.mode == .hybrid ? .needsKey(provider) : .offline
+    }
+
+    /// "gemini-3.5-flash-lite", "Apple Intelligence", "Offline"; the effort is appended when the model has one.
+    func label(effort: ReasoningEffort?) -> String {
+        let name: String = switch self {
+        case .apple: "Apple Intelligence"
+        case .local(let model): model
+        // The short model name already says whose it is (gemini-…, claude-…, deepseek-…); the provider is in settings.
+        case .cloud(let p, let model):
+            model.split(separator: "/").last.map(String.init) ?? Self.providerName(p) ?? model
+        case .needsKey: String(localized: "Add key", table: "Chat")
+        case .offline: String(localized: "Offline", table: "Chat")
+        }
+        return effort.map { "\(name) · \(ModelChip.title($0))" } ?? name
+    }
+
+    static func providerName(_ p: CloudProvider) -> String? {
+        switch p {
+        case .openRouter: "OpenRouter"
+        case .deepSeek: "DeepSeek"
+        case .openAI: "OpenAI"
+        case .anthropic: "Anthropic"
+        case .gemini: "Gemini"
+        case .custom: nil
+        }
+    }
+}
+
+/// The engine answering, with its reasoning effort. Tap to change the effort or the model;
+/// with BYOK but no key it says "Add key" and opens AI settings.
 struct ModelChip: View {
     let onChangeModel: () -> Void
     /// Effort is stored per provider + model (`LLMSettings.effort`); bumped to redraw after a change.
@@ -128,53 +178,46 @@ struct ModelChip: View {
     @AppStorage(LLMSettings.cloudKey) private var cloudRaw = ""
 
     var body: some View {
+        let engine = ChatEngine.current()
         let efforts = LLMSettings.supportedEffortsNow
-        let effort = Binding(get: { LLMSettings.effort }, set: { LLMSettings.effort = $0; changes += 1 })
-        Menu {
-            if !efforts.isEmpty {
-                Picker(selection: effort) {
-                    ForEach(efforts, id: \.self) { Text(Self.title($0)).tag($0) }
-                } label: { Text("Effort", tableName: "Chat") }
-                .pickerStyle(.inline)
+        let effort = { _ = changes; return efforts.isEmpty ? nil : LLMSettings.effort }()
+        let label = engine.label(effort: effort)
+        Group {
+            if case .needsKey = engine {
+                Button(action: onChangeModel) { chip(label, effort: nil, symbol: "key.fill", chevron: false) }
+                    .accessibilityHint(Text("Opens AI settings", tableName: "Chat"))
+            } else {
+                Menu {
+                    if !efforts.isEmpty {
+                        Picker(selection: Binding(get: { LLMSettings.effort }, set: { LLMSettings.effort = $0; changes += 1 })) {
+                            ForEach(efforts, id: \.self) { Text(Self.title($0)).tag($0) }
+                        } label: { Text("Effort", tableName: "Chat") }
+                        .pickerStyle(.inline)
+                    }
+                    Button(action: onChangeModel) {
+                        Label { Text("Change model…", tableName: "Chat") } icon: { Image(systemName: "slider.horizontal.3") }
+                    }
+                } label: {
+                    chip(engine.label(effort: nil), effort: effort, symbol: engine == .offline ? "bolt.horizontal" : "sparkle", chevron: true)
+                }
             }
-            Button(action: onChangeModel) {
-                Label { Text("Change model…", tableName: "Chat") } icon: { Image(systemName: "slider.horizontal.3") }
-            }
-        } label: {
-            HStack(spacing: 4) {
-                Image(systemName: "sparkle").font(.caption).foregroundStyle(Color.brandPrimary)
-                Text(label).lineLimit(1)
-                Image(systemName: "chevron.down").font(.caption2.weight(.semibold))
-            }
-            .font(.chip)
-            .foregroundStyle(Color.brandDeep)
-            .padding(.horizontal, 10).frame(height: 30)
-            .background(Color.brandMintSoft, in: .capsule)
-            .frame(minHeight: 44).contentShape(.rect)
         }
         .accessibilityLabel(Text("Model: \(label)", tableName: "Chat"))
     }
 
-    private var label: String {
-        _ = changes
-        return LLMSettings.supportedEffortsNow.isEmpty ? Self.modelName : "\(Self.modelName) · \(Self.title(LLMSettings.effort))"
-    }
-
-    static var modelName: String {
-        switch LLMSettings.mode {
-        case .onDevice: return "Apple"
-        case .local: return String(localized: "On-device", table: "Chat")
-        case .byok, .hybrid:
-            let p = LLMSettings.cloudProvider
-            switch p {
-            case .openRouter: return "OpenRouter"
-            case .deepSeek: return "DeepSeek"
-            case .openAI: return "OpenAI"
-            case .anthropic: return "Anthropic"
-            case .gemini: return "Gemini"
-            case .custom: return LLMSettings.model(p).split(separator: "/").last.map(String.init) ?? "Custom"
-            }
+    /// Only the model name truncates; the effort always shows.
+    private func chip(_ name: String, effort: ReasoningEffort?, symbol: String, chevron: Bool) -> some View {
+        HStack(spacing: 4) {
+            Image(systemName: symbol).font(.caption).foregroundStyle(Color.brandPrimary)
+            Text(name).lineLimit(1)
+            if let effort { Text(verbatim: "· \(Self.title(effort))").lineLimit(1).fixedSize() }
+            if chevron { Image(systemName: "chevron.down").font(.caption2.weight(.semibold)) }
         }
+        .font(.chip)
+        .foregroundStyle(Color.brandDeep)
+        .padding(.horizontal, 10).frame(height: 30)
+        .background(Color.brandMintSoft, in: .capsule)
+        .frame(minHeight: 44).contentShape(.rect)
     }
 
     static func title(_ e: ReasoningEffort) -> String {

@@ -325,4 +325,25 @@ import Testing
         m.sources = []
         #expect(m.sourcesData == nil)
     }
+
+    // MARK: Model chip
+
+    @Test func chipNamesTheEngineThatReallyAnswers() {
+        let model = ScriptedLLM(replies: [])
+        #expect(ChatEngine.current(AIRouter(mode: .byok), provider: .openRouter) == .needsKey(.openRouter)) // BYOK, no key
+        #expect(ChatEngine.current(AIRouter(mode: .onDevice), provider: .openRouter) == .offline) // no Apple Intelligence
+        #expect(ChatEngine.current(AIRouter(mode: .local), provider: .openRouter) == .offline) // nothing downloaded
+        #expect(ChatEngine.current(AIRouter(mode: .byok, cloud: model), provider: .deepSeek, model: "deepseek-chat")
+                == .cloud(.deepSeek, model: "deepseek-chat"))
+        #expect(ChatEngine.current(AIRouter(mode: .hybrid), provider: .gemini) == .needsKey(.gemini))
+    }
+
+    @Test func chipLabelsAreShort() {
+        #expect(ChatEngine.cloud(.openRouter, model: "google/gemini-3.5-flash-lite").label(effort: nil) == "gemini-3.5-flash-lite")
+        #expect(ChatEngine.cloud(.custom, model: "llama-4").label(effort: nil) == "llama-4")
+        #expect(ChatEngine.apple.label(effort: nil) == "Apple Intelligence")
+        #expect(ChatEngine.local("Qwen3 1.7B").label(effort: nil) == "Qwen3 1.7B")
+        #expect(ChatEngine.cloud(.anthropic, model: "claude-sonnet-5-5").label(effort: .high)
+                == "claude-sonnet-5-5 · " + ModelChip.title(.high))
+    }
 }

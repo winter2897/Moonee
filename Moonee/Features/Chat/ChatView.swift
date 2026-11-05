@@ -45,10 +45,16 @@ struct ChatView: View {
                         }
                         Color.clear.frame(height: 1).id("bottom")
                     }
-                    .padding(.horizontal, 16).padding(.vertical, 8)
+                    .padding(.horizontal, 16).padding(.top, 14).padding(.bottom, 8)
                 }
-                // The keyboard opens with the tab (spec §1) but always gets out of the way:
-                // drag the chat (it bounces even when short) or tap outside a control.
+                // Messages fade out under the hero instead of being cut at its edge.
+                .mask {
+                    VStack(spacing: 0) {
+                        LinearGradient(colors: [.clear, .black], startPoint: .top, endPoint: .bottom).frame(height: 22)
+                        Color.black
+                    }
+                }
+                // The keyboard gets out of the way: drag the chat (it bounces even when short) or tap outside a control.
                 .scrollDismissesKeyboard(.interactively)
                 .scrollBounceBehavior(.always)
                 .contentShape(.rect)
@@ -68,7 +74,7 @@ struct ChatView: View {
         .onAppear {
             ChatThreads.migrate(in: context)
             if thread == nil { thread = ChatThreads.todays(in: context) }
-            focused = true
+            // Opens as the idle pill (owner's reference): type, or hold the voice button to talk.
         }
         .onChange(of: speech.transcript) { _, t in
             guard !t.isEmpty else { return }
