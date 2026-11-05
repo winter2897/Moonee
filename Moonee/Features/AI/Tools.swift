@@ -8,8 +8,15 @@ struct MooneeTools: Sendable {
     var calendar = Calendar.current
     /// Formats money for the reply language.
     var locale = Locale.current
+    /// Outside info (market-lookup skill only): web search backend and crypto prices.
+    var search = WebSearch.current()
+    var prices = MarketPrices()
 
-    var all: [AITool] { [spendingSummary, listTransactions, jarBalances, splitIncome, savingsPlan, monthClose] }
+    var all: [AITool] { [spendingSummary, listTransactions, jarBalances, splitIncome, savingsPlan, monthClose, webSearch, marketPrice] }
+
+    /// Every tool name, for skill files and the skill editor (a test keeps it equal to `all`).
+    static let allNames = ["spendingSummary", "listTransactions", "jarBalances", "splitIncome", "savingsPlan", "monthClose",
+                           "webSearch", "marketPrice"]
 
     /// In the order given (a skill lists its most useful tool first).
     func named(_ names: [String]) -> [AITool] {
@@ -164,6 +171,26 @@ struct MooneeTools: Sendable {
         }
     }
 
+    var webSearch: AITool {
+        AITool(name: "webSearch",
+               description: "Search the web for current outside information (gold prices, exchange rates, interest rates, news). Returns titles, URLs, snippets, dates and when the search ran. Cite them.",
+               parameters: .object([.init("query", .string("What to search for, in the user's language"), required: true)])) {
+            (a: ToolArgs) -> SearchResult in
+            guard let q = a.query?.trimmingCharacters(in: .whitespacesAndNewlines), !q.isEmpty else { throw LLMError("query is empty") }
+            return await search.run(q)
+        }
+    }
+
+    var marketPrice: AITool {
+        AITool(name: "marketPrice",
+               description: "Current crypto price (BTC, ETH, SOL…) from CoinGecko, in the user's currency and USD, with the update time. Not for gold or stocks: use webSearch.",
+               parameters: .object([.init("symbol", .string("Ticker or coin name, e.g. BTC or ethereum"), required: true)])) {
+            (a: ToolArgs) -> MarketPrices.Quote in
+            guard let symbol = a.symbol else { throw LLMError("symbol is missing") }
+            return try await prices.quote(symbol, currency: ledger.currency, locale: locale)
+        }
+    }
+
     // MARK: Helpers
 
     private func top(_ spending: [LedgerTxn], total: Int) -> [Summary.Category] {
@@ -212,6 +239,8 @@ struct ToolArgs: Codable, Sendable {
     var targetText: String?
     var savedText: String?
     var deadline: String?
+    var query: String?
+    var symbol: String?
 }
 
 // MARK: - Results

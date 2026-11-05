@@ -55,33 +55,15 @@ extension CloudProvider {
     }
 }
 
-private extension Skill {
-    var title: String {
-        switch id {
-        case Skill.transactionParser.id: String(localized: "Read transactions", table: "Account")
-        case Skill.jarBudgeting.id: String(localized: "Jar budgeting", table: "Account")
-        case Skill.closeManagement.id: String(localized: "Month-end close", table: "Account")
-        default: String(localized: "Spending coach", table: "Account")
-        }
-    }
-
-    var summary: String {
-        switch id {
-        case Skill.transactionParser.id: String(localized: "Off: only Moonee's built-in rules read what you type.", table: "Account")
-        case Skill.jarBudgeting.id: String(localized: "Splitting income and balancing jars.", table: "Account")
-        case Skill.closeManagement.id: String(localized: "Month-end checklist and report.", table: "Account")
-        default: String(localized: "Questions about your spending, with tips.", table: "Account")
-        }
-    }
-}
-
 /// Account → AI assistant (spec §6.2, §9.1).
 struct AISettingsView: View {
     @AppStorage(LLMSettings.modeKey) private var mode = LLMSettings.mode
     @AppStorage(LLMSettings.cloudKey) private var provider = LLMSettings.cloudProvider
     @AppStorage(LLMSettings.baseURLKey) private var customURL = ""
     @AppStorage(LLMSettings.customPromptKey) private var customPrompt = ""
-    @State private var skillsOff = LLMSettings.skillsOff
+    @State private var searchProvider = SearchSettings.keyProvider
+    @State private var webSearchOn = LLMSettings.webSearch // redraws the toggle
+    @State private var searchKey = ""
     @State private var apiKey = ""
     @State private var model = ""
     @State private var testResult: String?
@@ -185,6 +167,8 @@ struct AISettingsView: View {
             Section {
                 Label { Text(mode.cloudNote(provider.title)) } icon: { Image(systemName: usesCloud ? "icloud.and.arrow.up" : "lock.shield") }
                     .font(.footnote)
+                Label { Text(SearchSettings.note) } icon: { Image(systemName: "magnifyingglass") }
+                    .font(.footnote)
                 Button(action: test) {
                     HStack {
                         Text("Test connection", tableName: "Account")
@@ -199,21 +183,41 @@ struct AISettingsView: View {
             }
 
             Section {
-                ForEach(Skill.all, id: \.self) { skill in
-                    Toggle(isOn: Binding(get: { !skillsOff.contains(skill.id) }, set: { on in
-                        if on { skillsOff.remove(skill.id) } else { skillsOff.insert(skill.id) }
-                        UserDefaults.standard.set(skillsOff.sorted(), forKey: LLMSettings.skillsOffKey)
-                    })) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(skill.title)
-                            Text(skill.summary).font(.caption).foregroundStyle(Color.inkSecondary)
-                        }
-                    }
+                Toggle(isOn: Binding(get: { LLMSettings.webSearch }, set: { LLMSettings.webSearch = $0; webSearchOn = $0 })) {
+                    Text("Web search", tableName: "AI")
+                }
+                Picker(selection: $searchProvider) {
+                    Text("Off", tableName: "AI").tag(SearchKeyProvider?.none)
+                    ForEach(SearchKeyProvider.allCases, id: \.self) { Text(verbatim: $0.title).tag(SearchKeyProvider?.some($0)) }
+                } label: {
+                    Text("Search key", tableName: "AI")
+                }
+                .onChange(of: searchProvider) {
+                    SearchSettings.keyProvider = searchProvider
+                    searchKey = searchProvider.flatMap(SearchSettings.key) ?? ""
+                }
+                if let p = searchProvider {
+                    SecureField(String(localized: "\(p.title) API key", table: "AI"), text: $searchKey)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .onChange(of: searchKey) { SearchSettings.setKey(searchKey.trimmingCharacters(in: .whitespacesAndNewlines), for: p) }
                 }
             } header: {
-                Text("Skills", tableName: "Account")
+                Text("Web search", tableName: "AI")
             } footer: {
-                Text("A skill that is off never calls a model: Moonee shows the plain numbers instead.", tableName: "Account")
+                Text("For questions about gold, exchange rates, crypto and news. OpenRouter, OpenAI, Anthropic and Gemini search on their own; with other providers or on-device, add a Tavily or Brave key.", tableName: "AI")
+            }
+
+            Section {
+                NavigationLink {
+                    SkillsView()
+                } label: {
+                    LabeledContent {
+                        Text("\(Skill.all.count - LLMSettings.skillsOff.count) on", tableName: "AI")
+                    } label: {
+                        Text("Skills", tableName: "Account")
+                    }
+                }
             }
 
             Section {
@@ -248,6 +252,7 @@ struct AISettingsView: View {
     }
 
     private func loadProvider() {
+        searchKey = searchProvider.flatMap(SearchSettings.key) ?? ""
         apiKey = LLMSettings.apiKey(for: provider) ?? ""
         model = UserDefaults.standard.string(forKey: provider.modelKey) ?? ""
         testResult = nil

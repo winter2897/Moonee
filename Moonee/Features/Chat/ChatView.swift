@@ -234,7 +234,7 @@ struct ChatView: View {
             withAnimation { busy = false }
             switch out {
             case .transactions(let txns, _): record(txns, source: source, raw: input)
-            case .answer(let answer, _): reply(answer, mood: .happy)
+            case .answer(let answer, _, _): reply(answer, mood: .happy)
             case .facts(let facts, _):
                 if let t = ChatBook.factsText(facts) { reply(t, mood: .happy) } else { reply(Self.confused, mood: .confused) }
             }
