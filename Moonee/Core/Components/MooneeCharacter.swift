@@ -28,6 +28,9 @@ struct MooneeCharacter: View {
                 TimelineView(.periodic(from: .now, by: anim.frameDuration)) { context in
                     Image(decorative: anim.frame(at: context.date), scale: 1).resizable().scaledToFit()
                 }
+                // The APNG box holds the whole motion, so a single frame fills only 75–97% of it. Scale so the
+                // average frame matches the frame height (like the static pose); jumps rise a little above the frame.
+                .scaleEffect(1 / anim.meanFill, anchor: .bottom)
             } else {
                 Image(mood.imageName).resizable().scaledToFit()
             }
@@ -41,11 +44,15 @@ struct MooneeCharacter: View {
 struct MooneeHero: View {
     let mood: MooneeMood
     var compact = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         let height: CGFloat = compact ? 76 : 104
+        // Room above for the highest frame (jumps, raised items), so the animation never reaches the header.
+        let headroom = reduceMotion ? 0 : MooneeAnimation.load(mood).map { height * ($0.maxFill / $0.meanFill - 1) } ?? 0
         MooneeCharacter(mood: mood)
             .frame(height: height)
+            .padding(.top, headroom)
             .frame(maxWidth: .infinity)
             .padding(.bottom, 6)
             .background(alignment: .bottom) {
@@ -78,6 +85,9 @@ struct MooneeAvatar: View {
 final class MooneeAnimation {
     let frames: [CGImage]
     let frameDuration: Double
+    /// Mean and largest share of the image height the character covers in one frame.
+    let meanFill: Double
+    let maxFill: Double
 
     init?(data: Data) {
         guard let src = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
@@ -88,6 +98,22 @@ final class MooneeAnimation {
         // ponytail: one delay for all frames (the source GIFs use a constant delay).
         let delay = (png?[kCGImagePropertyAPNGUnclampedDelayTime] as? Double) ?? (png?[kCGImagePropertyAPNGDelayTime] as? Double) ?? 0.15
         frameDuration = max(0.04, delay)
+        let fills = frames.map(Self.fill)
+        meanFill = fills.reduce(0, +) / Double(fills.count)
+        maxFill = fills.max() ?? 1
+    }
+
+    /// Visible height / image height of one frame (alpha > 40), from a downscaled copy.
+    private static func fill(_ image: CGImage) -> Double {
+        let w = 64, h = max(1, image.height * 64 / max(1, image.width))
+        guard let ctx = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: w * 4,
+                                  space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+        else { return 1 }
+        ctx.draw(image, in: CGRect(x: 0, y: 0, width: w, height: h))
+        guard let p = ctx.data?.assumingMemoryBound(to: UInt8.self) else { return 1 }
+        let rows = (0..<h).filter { y in (0..<w).contains { p[(y * w + $0) * 4 + 3] > 40 } }
+        guard let top = rows.first, let bottom = rows.last else { return 1 }
+        return min(1, max(0.5, Double(bottom - top + 1) / Double(h)))
     }
 
     func frame(at date: Date) -> CGImage {
