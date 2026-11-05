@@ -45,7 +45,7 @@ extension AIMode {
 extension CloudProvider {
     var title: String {
         switch self {
-        case .openAICompatible: String(localized: "OpenRouter / OpenAI-compatible", table: "Account")
+        case .openAICompatible: "OpenRouter"
         case .anthropic: "Anthropic"
         case .gemini: "Google Gemini"
         }
@@ -125,8 +125,12 @@ struct AISettingsView: View {
 
             if usesCloud {
                 Section {
-                    Picker(String(localized: "Provider", table: "Account"), selection: $provider) {
-                        ForEach(CloudProvider.allCases, id: \.self) { Text($0.title).tag($0) }
+                    LabeledContent(String(localized: "Provider", table: "Account")) {
+                        Picker(String(localized: "Provider", table: "Account"), selection: $provider) {
+                            ForEach(CloudProvider.allCases, id: \.self) { Text($0.title).tag($0) }
+                        }
+                        .labelsHidden()
+                        .fixedSize()
                     }
                     SecureField(String(localized: "API key", table: "Account"), text: $apiKey)
                         .onChange(of: apiKey) { LLMSettings.setAPIKey(apiKey.trimmingCharacters(in: .whitespacesAndNewlines), for: provider) }
@@ -142,7 +146,12 @@ struct AISettingsView: View {
                 } header: {
                     Text("Your API key", tableName: "Account")
                 } footer: {
-                    Text("The key is kept in this iPhone's Keychain. You pay your provider directly.", tableName: "Account")
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("The key is kept in this iPhone's Keychain. You pay your provider directly.", tableName: "Account")
+                        if provider == .openAICompatible {
+                            Text("Change the base URL to use any OpenAI-compatible server.", tableName: "Account")
+                        }
+                    }
                 }
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()

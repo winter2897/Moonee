@@ -152,10 +152,15 @@ private struct MoreTiles: View {
     }
 
     private func tile(_ symbol: String, _ title: String.LocalizationValue, detail: String? = nil) -> some View {
+        // Every tile is icon + two text lines; About's second line is the version (as in the mockup).
         VStack(spacing: 8) {
             Image(systemName: symbol).font(.title2).foregroundStyle(Color.brandPrimary)
-            Text(LocalizedStringResource(title, table: "Account")).font(.footnote).multilineTextAlignment(.center).lineLimit(2, reservesSpace: true)
-            if let detail { Text(detail).font(.caption).foregroundStyle(Color.inkSecondary) }
+            VStack(spacing: 0) {
+                Text(LocalizedStringResource(title, table: "Account"))
+                    .lineLimit(detail == nil ? 2 : 1, reservesSpace: detail == nil).minimumScaleFactor(0.8)
+                if let detail { Text(detail).foregroundStyle(Color.inkSecondary) }
+            }
+            .font(.footnote).multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity, minHeight: 104)
         .card(padding: 8)

@@ -162,7 +162,7 @@ struct SecurityView: View {
                 NavigationLink {
                     DataView()
                 } label: {
-                    Label { Text("Delete all data", tableName: "Account") } icon: { Image(systemName: "trash") }
+                    Label { Text("Delete all data", tableName: "Account") } icon: { Image(systemName: "trash").foregroundStyle(Color.danger) }
                 }
             }
         }

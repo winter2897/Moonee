@@ -224,6 +224,16 @@
         }
       }
     },
+    "Change the base URL to use any OpenAI-compatible server.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đổi Base URL để dùng bất kỳ server nào tương thích OpenAI."
+          }
+        }
+      }
+    },
     "Choose avatar": {
       "localizations": {
         "vi": {
@@ -730,16 +740,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "On-device"
-          }
-        }
-      }
-    },
-    "OpenRouter / OpenAI-compatible": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OpenRouter / tương thích OpenAI"
           }
         }
       }
