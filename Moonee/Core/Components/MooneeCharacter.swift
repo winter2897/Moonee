@@ -49,7 +49,7 @@ struct MooneeHero: View {
     var body: some View {
         let height: CGFloat = compact ? 76 : 104
         // Room above for the highest frame (jumps, raised items), so the animation never reaches the header.
-        let headroom = reduceMotion ? 0 : MooneeAnimation.load(mood).map { height * ($0.maxFill / $0.meanFill - 1) } ?? 0
+        let headroom: CGFloat = reduceMotion ? 0 : MooneeAnimation.load(mood).map { height * ($0.maxFill / $0.meanFill - 1) } ?? 0
         MooneeCharacter(mood: mood)
             .frame(height: height)
             .frame(maxWidth: .infinity)
