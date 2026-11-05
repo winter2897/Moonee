@@ -22,42 +22,12 @@
         }
       }
     },
-    "Amount": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Số tiền"
-          }
-        }
-      }
-    },
-    "Amount (%@)": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Số tiền (%@)"
-          }
-        }
-      }
-    },
     "Back": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Quay lại"
-          }
-        }
-      }
-    },
-    "Category": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Danh mục"
           }
         }
       }
@@ -92,42 +62,12 @@
         }
       }
     },
-    "Date": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ngày"
-          }
-        }
-      }
-    },
-    "Done": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Xong"
-          }
-        }
-      }
-    },
     "Edit": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Sửa"
-          }
-        }
-      }
-    },
-    "Edit transaction": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sửa giao dịch"
           }
         }
       }
@@ -226,16 +166,6 @@
         }
       }
     },
-    "Jar": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lọ"
-          }
-        }
-      }
-    },
     "Month-end saving tips": {
       "localizations": {
         "vi": {
@@ -256,42 +186,12 @@
         }
       }
     },
-    "Moonee remembers your category for next time.": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lần sau Moonee sẽ tự nhớ danh mục này cho bạn."
-          }
-        }
-      }
-    },
     "More": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Thêm"
-          }
-        }
-      }
-    },
-    "None": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Không có"
-          }
-        }
-      }
-    },
-    "Note": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ghi chú"
           }
         }
       }
@@ -386,12 +286,32 @@
         }
       }
     },
-    "Wallet": {
+    "Which jar should Moonee take it from?": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ví"
+            "value": "Moonee lấy tiền từ lọ nào nhé?"
+          }
+        }
+      }
+    },
+    "Which jar should it go into?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chuyển vào lọ nào vậy bạn?"
+          }
+        }
+      }
+    },
+    "Which wallet did the money go to?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn chuyển sang ví nào vậy?"
           }
         }
       }
@@ -402,6 +322,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hôm qua"
+          }
+        }
+      }
+    },
+    "You only have one wallet so far. Add another in Budget, then tell Moonee again.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn mới có một ví thôi. Thêm ví khác trong Ngân sách rồi nhắn lại Moonee nha."
           }
         }
       }
