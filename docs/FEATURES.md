@@ -1,0 +1,414 @@
+# Moonee: Tổng hợp tính năng
+
+> Trợ lý tài chính cá nhân trên iOS. Nói, gõ hay chụp là xong, Moonee tự phân loại và chia vào các lọ.
+> Bản nháp ngày 05/11/2026, chốt sau buổi brainstorm. Các mục **⚠️** là chỗ cần bạn check lại.
+
+---
+
+## 0. Quyết định đã chốt
+
+| Chủ đề | Quyết định |
+|---|---|
+| Người dùng | Cả hai: mặc định cho người phổ thông, có mục **Nâng cao** cho power user |
+| Nền tảng | Chỉ iOS (SwiftUI + SwiftData + CloudKit) |
+| Kiếm tiền | **Mua đứt một lần** |
+| AI chạy ở đâu | User chọn trong Cài đặt: on-device (Apple Foundation Models hoặc model mở như Gemma, Qwen... chạy trên máy) hoặc BYOK. Moonee **không** trả phí LLM thay user |
+| Skill của trợ lý | Dựa trên bộ skill Finance của Anthropic, custom lại cho tài chính cá nhân (mục 9.4) |
+| Lưu giao dịch | Lưu ngay, kèm thẻ sửa/hoàn tác |
+| Kênh nhập ngoài chat | Widget + Lock Screen |
+| Mức nhắc nhở | User tự chọn: Ít / Vừa / Nhiều (mặc định Vừa) |
+| Sổ nợ | Có, bản cơ bản |
+| Mô hình lọ | Số dư thật, cộng dồn qua các tháng (envelope) |
+| Chia thu nhập | Tự chia theo từng lần nhận, sửa tay được cho từng khoản |
+| Ngân hàng | Ví tạo thủ công + import sao kê; **không** liên kết API trong MVP |
+| Quan tâm | Watchlist + tài sản đang giữ → net worth, có cảnh báo giá |
+| Bảo mật | Face ID/passcode, ẩn số dư, che màn hình khi chuyển app, xoá toàn bộ dữ liệu |
+| Import/Export | CSV/Excel hai chiều |
+| Onboarding | Thiết lập qua chat |
+| Visual | Trẻ trung, năng động, gradient, animation. Xanh lá/mint + vàng trên nền mint nhạt. Nhân vật: chiếc ví xanh cầm đồng xu vàng |
+| Giao diện | **Chỉ light mode**, chưa làm dark mode |
+| Xưng hô | "Moonee – Bạn" |
+| Ngôn ngữ | English (mặc định) + Tiếng Việt. Kiến trúc sẵn sàng để thêm ngôn ngữ khác dễ dàng |
+| Tiền tệ | Tách khỏi ngôn ngữ. Tự nhận theo vùng của máy, user đổi được |
+
+Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
+
+---
+
+## 1. Thanh tab
+
+```
+[ Tổng quan ]  [ Ngân sách ]  [ (+) Moonee ]  [ Quan tâm ]  [ Tài khoản ]
+```
+
+- Mở app thì vào **Tổng quan**.
+- Nút **(+)** ở giữa là logo Moonee, nhấn vào là mở chat và ô nhập sẵn sàng (focus bàn phím hoặc mic).
+- **Sổ giao dịch** (xem, tìm, lọc, sửa lịch sử) nằm trong Tổng quan, dạng "Giao dịch gần đây → Xem tất cả".
+---
+
+## 2. Tổng quan (dashboard)
+
+- Hôm nay / tuần này đã chi bao nhiêu
+- Số dư từng lọ (dạng vòng hoặc thanh tiến độ)
+- Hoá đơn sắp đến hạn (7 ngày tới)
+- Giao dịch gần đây → **Sổ giao dịch** đầy đủ (tìm kiếm, lọc theo ví/lọ/danh mục/ngày, sửa, xoá)
+- Thẻ **Net worth** (tóm tắt từ mục Quan tâm)
+- Lời nhắn ngắn từ Moonee (một câu insight, theo mức nhắc nhở)
+- Thẻ báo cáo cuối kỳ khi có (tuần/tháng/năm)
+
+## 3. Moonee (chat + nhập liệu)
+
+### 3.1 Nhập tự nhiên
+- **Text / Voice / Ảnh.** Ảnh gồm hoá đơn, biên lai chuyển khoản, ảnh chụp màn hình app ngân hàng.
+- Hiểu cách nói tiếng Việt: `30k`, `1 củ`, `2 lít`, `1tr2`, `hôm qua`, `sáng nay`, `thứ 2 tuần trước`.
+- Nhiều giao dịch trong một câu: "phở 45k, cafe 29k, grab 32k" → 3 giao dịch.
+- Nhận diện loại: **chi / thu / chuyển ví / chuyển lọ / cho vay / đi vay / trả nợ**.
+- Voice: dùng Speech framework on-device.
+
+### 3.2 Sau khi parse
+- **Lưu ngay** rồi hiện **thẻ giao dịch** (số tiền, danh mục, lọ, ví, ngày, ghi chú). Nhấn để sửa, có nút **Hoàn tác**.
+- **Học từ lần sửa:** user đổi danh mục cho "Highlands" thì lần sau Moonee tự gán đúng (lưu cặp merchant → danh mục ở máy).
+- Thiếu thông tin quan trọng (không có số tiền) thì Moonee hỏi lại thay vì đoán.
+
+### 3.3 Hỏi đáp và tư vấn
+- "Tháng này mình ăn uống hết bao nhiêu?", "Còn bao nhiêu để hưởng thụ?"
+- Gợi ý cân đối lọ cuối tháng dựa trên thu nhập và thói quen chi.
+- Hướng dẫn đạt mục tiêu: "Muốn mua laptop 30tr trước Tết thì mỗi tuần cần để dành bao nhiêu?"
+
+### 3.4 Nhắc nhở (theo mức user chọn)
+| Mức | Nội dung |
+|---|---|
+| Ít | Hoá đơn đến hạn, lọ vượt 100% |
+| Vừa (mặc định) | + lọ chạm 80%, báo cáo tuần/tháng, nhắc thu/trả nợ |
+| Nhiều | + nhắc ghi chép mỗi tối, nhận xét giao dịch lớn, gợi ý hằng ngày |
+
+- Dùng local notification, không cần server.
+- Giới hạn tần suất để tránh spam (ví dụ tối đa N thông báo mỗi ngày, gộp các cảnh báo cùng loại).
+
+### 3.5 Báo cáo
+- Cuối tuần / tháng / năm, Moonee gửi một thẻ báo cáo trong chat. Nhấn vào là mở màn hình báo cáo:
+  - Biểu đồ chi theo lọ, theo danh mục, so sánh với kỳ trước
+  - Top khoản chi, xu hướng
+  - Lời khuyên từ Moonee
+- Vẽ bằng Swift Charts.
+
+## 4. Ngân sách
+
+### 4.1 Các lọ (envelope)
+- Mặc định 6 lọ: Thiết yếu 55% · Đầu tư 10% · Tiết kiệm 10% · Phát triển bản thân 10% · Hưởng thụ 10% · Từ thiện 5%.
+- Thêm, bớt, đổi tên, đổi màu/icon và sửa % (tổng phải đủ 100%).
+- **Mỗi khoản thu** được chia ngay vào lọ theo %. Sửa tay được cho từng khoản (ví dụ thưởng cho 100% vào Đầu tư).
+- **Chi tiêu trừ thẳng vào lọ**, xác định qua danh mục (mỗi danh mục thuộc một lọ).
+- Số dư **cộng dồn** sang tháng sau. Lọ âm thì hiển thị cảnh báo và gợi ý chuyển từ lọ khác.
+- **Chuyển giữa các lọ** bằng thao tác tay hoặc qua chat.
+
+### 4.2 Ví / nguồn tiền
+- Các loại: tiền mặt, tài khoản ngân hàng, ví điện tử (MoMo, ZaloPay...), **thẻ tín dụng**.
+- Lọ và ví độc lập nhau: lọ trả lời "tiền dành cho việc gì", ví trả lời "tiền đang nằm ở đâu".
+- **Thẻ tín dụng:**
+  - Lưu ngày sao kê, ngày đến hạn và hạn mức.
+  - Quẹt thẻ được tính là chi tiêu (trừ lọ, tăng dư nợ thẻ).
+  - Trả nợ thẻ là **chuyển ví**, không tính là chi lần hai.
+
+### 4.3 Khoản định kỳ và hoá đơn
+- Tiền nhà, điện, nước, internet, bảo hiểm, subscription, trả góp.
+- Lưu chu kỳ, ngày đến hạn, số tiền (cố định hoặc ước tính), ví và lọ.
+- Nhắc trước N ngày. Đến hạn thì có nút "Đã trả" để tạo giao dịch ngay.
+- Tạo nhanh qua chat: "Nhắc mình đóng tiền nhà 5tr ngày 5 hàng tháng".
+
+### 4.4 Mục tiêu
+- Mục tiêu có số tiền, hạn chót và lọ nguồn (ví dụ laptop lấy từ lọ Hưởng thụ).
+- Hiện tiến độ và số cần để dành mỗi tuần/tháng. Moonee nhắc theo mức nhắc nhở.
+- Có hiệu ứng ăn mừng khi đạt mục tiêu (nhân vật Moonee).
+
+### 4.5 Sổ nợ (cơ bản)
+- "Cho Nam mượn 2tr", "Vay mẹ 5tr" → ghi người, số tiền, ngày, hạn trả (nếu có).
+- Trả một phần hoặc toàn bộ.
+- Nhắc thu hoặc trả nợ khi tới hạn.
+- Cho mượn/đi vay **không tính là chi/thu** vì không trừ lọ. Đây là chuyển tiền ra hoặc vào ví.
+
+## 5. Quan tâm
+
+- **Watchlist:** giá vàng SJC/PNJ, bạc, cổ phiếu VN, tỷ giá USD, crypto (tuỳ chọn).
+- **Tài sản đang giữ:** "2 lượng SJC", "500 cổ FPT", "1000 USD" → định giá theo giá hiện tại.
+- **Net worth** = số dư các ví + tài sản − nợ (thẻ tín dụng, sổ nợ). Có biểu đồ theo thời gian.
+- **Cảnh báo giá** theo ngưỡng (ví dụ SJC trên 90tr/lượng).
+- ⚠️ **Cần chốt nguồn dữ liệu** và điều khoản sử dụng: giá vàng (SJC/PNJ công bố trên web), cổ phiếu VN (API của công ty chứng khoán hoặc bên cung cấp dữ liệu), tỷ giá. Vì app mua đứt và không có server, nên xem xét có cần một backend nhỏ hay proxy để cache giá không.
+
+## 6. Tài khoản / Cài đặt
+
+### 6.1 Cơ bản
+- **Ngôn ngữ** (xem mục 10), hồ sơ, định dạng số, ngày bắt đầu tuần/tháng tài chính
+- **Tiền tệ mặc định:** tự nhận theo vùng của máy (máy để vùng Việt Nam thì là VND), user đổi được
+- Danh mục và lọ, quản lý ví
+- Mức nhắc nhở, giờ "không làm phiền"
+
+### 6.2 Trợ lý Moonee
+- **Chế độ AI:** Apple on-device / Model local / BYOK / Lai (xem mục 9.1)
+- **Model local:** danh sách model, tải về, xoá (xem mục 9.2)
+- **BYOK:** chọn nhà cung cấp, nhập API key (lưu trong Keychain), chọn model
+- **Skill:** bật/tắt từng skill tài chính của trợ lý (xem mục 9.4)
+- **Nâng cao** (cho power user): import skill tự viết, prompt tuỳ chỉnh
+- Hiện rõ dữ liệu nào được gửi lên cloud (chỉ khi dùng BYOK)
+
+### 6.3 Dữ liệu
+- **Import CSV/Excel:** có màn ghép cột, AI tự đoán cột và danh mục. Dùng cho sao kê ngân hàng và cho dữ liệu chuyển từ app khác (Money Lover, Misa, Excel).
+- **Export CSV**
+- **Sao lưu, đồng bộ iCloud** (CloudKit, private database)
+- **Xoá toàn bộ dữ liệu** (trên máy + iCloud), có xác nhận hai bước
+
+### 6.4 Bảo mật
+- Khoá app bằng Face ID/passcode (khi mở và khi quay lại từ nền sau N phút)
+- Ẩn số dư (chạm để hiện/ẩn)
+- Che nội dung trong App Switcher
+
+### 6.5 Khác
+- Hỗ trợ / góp ý, Giới thiệu, chính sách quyền riêng tư, đánh giá app
+
+## 7. Onboarding (qua chat)
+
+1. Moonee chào và giới thiệu ngắn (nhân vật xuất hiện).
+2. Hỏi thu nhập hằng tháng (khoảng) và cố định hay không đều.
+3. Hỏi các ví đang dùng, số dư ban đầu (bỏ qua được).
+4. Hỏi các hoá đơn cố định.
+5. Đề xuất % cho các lọ. User chấp nhận hoặc chỉnh.
+6. Chọn chế độ AI (gợi ý theo đời máy) và mức nhắc nhở.
+7. Bật Face ID (tuỳ chọn) và xin quyền thông báo.
+
+Mục tiêu: xong trong 1–2 phút, bước nào cũng bỏ qua được.
+
+## 8. Widget và Lock Screen
+- Widget nhỏ: nút (+) nhập nhanh và số còn lại hôm nay
+- Widget vừa: các lọ + hoá đơn sắp tới
+- Lock Screen: nút nhập nhanh, số dư lọ chính
+- Widget mở thẳng vào chat Moonee bằng deep link.
+- ⚠️ Widget phải tôn trọng "ẩn số dư" vì màn hình khoá ai cũng nhìn thấy.
+
+## 9. Trợ lý AI: model và skill
+
+### 9.1 Các chế độ AI
+Moonee không có server AI và không trả phí LLM thay user.
+
+| Chế độ | Chạy ở đâu | Ghi chú |
+|---|---|---|
+| **Apple on-device** | Apple Foundation Models, có sẵn trong iOS | Không cần tải. Chỉ máy có Apple Intelligence (iPhone 15 Pro trở lên, iOS 26+). ⚠️ Cần kiểm tra chất lượng tiếng Việt |
+| **Model local** | Model mở (Gemma, Qwen, Bonsai...) tải về và chạy trên máy, giống app Locally | Riêng tư, offline, miễn phí. Chạy qua MLX Swift (hoặc llama.cpp với file GGUF) |
+| **BYOK** | Cloud, bằng API key của user (OpenAI / Anthropic / Gemini...) | Thông minh nhất, cần mạng |
+| **Lai** | Parse bằng on-device/local, tư vấn và báo cáo bằng BYOK | Cân bằng giữa riêng tư và chất lượng |
+| *Fallback* | Bộ parse quy tắc (regex + từ điển) | Khi không có model nào dùng được. Vẫn nhập được giao dịch; báo cáo chỉ gồm số liệu và biểu đồ |
+
+### 9.2 Quản lý model local
+- **Danh mục model** có sẵn trong app (do Moonee chọn lọc và kiểm tra trước). Mỗi model ghi: dung lượng tải, RAM cần, tốc độ ước tính, mức hỗ trợ tiếng Việt, có đọc được ảnh không.
+- **Gợi ý model theo đời máy** (dựa vào RAM). Máy yếu thì gợi ý model nhỏ hoặc BYOK.
+- Tải model khi user chọn (từ Hugging Face): có tuỳ chọn chỉ tải qua Wi-Fi, tải tiếp khi bị ngắt, xoá model để giải phóng bộ nhớ.
+- **Không đóng gói model trong app** để app nhẹ khi tải từ App Store.
+- ⚠️ **Lưu ý kỹ thuật:**
+  - **RAM:** máy 6–8GB chạy được model khoảng 1–4B (lượng tử 4-bit). Cần entitlement `com.apple.developer.kernel.increased-memory-limit`.
+  - **Pin và nhiệt:** chỉ nạp model khi cần, giải phóng khi app vào nền.
+  - **Output có cấu trúc:** parse giao dịch cần JSON đúng schema. Dùng sinh có ràng buộc (JSON schema / grammar) và kiểm tra lại; nếu sai thì chuyển sang bộ parse quy tắc.
+  - **License:** kiểm tra license từng model trước khi đưa vào danh mục (Gemma có điều khoản sử dụng riêng).
+  - **Tiếng Việt:** Gemma và Qwen thường xử lý tiếng Việt tốt hơn model nhỏ của Apple, nên đây cũng là phương án cho user tiếng Việt.
+
+### 9.3 Phân vai giữa các model
+| Việc | Model nhỏ (Apple / local) | BYOK |
+|---|---|---|
+| Parse giao dịch từ text/voice | ✓ | ✓ |
+| Đọc ảnh hoá đơn | OCR bằng Vision framework, đưa chữ cho model (hoặc model có vision) | ✓ (đọc ảnh trực tiếp) |
+| Hỏi đáp ngắn ("tháng này ăn uống hết bao nhiêu?") | ✓ | ✓ |
+| Báo cáo, lời khuyên dài, phân tích chênh lệch | Bản rút gọn: app tính số, model viết nhận xét ngắn | ✓ đầy đủ |
+
+**Nguyên tắc: mọi con số do app tính.** Model không tự cộng trừ mà gọi tool (hàm Swift) để lấy số liệu, rồi chỉ diễn giải. Cách này tránh AI tính sai tiền.
+
+### 9.4 Skill tài chính (dựa trên bộ Finance của Anthropic)
+Bộ Finance (repo `anthropics/knowledge-work-plugins`, thư mục `finance`) có 8 skill và 6 connector, **viết cho kế toán doanh nghiệp**. Mỗi phần được xử lý như sau:
+
+| Skill gốc | Dùng cho Moonee? | Chuyển thành |
+|---|---|---|
+| `reconciliation` | ✓ | Đối chiếu sao kê import với giao dịch đã ghi: tìm khoản thiếu, trùng, lệch số dư ví |
+| `variance-analysis` | ✓ | So sánh thực tế với ngân sách theo lọ/danh mục và giải thích vì sao chênh |
+| `close-management` | ✓ | "Chốt sổ cuối tháng": checklist cuối tháng, cộng dồn lọ, gợi ý cân đối lọ, tạo báo cáo tháng |
+| `financial-statements` | ✓ | Báo cáo thu–chi cá nhân, bảng tài sản (net worth), dòng tiền |
+| `journal-entry`, `journal-entry-prep` | Một phần | Lấy ý tưởng "mỗi giao dịch có nguồn và đích" (ví/lọ) để không tính hai lần (thẻ tín dụng, chuyển ví, cho vay) |
+| `audit-support`, `sox-testing` | ✗ | Chỉ dành cho doanh nghiệp, bỏ |
+| 6 connector (BigQuery, Databricks, Snowflake, Gmail, Calendar, Slack) | ✗ | Bỏ |
+
+**Skill riêng Moonee cần tự viết:**
+- `transaction-parser`: hiểu cách nói tiền và ngày theo từng ngôn ngữ
+- `jar-budgeting`: chia thu nhập, cân đối 6 lọ
+- `goal-planning`: lập kế hoạch tiết kiệm cho mục tiêu
+- `bill-reminder`: khoản định kỳ, thẻ tín dụng
+- `debt-tracking`: sổ nợ
+- `spending-coach`: nhắc nhở và khích lệ theo giọng Moonee
+- `local-finance-context`: bối cảnh từng nước (VN: giá vàng SJC, lãi tiết kiệm, thói quen chi tiêu)
+
+**Cách chạy skill trong app:**
+- Skill gốc viết cho môi trường của Claude (đọc file, chạy script). Trong Moonee, mỗi skill gồm: **một file hướng dẫn** (markdown, có bản cho từng ngôn ngữ) và **danh sách tool Swift** mà skill được gọi, ví dụ `getTransactions(range)`, `jarBalances()`, `budgetVsActual(period)`.
+- Script Python trong skill gốc không chạy được trên iOS, nên phần tính toán được viết lại bằng Swift dưới dạng tool.
+- **Nạp skill theo nhu cầu:** Moonee nhận diện ý định (hỏi báo cáo, chốt tháng...) rồi mới nạp hướng dẫn của skill đó vào prompt. Cách này tiết kiệm context, rất quan trọng với model local.
+- Skill chạy được với mọi model (Apple / local / BYOK), không phụ thuộc Claude. Model nhỏ dùng bản hướng dẫn rút gọn.
+- ⚠️ Kiểm tra license của repo `knowledge-work-plugins` trước khi đưa nội dung vào app bán thương mại, và ghi credit nếu license yêu cầu.
+
+## 10. Ngôn ngữ
+
+### 10.1 Ngôn ngữ hỗ trợ
+| Ngôn ngữ | Mã | Ghi chú |
+|---|---|---|
+| English | `en` | **Mặc định**, cũng là ngôn ngữ dự phòng khi thiếu bản dịch |
+| Tiếng Việt | `vi` | |
+
+Tạm thời chỉ 2 ngôn ngữ. Các ngôn ngữ khác thêm sau theo checklist ở mục 10.6.
+
+### 10.2 Cách chọn ngôn ngữ
+- Mặc định theo ngôn ngữ hệ thống iOS. Nếu hệ thống dùng ngôn ngữ chưa hỗ trợ thì về English.
+- User đổi được trong **Tài khoản → Ngôn ngữ**. Mục này mở trang ngôn ngữ riêng của app trong Cài đặt iOS (per-app language), không cần tự viết cơ chế đổi ngôn ngữ.
+- **Ngôn ngữ giao diện tách khỏi tiền tệ và định dạng.** Ví dụ: giao diện English nhưng tiền vẫn là VND.
+- **Tiền tệ** tự nhận theo vùng của máy (`Locale.current.currency`), user đổi được trong Cài đặt.
+- Cách hiểu tiếng lóng tiền phụ thuộc tiền tệ: "45k" với VND là 45.000 ₫, với USD là $45,000. Bộ parse phải biết tiền tệ hiện tại.
+
+### 10.3 Kiến trúc để thêm ngôn ngữ dễ dàng
+- Toàn bộ chuỗi giao diện nằm trong **String Catalog** (`Localizable.xcstrings`), không hard-code chữ trong code. Widget và thông báo cũng vậy.
+- Số, ngày, tiền tệ format bằng `FormatStyle` theo `Locale`, không tự ghép chuỗi kiểu `"\(amount)đ"`.
+- Số nhiều (plural) dùng tính năng plural của String Catalog ("1 transaction" / "3 transactions").
+- **Dữ liệu lưu bằng key, không lưu chữ đã dịch:** danh mục và lọ mặc định lưu `key` (ví dụ `jar.essentials`), hiển thị theo ngôn ngữ hiện tại. Tên do user tự đặt thì giữ nguyên như user nhập.
+- Những gì riêng cho từng ngôn ngữ được gom vào **một thư mục cho mỗi ngôn ngữ**:
+  - Từ điển parse quy tắc: từ khoá danh mục, tiếng lóng tiền (`k`, `củ`, `lít` / `k`, `grand`), từ chỉ ngày ("hôm qua" / "yesterday")
+  - Prompt hệ thống và giọng văn của trợ lý
+  - Các mẫu thông báo và microcopy của Moonee
+
+### 10.4 AI và ngôn ngữ
+- **Nhập** bằng ngôn ngữ nào cũng được, không phụ thuộc ngôn ngữ giao diện. Ví dụ đang để giao diện English vẫn gõ "phở 45k" được.
+- **Moonee trả lời** theo ngôn ngữ giao diện (có thể thêm tuỳ chọn trả lời theo ngôn ngữ user vừa gõ).
+- Voice: chọn locale cho Speech theo ngôn ngữ giao diện, có tuỳ chọn đổi riêng.
+- Mỗi model hỗ trợ ngôn ngữ ở mức khác nhau, nên danh mục model local cần ghi rõ mức hỗ trợ tiếng Việt (mục 9.2). Nếu Apple Foundation Models chưa tốt với tiếng Việt thì gợi ý user tiếng Việt dùng Gemma/Qwen hoặc BYOK.
+
+### 10.5 Import / Export
+- File CSV export dùng **tên cột tiếng Anh cố định** (`date, amount, category, ...`) để import lại được bất kể ngôn ngữ.
+- Màn ghép cột khi import nhận được tên cột của nhiều ngôn ngữ ("Ngày", "Date", "Số tiền", "Amount"...).
+
+### 10.6 Checklist khi thêm một ngôn ngữ mới
+1. Thêm ngôn ngữ vào String Catalog và dịch các chuỗi.
+2. Thêm thư mục ngôn ngữ: từ điển parse, prompt, microcopy.
+3. Dịch tên danh mục và lọ mặc định (theo key).
+4. Kiểm tra font hiển thị đủ dấu và ký tự.
+5. Kiểm tra layout với chuỗi dài, và với ngôn ngữ viết phải sang trái (RTL) nếu có.
+6. Dịch metadata trên App Store (tên, mô tả, ảnh chụp màn hình).
+
+---
+
+## 11. Mô hình dữ liệu (phác thảo)
+
+```
+Wallet        (id, name, type: cash|bank|ewallet|credit, balance, creditLimit?, statementDay?, dueDay?)
+Jar           (id, key?, customName?, icon, color, percent, balance, order)   // key cho lọ mặc định, customName cho lọ user đặt
+Category      (id, key?, customName?, icon, jarId, kind: expense|income)
+Transaction   (id, date, amount, kind: expense|income|transfer|jarTransfer|lend|borrow|repay,
+               walletId, toWalletId?, categoryId?, jarId?, note, source: text|voice|image|import|manual,
+               attachment?, debtId?)
+IncomeSplit   (transactionId, jarId, amount)          // cách chia của từng khoản thu
+Recurring     (id, name, amount, isEstimate, rule, nextDue, remindDaysBefore, walletId, categoryId)
+Goal          (id, name, target, deadline, jarId, saved)
+Debt          (id, person, direction: lent|borrowed, amount, remaining, dueDate?)
+Asset         (id, symbol, kind: gold|silver|stock|fx|crypto, quantity, costBasis?)
+WatchItem     (id, symbol, kind, alertAbove?, alertBelow?)
+MerchantRule  (pattern, categoryId)                    // học từ các lần user sửa
+```
+
+---
+
+## 12. Lộ trình
+
+**MVP**
+- Đa ngôn ngữ: English + Tiếng Việt, String Catalog ngay từ dòng code đầu tiên
+- Chat nhập text/voice/ảnh, thẻ sửa/hoàn tác, học từ lần sửa
+- AI: Apple on-device + 1–2 model local đã kiểm tra tiếng Việt + BYOK + fallback parse theo quy tắc
+- Skill: `transaction-parser`, `jar-budgeting`, `close-management` (chốt sổ và báo cáo tháng), `spending-coach`
+- Tổng quan + sổ giao dịch
+- Ví (kể cả thẻ tín dụng), lọ envelope, chia thu nhập theo từng khoản
+- Khoản định kỳ + nhắc nhở (3 mức)
+- Báo cáo tháng
+- Onboarding qua chat
+- Face ID, ẩn số dư, che App Switcher, xoá dữ liệu
+- iCloud sync, export CSV
+
+**Bản 2**
+- Mục tiêu
+- Sổ nợ
+- Báo cáo tuần/năm
+- Widget + Lock Screen
+- Import CSV/Excel + skill `reconciliation` (đối chiếu sao kê)
+- Quan tâm: watchlist, tài sản, net worth, cảnh báo giá + skill `financial-statements`
+- Skill `variance-analysis`, `goal-planning`, `debt-tracking`
+- Mở rộng danh mục model local; import skill tự viết
+
+**Để sau**
+- Liên kết ngân hàng qua Open API
+- Siri/Shortcuts, Share Sheet
+- Ngân sách gia đình/chia sẻ, chia bill
+
+⚠️ Thứ tự trên là đề xuất. Nếu bạn muốn đưa Sổ nợ hoặc Widget vào MVP thì cứ kéo lên.
+
+---
+
+# Lưu ý cho Design System
+
+Bạn đã có thiết kế, màu (xanh lá/mint + vàng) và nhân vật. Dưới đây là checklist để soát lại bộ design trước khi code.
+
+## A. Màu sắc
+- Bảng màu thương hiệu và màu ngữ nghĩa (thu/chi/cảnh báo) đã có trong bộ thiết kế.
+- [ ] **Chỉ light mode:** khoá giao diện sáng bằng `UIUserInterfaceStyle = Light` trong Info.plist, để iOS không tự đảo màu khi máy bật dark mode. Widget phải tự chỉ định màu nền, không dùng màu hệ thống.
+- [ ] **Bảng màu cho lọ:** 6 lọ mặc định và các lọ user tự thêm cần một bảng màu phân loại (khoảng 10–12 màu) đủ khác nhau, kể cả với người mù màu, và không trùng màu ngữ nghĩa.
+- [ ] Định nghĩa màu thành **token** (`brand.primary`, `semantic.expense`, `jar.1...`), đừng hard-code mã hex trong màn hình.
+
+## B. Chữ và số
+- [ ] Số tiền dùng **tabular figures** (chữ số đều độ rộng) để các cột không bị nhảy.
+- [ ] Format VND thống nhất: đầy đủ `1.250.000 ₫`, rút gọn `1,25tr` / `850k` (chốt quy tắc cho từng chỗ).
+- [ ] Trạng thái **ẩn số dư**: `•••••` có độ rộng cố định.
+- [ ] Hỗ trợ **Dynamic Type**: số lớn trên dashboard vẫn phải vừa khung khi chữ to.
+- [ ] Font hiển thị đúng dấu tiếng Việt (ă, ơ, ư, ệ...), nhất là font display hoặc font tròn trang trí.
+- [ ] Layout chịu được độ dài chữ khác nhau giữa các ngôn ngữ: nút và nhãn không bị cắt, không cố định độ rộng theo chữ tiếng Anh. Kiểm tra bằng pseudo-localization trong Xcode.
+
+## C. Animation và gradient
+- [ ] Tôn trọng **Reduce Motion**: tắt hoặc giảm hiệu ứng khi user bật trong cài đặt iOS.
+- [ ] Animation số tiền (đếm lên) nên ngắn (<0,6s). Đừng để user phải chờ mới đọc được số.
+- [ ] Mỗi màn hình chỉ nên có một vùng gradient chính để giữ được điểm nhấn.
+- [ ] Haptic: nhẹ khi lưu giao dịch, rõ hơn khi đạt mục tiêu, cảnh báo khi vượt lọ.
+
+## D. Nhân vật Moonee (chiếc ví xanh): các trạng thái cần có
+- [ ] Đồng xu nhân vật đang cầm có ký hiệu **₫**. Khi user dùng tiền tệ khác VND (giao diện English, user nước ngoài), cần một phiên bản đồng xu trung tính (ngôi sao, mặt trăng...) hoặc đổi theo tiền tệ.
+
+| Trạng thái | Dùng ở đâu |
+|---|---|
+| Chào / idle | Onboarding, chat trống |
+| Đang nghe | Khi bấm mic |
+| Đang nghĩ | Đang parse hoặc gọi AI |
+| Vui / đã lưu | Lưu giao dịch xong |
+| Khen / ăn mừng | Đạt mục tiêu, chi dưới ngân sách |
+| Lo lắng | Lọ chạm 80% hoặc vượt |
+| Buồn ngủ | Empty state, nhắc ghi chép buổi tối |
+| Lỗi / bối rối | AI không hiểu, mất mạng |
+- [ ] Có phiên bản **icon nhỏ** (cho nút (+) giữa tab bar, avatar chat, widget) và phiên bản **đầy đủ** (onboarding, báo cáo).
+- [ ] Nhân vật còn rõ ở kích thước 24–28pt trong tab bar.
+
+## E. Component cần thiết kế
+- [ ] Tab bar với nút (+) logo nổi ở giữa (kèm trạng thái nhấn)
+- [ ] Ô nhập chat: text + mic + camera/ảnh, trạng thái đang ghi âm
+- [ ] **Thẻ giao dịch** trong chat: bình thường / đang sửa / đã hoàn tác / nhiều giao dịch gộp. Hiển thị thống nhất "Danh mục · Lọ" (ví dụ "Sách · Phát triển bản thân")
+- [ ] Bong bóng chat Moonee và user, thẻ báo cáo trong chat, gợi ý trả lời nhanh
+- [ ] Thẻ lọ: bình thường / ≥80% / vượt / âm
+- [ ] Thẻ hoá đơn: sắp đến hạn / hôm nay / quá hạn / đã trả
+- [ ] Thẻ mục tiêu, thẻ nợ, thẻ tài sản/giá (tăng/giảm)
+- [ ] Biểu đồ: donut (theo lọ), cột (theo thời gian), đường (net worth). Vòng % ngân sách đổi màu theo mức (bình thường / ≥80% / vượt)
+- [ ] Màn khoá Face ID, lớp che App Switcher
+- [ ] Empty state cho từng màn, skeleton khi tải, trạng thái lỗi/offline
+- [ ] Widget: nhỏ, vừa, Lock Screen (tròn/chữ nhật/inline), kèm trạng thái ẩn số dư
+
+## F. Accessibility
+- [ ] Vùng chạm tối thiểu 44×44pt
+- [ ] Nhãn VoiceOver cho số tiền: đọc thành "một triệu hai trăm năm mươi nghìn đồng", không đọc "1.250.000"
+- [ ] Không truyền đạt thông tin chỉ bằng màu (thu/chi cần thêm dấu +/− hoặc icon)
+
+## G. Giọng văn "Moonee – Bạn"
+- [ ] Moonee tự xưng "Moonee", gọi user là "bạn". Ví dụ: "Moonee đã ghi 45k phở cho bạn rồi nè!"
+- [ ] Bản English giữ cùng tính cách (thân thiện, khích lệ). Ví dụ: "Got it! Moonee logged 45k for phở 🍜". Viết lại cho tự nhiên với từng ngôn ngữ, không dịch máy từng câu.
+- [ ] Nhắc chi tiêu theo hướng **khích lệ, không phán xét**: "Lọ Hưởng thụ còn 200k, bạn cân nhắc chút nha" thay vì "Bạn đã tiêu quá nhiều".
+- [ ] Viết sẵn bộ microcopy cho thông báo, lỗi và empty state để giọng văn đồng nhất.
