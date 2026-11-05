@@ -15,6 +15,17 @@
         }
       }
     },
+    "NSFaceIDUsageDescription": {
+      "extractionState": "extracted_with_value",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee dùng Face ID để mở khoá ứng dụng khi bạn bật khoá ứng dụng."
+          }
+        }
+      }
+    },
     "NSMicrophoneUsageDescription": {
       "extractionState": "extracted_with_value",
       "localizations": {
