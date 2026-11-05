@@ -186,6 +186,16 @@
         }
       }
     },
+    "Here's what Moonee found on the web:": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee tìm được trên web nè:"
+          }
+        }
+      }
+    },
     "Here's what's in your jars right now:": {
       "localizations": {
         "vi": {
@@ -336,6 +346,16 @@
         }
       }
     },
+    "Moonee searched the web but found nothing useful.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee đã tìm trên web nhưng chưa thấy gì hữu ích."
+          }
+        }
+      }
+    },
     "New chat": {
       "localizations": {
         "vi": {
@@ -352,6 +372,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chưa có cuộc trò chuyện nào"
+          }
+        }
+      }
+    },
+    "Not set up": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa thiết lập"
+          }
+        }
+      }
+    },
+    "On": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang bật"
           }
         }
       }
@@ -456,6 +496,16 @@
         }
       }
     },
+    "Source: %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nguồn: %@"
+          }
+        }
+      }
+    },
     "Sources": {
       "localizations": {
         "vi": {
@@ -542,6 +592,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tìm trên web"
+          }
+        }
+      }
+    },
+    "Web search isn't set up yet. Add a Tavily or Brave key in Account › AI assistant, or use a provider with built-in search.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee chưa bật tìm trên web. Thêm khoá Tavily hoặc Brave trong Tài khoản › Trợ lý AI, hoặc dùng nhà cung cấp có sẵn tìm kiếm nha."
           }
         }
       }

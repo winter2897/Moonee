@@ -291,4 +291,37 @@ import Testing
         let long = ChatThreads.title(from: "tháng này mình đã chi bao nhiêu cho ăn uống và cafe vậy Moonee")
         #expect(long.count <= 41 && long.hasSuffix("…") && !long.dropLast().hasSuffix(" "))
     }
+
+    // MARK: Web answers without a model
+
+    @Test func webSearchFactsBecomeTextAndSourceChips() throws {
+        let found = SearchResult(configured: true, source: "Tavily", searchedAt: "2026-11-06T09:00:00Z",
+                                 results: [.init(title: "Giá vàng SJC hôm nay", url: "https://www.vnexpress.net/gia-vang", text: "…", date: "2 hours ago"),
+                                           .init(title: "SJC", url: "https://sjc.com.vn", text: "…")])
+        let facts = [Assistant.ToolResult(tool: "webSearch", json: String(decoding: try JSONEncoder().encode(found), as: UTF8.self))]
+        #expect(ChatBook.factsText(facts)?.contains("**Giá vàng SJC hôm nay**") == true)
+        #expect(ChatBook.sources(facts).map(\.url) == ["https://www.vnexpress.net/gia-vang", "https://sjc.com.vn"])
+        #expect(SourceChips.site(ChatBook.sources(facts)[0]) == "vnexpress.net")
+
+        let off = SearchResult(configured: false, searchedAt: "2026-11-06T09:00:00Z", message: "Web search is not set up.")
+        let offFacts = [Assistant.ToolResult(tool: "webSearch", json: String(decoding: try JSONEncoder().encode(off), as: UTF8.self))]
+        #expect(ChatBook.factsText(offFacts)?.contains("Tavily") == true)
+        #expect(ChatBook.sources(offFacts).isEmpty)
+    }
+
+    @Test func marketPriceFactsShowEveryPrice() throws {
+        let q = MarketPrices.Quote(symbol: "btc", coin: "bitcoin", prices: [.init(currency: "VND", price: "2.500.000.000 ₫"), .init(currency: "USD", price: "$98,000")])
+        let text = ChatBook.factsText([.init(tool: "marketPrice", json: String(decoding: try JSONEncoder().encode(q), as: UTF8.self))])
+        #expect(text?.hasPrefix("**Bitcoin (BTC)**: 2.500.000.000 ₫ · $98,000") == true)
+        #expect(text?.contains("CoinGecko") == true)
+    }
+
+    @Test func messagesKeepTheirSources() {
+        let m = ChatMessage(fromUser: false, text: "")
+        #expect(m.sourcesData == nil)
+        m.sources = [.init(title: "A", url: "https://a.vn", text: "")]
+        #expect(m.sources.map(\.url) == ["https://a.vn"])
+        m.sources = []
+        #expect(m.sourcesData == nil)
+    }
 }

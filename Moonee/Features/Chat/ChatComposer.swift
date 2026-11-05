@@ -121,17 +121,19 @@ struct ChatComposer: View {
 /// "DeepSeek · Medium": the model answering, with its reasoning effort. Tap to change the effort or the model.
 struct ModelChip: View {
     let onChangeModel: () -> Void
-    @AppStorage(LLMSettings.effortKey) private var effortRaw = ReasoningEffort.medium.rawValue
+    /// Effort is stored per provider + model (`LLMSettings.effort`); bumped to redraw after a change.
+    @State private var changes = 0
     // Read so the chip updates when AI settings change.
     @AppStorage(LLMSettings.modeKey) private var modeRaw = ""
     @AppStorage(LLMSettings.cloudKey) private var cloudRaw = ""
 
     var body: some View {
-        let efforts = Self.efforts
+        let efforts = LLMSettings.supportedEffortsNow
+        let effort = Binding(get: { LLMSettings.effort }, set: { LLMSettings.effort = $0; changes += 1 })
         Menu {
             if !efforts.isEmpty {
-                Picker(selection: $effortRaw) {
-                    ForEach(efforts, id: \.self) { Text(Self.title($0)).tag($0.rawValue) }
+                Picker(selection: effort) {
+                    ForEach(efforts, id: \.self) { Text(Self.title($0)).tag($0) }
                 } label: { Text("Effort", tableName: "Chat") }
                 .pickerStyle(.inline)
             }
@@ -154,17 +156,8 @@ struct ModelChip: View {
     }
 
     private var label: String {
-        let effort = ReasoningEffort(rawValue: effortRaw) ?? .medium
-        return Self.efforts.isEmpty ? Self.modelName : "\(Self.modelName) · \(Self.title(effort))"
-    }
-
-    static var efforts: [ReasoningEffort] {
-        switch LLMSettings.mode {
-        case .byok, .hybrid:
-            let p = LLMSettings.cloudProvider
-            return supportedEfforts(provider: p, model: LLMSettings.model(p))
-        case .onDevice, .local: return []
-        }
+        _ = changes
+        return LLMSettings.supportedEffortsNow.isEmpty ? Self.modelName : "\(Self.modelName) · \(Self.title(LLMSettings.effort))"
     }
 
     static var modelName: String {
@@ -195,11 +188,10 @@ struct ModelChip: View {
     }
 }
 
-/// "Add to chat": camera and recent photos (system picker, no library permission needed), receipt photo, skills, web search.
+/// "Add to chat": camera and recent photos (system picker, no library permission needed), receipt photo, skills, web search settings.
 struct AddToChatSheet: View {
     let onImage: (UIImage) -> Void
     @Environment(\.dismiss) private var dismiss
-    @AppStorage(LLMSettings.webSearchKey) private var webSearch = false
     @State private var item: PhotosPickerItem?
     @State private var showLibrary = false
     @State private var showCamera = false
@@ -236,8 +228,13 @@ struct AddToChatSheet: View {
                     NavigationLink { SkillsView() } label: {
                         Label { Text("Skills", tableName: "Chat") } icon: { Image(systemName: "wand.and.stars") }
                     }
-                    Toggle(isOn: $webSearch) {
-                        Label { Text("Web search", tableName: "Chat") } icon: { Image(systemName: "globe") }
+                    // Search turns on in AI settings (a provider with built-in search, or a Tavily / Brave key).
+                    NavigationLink { AISettingsView() } label: {
+                        LabeledContent {
+                            SearchSettings.backend() == nil ? Text("Not set up", tableName: "Chat") : Text("On", tableName: "Chat")
+                        } label: {
+                            Label { Text("Web search", tableName: "Chat") } icon: { Image(systemName: "globe") }
+                        }
                     }
                 }
                 .foregroundStyle(Color.ink)
@@ -271,19 +268,18 @@ struct AddToChatSheet: View {
 
 /// Where a web answer came from: site · time, opening the page.
 struct SourceChips: View {
-    let sources: [WebSource]
+    let sources: [SearchHit]
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 6) {
-                ForEach(sources, id: \.url) { s in
-                    Link(destination: s.url) {
+                ForEach(sources.filter { URL(string: $0.url) != nil }, id: \.url) { s in
+                    Link(destination: URL(string: s.url)!) {
                         HStack(spacing: 4) {
                             Image(systemName: "globe").font(.caption)
-                            Text(s.site.isEmpty ? (s.url.host() ?? s.title) : s.site).lineLimit(1)
-                            if let date = s.date {
-                                Text(verbatim: "·")
-                                Text(date, format: .relative(presentation: .named)).lineLimit(1)
+                            Text(Self.site(s)).lineLimit(1)
+                            if let date = s.date, !date.isEmpty {
+                                Text(verbatim: "· \(date)").lineLimit(1) // as the source gives it ("2 hours ago", "2026-11-05")
                             }
                         }
                         .font(.chip)
@@ -297,5 +293,11 @@ struct SourceChips: View {
             }
         }
         .accessibilityLabel(Text("Sources", tableName: "Chat"))
+    }
+
+    /// "vnexpress.net" from the page URL.
+    static func site(_ s: SearchHit) -> String {
+        guard let host = URL(string: s.url)?.host() else { return s.title }
+        return host.hasPrefix("www.") ? String(host.dropFirst(4)) : host
     }
 }

@@ -239,16 +239,17 @@ struct ChatView: View {
         pending = nil
 
         busy = true
-        let assistant = Assistant(router: LLMSettings.router(), tools: MooneeTools(ledger: StoreLedger(context)))
+        let assistant = Assistant(router: LLMSettings.router(), tools: MooneeTools(ledger: StoreLedger(context)), catalog: SkillCatalog(context))
         Task {
             let out = await assistant.handle(input, history: history, context: parser)
             withAnimation { busy = false }
             switch out {
             case .transactions(let txns, _): record(txns, source: source, raw: input)
-            // ponytail: S3's web answers will hand their pages over here as `sources`.
+            // ponytail: a model's answer doesn't carry the pages it searched yet; only the no-model path shows source chips.
             case .answer(let answer, _): reply(answer, mood: .happy)
             case .facts(let facts, _):
-                if let t = ChatBook.factsText(facts) { reply(t, mood: .happy) } else { reply(Self.confused, mood: .confused) }
+                if let t = ChatBook.factsText(facts) { reply(t, mood: .happy, sources: ChatBook.sources(facts)) }
+                else { reply(Self.confused, mood: .confused) }
             }
         }
     }
@@ -289,7 +290,7 @@ struct ChatView: View {
         }
     }
 
-    private func reply(_ text: String, mood: MooneeMood, sources: [WebSource] = []) {
+    private func reply(_ text: String, mood: MooneeMood, sources: [SearchHit] = []) {
         let m = ChatMessage(fromUser: false, text: text)
         m.sources = sources
         post(m)
