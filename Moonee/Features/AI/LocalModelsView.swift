@@ -47,11 +47,11 @@ struct LocalModelsView: View {
         }
     }
 
-    @ViewBuilder private func row(_ m: LocalModel) -> some View {
+    private func row(_ m: LocalModel) -> some View {
         let fits = m.fits(physicalMemory: ram)
-        VStack(alignment: .leading, spacing: 6) {
+        return VStack(alignment: .leading, spacing: 6) {
             HStack {
-                Text(m.name).font(.headline)
+                Text(m.name).font(.rowTitle)
                 if m == recommended {
                     Text("Recommended", tableName: "LocalModels")
                         .font(.caption.weight(.semibold))
@@ -66,7 +66,7 @@ struct LocalModelsView: View {
             }
             Text("\(m.downloadBytes.formatted(.byteCount(style: .file))) download · needs \(m.ramBytes.formatted(.byteCount(style: .memory))) RAM · about \(m.tokensPerSecond) words/s",
                  tableName: "LocalModels")
-                .font(.subheadline)
+                .font(.secondaryText)
             HStack(spacing: 12) {
                 Label {
                     m.vietnamese == .good ? Text("Vietnamese: good", tableName: "LocalModels") : Text("Vietnamese: basic", tableName: "LocalModels")
@@ -78,54 +78,54 @@ struct LocalModelsView: View {
             .font(.caption)
             .foregroundStyle(.secondary)
             Link(destination: m.licenceURL) { Text("Licence: \(m.licence)", tableName: "LocalModels") }.font(.caption)
-            if !fits {
+            if fits {
+                actions(m)
+            } else {
                 Text("Needs an iPhone with \(m.minDeviceRAMGB) GB of RAM or more.", tableName: "LocalModels")
                     .font(.caption).foregroundStyle(Color.warningText)
             }
         }
         .padding(.vertical, 4)
-
-        actions(m, fits: fits)
     }
 
-    @ViewBuilder private func actions(_ m: LocalModel, fits: Bool) -> some View {
+    /// Small capsule actions inside the model's card (design system: filled = main action, outlined = secondary).
+    @ViewBuilder private func actions(_ m: LocalModel) -> some View {
         switch downloads.state(m) {
         case .notDownloaded:
-            Button { downloads.start(m) } label: { Label { Text("Download", tableName: "LocalModels") } icon: { Image(systemName: "arrow.down.circle") } }
-                .disabled(!fits)
+            pill("Download", "arrow.down", filled: true) { downloads.start(m) }
         case .downloading(let f), .waitingForWiFi(let f):
-            VStack(alignment: .leading, spacing: 6) {
-                ProgressView(value: f) {
-                    if case .waitingForWiFi = downloads.state(m) {
-                        Text("Waiting for Wi-Fi…", tableName: "LocalModels").font(.caption)
-                    } else {
-                        Text("Downloading \(f.formatted(.percent.precision(.fractionLength(0))))", tableName: "LocalModels").font(.caption)
-                    }
+            ProgressView(value: f) {
+                if case .waitingForWiFi = downloads.state(m) {
+                    Text("Waiting for Wi-Fi…", tableName: "LocalModels").font(.caption)
+                } else {
+                    Text("Downloading \(f.formatted(.percent.precision(.fractionLength(0))))", tableName: "LocalModels").font(.caption)
                 }
-                .tint(.mooneeGreen)
-                Button { downloads.pause(m) } label: { Label { Text("Pause", tableName: "LocalModels") } icon: { Image(systemName: "pause.circle") } }
             }
+            .tint(.mooneeGreen)
+            pill("Pause", "pause.fill") { downloads.pause(m) }
         case .paused(let f):
-            Button { downloads.start(m) } label: {
-                Label { Text("Resume (\(f.formatted(.percent.precision(.fractionLength(0)))) done)", tableName: "LocalModels") } icon: { Image(systemName: "arrow.clockwise.circle") }
+            HStack(spacing: 8) {
+                pill("Resume (\(f.formatted(.percent.precision(.fractionLength(0)))) done)", "arrow.clockwise", filled: true) { downloads.start(m) }
+                pill("Delete", "trash") { confirmDelete = m }
             }
-            deleteButton(m)
         case .failed(let message):
             Text(message).font(.caption).foregroundStyle(Color.danger)
-            Button { downloads.start(m) } label: { Label { Text("Try again", tableName: "LocalModels") } icon: { Image(systemName: "arrow.clockwise.circle") } }
-            deleteButton(m)
-        case .downloaded:
-            if selected != m.id {
-                Button { selected = m.id } label: { Label { Text("Use this model", tableName: "LocalModels") } icon: { Image(systemName: "checkmark.circle") } }
+            HStack(spacing: 8) {
+                pill("Try again", "arrow.clockwise", filled: true) { downloads.start(m) }
+                pill("Delete", "trash") { confirmDelete = m }
             }
-            deleteButton(m)
+        case .downloaded:
+            HStack(spacing: 8) {
+                if selected != m.id { pill("Use this model", "checkmark", filled: true) { selected = m.id } }
+                pill("Delete", "trash") { confirmDelete = m }
+            }
         }
     }
 
-    private func deleteButton(_ m: LocalModel) -> some View {
-        Button(role: .destructive) { confirmDelete = m } label: {
-            Label { Text("Delete", tableName: "LocalModels") } icon: { Image(systemName: "trash") }
-        }
+    private func pill(_ title: LocalizedStringKey, _ symbol: String, filled: Bool = false, action: @escaping () -> Void) -> some View {
+        Button(action: action) { Label { Text(title, tableName: "LocalModels") } icon: { Image(systemName: symbol) } }
+            .labelStyle(.titleAndIcon) // a List row would otherwise show the icon only
+            .buttonStyle(OutlinePillStyle(filled: filled))
     }
 }
 
