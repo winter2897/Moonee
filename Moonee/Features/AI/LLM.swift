@@ -221,7 +221,7 @@ enum LLMSettings {
 
     /// The models the current settings allow, for `Assistant`.
     static func router() -> AIRouter {
-        AIRouter(mode: mode, onDevice: AppleLLM.isAvailable ? AppleLLM() : nil, local: nil, cloud: cloud(cloudProvider))
+        AIRouter(mode: mode, onDevice: AppleLLM.isAvailable ? AppleLLM() : nil, local: LocalLLM.current, cloud: cloud(cloudProvider))
     }
 
     /// A configured BYOK model, or nil when it has no key.
