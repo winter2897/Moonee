@@ -47,7 +47,7 @@ struct Ledger<ID: Hashable> {
     private(set) var jarBalances: [ID: Int]
     /// What is still owed on each debt (positive), by its direction.
     private(set) var debtRemaining: [ID: Int] = [:]
-    private let debtDirections: [ID: DebtDirection]
+    let debtDirections: [ID: DebtDirection]
     private let jarOpening: [ID: Int]
 
     init(entries: [Entry], walletOpening: [ID: Int] = [:], jarOpening: [ID: Int] = [:], debtDirections: [ID: DebtDirection] = [:]) {
