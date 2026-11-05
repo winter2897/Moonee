@@ -42,7 +42,12 @@ struct ChatView: View {
                     }
                     .padding(.horizontal, 16).padding(.vertical, 8)
                 }
+                // The keyboard opens with the tab (spec §1) but always gets out of the way:
+                // drag the chat (it bounces even when short) or tap outside a control.
                 .scrollDismissesKeyboard(.interactively)
+                .scrollBounceBehavior(.always)
+                .contentShape(.rect)
+                .onTapGesture { focused = false }
                 .defaultScrollAnchor(.bottom, for: .initialOffset)
                 .defaultScrollAnchor(.bottom, for: .sizeChanges)
                 .defaultScrollAnchor(.top, for: .alignment) // a short chat sits under the hero, as in the mockup
@@ -90,56 +95,31 @@ struct ChatView: View {
 
     private var header: some View {
         VStack(spacing: 0) {
-            HStack {
+            MooneeHeader(Text("Your finance assistant", tableName: "Chat")) {
                 if let onBack {
-                    circleButton("chevron.left", label: Text("Back", tableName: "Chat"), action: onBack)
-                } else {
-                    Color.clear.frame(width: 44, height: 44)
+                    Button(action: onBack) { HeaderCircle("chevron.left") }.accessibilityLabel(Text("Back", tableName: "Chat"))
                 }
-                Spacer()
-                VStack(spacing: 4) {
-                    HStack(spacing: 4) {
-                        Text(verbatim: "Moonee").font(.title2.bold()).foregroundStyle(Color.brandDeep)
-                        Image(systemName: "sparkles").foregroundStyle(Color.brandYellow).accessibilityHidden(true)
-                    }
-                    Text("Your finance assistant", tableName: "Chat")
-                        .font(.footnote).foregroundStyle(Color.brandDeep)
-                        .padding(.horizontal, 12).padding(.vertical, 3)
-                        .background(Color.brandMintSoft, in: .capsule)
-                }
-                Spacer()
+            } trailing: {
                 Menu {
                     Button(role: .destructive) { confirmClear = true } label: {
                         Label { Text("Clear chat", tableName: "Chat") } icon: { Image(systemName: "trash") }
                     }
-                } label: {
-                    Image(systemName: "ellipsis").font(.headline).foregroundStyle(Color.ink)
-                        .frame(width: 44, height: 44).background(Color.surface, in: .circle)
-                        .shadow(color: .brandDeep.opacity(0.08), radius: 6, y: 2)
-                }
+                } label: { HeaderCircle("ellipsis") }
                 .accessibilityLabel(Text("More", tableName: "Chat"))
             }
             .padding(.horizontal, 16)
 
-            let size: CGFloat = focused ? 110 : 180
+            // MooneeHero's sizes (104 pt, 76 pt while typing: UI review C-1) with the chat's own hills, tuned to the
+            // chat mockup: they run from coin height down behind the first bubble and the chat scrolls over them.
+            let size: CGFloat = focused ? 76 : 104
             MooneeCharacter(mood: currentMood)
                 .frame(height: size)
                 .frame(maxWidth: .infinity)
-                // From coin height down behind the first bubble; not clipped, so the chat scrolls over it (mockup).
                 .background(alignment: .top) { ChatHills().frame(height: size * 1.05).offset(y: size * 0.36) }
                 .padding(.bottom, 8)
-            .animation(.smooth, value: focused)
-            .animation(.smooth, value: currentMood)
+                .animation(.smooth, value: focused)
+                .animation(.smooth, value: currentMood)
         }
-    }
-
-    private func circleButton(_ symbol: String, label: Text, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Image(systemName: symbol).font(.headline).foregroundStyle(Color.ink)
-                .frame(width: 44, height: 44).background(Color.surface, in: .circle)
-                .shadow(color: .brandDeep.opacity(0.08), radius: 6, y: 2)
-        }
-        .accessibilityLabel(label)
     }
 
     // MARK: Messages
@@ -147,21 +127,25 @@ struct ChatView: View {
     private var greeting: some View {
         VStack(alignment: .leading, spacing: 12) {
             ChatBubble(.moonee, String(localized: "**Hi there!** 👋\nWhat can Moonee do for you today? Log a spend, ask about your money, or snap a receipt.", table: "Chat"))
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    QuickReplyChip(title: String(localized: "Say a spend", table: "Chat"), symbol: "mic", action: toggleMic)
-                    QuickReplyChip(title: String(localized: "Scan a receipt", table: "Chat"), symbol: "camera") { choosingPhoto = true }
-                    QuickReplyChip(title: String(localized: "Type it in", table: "Chat"), symbol: "pencil") { focused = true }
+            // One row when the three fit (mockup), else the third wraps: never cut off at the edge (UI review C-3).
+            let say = QuickReplyChip(title: String(localized: "Say a spend", table: "Chat"), symbol: "mic", action: toggleMic)
+            let scan = QuickReplyChip(title: String(localized: "Scan a receipt", table: "Chat"), symbol: "camera") { choosingPhoto = true }
+            let type = QuickReplyChip(title: String(localized: "Type it in", table: "Chat"), symbol: "pencil") { focused = true }
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 8) { say; scan; type }
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 8) { say; scan }
+                    type
                 }
-                .padding(.vertical, 6).padding(.horizontal, 2)
             }
+            .padding(.vertical, 4)
         }
     }
 
     @ViewBuilder private func row(_ i: Int) -> some View {
         let m = messages[i]
         if m.fromUser {
-            ChatBubble(.user, m.text)
+            ChatBubble(.user, m.text, sent: true)
         } else {
             ChatBubble(.moonee, m.text, showsAvatar: i == 0 || messages[i - 1].fromUser)
             card(m)
