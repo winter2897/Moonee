@@ -34,18 +34,18 @@ struct RootView: View {
     /// Where the chat's back button returns to.
     @State private var lastTab = AppTab.overview
     @AppStorage(Prefs.hideBalances) private var hideBalances = false
+    @State private var barHeight: CGFloat = 76
 
     var body: some View {
         TabView(selection: $tab) {
-            Tab(value: .overview) { OverviewView() }
-            Tab(value: .budget) { BudgetView() }
-            Tab(value: .moonee) { ChatView { tab = lastTab } }
-            Tab(value: .watchlist) { WatchlistView() }
-            Tab(value: .account) { AccountView() }
+            Tab(value: .overview) { OverviewView().mooneeTabContent(barHeight: barHeight) }
+            Tab(value: .budget) { BudgetView().mooneeTabContent(barHeight: barHeight) }
+            Tab(value: .moonee) { ChatView { tab = lastTab }.toolbarVisibility(.hidden, for: .tabBar) }
+            Tab(value: .watchlist) { WatchlistView().mooneeTabContent(barHeight: barHeight) }
+            Tab(value: .account) { AccountView().mooneeTabContent(barHeight: barHeight) }
         }
-        .toolbar(.hidden, for: .tabBar)
         .onChange(of: tab) { old, _ in if old != .moonee { lastTab = old } }
-        .safeAreaInset(edge: .bottom) {
+        .overlay(alignment: .bottom) {
             // The chat is full screen with its own input bar (mockup); the bar comes back on Back.
             if tab != .moonee {
                 MooneeTabBar(items: [
@@ -55,6 +55,7 @@ struct RootView: View {
                     .init(tab: .account, title: String(localized: "Account"), symbol: "person"),
                 ], selection: $tab) { tab = .moonee }
                 .fixedSize(horizontal: false, vertical: true)
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { barHeight = $0 + 8 }
             }
         }
         .environment(\.balanceHidden, hideBalances)

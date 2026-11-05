@@ -152,6 +152,16 @@
         }
       }
     },
+    "Sent": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã gửi"
+          }
+        }
+      }
+    },
     "Stop recording": {
       "localizations": {
         "vi": {
