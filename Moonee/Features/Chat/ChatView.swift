@@ -43,7 +43,9 @@ struct ChatView: View {
                     .padding(.horizontal, 16).padding(.vertical, 8)
                 }
                 .scrollDismissesKeyboard(.interactively)
-                .defaultScrollAnchor(.bottom)
+                .defaultScrollAnchor(.bottom, for: .initialOffset)
+                .defaultScrollAnchor(.bottom, for: .sizeChanges)
+                .defaultScrollAnchor(.top, for: .alignment) // a short chat sits under the hero, as in the mockup
                 .onChange(of: messages.count) { withAnimation { proxy.scrollTo("bottom", anchor: .bottom) } }
                 .onChange(of: busy) { withAnimation { proxy.scrollTo("bottom", anchor: .bottom) } }
             }
@@ -119,12 +121,15 @@ struct ChatView: View {
             }
             .padding(.horizontal, 16)
 
+            let size: CGFloat = focused ? 110 : 180
             MooneeCharacter(mood: currentMood)
-                .frame(height: focused ? 72 : 150)
+                .frame(height: size)
                 .frame(maxWidth: .infinity)
-                .background(alignment: .bottom) { Hills().frame(height: focused ? 30 : 60).opacity(0.5) }
-                .animation(.smooth, value: focused)
-                .animation(.smooth, value: currentMood)
+                // From coin height down behind the first bubble; not clipped, so the chat scrolls over it (mockup).
+                .background(alignment: .top) { ChatHills().frame(height: size * 1.05).offset(y: size * 0.36) }
+                .padding(.bottom, 8)
+            .animation(.smooth, value: focused)
+            .animation(.smooth, value: currentMood)
         }
     }
 
@@ -288,5 +293,54 @@ struct ChatView: View {
         } else {
             record([ChatBook.receipt(lines, context: ParserContext(context))], source: .image, raw: lines.joined(separator: "\n"))
         }
+    }
+}
+
+/// Soft rolling hills behind the character (chat mockup): mint on the left, warm yellow on the right,
+/// a pale ground in front, fading out at the bottom so the chat flows on without an edge.
+private struct ChatHills: View {
+    var body: some View {
+        Canvas { ctx, size in
+            let (w, h) = (size.width, size.height)
+            func hill(_ color: Color, _ build: (inout Path) -> Void) {
+                var p = Path()
+                build(&p)
+                p.closeSubpath()
+                // Each hill is deeper at its crest and pales toward its foot, like the mockup's soft mounds.
+                let top = p.boundingRect.minY
+                ctx.fill(p, with: .linearGradient(Gradient(colors: [color, color.opacity(0.25)]),
+                                                  startPoint: .init(x: 0, y: top), endPoint: .init(x: 0, y: h)))
+            }
+            // Far mint hill: high on the left, rolling down behind the character.
+            hill(Color.brandPrimaryLight.opacity(0.4)) { p in
+                p.move(to: .init(x: 0, y: h))
+                p.addLine(to: .init(x: 0, y: h * 0.12))
+                p.addCurve(to: .init(x: w * 0.68, y: h * 0.78), control1: .init(x: w * 0.16, y: h * -0.02), control2: .init(x: w * 0.4, y: h * 0.62))
+                p.addLine(to: .init(x: w * 0.68, y: h))
+            }
+            // Warm yellow hill rising to the right edge.
+            hill(Color.brandYellow.opacity(0.5)) { p in
+                p.move(to: .init(x: w * 0.42, y: h))
+                p.addCurve(to: .init(x: w, y: h * 0.14), control1: .init(x: w * 0.66, y: h * 0.74), control2: .init(x: w * 0.84, y: h * 0.16))
+                p.addLine(to: .init(x: w, y: h))
+            }
+            // A second, lighter mint wave across the screen.
+            hill(Color.brandPrimaryLight.opacity(0.22)) { p in
+                p.move(to: .init(x: 0, y: h))
+                p.addLine(to: .init(x: 0, y: h * 0.32))
+                p.addCurve(to: .init(x: w, y: h * 0.58), control1: .init(x: w * 0.3, y: h * 0.2), control2: .init(x: w * 0.6, y: h * 0.72))
+                p.addLine(to: .init(x: w, y: h))
+            }
+            // Pale ground the character stands on.
+            hill(Color.white.opacity(0.7)) { p in
+                p.move(to: .init(x: 0, y: h))
+                p.addLine(to: .init(x: 0, y: h * 0.5))
+                p.addCurve(to: .init(x: w, y: h * 0.6), control1: .init(x: w * 0.35, y: h * 0.42), control2: .init(x: w * 0.62, y: h * 0.78))
+                p.addLine(to: .init(x: w, y: h))
+            }
+        }
+        .mask(LinearGradient(stops: [.init(color: .black, location: 0.55), .init(color: .clear, location: 1)], startPoint: .top, endPoint: .bottom))
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
     }
 }
