@@ -1,0 +1,676 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "A few quick questions and your budget is ready. Skip anything you like.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vài câu hỏi nhanh là ngân sách của bạn sẵn sàng. Câu nào không muốn trả lời thì cứ bỏ qua nha."
+          }
+        }
+      }
+    },
+    "About how much do you earn a month? A rough range is fine.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mỗi tháng bạn kiếm được khoảng bao nhiêu? Ước chừng là được rồi."
+          }
+        }
+      }
+    },
+    "All set! 🎉 Tap + and tell Moonee your first spend, like “lunch 45k”.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xong rồi! 🎉 Chạm + và kể Moonee khoản chi đầu tiên, ví dụ “ăn trưa 45k”."
+          }
+        }
+      }
+    },
+    "All set, %@! 🎉 Tap + and tell Moonee your first spend, like “lunch 45k”.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xong rồi, %@! 🎉 Chạm + và kể Moonee khoản chi đầu tiên, ví dụ “ăn trưa 45k”."
+          }
+        }
+      }
+    },
+    "Allow notifications": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cho phép thông báo"
+          }
+        }
+      }
+    },
+    "Amount": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Số tiền"
+          }
+        }
+      }
+    },
+    "Any fixed bills every month? Tap one to add it with its amount and due day.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hằng tháng bạn có hoá đơn cố định nào không? Chạm để thêm, kèm số tiền và ngày đến hạn."
+          }
+        }
+      }
+    },
+    "Balance": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Số dư"
+          }
+        }
+      }
+    },
+    "Bill name": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tên hoá đơn"
+          }
+        }
+      }
+    },
+    "Continue": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiếp tục"
+          }
+        }
+      }
+    },
+    "Day %lld": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngày %lld"
+          }
+        }
+      }
+    },
+    "Default": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mặc định"
+          }
+        }
+      }
+    },
+    "Due day": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngày đến hạn"
+          }
+        }
+      }
+    },
+    "Electricity": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiền điện"
+          }
+        }
+      }
+    },
+    "Face ID on": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã bật Face ID"
+          }
+        }
+      }
+    },
+    "Finish setup": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoàn tất"
+          }
+        }
+      }
+    },
+    "Fixed salary": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lương cố định"
+          }
+        }
+      }
+    },
+    "Here's how Moonee would split every income into jars.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đây là cách Moonee đề xuất chia mỗi khoản thu vào các lọ."
+          }
+        }
+      }
+    },
+    "Hi there! I'm **Moonee**, your money buddy 👋": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chào bạn! Mình là **Moonee**, bạn đồng hành tài chính của bạn 👋"
+          }
+        }
+      }
+    },
+    "Hi! Before we start, let's set up your profile 👋": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chào bạn! Trước khi bắt đầu, mình cùng tạo hồ sơ nhé 👋"
+          }
+        }
+      }
+    },
+    "How often should Moonee nudge you?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn muốn Moonee nhắc nhở thường xuyên cỡ nào?"
+          }
+        }
+      }
+    },
+    "Internet": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Internet"
+          }
+        }
+      }
+    },
+    "Is it a fixed salary, or does it change from month to month?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thu nhập của bạn là lương cố định, hay mỗi tháng một khác?"
+          }
+        }
+      }
+    },
+    "It varies": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không đều"
+          }
+        }
+      }
+    },
+    "Keep it or tweak it: it has to add up to 100%.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giữ nguyên hoặc chỉnh lại nha, tổng phải đủ 100%."
+          }
+        }
+      }
+    },
+    "Keep the defaults": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giữ mặc định"
+          }
+        }
+      }
+    },
+    "Last one: lock Moonee with Face ID, and allow reminders?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Câu cuối: khoá Moonee bằng Face ID và cho phép gửi nhắc nhở nhé?"
+          }
+        }
+      }
+    },
+    "Later": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Để sau"
+          }
+        }
+      }
+    },
+    "Less for %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bớt cho %@"
+          }
+        }
+      }
+    },
+    "Lock with Face ID": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khoá bằng Face ID"
+          }
+        }
+      }
+    },
+    "Moonee only needs your name and an avatar. Everything stays on this device, no sign-in needed.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee chỉ cần tên và avatar của bạn. Mọi thứ được lưu trên thiết bị, không cần đăng nhập."
+          }
+        }
+      }
+    },
+    "More for %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm cho %@"
+          }
+        }
+      }
+    },
+    "Nice to meet you, **%@**! I'm **Moonee**, your money buddy 👋": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rất vui được gặp **%@**! Mình là **Moonee**, bạn đồng hành tài chính của bạn 👋"
+          }
+        }
+      }
+    },
+    "No fixed bills": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có hoá đơn cố định"
+          }
+        }
+      }
+    },
+    "Not now": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Để sau"
+          }
+        }
+      }
+    },
+    "Notifications on": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã bật thông báo"
+          }
+        }
+      }
+    },
+    "Or type the amount": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoặc nhập số tiền"
+          }
+        }
+      }
+    },
+    "Other": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khác"
+          }
+        }
+      }
+    },
+    "Over %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trên %@"
+          }
+        }
+      }
+    },
+    "Owed": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang nợ"
+          }
+        }
+      }
+    },
+    "Phone": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Điện thoại"
+          }
+        }
+      }
+    },
+    "Profile setup": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thiết lập hồ sơ"
+          }
+        }
+      }
+    },
+    "Quick setup": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thiết lập nhanh"
+          }
+        }
+      }
+    },
+    "Remove": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá"
+          }
+        }
+      }
+    },
+    "Rent": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiền nhà"
+          }
+        }
+      }
+    },
+    "Save bills": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lưu hoá đơn"
+          }
+        }
+      }
+    },
+    "Save wallets": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lưu ví"
+          }
+        }
+      }
+    },
+    "Send": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gửi"
+          }
+        }
+      }
+    },
+    "Skip": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bỏ qua"
+          }
+        }
+      }
+    },
+    "Skip for now": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Để sau nhé"
+          }
+        }
+      }
+    },
+    "Skip setup": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bỏ qua thiết lập"
+          }
+        }
+      }
+    },
+    "Start using Moonee": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bắt đầu dùng Moonee"
+          }
+        }
+      }
+    },
+    "Step %lld of 4": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bước %lld trên 4"
+          }
+        }
+      }
+    },
+    "Step %lld/4": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bước %lld/4"
+          }
+        }
+      }
+    },
+    "Subscriptions": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gói đăng ký"
+          }
+        }
+      }
+    },
+    "Suggested": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gợi ý"
+          }
+        }
+      }
+    },
+    "Total": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tổng"
+          }
+        }
+      }
+    },
+    "Turn on the app lock": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bật khoá ứng dụng"
+          }
+        }
+      }
+    },
+    "Under %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dưới %@"
+          }
+        }
+      }
+    },
+    "Use these jars": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dùng các lọ này"
+          }
+        }
+      }
+    },
+    "Water": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiền nước"
+          }
+        }
+      }
+    },
+    "Where do you keep your money? Tick your wallets and what is in them today.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn đang để tiền ở đâu? Chọn các ví bạn dùng và số dư hiện tại nhé."
+          }
+        }
+      }
+    },
+    "Which brain should Moonee use? For this iPhone Moonee suggests **%@**. You can change it any time in Account.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee nên dùng “bộ não” nào? Với iPhone này, Moonee gợi ý **%@**. Bạn đổi được bất cứ lúc nào trong Tài khoản."
+          }
+        }
+      }
+    },
+    "Your bills take a big bite, so **Essentials** gets more room.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoá đơn chiếm khá nhiều, nên lọ **Thiết yếu** được rộng tay hơn."
+          }
+        }
+      }
+    },
+    "Your income varies, so **Savings** gets a little more.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thu nhập của bạn không đều, nên lọ **Tiết kiệm** được thêm một chút."
+          }
+        }
+      }
+    },
+    "day %lld": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ngày %lld"
+          }
+        }
+      }
+    },
+    "owed": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "đang nợ"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}
