@@ -14,7 +14,7 @@ import Testing
 
     /// Two jars (needs 80%, play 20%), food → needs, fun → play. Sep: 1tr food. Oct: 10tr salary, food 2tr + 500k, fun 3tr, one with no category.
     func book() throws -> (ModelContext, [Txn], [Wallet], [Jar]) {
-        let context = ModelContext(try ModelContainer(for: Schema.moonee, configurations: ModelConfiguration(isStoredInMemoryOnly: true)))
+        let context = ModelContext(try ModelContainer(for: Schema.moonee, configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)))
         let needs = Jar(key: "jar.essentials", icon: "house", colorHex: 0, percent: 80, order: 0)
         let play = Jar(key: "jar.play", icon: "sparkles", colorHex: 0, percent: 20, order: 1)
         let food = Category(key: "category.food", icon: "fork.knife", colorHex: 0, jar: needs)

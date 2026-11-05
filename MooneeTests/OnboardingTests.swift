@@ -11,7 +11,7 @@ import Testing
     }()
 
     func seeded() throws -> ModelContext {
-        let context = ModelContext(try ModelContainer(for: Schema.moonee, configurations: ModelConfiguration(isStoredInMemoryOnly: true)))
+        let context = ModelContext(try ModelContainer(for: Schema.moonee, configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)))
         Seed.ifNeeded(context)
         return context
     }
