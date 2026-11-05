@@ -47,6 +47,41 @@ extension Color {
     static let mooneeYellow = Color.brandYellow
 }
 
+// MARK: - Type scale (UI review 2026-11-05, measured on the mockups). Screens use only these.
+// All follow Dynamic Type. Sizes are at the default (Large) setting.
+
+extension Font {
+    /// "Moonee" in the screen header, 20 bold.
+    static let screenTitle = Font.title3.bold()
+    /// Subtitle pill under the header title, 13 medium.
+    static let headerPill = Font.footnote.weight(.medium)
+    /// Amount on a summary card (spent today, a card's net worth), 20 bold. The big total uses `.heroAmountFont()`.
+    static let cardAmount = Font.title3.bold()
+    /// "Chào bạn!" over Moonee's note, 17 bold.
+    static let greeting = Font.headline.bold()
+    /// Card and section titles, 16 semibold.
+    static let sectionTitle = Font.callout.weight(.semibold)
+    /// List row titles, 15 semibold.
+    static let rowTitle = Font.subheadline.weight(.semibold)
+    /// Body text: chat bubbles, notes, 15.
+    static let bodyText = Font.subheadline
+    /// Row subtitles and secondary lines, 13.
+    static let secondaryText = Font.footnote
+    // caption (%, meta, tab labels) is the system `.caption`, 12.
+    /// Chips, pills and small buttons, 13 medium.
+    static let chip = Font.footnote.weight(.medium)
+}
+
+extension View {
+    /// The one big amount of a screen (budget total, net worth, wallet total): 26 bold rounded, scaled like `.title`.
+    func heroAmountFont() -> some View { modifier(HeroAmountFont()) }
+}
+
+private struct HeroAmountFont: ViewModifier {
+    @ScaledMetric(relativeTo: .title) private var size: CGFloat = 26
+    func body(content: Content) -> some View { content.font(.system(size: size, weight: .bold, design: .rounded)) }
+}
+
 extension LinearGradient {
     /// The one green gradient of pills, FAB and primary buttons.
     static let brand = LinearGradient(colors: [.brandPrimaryLight, Color(hex: 0x16A34A)], startPoint: .top, endPoint: .bottom)
@@ -93,7 +128,7 @@ extension View {
     /// Frosted white card.
     func card(padding: CGFloat = 16) -> some View {
         self.padding(padding)
-            .background(.white.opacity(0.78), in: .rect(cornerRadius: 22))
+            .background(.white.opacity(0.78), in: .rect(cornerRadius: 18))
             .shadow(color: .mooneeDark.opacity(0.08), radius: 14, y: 6)
     }
 
@@ -109,7 +144,7 @@ extension View {
 struct IconBadge: View {
     let symbol: String
     let color: Color
-    var size: CGFloat = 38
+    var size: CGFloat = 34
 
     var body: some View {
         Image(systemName: symbol)
@@ -121,30 +156,37 @@ struct IconBadge: View {
 }
 
 /// Pill segmented control (Chi tiêu/Thu nhập, Tuần/Tháng/Năm).
+/// 36 pt tall at the default text size; each segment is a 44 pt touch target.
 struct PillPicker<T: Hashable>: View {
     let options: [(T, String)]
     @Binding var selection: T
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        HStack(spacing: 6) {
+        HStack(spacing: 4) {
             ForEach(options, id: \.0) { value, title in
-                Button { withAnimation(.snappy) { selection = value } } label: {
+                Button { withAnimation(reduceMotion ? nil : .snappy) { selection = value } } label: {
                     Text(title)
-                        .font(.subheadline.weight(.semibold))
+                        .font(.chip.weight(.semibold))
+                        .lineLimit(1)
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 10)
-                        .foregroundStyle(selection == value ? .white : .mooneeInk)
+                        .padding(.vertical, 6)
+                        .foregroundStyle(selection == value ? .white : .ink)
                         .background {
                             if selection == value {
                                 Capsule().fill(LinearGradient.brand)
                             }
                         }
+                        .padding(3)
+                        .frame(minHeight: 44)
+                        .contentShape(.rect)
                 }
                 .buttonStyle(.plain)
+                .accessibilityAddTraits(selection == value ? .isSelected : [])
             }
         }
-        .padding(4)
-        .background(.white.opacity(0.7), in: .capsule)
+        .padding(.horizontal, 4)
+        .background(.white.opacity(0.7), in: .capsule.inset(by: 4)) // 36 visual; the 4 pt around it is touch area
     }
 }
 
@@ -155,9 +197,31 @@ struct MooneeButtonStyle: ButtonStyle {
             .font(.headline)
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 16)
+            .padding(.vertical, 13)
             .background(LinearGradient.brand, in: .capsule)
             .shadow(color: .mooneeGreen.opacity(0.35), radius: 10, y: 5)
             .scaleEffect(configuration.isPressed ? 0.97 : 1)
+    }
+}
+
+/// Small capsule button, 30 pt visual inside a 44 pt touch target: outlined green ("Undo", "Paid") or filled ("Done").
+struct OutlinePillStyle: ButtonStyle {
+    var filled = false
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.chip.weight(.semibold))
+            .lineLimit(1)
+            .foregroundStyle(filled ? Color.white : Color.brandDeep)
+            .padding(.horizontal, 12).padding(.vertical, 6)
+            .frame(minHeight: 30)
+            .background {
+                if filled { Capsule().fill(LinearGradient.brand) } else { Capsule().fill(Color.surface) }
+            }
+            .overlay { if !filled { Capsule().strokeBorder(Color.brandPrimary, lineWidth: 1.2) } }
+            .fixedSize()
+            .frame(minHeight: 44)
+            .contentShape(.rect)
+            .opacity(configuration.isPressed ? 0.7 : 1)
     }
 }

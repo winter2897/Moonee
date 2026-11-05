@@ -35,8 +35,9 @@ struct JarsSection: View {
                 }
             }
 
-            VStack(spacing: 8) {
+            VStack(spacing: 0) {
                 ForEach(months, id: \.0.persistentModelID) { jar, m in
+                    if jar.persistentModelID != months.first?.0.persistentModelID { Divider().padding(.leading, 56) }
                     NavigationLink(value: BudgetRoute.jar(jar.persistentModelID, month: month.start)) {
                         JarCard(name: jar.name, symbol: jar.icon, color: jar.color, balance: m.endBalance, spent: m.spent,
                                 budget: m.budget, currency: currency, subtitle: "\(jar.percent)%")
@@ -44,6 +45,7 @@ struct JarsSection: View {
                     .buttonStyle(.plain)
                 }
             }
+            .card(padding: 0) // S2: JarCard rows have no background of their own (UI review B-2)
 
             HStack(spacing: 8) {
                 Button { transfer = JarTransferDraft() } label: { ActionTile(title: loc("Move between jars"), symbol: "arrow.left.arrow.right") }
