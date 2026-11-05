@@ -20,7 +20,7 @@ struct AccountView: View {
                         VStack(spacing: 0) {
                             AccountRow(symbol: "sparkles", title: "AI assistant", subtitle: "Mode, model and skills", badge: aiMode.badge) { AISettingsView() }
                             AccountRow(symbol: "slider.horizontal.3", title: "Reminders & notifications", subtitle: "Reminder level, times, kinds",
-                                       badge: reminderBadge) { RemindersPlaceholder() }
+                                       badge: reminderBadge) { ReminderSettingsView() }
                             AccountRow(symbol: "checkmark.shield", title: "Security & privacy", subtitle: "Face ID, hide balances, delete data") { SecurityView() }
                             AccountRow(symbol: "globe", title: "Language & currency",
                                        subtitle: "\(AppLanguage.current) · \(Money.label(Money.defaultCurrency))") { LanguageCurrencyView() }
@@ -189,15 +189,6 @@ private struct BudgetSetupView: View {
         .scrollContentBackground(.hidden)
         .background(MooneeBackground())
         .navigationTitle(Text("Categories, jars & wallets", tableName: "Account"))
-    }
-}
-
-// ponytail: S6 ships ReminderSettingsView; point the Reminders row at it once that merges.
-private struct RemindersPlaceholder: View {
-    var body: some View {
-        ContentUnavailableView(String(localized: "Reminders", table: "Account"), systemImage: "bell",
-                               description: Text("Reminder settings are coming soon.", tableName: "Account"))
-            .background(MooneeBackground())
     }
 }
 

@@ -112,11 +112,8 @@ struct AISettingsView: View {
 
             if mode == .local || mode == .hybrid {
                 Section {
-                    // ponytail: S9 replaces this destination with its local-model manager.
                     NavigationLink {
-                        ContentUnavailableView(String(localized: "Local models", table: "Account"), systemImage: "arrow.down.circle",
-                                               description: Text("Downloadable models are coming soon.", tableName: "Account"))
-                            .background(MooneeBackground())
+                        LocalModelsView()
                     } label: {
                         Label { Text("Local models", tableName: "Account") } icon: { Image(systemName: "cpu") }
                     }
