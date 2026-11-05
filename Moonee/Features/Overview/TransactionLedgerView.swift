@@ -25,7 +25,7 @@ struct TransactionLedgerView: View {
                             }
                     }
                 } header: {
-                    Text(dayTitle(day)).font(.subheadline.weight(.semibold)).foregroundStyle(Color.inkSecondary).textCase(nil)
+                    Text(dayTitle(day)).font(.secondaryText.weight(.semibold)).foregroundStyle(Color.inkSecondary).textCase(nil)
                 }
                 .listRowBackground(Color.surface.opacity(0.85))
             }

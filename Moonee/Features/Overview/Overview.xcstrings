@@ -221,6 +221,16 @@
         }
       }
     },
+    "Due %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngày %@"
+          }
+        }
+      }
+    },
     "Edit transaction": {
       "localizations": {
         "vi": {

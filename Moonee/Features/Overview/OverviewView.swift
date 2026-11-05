@@ -38,12 +38,16 @@ struct OverviewView: View {
                         spending(stats)
                         jarsCard(stats)
                         let pair = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 14)) : AnyLayout(HStackLayout(alignment: .top, spacing: 12))
-                        pair { billsCard(due); netWorthCard(stats) }.fixedSize(horizontal: false, vertical: true)
+                        pair {
+                            billsCard(due)
+                            // Mockup: bills ≈55% / net worth ≈45%, so full bill amounts fit next to their names.
+                            netWorthCard(stats).containerRelativeFrame(.horizontal) { w, _ in typeSize.isAccessibilitySize ? w - 32 : (w - 44) * 0.45 }
+                        }.fixedSize(horizontal: false, vertical: true)
                         recent
                     }
                 }
                 .padding(.horizontal, 16)
-                .padding(.bottom, 24)
+                .padding(.bottom, 8)
             }
             .background(MooneeBackground())
             .toolbar(.hidden, for: .navigationBar)
@@ -57,48 +61,28 @@ struct OverviewView: View {
     // MARK: - Sections
 
     private var header: some View {
-        HStack {
-            NavigationLink { TransactionLedgerView() } label: { circleIcon("clock") }
+        MooneeHeader(Text("Your AI money assistant", tableName: "Overview")) {
+            NavigationLink { TransactionLedgerView() } label: { HeaderCircle("clock") }
                 .accessibilityLabel(Text("Transactions", tableName: "Overview"))
-            Spacer()
-            VStack(spacing: 4) {
-                HStack(spacing: 6) {
-                    Image(systemName: "sparkles").foregroundStyle(Color.brandYellow)
-                    Text(verbatim: "Moonee").font(.title.weight(.bold)).foregroundStyle(Color.brandDeep)
-                }
-                Text("Your AI money assistant", tableName: "Overview")
-                    .font(.footnote.weight(.medium)).foregroundStyle(Color.brandDeep)
-                    .padding(.horizontal, 12).padding(.vertical, 3)
-                    .background(Color.brandMintSoft, in: .capsule)
-            }
-            Spacer()
+        } trailing: {
             Menu {
                 Toggle(String(localized: "Hide balances", table: "Overview"), systemImage: "eye.slash", isOn: $hideBalances)
-            } label: { circleIcon("ellipsis") }
+            } label: { HeaderCircle("ellipsis") }
                 .accessibilityLabel(Text("More", tableName: "Overview"))
         }
         .padding(.top, 8)
     }
 
-    private func circleIcon(_ symbol: String) -> some View {
-        Image(systemName: symbol).font(.title3.weight(.semibold)).foregroundStyle(Color.ink)
-            .frame(width: 48, height: 48)
-            .background(Color.surface, in: .circle)
-            .shadow(color: .brandDeep.opacity(0.08), radius: 8, y: 3)
-    }
-
     private func hero(_ note: MooneeNote) -> some View {
         VStack(spacing: 4) {
-            MooneeCharacter(mood: note.mood == .happy ? .greeting : note.mood)
-                .frame(height: 180)
-                .frame(maxWidth: .infinity)
-                .background(alignment: .bottom) { Hills().frame(height: 70).opacity(0.35).padding(.horizontal, -16) }
+            // Mockup: the greeting pose; only a warning (negative/over/≥80% jar, bill due today) changes it.
+            MooneeHero(mood: note.mood == .worried ? .worried : .greeting)
             HStack(alignment: .top, spacing: 10) {
-                MooneeAvatar(size: 52)
+                MooneeAvatar(size: 41)
                 VStack(alignment: .leading, spacing: 4) {
                     Text(name.isEmpty ? String(localized: "Hi there! 👋", table: "Overview") : String(localized: "Hi \(name)! 👋", table: "Overview"))
-                        .font(.title3.weight(.bold))
-                    Text(note.text).font(.subheadline).foregroundStyle(Color.inkSecondary)
+                        .font(.greeting)
+                    Text(note.text).font(.bodyText).foregroundStyle(Color.inkSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -111,21 +95,22 @@ struct OverviewView: View {
     }
 
     private func spending(_ s: OverviewStats) -> some View {
-        HStack(alignment: .center, spacing: 10) {
+        let halves = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12)) : AnyLayout(HStackLayout(spacing: 10))
+        return halves {
             VStack(alignment: .leading, spacing: 6) {
                 Label { Text("Spent today", tableName: "Overview") } icon: { Image(systemName: "calendar").foregroundStyle(Color.brandDeep) }
                     .font(.caption).lineLimit(1).minimumScaleFactor(0.8)
-                AmountText(s.spentToday, currency: currency).font(.title3.weight(.bold))
+                AmountText(s.spentToday, currency: currency).font(.cardAmount)
                 if let c = s.todayChange {
                     changeLine(c, upIsGood: false) { Text("vs yesterday", tableName: "Overview") }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            Divider().frame(height: 60)
+            if !typeSize.isAccessibilitySize { Divider().frame(height: 60) }
             VStack(alignment: .leading, spacing: 6) {
                 Label { Text("Spent this month", tableName: "Overview") } icon: { Image(systemName: "calendar").foregroundStyle(Color.brandDeep) }
                     .font(.caption).lineLimit(1).minimumScaleFactor(0.8)
-                AmountText(s.spentMonth, currency: currency).font(.title3.weight(.bold))
+                AmountText(s.spentMonth, currency: currency).font(.cardAmount)
                 if let p = s.budgetProgress {
                     Text("\(Int((p * 100).rounded()))% of monthly budget", tableName: "Overview")
                         .font(.caption).foregroundStyle(Color.inkSecondary).lineLimit(1).minimumScaleFactor(0.8)
@@ -155,24 +140,32 @@ struct OverviewView: View {
     private func sectionTitle(_ title: Text, symbol: String) -> some View {
         HStack(spacing: 8) {
             IconBadge(symbol: symbol, color: .brandDeep, size: 30)
-            title.font(.headline)
+            title.font(.sectionTitle)
         }
+    }
+
+    private var seeAll: some View {
+        HStack(spacing: 2) { Text("See all", tableName: "Overview"); Image(systemName: "chevron.right") }
+            .font(.secondaryText.weight(.semibold)).foregroundStyle(Color.brandDeep)
+            .frame(minHeight: 44).contentShape(.rect)
     }
 
     private func jarsCard(_ s: OverviewStats) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            sectionTitle(Text("Jar balances", tableName: "Overview"), symbol: "square.stack.3d.up.fill")
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 10) {
-                    ForEach(s.jars) { row in
-                        JarCard(name: row.jar.name, symbol: row.jar.icon, color: row.jar.color, balance: row.month.balance,
-                                spent: row.month.spent, budget: row.month.budget, currency: currency, layout: .tile)
-                            .frame(width: 96)
-                    }
-                }
-                .padding(.vertical, 6).padding(.horizontal, 2)
+            HStack {
+                sectionTitle(Text("Jar balances", tableName: "Overview"), symbol: "square.stack.3d.up.fill")
+                Spacer()
+                NavigationLink { JarsListView(jars: s.jars) } label: { seeAll }
             }
-            .scrollClipDisabled()
+            // Mockup: the first 4 jars fill the card in equal columns; the rest are behind "See all".
+            let columns = typeSize.isAccessibilitySize ? 2 : 4
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: columns), spacing: 8) {
+                ForEach(s.jars.prefix(4)) { row in
+                    JarCard(name: row.jar.name, symbol: row.jar.icon, color: row.jar.color, balance: row.month.balance,
+                            spent: row.month.spent, budget: row.month.budget, currency: currency, layout: .tile)
+                        .frame(maxWidth: .infinity)
+                }
+            }
         }
         .card(padding: 14)
     }
@@ -182,7 +175,7 @@ struct OverviewView: View {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 6) {
                     Image(systemName: "bell").foregroundStyle(Color.brandDeep)
-                    Text("Bills due soon", tableName: "Overview").font(.subheadline.weight(.semibold)).lineLimit(2)
+                    Text("Bills due soon", tableName: "Overview").font(.sectionTitle).lineLimit(1).minimumScaleFactor(0.75)
                     if !due.isEmpty {
                         Text(verbatim: "\(due.count)").font(.caption2.weight(.bold)).foregroundStyle(.white)
                             .frame(minWidth: 18, minHeight: 18).background(Color.danger, in: .circle)
@@ -191,18 +184,22 @@ struct OverviewView: View {
                     Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(Color.inkSecondary)
                 }
                 if due.isEmpty {
-                    Text("Nothing due in the next 7 days.", tableName: "Overview").font(.footnote).foregroundStyle(Color.inkSecondary)
+                    Text("Nothing due in the next 7 days.", tableName: "Overview").font(.secondaryText).foregroundStyle(Color.inkSecondary)
                 }
                 ForEach(due.prefix(2)) { b in
                     let status = BillStatus(due: b.nextDue, paid: false)
                     HStack(spacing: 8) {
-                        IconBadge(symbol: b.category?.icon ?? "doc.text", color: .brandDeep, size: 30)
+                        IconBadge(symbol: b.category?.icon ?? "doc.text", color: .brandDeep, size: 28)
                         VStack(alignment: .leading, spacing: 1) {
-                            Text(b.name).font(.footnote.weight(.semibold)).lineLimit(1)
-                            status.label.font(.caption2).foregroundStyle(status.color).lineLimit(1)
+                            Text(b.name).font(.secondaryText.weight(.semibold)).lineLimit(1)
+                            Group {
+                                if status.urgent { status.label } else { Text("Due \(OverviewView.dayMonth(b.nextDue))", tableName: "Overview") }
+                            }
+                            .font(.caption2).foregroundStyle(status.color).lineLimit(1)
                         }
+                        .layoutPriority(1) // the amount shrinks before the name/date truncate
                         Spacer(minLength: 4)
-                        AmountText(b.amount, currency: b.currencyCode, short: true).font(.footnote.weight(.semibold))
+                        AmountText(b.amount, currency: b.currencyCode).font(.caption.weight(.semibold))
                     }
                 }
             }
@@ -212,13 +209,18 @@ struct OverviewView: View {
         .buttonStyle(.plain)
     }
 
+    /// "08/11" as in the mockup (ICU gives "08-11" in vi).
+    static func dayMonth(_ d: Date) -> String {
+        d.formatted(.dateTime.day(.twoDigits).month(.twoDigits)).replacingOccurrences(of: "-", with: "/")
+    }
+
     private func netWorthCard(_ s: OverviewStats) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 6) {
                 Image(systemName: "leaf").foregroundStyle(Color.brandDeep)
-                Text("Net worth", tableName: "Overview").font(.subheadline.weight(.semibold))
+                Text("Net worth", tableName: "Overview").font(.sectionTitle)
             }
-            AmountText(s.netWorth, currency: currency).font(.title3.weight(.bold))
+            AmountText(s.netWorth, currency: currency).font(.cardAmount)
             if let c = s.netWorthChange {
                 changeLine(c, upIsGood: true) { Text("vs last month", tableName: "Overview") }
             }
@@ -244,16 +246,13 @@ struct OverviewView: View {
             HStack {
                 sectionTitle(Text("Recent transactions", tableName: "Overview"), symbol: "arrow.left.arrow.right")
                 Spacer()
-                NavigationLink { TransactionLedgerView() } label: {
-                    HStack(spacing: 2) { Text("See all", tableName: "Overview"); Image(systemName: "chevron.right") }
-                        .font(.footnote.weight(.semibold)).foregroundStyle(Color.brandDeep)
-                }
+                NavigationLink { TransactionLedgerView() } label: { seeAll }
             }
             .padding(.bottom, 4)
             let recent = Array(txns.prefix(3))
             ForEach(recent) { t in
                 TxnRow(txn: t, showDay: true)
-                if t != recent.last { Divider().padding(.leading, 52) }
+                if t != recent.last { Divider().padding(.leading, 46) }
             }
         }
         .card(padding: 14)
@@ -270,15 +269,15 @@ struct TxnRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            IconBadge(symbol: txn.category?.icon ?? txn.kind.symbol, color: txn.category?.color ?? .brandDeep, size: 40)
+            IconBadge(symbol: txn.category?.icon ?? txn.kind.symbol, color: txn.category?.color ?? .brandDeep)
             VStack(alignment: .leading, spacing: 2) {
-                Text(txn.title).font(.subheadline.weight(.semibold)).lineLimit(1)
-                Text(subtitle).font(.caption).foregroundStyle(Color.inkSecondary).lineLimit(1)
+                Text(txn.title).font(.rowTitle).lineLimit(1)
+                Text(subtitle).font(.secondaryText).foregroundStyle(Color.inkSecondary).lineLimit(1)
             }
             Spacer(minLength: 8)
             let flow = txn.flow
             AmountText(flow == 0 ? txn.amount : flow, currency: txn.currencyCode, plus: flow != 0)
-                .font(.subheadline.weight(.semibold))
+                .font(.rowTitle)
                 .foregroundStyle(flow > 0 ? Color.income : Color.ink)
         }
         .padding(.vertical, 6)
@@ -347,5 +346,26 @@ struct BillsListView: View {
         }
         .background(MooneeBackground())
         .navigationTitle(String(localized: "Bills", table: "Overview"))
+    }
+}
+
+/// Every jar as a row (Overview → Jar balances → See all). Read-only; the Budget tab (S6) owns jar editing.
+struct JarsListView: View {
+    let jars: [OverviewStats.JarRow]
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 0) {
+                ForEach(jars) { row in
+                    JarCard(name: row.jar.name, symbol: row.jar.icon, color: row.jar.color, balance: row.month.balance,
+                            spent: row.month.spent, budget: row.month.budget, currency: Money.defaultCurrency, subtitle: "\(row.jar.percent)%")
+                    if row.id != jars.last?.id { Divider().padding(.leading, 56) }
+                }
+            }
+            .card(padding: 0)
+            .padding(16)
+        }
+        .background(MooneeBackground())
+        .navigationTitle(String(localized: "Jar balances", table: "Overview"))
     }
 }
