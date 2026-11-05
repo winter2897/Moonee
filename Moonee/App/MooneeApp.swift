@@ -61,6 +61,7 @@ struct RootView: View {
         .environment(\.balanceHidden, hideBalances)
         .reminderScheduling()
         .tint(.mooneeGreen)
+        .onboarding() // first launch only (Features/Onboarding)
         .appLock() // Face ID lock + App Switcher cover (Features/Account/Security.swift)
     }
 }

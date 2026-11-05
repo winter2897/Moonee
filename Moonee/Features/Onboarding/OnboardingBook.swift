@@ -1,0 +1,163 @@
+import Foundation
+import SwiftData
+
+extension Prefs {
+    /// Bool. First-launch onboarding (spec §7) finished or skipped. Launch with `-onboarding.done YES` to skip it.
+    static let onboardingDone = "onboarding.done"
+    /// Int, minor units of the default currency. Monthly income given in onboarding (a range midpoint or typed).
+    static let monthlyIncome = "profile.monthlyIncome"
+    /// Bool. Income is a regular salary (false = it varies month to month).
+    static let incomeRegular = "profile.incomeRegular"
+}
+
+/// Every write onboarding makes, plus the pure rules behind its suggestions. No UI, so it is unit-tested.
+@MainActor enum OnboardingBook {
+    // MARK: Income
+
+    /// Monthly income chips: VND in millions, every other currency in thousands. Mid = the amount stored for the chip.
+    // ponytail: two scales (VND / the rest); add per-currency ranges when a market needs different ones.
+    nonisolated static func incomeRanges(currency: String) -> [(label: String, mid: Int)] {
+        let vnd = currency == "VND"
+        let (bounds, mids): ([Decimal], [Decimal]) = vnd ? ([10, 20, 40], [7, 15, 30, 50]) : ([2, 4, 8], [1.5, 3, 6, 10])
+        let unit: Decimal = vnd ? 1_000_000 : 1_000
+        let minor = { (d: Decimal) in Money(major: d * unit, currency).minor }
+        let short = { (d: Decimal) in AmountFormat.string(minor(d), currency, short: true) }
+        return [
+            (String(localized: "Under \(short(bounds[0]))", table: "Onboarding"), minor(mids[0])),
+            ("\(short(bounds[0])) – \(short(bounds[1]))", minor(mids[1])),
+            ("\(short(bounds[1])) – \(short(bounds[2]))", minor(mids[2])),
+            (String(localized: "Over \(short(bounds[2]))", table: "Onboarding"), minor(mids[3])),
+        ]
+    }
+
+    /// A typed amount in the default currency, minor units: Moonee's money words ("15tr", "45k") or plain digits ("2.000.000").
+    nonisolated static func amount(_ text: String, context: ParserContext) -> Int? {
+        let t = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let a = QuickParser.amount(in: t, context: context), a.currency == context.currency, a.amount > 0 { return a.amount }
+        let digits = t.filter(\.isNumber)
+        guard !digits.isEmpty, let d = Decimal(string: digits), d > 0 else { return nil }
+        return Money(major: d, context.currency).minor
+    }
+
+    // MARK: Wallets
+
+    struct WalletDraft: Equatable {
+        var type: WalletType
+        var name: String
+        /// Opening balance, minor units. For a credit card: what is owed now (stored negative).
+        var amount: Int
+    }
+
+    /// Saves the wallets the user ticked. An unused wallet of the same type (the seeded cash wallet) is reused, never duplicated.
+    @discardableResult
+    static func saveWallets(_ drafts: [WalletDraft], in context: ModelContext) -> [Wallet] {
+        var unused = ((try? context.fetch(FetchDescriptor<Wallet>(sortBy: [SortDescriptor(\.order)]))) ?? []).filter { ($0.txns ?? []).isEmpty }
+        var order = (((try? context.fetch(FetchDescriptor<Wallet>())) ?? []).map(\.order).max() ?? -1) + 1
+        return drafts.map { d in
+            let opening = d.type == .credit ? -abs(d.amount) : d.amount
+            let name = d.name.trimmingCharacters(in: .whitespaces)
+            if let i = unused.firstIndex(where: { $0.type == d.type }) {
+                let w = unused.remove(at: i)
+                w.initialBalance = opening
+                if !name.isEmpty { w.name = name }
+                return w
+            }
+            let w = Wallet(name: name.isEmpty ? d.type.title : name, type: d.type, initialBalance: opening, order: order)
+            order += 1
+            context.insert(w)
+            return w
+        }
+    }
+
+    // MARK: Bills
+
+    struct BillDraft: Identifiable {
+        let id = UUID()
+        var name: String
+        var amount: Int
+        /// Day of month it is due, 1–31.
+        var day: Int
+        var categoryKey = "category.housing"
+        var symbol = "doc.text.fill"
+    }
+
+    /// Common fixed bills offered as chips.
+    nonisolated static var billSuggestions: [BillDraft] {
+        [
+            .init(name: String(localized: "Rent", table: "Onboarding"), amount: 0, day: 5, symbol: "house.fill"),
+            .init(name: String(localized: "Electricity", table: "Onboarding"), amount: 0, day: 10, symbol: "bolt.fill"),
+            .init(name: String(localized: "Water", table: "Onboarding"), amount: 0, day: 10, symbol: "drop.fill"),
+            .init(name: String(localized: "Internet", table: "Onboarding"), amount: 0, day: 15, symbol: "wifi"),
+            .init(name: String(localized: "Phone", table: "Onboarding"), amount: 0, day: 15, symbol: "iphone"),
+            .init(name: String(localized: "Subscriptions", table: "Onboarding"), amount: 0, day: 1,
+                  categoryKey: "category.entertainment", symbol: "play.rectangle.fill"),
+        ]
+    }
+
+    /// One monthly `Recurring` per bill with an amount, due next on its day, paid from the first non-card wallet.
+    /// Reminders pick them up on save.
+    @discardableResult
+    static func saveBills(_ drafts: [BillDraft], now: Date = .now, calendar: Calendar = .current, in context: ModelContext) -> [Recurring] {
+        let categories = (try? context.fetch(FetchDescriptor<Category>())) ?? []
+        let wallet = ((try? context.fetch(FetchDescriptor<Wallet>(sortBy: [SortDescriptor(\.order)]))) ?? []).first { $0.type != .credit }
+        return drafts.filter { $0.amount > 0 && !$0.name.trimmingCharacters(in: .whitespaces).isEmpty }.map { d in
+            let r = Recurring(name: d.name.trimmingCharacters(in: .whitespaces), amount: d.amount,
+                              nextDue: BudgetActions.nextDate(day: min(max(d.day, 1), 31), from: now, calendar: calendar))
+            context.insert(r)
+            r.category = categories.first { $0.key == d.categoryKey }
+            r.wallet = wallet
+            return r
+        }
+    }
+
+    // MARK: Jars
+
+    /// Spec §7 step 5: start from the jars' current percents (the 6-jar rule) and adjust to what the user said.
+    /// Irregular income moves 5% from Play to Savings. When bills are a big share of income, Essentials rises to
+    /// bills + 15% (rounded up to 5, at most 80), taken from Play, Growth, Investing, then Savings, none below 5%. Sums to 100.
+    nonisolated static func proposePercents(keys: [String?], current: [Int], monthlyIncome: Int?, regular: Bool?, billsTotal: Int) -> [Int] {
+        var p = current
+        func take(_ amount: Int, from order: [String]) -> Int {
+            var left = amount
+            for key in order {
+                guard let i = keys.firstIndex(of: key), left > 0 else { continue }
+                let cut = min(left, max(p[i] - 5, 0))
+                p[i] -= cut
+                left -= cut
+            }
+            return amount - left
+        }
+        if regular == false, let s = keys.firstIndex(of: "jar.savings") {
+            p[s] += take(5, from: ["jar.play"])
+        }
+        if let income = monthlyIncome, income > 0, billsTotal > 0, let e = keys.firstIndex(of: "jar.essentials") {
+            let share = Int((Double(billsTotal) * 100 / Double(income)).rounded(.up))
+            let target = min(80, (share + 15 + 4) / 5 * 5)
+            if target > p[e] {
+                p[e] += take(target - p[e], from: ["jar.play", "jar.growth", "jar.investing", "jar.savings"])
+            }
+        }
+        return p
+    }
+
+    /// Writes the accepted percents (must total 100) and puts the opening wallet money into the jars by those percents,
+    /// so the envelopes start with what the user actually has (`Jar.initialBalance`). Credit-card debt counts against it.
+    static func applyJars(_ percents: [Int], to jars: [Jar], in context: ModelContext) {
+        let sorted = jars.sorted { $0.order < $1.order }
+        guard BudgetActions.percentsValid(percents), percents.count == sorted.count else { return }
+        for (jar, p) in zip(sorted, percents) { jar.percent = p }
+        let opening = ((try? context.fetch(FetchDescriptor<Wallet>())) ?? [])
+            .filter { $0.currencyCode == Money.defaultCurrency }.reduce(0) { $0 + $1.initialBalance }
+        let shares = Ledger<Int>.split(max(opening, 0), by: sorted.indices.map { ($0, percents[$0]) })
+        for (i, jar) in sorted.enumerated() { jar.initialBalance = shares[i] ?? 0 }
+    }
+
+    // MARK: AI mode
+
+    /// Spec §7 step 6: suggest a mode from the device. Apple Intelligence when it is on (a local model instead for
+    /// Vietnamese if one fits, spec §10.4), else a local model if one fits the RAM, else BYOK.
+    nonisolated static func suggestedMode(appleAvailable: Bool, localFits: Bool, language: String) -> AIMode {
+        if appleAvailable && (language != "vi" || !localFits) { return .onDevice }
+        return localFits ? .local : .byok
+    }
+}
