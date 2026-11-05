@@ -48,8 +48,8 @@ extension Lexicon {
             ("category.bonus", ["bonus"]),
         ],
         jars: [
-            ("jar.essentials", ["essentials", "necessities"]), ("jar.investment", ["investment", "investing", "financial freedom"]),
-            ("jar.savings", ["savings", "saving"]), ("jar.education", ["education", "self-development", "growth"]),
+            ("jar.essentials", ["essentials", "necessities"]), ("jar.investing", ["investment", "investing", "financial freedom"]),
+            ("jar.savings", ["savings", "saving"]), ("jar.growth", ["education", "self-development", "growth"]),
             ("jar.play", ["play", "fun"]), ("jar.giving", ["giving"]),
         ],
         jarWords: ["jar"],

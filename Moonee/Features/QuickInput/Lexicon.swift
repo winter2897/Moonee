@@ -2,7 +2,7 @@ import Foundation
 
 /// Language-independent keys for the default jars and categories (spec §10.3: store keys, show translated names).
 enum DefaultKeys {
-    static let jars = ["jar.essentials", "jar.investment", "jar.savings", "jar.education", "jar.play", "jar.giving"]
+    static let jars = ["jar.essentials", "jar.investing", "jar.savings", "jar.growth", "jar.play", "jar.giving"]
     static let expenseCategories = [
         "category.food", "category.transport", "category.housing", "category.health", "category.shopping",
         "category.entertainment", "category.education", "category.charity", "category.other",

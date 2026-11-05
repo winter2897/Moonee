@@ -55,8 +55,8 @@ extension Lexicon {
             ("category.bonus", ["thưởng"]),
         ],
         jars: [
-            ("jar.essentials", ["thiết yếu"]), ("jar.investment", ["đầu tư", "tự do tài chính"]), ("jar.savings", ["tiết kiệm"]),
-            ("jar.education", ["phát triển bản thân", "giáo dục"]), ("jar.play", ["hưởng thụ", "vui chơi"]), ("jar.giving", ["từ thiện", "cho đi"]),
+            ("jar.essentials", ["thiết yếu"]), ("jar.investing", ["đầu tư", "tự do tài chính"]), ("jar.savings", ["tiết kiệm"]),
+            ("jar.growth", ["phát triển bản thân", "giáo dục"]), ("jar.play", ["hưởng thụ", "vui chơi"]), ("jar.giving", ["từ thiện", "cho đi"]),
         ],
         jarWords: ["lọ"],
         questionCues: ["bao nhiêu", "mấy", "thế nào", "như thế nào", "tại sao", "làm sao", "có nên", "nên làm gì", "gợi ý", "tư vấn", "được không"],

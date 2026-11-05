@@ -74,8 +74,8 @@ struct QuickParserTests {
         #expect(Money.fractionDigits("VND") == 0)
         #expect(Money.fractionDigits("USD") == 2)
         #expect(Money.fractionDigits("JPY") == 0)
-        #expect(Money.format(1_250_000, currency: "VND", locale: Locale(identifier: "vi_VN")).replacing(#/\s/#, with: " ") == "1.250.000 ₫")
-        #expect(Money.format(1_250, currency: "USD", locale: Locale(identifier: "en_US")) == "$12.50")
+        #expect(Money(1_250_000, "VND").formatted(locale: Locale(identifier: "vi_VN")).replacing(#/\s/#, with: " ") == "1.250.000 ₫")
+        #expect(Money(1_250, "USD").formatted(locale: Locale(identifier: "en_US")) == "$12.50")
     }
 
     @Test func noAmount() {

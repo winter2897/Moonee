@@ -55,15 +55,15 @@ enum Books {
     static let now = cal.date(from: DateComponents(year: 2026, month: 11, day: 20, hour: 12))!
     static func d(_ month: Int, _ day: Int) -> Date { cal.date(from: DateComponents(year: 2026, month: month, day: day, hour: 9))! }
 
-    static let salarySplit = ["jar.essentials": 5_500_000, "jar.investment": 1_000_000, "jar.savings": 1_000_000,
-                              "jar.education": 1_000_000, "jar.play": 1_000_000, "jar.giving": 500_000]
+    static let salarySplit = ["jar.essentials": 5_500_000, "jar.investing": 1_000_000, "jar.savings": 1_000_000,
+                              "jar.growth": 1_000_000, "jar.play": 1_000_000, "jar.giving": 500_000]
 
     static let ledger = InMemoryLedger(
         jarList: [
             .init(key: "jar.essentials", name: "Thiết yếu", percent: 55, balance: 5_300_000),
-            .init(key: "jar.investment", name: "Đầu tư", percent: 10, balance: 2_000_000),
+            .init(key: "jar.investing", name: "Đầu tư", percent: 10, balance: 2_000_000),
             .init(key: "jar.savings", name: "Tiết kiệm", percent: 10, balance: 1_700_000),
-            .init(key: "jar.education", name: "Phát triển bản thân", percent: 10, balance: 2_000_000),
+            .init(key: "jar.growth", name: "Phát triển bản thân", percent: 10, balance: 2_000_000),
             .init(key: "jar.play", name: "Hưởng thụ", percent: 10, balance: 200_000),
             .init(key: "jar.giving", name: "Từ thiện", percent: 5, balance: 1_000_000),
         ],

@@ -174,7 +174,7 @@ struct MooneeTools: Sendable {
             .map { .init(name: $0.name, spent: money($0.sum), share: total > 0 ? "\(Int((Double($0.sum) * 100 / Double(total)).rounded()))%" : "0%") }
     }
 
-    private func money(_ minor: Int) -> String { Money.format(minor, currency: ledger.currency, locale: locale) }
+    private func money(_ minor: Int) -> String { Money(minor, ledger.currency).formatted(locale: locale) }
 
     private func signedPercent(_ part: Int, of whole: Int) -> String {
         let p = Int((Double(part) * 100 / Double(whole)).rounded())

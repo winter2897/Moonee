@@ -377,7 +377,7 @@ private struct Scan {
         let code = currency ?? context.currency
         // ponytail: bare "cà phê 45" means 45k in everyday Vietnamese; "45đ" stays literal.
         if code == "VND", currency == nil, multiplier == 1, value < 1000 { value *= 1000 }
-        let minor = Money.minorUnits(value, currency: code)
+        let minor = Money(major: value, code).minor
         guard minor > 0 else { return nil }
         return Amount(range: i..<end, value: minor, currency: code,
                       strong: multiplier > 1 || currency != nil || base.grouped, plus: plus)
@@ -496,26 +496,5 @@ private struct Scan {
         let words = tokens.indices.filter { !used.contains($0) }.map { tokens[$0].original }.drop { $0.hasPrefix("+") }
         let note = words.joined(separator: " ")
         return note.prefix(1).uppercased() + note.dropFirst()
-    }
-}
-
-/// Money in minor units, formatted with `FormatStyle` (spec §10.3, never "\(amount)đ").
-enum Money {
-    /// ISO 4217 minor digits: VND 0, USD 2, JPY 0.
-    static func fractionDigits(_ currency: String) -> Int {
-        let f = NumberFormatter()
-        f.numberStyle = .currency
-        f.currencyCode = currency
-        return f.maximumFractionDigits
-    }
-
-    static func minorUnits(_ value: Decimal, currency: String) -> Int {
-        var scaled = value * pow(10, fractionDigits(currency)), rounded = Decimal()
-        NSDecimalRound(&rounded, &scaled, 0, .plain)
-        return NSDecimalNumber(decimal: rounded).intValue
-    }
-
-    static func format(_ minor: Int, currency: String, locale: Locale = .current) -> String {
-        (Decimal(minor) / pow(10, fractionDigits(currency))).formatted(.currency(code: currency).locale(locale))
     }
 }
