@@ -164,7 +164,7 @@ struct JarCard: View {
             }
         }
         .padding(12)
-        .frame(minWidth: 96)
+        .frame(minWidth: 0) // S5: was 96; four tiles share the Overview jar card (UI review O-3)
         .background(Color.surface.opacity(0.85), in: .rect(cornerRadius: 18))
         .shadow(color: .brandDeep.opacity(0.06), radius: 8, y: 3)
     }

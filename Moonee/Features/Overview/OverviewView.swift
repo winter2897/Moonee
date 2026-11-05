@@ -38,7 +38,11 @@ struct OverviewView: View {
                         spending(stats)
                         jarsCard(stats)
                         let pair = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 14)) : AnyLayout(HStackLayout(alignment: .top, spacing: 12))
-                        pair { billsCard(due); netWorthCard(stats) }.fixedSize(horizontal: false, vertical: true)
+                        pair {
+                            billsCard(due)
+                            // Mockup: bills ≈55% / net worth ≈45%, so full bill amounts fit next to their names.
+                            netWorthCard(stats).containerRelativeFrame(.horizontal) { w, _ in typeSize.isAccessibilitySize ? w - 32 : (w - 44) * 0.45 }
+                        }.fixedSize(horizontal: false, vertical: true)
                         recent
                     }
                 }
@@ -94,7 +98,7 @@ struct OverviewView: View {
                 .frame(maxWidth: .infinity)
                 .background(alignment: .bottom) { Hills().frame(height: 70).opacity(0.35).padding(.horizontal, -16) }
             HStack(alignment: .top, spacing: 10) {
-                MooneeAvatar(size: 52)
+                MooneeAvatar(size: 41)
                 VStack(alignment: .leading, spacing: 4) {
                     Text(name.isEmpty ? String(localized: "Hi there! 👋", table: "Overview") : String(localized: "Hi \(name)! 👋", table: "Overview"))
                         .font(.title3.weight(.bold))
@@ -111,7 +115,8 @@ struct OverviewView: View {
     }
 
     private func spending(_ s: OverviewStats) -> some View {
-        HStack(alignment: .center, spacing: 10) {
+        let halves = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12)) : AnyLayout(HStackLayout(spacing: 10))
+        return halves {
             VStack(alignment: .leading, spacing: 6) {
                 Label { Text("Spent today", tableName: "Overview") } icon: { Image(systemName: "calendar").foregroundStyle(Color.brandDeep) }
                     .font(.caption).lineLimit(1).minimumScaleFactor(0.8)
@@ -121,7 +126,7 @@ struct OverviewView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            Divider().frame(height: 60)
+            if !typeSize.isAccessibilitySize { Divider().frame(height: 60) }
             VStack(alignment: .leading, spacing: 6) {
                 Label { Text("Spent this month", tableName: "Overview") } icon: { Image(systemName: "calendar").foregroundStyle(Color.brandDeep) }
                     .font(.caption).lineLimit(1).minimumScaleFactor(0.8)
@@ -159,20 +164,28 @@ struct OverviewView: View {
         }
     }
 
+    private var seeAll: some View {
+        HStack(spacing: 2) { Text("See all", tableName: "Overview"); Image(systemName: "chevron.right") }
+            .font(.footnote.weight(.semibold)).foregroundStyle(Color.brandDeep)
+            .frame(minHeight: 44).contentShape(.rect)
+    }
+
     private func jarsCard(_ s: OverviewStats) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            sectionTitle(Text("Jar balances", tableName: "Overview"), symbol: "square.stack.3d.up.fill")
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 10) {
-                    ForEach(s.jars) { row in
-                        JarCard(name: row.jar.name, symbol: row.jar.icon, color: row.jar.color, balance: row.month.balance,
-                                spent: row.month.spent, budget: row.month.budget, currency: currency, layout: .tile)
-                            .frame(width: 96)
-                    }
-                }
-                .padding(.vertical, 6).padding(.horizontal, 2)
+            HStack {
+                sectionTitle(Text("Jar balances", tableName: "Overview"), symbol: "square.stack.3d.up.fill")
+                Spacer()
+                NavigationLink { JarsListView(jars: s.jars) } label: { seeAll }
             }
-            .scrollClipDisabled()
+            // Mockup: the first 4 jars fill the card in equal columns; the rest are behind "See all".
+            let columns = typeSize.isAccessibilitySize ? 2 : 4
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: columns), spacing: 8) {
+                ForEach(s.jars.prefix(4)) { row in
+                    JarCard(name: row.jar.name, symbol: row.jar.icon, color: row.jar.color, balance: row.month.balance,
+                            spent: row.month.spent, budget: row.month.budget, currency: currency, layout: .tile)
+                        .frame(maxWidth: .infinity)
+                }
+            }
         }
         .card(padding: 14)
     }
@@ -182,7 +195,7 @@ struct OverviewView: View {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 6) {
                     Image(systemName: "bell").foregroundStyle(Color.brandDeep)
-                    Text("Bills due soon", tableName: "Overview").font(.subheadline.weight(.semibold)).lineLimit(2)
+                    Text("Bills due soon", tableName: "Overview").font(.footnote.weight(.semibold)).lineLimit(1).minimumScaleFactor(0.75)
                     if !due.isEmpty {
                         Text(verbatim: "\(due.count)").font(.caption2.weight(.bold)).foregroundStyle(.white)
                             .frame(minWidth: 18, minHeight: 18).background(Color.danger, in: .circle)
@@ -196,13 +209,17 @@ struct OverviewView: View {
                 ForEach(due.prefix(2)) { b in
                     let status = BillStatus(due: b.nextDue, paid: false)
                     HStack(spacing: 8) {
-                        IconBadge(symbol: b.category?.icon ?? "doc.text", color: .brandDeep, size: 30)
+                        IconBadge(symbol: b.category?.icon ?? "doc.text", color: .brandDeep, size: 28)
                         VStack(alignment: .leading, spacing: 1) {
-                            Text(b.name).font(.footnote.weight(.semibold)).lineLimit(1)
-                            status.label.font(.caption2).foregroundStyle(status.color).lineLimit(1)
+                            Text(b.name).font(.caption.weight(.semibold)).lineLimit(1)
+                            Group {
+                                if status.urgent { status.label } else { Text("Due \(OverviewView.dayMonth(b.nextDue))", tableName: "Overview") }
+                            }
+                            .font(.caption2).foregroundStyle(status.color).lineLimit(1)
                         }
+                        .layoutPriority(1) // the amount shrinks before the name/date truncate
                         Spacer(minLength: 4)
-                        AmountText(b.amount, currency: b.currencyCode, short: true).font(.footnote.weight(.semibold))
+                        AmountText(b.amount, currency: b.currencyCode).font(.caption.weight(.semibold))
                     }
                 }
             }
@@ -210,6 +227,11 @@ struct OverviewView: View {
             .card(padding: 14)
         }
         .buttonStyle(.plain)
+    }
+
+    /// "08/11" as in the mockup (ICU gives "08-11" in vi).
+    static func dayMonth(_ d: Date) -> String {
+        d.formatted(.dateTime.day(.twoDigits).month(.twoDigits)).replacingOccurrences(of: "-", with: "/")
     }
 
     private func netWorthCard(_ s: OverviewStats) -> some View {
@@ -244,16 +266,13 @@ struct OverviewView: View {
             HStack {
                 sectionTitle(Text("Recent transactions", tableName: "Overview"), symbol: "arrow.left.arrow.right")
                 Spacer()
-                NavigationLink { TransactionLedgerView() } label: {
-                    HStack(spacing: 2) { Text("See all", tableName: "Overview"); Image(systemName: "chevron.right") }
-                        .font(.footnote.weight(.semibold)).foregroundStyle(Color.brandDeep)
-                }
+                NavigationLink { TransactionLedgerView() } label: { seeAll }
             }
             .padding(.bottom, 4)
             let recent = Array(txns.prefix(3))
             ForEach(recent) { t in
                 TxnRow(txn: t, showDay: true)
-                if t != recent.last { Divider().padding(.leading, 52) }
+                if t != recent.last { Divider().padding(.leading, 44) }
             }
         }
         .card(padding: 14)
@@ -270,7 +289,7 @@ struct TxnRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            IconBadge(symbol: txn.category?.icon ?? txn.kind.symbol, color: txn.category?.color ?? .brandDeep, size: 40)
+            IconBadge(symbol: txn.category?.icon ?? txn.kind.symbol, color: txn.category?.color ?? .brandDeep, size: 32)
             VStack(alignment: .leading, spacing: 2) {
                 Text(txn.title).font(.subheadline.weight(.semibold)).lineLimit(1)
                 Text(subtitle).font(.caption).foregroundStyle(Color.inkSecondary).lineLimit(1)
@@ -347,5 +366,24 @@ struct BillsListView: View {
         }
         .background(MooneeBackground())
         .navigationTitle(String(localized: "Bills", table: "Overview"))
+    }
+}
+
+/// Every jar as a row (Overview → Jar balances → See all). Read-only; the Budget tab (S6) owns jar editing.
+struct JarsListView: View {
+    let jars: [OverviewStats.JarRow]
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 10) {
+                ForEach(jars) { row in
+                    JarCard(name: row.jar.name, symbol: row.jar.icon, color: row.jar.color, balance: row.month.balance,
+                            spent: row.month.spent, budget: row.month.budget, currency: Money.defaultCurrency, subtitle: "\(row.jar.percent)%")
+                }
+            }
+            .padding(16)
+        }
+        .background(MooneeBackground())
+        .navigationTitle(String(localized: "Jar balances", table: "Overview"))
     }
 }
