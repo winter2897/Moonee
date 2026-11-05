@@ -52,6 +52,7 @@ struct RootView: View {
             .fixedSize(horizontal: false, vertical: true)
         }
         .environment(\.balanceHidden, hideBalances)
+        .reminderScheduling()
         .tint(.mooneeGreen)
         .appLock() // Face ID lock + App Switcher cover (Features/Account/Security.swift)
     }

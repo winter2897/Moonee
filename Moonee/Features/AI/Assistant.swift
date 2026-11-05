@@ -8,7 +8,7 @@ struct AIRouter: Sendable {
     var mode: AIMode
     /// Apple Foundation Models, when the device has Apple Intelligence.
     var onDevice: (any LLM)?
-    /// Downloaded open model (MLX / llama.cpp), plugged in later.
+    /// Downloaded open model run with MLX (`LocalLLM`).
     var local: (any LLM)?
     /// BYOK cloud model with a key.
     var cloud: (any LLM)?
@@ -145,7 +145,9 @@ struct Assistant: Sendable {
 }
 
 /// Turns a model's reading into transactions, trusting it only for labels: amounts and dates are recomputed by
-/// `QuickParser` from the words the model quoted, and must agree with the rule parser. Any doubt → nil (caller falls back).
+/// `QuickParser` from the words the model quoted, and must agree with the rule parser. Where the rules saw an explicit
+/// cue (a kind word, a category keyword) they win; the model fills the gaps ("highlands 59k"). Any doubt → nil
+/// (caller falls back). The local-model eval showed small models flipping kinds and padding the list.
 enum TransactionExtractor {
     static func validate(_ items: [AIParsedTxn], text: String, rules: [ParsedTxn], context: ParserContext) -> [ParsedTxn]? {
         guard !items.isEmpty else { return nil }
@@ -165,6 +167,8 @@ enum TransactionExtractor {
                 amount = v
             }
             let pair = unpaired.firstIndex { $0.amount == amount?.amount }.map { unpaired.remove(at: $0) }
+            // "thưởng 5tr" is income and "grab 32k" an expense whatever a small model says.
+            if let pair, pair.kind != kind, pair.kind != .expense || pair.categoryKey != nil { return nil }
 
             var t = ParsedTxn(
                 amount: amount?.amount, currency: amount?.currency ?? context.currency, kind: kind,
@@ -175,7 +179,7 @@ enum TransactionExtractor {
                 let allowed = Set((kind == .income ? DefaultKeys.incomeCategories : DefaultKeys.expenseCategories)
                     + context.categories.values + context.merchantRules.values)
                 let learned = context.merchantRules.first { haystack.contains(fold($0.key)) }?.value // user's own edits win
-                t.categoryKey = learned ?? item.category.flatMap { allowed.contains($0) ? $0 : nil } ?? pair?.categoryKey
+                t.categoryKey = learned ?? pair?.categoryKey ?? item.category.flatMap { allowed.contains($0) ? $0 : nil }
             }
             t.wallet = wallet(item.wallet, context) ?? pair?.wallet
             t.toWallet = wallet(item.toWallet, context) ?? pair?.toWallet
@@ -187,9 +191,11 @@ enum TransactionExtractor {
             t.missing = ParsedTxn.missing(of: t)
             out.append(t)
         }
-        // The rule parser reads money reliably: the model must find exactly the same amounts.
+        // The rule parser reads money reliably: the model must find exactly the same amounts, and no extra
+        // amount-less items (small models pad the list).
         let ruleAmounts = rules.compactMap(\.amount).sorted()
-        guard ruleAmounts.isEmpty || ruleAmounts == out.compactMap(\.amount).sorted() else { return nil }
+        guard ruleAmounts.isEmpty || (out.allSatisfy { $0.amount != nil } && ruleAmounts == out.compactMap(\.amount).sorted())
+        else { return nil }
         return out
     }
 

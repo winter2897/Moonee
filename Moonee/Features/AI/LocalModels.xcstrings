@@ -1,0 +1,266 @@
+{
+  "sourceLanguage": "en",
+  "version": "1.0",
+  "strings": {
+    "%@ download · needs %@ RAM · about %lld words/s": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tải %@ · cần %@ RAM · khoảng %lld từ/giây"
+          }
+        }
+      }
+    },
+    "Delete": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá"
+          }
+        }
+      }
+    },
+    "Delete %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá %@"
+          }
+        }
+      }
+    },
+    "Delete this model?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá model này?"
+          }
+        }
+      }
+    },
+    "Download": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tải về"
+          }
+        }
+      }
+    },
+    "Download over Wi-Fi only": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chỉ tải qua Wi-Fi"
+          }
+        }
+      }
+    },
+    "Downloading %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang tải %@"
+          }
+        }
+      }
+    },
+    "Frees %@. You can download it again later.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giải phóng %@. Bạn có thể tải lại sau."
+          }
+        }
+      }
+    },
+    "Licence: %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giấy phép: %@"
+          }
+        }
+      }
+    },
+    "Local models": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Model local"
+          }
+        }
+      }
+    },
+    "Local models need a real iPhone: the Simulator has no GPU for them.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Model local cần iPhone thật: Simulator không có GPU để chạy."
+          }
+        }
+      }
+    },
+    "Models run fully on this iPhone: private, offline and free. They are downloaded from Hugging Face, never bundled with the app.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Model chạy hoàn toàn trên iPhone này: riêng tư, không cần mạng và miễn phí. Model được tải từ Hugging Face, không đóng gói sẵn trong app."
+          }
+        }
+      }
+    },
+    "Needs an iPhone with %lld GB of RAM or more.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cần iPhone có từ %lld GB RAM trở lên."
+          }
+        }
+      }
+    },
+    "Not enough free space on this iPhone.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPhone không đủ dung lượng trống."
+          }
+        }
+      }
+    },
+    "Pause": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tạm dừng"
+          }
+        }
+      }
+    },
+    "Reads photos": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đọc được ảnh"
+          }
+        }
+      }
+    },
+    "Recommended": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gợi ý"
+          }
+        }
+      }
+    },
+    "Resume (%@ done)": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tải tiếp (đã xong %@)"
+          }
+        }
+      }
+    },
+    "Text only": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chỉ văn bản"
+          }
+        }
+      }
+    },
+    "This iPhone has %@ of RAM.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPhone này có %@ RAM."
+          }
+        }
+      }
+    },
+    "This iPhone has too little memory for a local model. Use Apple Intelligence or your own API key instead.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPhone này không đủ bộ nhớ cho model local. Hãy dùng Apple Intelligence hoặc API key của bạn."
+          }
+        }
+      }
+    },
+    "Try again": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thử lại"
+          }
+        }
+      }
+    },
+    "Use this model": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dùng model này"
+          }
+        }
+      }
+    },
+    "Vietnamese: basic": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiếng Việt: cơ bản"
+          }
+        }
+      }
+    },
+    "Vietnamese: good": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiếng Việt: tốt"
+          }
+        }
+      }
+    },
+    "Waiting for Wi-Fi…": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang chờ Wi-Fi…"
+          }
+        }
+      }
+    }
+  }
+}

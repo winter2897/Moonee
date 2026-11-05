@@ -275,6 +275,8 @@ private func displayName(key: String?, customName: String?) -> String {
     var frequencyRaw: String = Frequency.monthly.rawValue
     var nextDue: Date = Date.now
     var remindDaysBefore: Int = 1
+    /// When "Paid" was last tapped (Budget shows it under "Paid this month").
+    var lastPaid: Date?
     var wallet: Wallet?
     var category: Category?
 
@@ -375,7 +377,8 @@ private func displayName(key: String?, customName: String?) -> String {
 extension Schema {
     /// Every model. Register new `@Model` types here; the app and tests build their container from it.
     static let mooneeModels: [any PersistentModel.Type] = [Txn.self, IncomeSplit.self, Category.self, Wallet.self, Jar.self,
-                                                           Recurring.self, Goal.self, Debt.self, Asset.self, MerchantRule.self]
+                                                           Recurring.self, Goal.self, Debt.self, Asset.self, MerchantRule.self,
+                                                           NetWorthSnapshot.self]
     static let moonee = Schema(mooneeModels)
 }
 
