@@ -24,16 +24,16 @@ struct WalletsSection: View {
         VStack(spacing: 12) {
             // ponytail: sums every wallet as the default currency; convert when multi-currency wallets ship
             VStack(alignment: .leading, spacing: 8) {
-                Text(loc("Total in wallets")).font(.subheadline.weight(.semibold))
+                Text(loc("Total in wallets")).font(.rowTitle)
                 AmountText(wallets.reduce(0) { $0 + balance($1) }, currency: Money.defaultCurrency)
-                    .font(.system(size: 34, weight: .bold, design: .rounded))
+                    .heroAmountFont()
                 let debt = cards.reduce(0) { $0 + max(-balance($1), 0) }
                 if debt > 0 {
                     HStack(spacing: 4) {
                         Text(loc("Card debt")).foregroundStyle(Color.inkSecondary)
                         AmountText(debt, currency: Money.defaultCurrency).fontWeight(.semibold)
                     }
-                    .font(.subheadline)
+                    .font(.secondaryText)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -69,14 +69,14 @@ private struct WalletRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            IconBadge(symbol: wallet.type.symbol, color: wallet.type.color, size: 34)
+            IconBadge(symbol: wallet.type.symbol, color: wallet.type.color)
             VStack(alignment: .leading, spacing: 2) {
-                Text(wallet.name).font(.subheadline.weight(.semibold))
-                Text(wallet.type.title).font(.caption).foregroundStyle(Color.inkSecondary)
+                Text(wallet.name).font(.rowTitle)
+                Text(wallet.type.title).font(.secondaryText).foregroundStyle(Color.inkSecondary)
             }
             Spacer()
             AmountText(balance, currency: wallet.currencyCode)
-                .font(.subheadline.weight(.semibold))
+                .font(.rowTitle)
                 .foregroundStyle(balance < 0 ? Color.danger : Color.ink)
             Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(Color.inkSecondary)
         }
@@ -99,13 +99,13 @@ private struct CreditCardRow: View {
         VStack(alignment: .leading, spacing: 10) {
             Button(action: onEdit) {
                 HStack(spacing: 12) {
-                    IconBadge(symbol: card.type.symbol, color: card.type.color, size: 34)
+                    IconBadge(symbol: card.type.symbol, color: card.type.color)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(card.name).font(.subheadline.weight(.semibold))
-                        Text(loc("Current debt")).font(.caption).foregroundStyle(Color.inkSecondary)
+                        Text(card.name).font(.rowTitle)
+                        Text(loc("Current debt")).font(.secondaryText).foregroundStyle(Color.inkSecondary)
                     }
                     Spacer()
-                    AmountText(debt, currency: card.currencyCode).font(.subheadline.weight(.semibold))
+                    AmountText(debt, currency: card.currencyCode).font(.rowTitle)
                     Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(Color.inkSecondary)
                 }
                 .contentShape(.rect)
@@ -132,10 +132,7 @@ private struct CreditCardRow: View {
                 Spacer(minLength: 4)
                 if debt > 0 {
                     Button(loc("Pay card"), action: onPay)
-                        .font(.footnote.weight(.semibold))
-                        .padding(.horizontal, 14).frame(minHeight: 36)
-                        .foregroundStyle(.white)
-                        .background(LinearGradient.brand, in: .capsule)
+                        .buttonStyle(OutlinePillStyle(filled: true))
                 }
             }
         }

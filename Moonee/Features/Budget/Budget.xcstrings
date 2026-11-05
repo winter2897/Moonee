@@ -493,6 +493,17 @@
         }
       }
     },
+    "Done": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xong"
+          }
+        }
+      }
+    },
     "Due %@": {
       "extractionState": "manual",
       "localizations": {
@@ -1200,6 +1211,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lưu"
+          }
+        }
+      }
+    },
+    "Spending by jar": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chi tiêu theo lọ"
           }
         }
       }
