@@ -12,7 +12,7 @@ import SwiftUI
     var undone: Bool = false
     /// JSON `[ChatCardLine]`: what the card showed when it was undone, since its txns are deleted.
     var undoneLines: Data?
-    /// JSON `[SearchHit]`: the pages a web-search answer came from, shown as chips under the bubble.
+    /// JSON of the pages a web answer came from (`WebSource`), shown as chips under the bubble.
     var sourcesData: Data?
     @Relationship(deleteRule: .nullify, inverse: \Txn.chatMessage) var txns: [Txn]? = []
     /// The conversation it belongs to (inverse declared on `ChatThread.messages`).
@@ -24,9 +24,16 @@ import SwiftUI
         self.date = date
     }
 
-    var sources: [SearchHit] {
-        get { sourcesData.flatMap { try? JSONDecoder().decode([SearchHit].self, from: $0) } ?? [] }
-        set { sourcesData = newValue.isEmpty ? nil : try? JSONEncoder().encode(newValue) }
+    var sources: [WebSource] {
+        get { (sourcesData.flatMap { try? JSONDecoder().decode([StoredSource].self, from: $0) } ?? []).map(\.source) }
+        set { sourcesData = newValue.isEmpty ? nil : try? JSONEncoder().encode(newValue.map(StoredSource.init)) }
+    }
+
+    /// `WebSource` is not Codable; this is its stored form.
+    private struct StoredSource: Codable {
+        var title: String, url: URL, site: String, date: Date?
+        init(_ s: WebSource) { (title, url, site, date) = (s.title, s.url, s.site, s.date) }
+        var source: WebSource { WebSource(title: title, url: url, site: site, date: date) }
     }
 
     /// In the order they were saved (SwiftData relationships are unordered).
@@ -270,10 +277,11 @@ struct ChatCardLine: Codable, Equatable {
     }
 
     /// The pages behind a web-search fact, for the source chips.
-    nonisolated static func sources(_ facts: [Assistant.ToolResult]) -> [SearchHit] {
+    nonisolated static func sources(_ facts: [Assistant.ToolResult]) -> [WebSource] {
         facts.filter { $0.tool == "webSearch" }
             .compactMap { try? JSONDecoder().decode(SearchResult.self, from: Data($0.json.utf8)) }
             .flatMap(\.results)
+            .compactMap(WebSource.init)
     }
 
     nonisolated private static func periodName(_ raw: String) -> String {

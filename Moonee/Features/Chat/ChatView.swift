@@ -245,8 +245,7 @@ struct ChatView: View {
             withAnimation { busy = false }
             switch out {
             case .transactions(let txns, _): record(txns, source: source, raw: input)
-            // ponytail: a model's answer doesn't carry the pages it searched yet; only the no-model path shows source chips.
-            case .answer(let answer, _): reply(answer, mood: .happy)
+            case .answer(let answer, _, let sources): reply(answer, mood: .happy, sources: sources)
             case .facts(let facts, _):
                 if let t = ChatBook.factsText(facts) { reply(t, mood: .happy, sources: ChatBook.sources(facts)) }
                 else { reply(Self.confused, mood: .confused) }
@@ -290,7 +289,7 @@ struct ChatView: View {
         }
     }
 
-    private func reply(_ text: String, mood: MooneeMood, sources: [SearchHit] = []) {
+    private func reply(_ text: String, mood: MooneeMood, sources: [WebSource] = []) {
         let m = ChatMessage(fromUser: false, text: text)
         m.sources = sources
         post(m)

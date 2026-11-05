@@ -300,8 +300,8 @@ import Testing
                                            .init(title: "SJC", url: "https://sjc.com.vn", text: "…")])
         let facts = [Assistant.ToolResult(tool: "webSearch", json: String(decoding: try JSONEncoder().encode(found), as: UTF8.self))]
         #expect(ChatBook.factsText(facts)?.contains("**Giá vàng SJC hôm nay**") == true)
-        #expect(ChatBook.sources(facts).map(\.url) == ["https://www.vnexpress.net/gia-vang", "https://sjc.com.vn"])
-        #expect(SourceChips.site(ChatBook.sources(facts)[0]) == "vnexpress.net")
+        #expect(ChatBook.sources(facts).map(\.url.absoluteString) == ["https://www.vnexpress.net/gia-vang", "https://sjc.com.vn"])
+        #expect(ChatBook.sources(facts).map(\.site) == ["vnexpress.net", "sjc.com.vn"])
 
         let off = SearchResult(configured: false, searchedAt: "2026-11-06T09:00:00Z", message: "Web search is not set up.")
         let offFacts = [Assistant.ToolResult(tool: "webSearch", json: String(decoding: try JSONEncoder().encode(off), as: UTF8.self))]
@@ -319,8 +319,9 @@ import Testing
     @Test func messagesKeepTheirSources() {
         let m = ChatMessage(fromUser: false, text: "")
         #expect(m.sourcesData == nil)
-        m.sources = [.init(title: "A", url: "https://a.vn", text: "")]
-        #expect(m.sources.map(\.url) == ["https://a.vn"])
+        let when = Date(timeIntervalSince1970: 1_800_000_000)
+        m.sources = [WebSource(title: "A", url: URL(string: "https://a.vn/x")!, site: "a.vn", date: when)]
+        #expect(m.sources == [WebSource(title: "A", url: URL(string: "https://a.vn/x")!, site: "a.vn", date: when)])
         m.sources = []
         #expect(m.sourcesData == nil)
     }

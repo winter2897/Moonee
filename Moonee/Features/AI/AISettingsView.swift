@@ -62,6 +62,7 @@ struct AISettingsView: View {
     @AppStorage(LLMSettings.baseURLKey) private var customURL = ""
     @AppStorage(LLMSettings.customPromptKey) private var customPrompt = ""
     @State private var searchProvider = SearchSettings.keyProvider
+    @State private var webSearchOn = LLMSettings.webSearch // redraws the toggle
     @State private var searchKey = ""
     @State private var apiKey = ""
     @State private var model = ""
@@ -182,6 +183,9 @@ struct AISettingsView: View {
             }
 
             Section {
+                Toggle(isOn: Binding(get: { LLMSettings.webSearch }, set: { LLMSettings.webSearch = $0; webSearchOn = $0 })) {
+                    Text("Web search", tableName: "AI")
+                }
                 Picker(selection: $searchProvider) {
                     Text("Off", tableName: "AI").tag(SearchKeyProvider?.none)
                     ForEach(SearchKeyProvider.allCases, id: \.self) { Text(verbatim: $0.title).tag(SearchKeyProvider?.some($0)) }

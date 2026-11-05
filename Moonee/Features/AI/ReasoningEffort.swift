@@ -85,6 +85,14 @@ enum EffortModels {
 }
 
 extension LLMSettings {
+    static let webSearchKey = "ai.webSearch"
+
+    /// Web search on/off (chat composer and AI settings). On by default; it only runs when a backend is set up.
+    static var webSearch: Bool {
+        get { UserDefaults.standard.object(forKey: webSearchKey) as? Bool ?? true }
+        set { UserDefaults.standard.set(newValue, forKey: webSearchKey) }
+    }
+
     static func effortKey(provider: CloudProvider, model: String) -> String { "ai.effort.\(provider.rawValue).\(model)" }
 
     /// Stored per provider + model; medium until the user picks.

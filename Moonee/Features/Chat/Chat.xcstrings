@@ -376,26 +376,6 @@
         }
       }
     },
-    "Not set up": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chưa thiết lập"
-          }
-        }
-      }
-    },
-    "On": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Đang bật"
-          }
-        }
-      }
-    },
     "On-device": {
       "localizations": {
         "vi": {
@@ -482,6 +462,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gửi"
+          }
+        }
+      }
+    },
+    "Set up web search": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thiết lập tìm trên web"
           }
         }
       }

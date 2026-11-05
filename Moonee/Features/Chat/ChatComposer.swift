@@ -193,6 +193,7 @@ struct AddToChatSheet: View {
     let onImage: (UIImage) -> Void
     @Environment(\.dismiss) private var dismiss
     @State private var item: PhotosPickerItem?
+    @State private var webSearch = LLMSettings.webSearch
     @State private var showLibrary = false
     @State private var showCamera = false
 
@@ -228,12 +229,13 @@ struct AddToChatSheet: View {
                     NavigationLink { SkillsView() } label: {
                         Label { Text("Skills", tableName: "Chat") } icon: { Image(systemName: "wand.and.stars") }
                     }
-                    // Search turns on in AI settings (a provider with built-in search, or a Tavily / Brave key).
-                    NavigationLink { AISettingsView() } label: {
-                        LabeledContent {
-                            SearchSettings.backend() == nil ? Text("Not set up", tableName: "Chat") : Text("On", tableName: "Chat")
-                        } label: {
-                            Label { Text("Web search", tableName: "Chat") } icon: { Image(systemName: "globe") }
+                    Toggle(isOn: $webSearch) {
+                        Label { Text("Web search", tableName: "Chat") } icon: { Image(systemName: "globe") }
+                    }
+                    // Search also needs a backend: a provider with built-in search, or a Tavily / Brave key (AI settings).
+                    if webSearch, SearchSettings.backend() == nil {
+                        NavigationLink { AISettingsView() } label: {
+                            Text("Set up web search", tableName: "Chat").font(.secondaryText).foregroundStyle(Color.brandDeep)
                         }
                     }
                 }
@@ -251,6 +253,7 @@ struct AddToChatSheet: View {
             .fullScreenCover(isPresented: $showCamera) {
                 CameraPicker { image in pick(image) }.ignoresSafeArea()
             }
+            .onChange(of: webSearch) { _, on in LLMSettings.webSearch = on }
             .onChange(of: item) { _, item in
                 guard let item else { return }
                 Task {
@@ -268,18 +271,19 @@ struct AddToChatSheet: View {
 
 /// Where a web answer came from: site · time, opening the page.
 struct SourceChips: View {
-    let sources: [SearchHit]
+    let sources: [WebSource]
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 6) {
-                ForEach(sources.filter { URL(string: $0.url) != nil }, id: \.url) { s in
-                    Link(destination: URL(string: s.url)!) {
+                ForEach(sources, id: \.url) { s in
+                    Link(destination: s.url) {
                         HStack(spacing: 4) {
                             Image(systemName: "globe").font(.caption)
-                            Text(Self.site(s)).lineLimit(1)
-                            if let date = s.date, !date.isEmpty {
-                                Text(verbatim: "· \(date)").lineLimit(1) // as the source gives it ("2 hours ago", "2026-11-05")
+                            Text(s.site).lineLimit(1)
+                            if let date = s.date {
+                                Text(verbatim: "·")
+                                Text(date, format: .relative(presentation: .named)).lineLimit(1)
                             }
                         }
                         .font(.chip)
@@ -293,11 +297,5 @@ struct SourceChips: View {
             }
         }
         .accessibilityLabel(Text("Sources", tableName: "Chat"))
-    }
-
-    /// "vnexpress.net" from the page URL.
-    static func site(_ s: SearchHit) -> String {
-        guard let host = URL(string: s.url)?.host() else { return s.title }
-        return host.hasPrefix("www.") ? String(host.dropFirst(4)) : host
     }
 }

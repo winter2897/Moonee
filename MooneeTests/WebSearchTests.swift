@@ -84,6 +84,36 @@ struct WebSearchTests {
         #expect((stub.bodies[0]["tools"] as? [[String: Any]])?.first?["google_search"] != nil)
     }
 
+    @Test func bigModelAnswersCarryTheSourcesItSearched() async throws {
+        var tools = Books.tools
+        tools.search = WebSearch(backend: TavilySearch(apiKey: "k", send: StubTransport([["results": [
+            ["title": "Giá vàng", "url": "https://www.sjc.com.vn/gia", "content": "Bán 152.000.000", "published_date": "2026-11-06"],
+            ["title": "Dup", "url": "https://www.sjc.com.vn/gia", "content": "x"],
+        ]]]).send))
+        let stub = StubTransport([
+            ["choices": [["message": ["role": "assistant", "content": NSNull(), "tool_calls": [
+                ["id": "c1", "type": "function", "function": ["name": "webSearch", "arguments": #"{"query":"giá vàng SJC"}"#]],
+            ]]]]],
+            ["choices": [["message": ["content": "Theo sjc.com.vn, 152 triệu."]]]],
+        ])
+        let cloud = OpenAICompatibleLLM(baseURL: "https://x/v1", apiKey: "k", model: "m", send: stub.send)
+        let a = Assistant(router: AIRouter(mode: .byok, onDevice: nil, local: nil, cloud: cloud), tools: tools, language: "vi")
+        guard case .answer(_, "market-lookup", let sources) = await a.handle("giá vàng SJC hôm nay?", context: Books.context) else {
+            Issue.record("expected an answer")
+            return
+        }
+        #expect(sources.map(\.site) == ["sjc.com.vn"])
+        #expect(sources.first?.date == (try? Date("2026-11-06", strategy: .iso8601.year().month().day())))
+        #expect(WebSource.date(from: "November 6, 2026") != nil)
+        #expect(WebSource.date(from: "2 hours ago") == nil)
+    }
+
+    @Test func switchedOff() async {
+        let off = await WebSearch(backend: TavilySearch(apiKey: "k"), enabled: false).run("gold")
+        #expect(off.configured == false)
+        #expect(off.message?.contains("turned web search off") == true)
+    }
+
     @Test func notSetUpAndFailures() async {
         let none = await WebSearch(backend: nil).run("giá vàng")
         #expect(none.configured == false)
@@ -152,7 +182,8 @@ struct WebSearchTests {
         let apple = ScriptedLLM(small: true, replies: ["Theo SJC, giá bán 152 triệu."])
         let a = Assistant(router: AIRouter(mode: .onDevice, onDevice: apple, local: nil, cloud: nil), tools: tools, language: "vi")
         let out = await a.handle("giá vàng SJC hôm nay bao nhiêu?", context: Books.context)
-        #expect(out == .answer("Theo SJC, giá bán 152 triệu.", skill: "market-lookup"))
+        #expect(out == .answer("Theo SJC, giá bán 152 triệu.", skill: "market-lookup",
+                               sources: [WebSource(title: "SJC", url: URL(string: "https://sjc.vn")!, site: "sjc.vn")]))
         let system = try #require(apple.requests.first?.system)
         #expect(system.contains("https://sjc.vn"))
         #expect(system.contains(Skill.marketLookup.instructions(language: "vi", short: true)))
