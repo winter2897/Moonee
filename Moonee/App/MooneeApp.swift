@@ -32,40 +32,36 @@ struct MooneeApp: App {
 
 enum AppTab: Hashable { case overview, budget, moonee, watchlist, account }
 
-/// The 5 tabs from docs/FEATURES.md §1 with the mockups' floating bar; (+) opens the Moonee chat.
+/// The 5 tabs from docs/FEATURES.md §1 on the system tab bar (iOS 26 Liquid Glass selection: press, drag, settle).
+/// Moonee sits in the centre as in the mockups and opens the full-screen chat, which hides the bar; its Back returns to the last tab.
 /// Each tab's root view lives in its feature folder, so feature sessions never need to edit this file.
 struct RootView: View {
     @State private var tab = AppTab.overview
     /// Where the chat's back button returns to.
     @State private var lastTab = AppTab.overview
     @AppStorage(Prefs.hideBalances) private var hideBalances = false
-    @State private var barHeight: CGFloat = 76
+
+    private static let plusIcon = UIImage(systemName: "plus.circle.fill", withConfiguration: UIImage.SymbolConfiguration(weight: .semibold))!
+        .withTintColor(UIColor(Color.brandPrimary), renderingMode: .alwaysOriginal)
 
     var body: some View {
         TabView(selection: $tab) {
-            Tab(value: .overview) { OverviewView().mooneeTabContent(barHeight: barHeight) }
-            Tab(value: .budget) { BudgetView().mooneeTabContent(barHeight: barHeight) }
-            Tab(value: .moonee) { ChatView { tab = lastTab }.toolbarVisibility(.hidden, for: .tabBar) }
-            Tab(value: .watchlist) { WatchlistView().mooneeTabContent(barHeight: barHeight) }
-            Tab(value: .account) { AccountView().mooneeTabContent(barHeight: barHeight) }
+            Tab(String(localized: "Overview"), systemImage: "house", value: .overview) { OverviewView().statusBarScrim() }
+            Tab(String(localized: "Budget"), systemImage: "wallet.bifold", value: .budget) { BudgetView().statusBarScrim() }
+            Tab(value: .moonee) {
+                // Full screen with its own composer (mockup): no tab bar inside the chat.
+                ChatView { tab = lastTab }.toolbarVisibility(.hidden, for: .tabBar)
+            } label: {
+                // Green (+) like the mockup's centre button; `.alwaysOriginal` keeps the tab bar from tinting it.
+                Label { Text(verbatim: "Moonee") } icon: { Image(uiImage: Self.plusIcon) }
+            }
+            Tab(String(localized: "Watchlist"), systemImage: "chart.bar", value: .watchlist) { WatchlistView().statusBarScrim() }
+            Tab(String(localized: "Account"), systemImage: "person", value: .account) { AccountView().statusBarScrim() }
         }
         .onChange(of: tab) { old, _ in if old != .moonee { lastTab = old } }
-        .overlay(alignment: .bottom) {
-            // The chat is full screen with its own input bar (mockup); the bar comes back on Back.
-            if tab != .moonee {
-                MooneeTabBar(items: [
-                    .init(tab: .overview, title: String(localized: "Overview"), symbol: "house"),
-                    .init(tab: .budget, title: String(localized: "Budget"), symbol: "wallet.bifold"),
-                    .init(tab: .watchlist, title: String(localized: "Watchlist"), symbol: "chart.bar"),
-                    .init(tab: .account, title: String(localized: "Account"), symbol: "person"),
-                ], selection: $tab) { tab = .moonee }
-                .fixedSize(horizontal: false, vertical: true)
-                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { barHeight = $0 + 8 }
-            }
-        }
         .environment(\.balanceHidden, hideBalances)
         .reminderScheduling()
-        .tint(.mooneeGreen)
+        .tint(.brandDeep)
         .onboarding() // first launch only (Features/Onboarding)
         .appLock() // Face ID lock + App Switcher cover (Features/Account/Security.swift)
     }

@@ -149,6 +149,20 @@ struct Hills: View {
 }
 
 extension View {
+    /// Mint fade under the status bar / Dynamic Island so scrolled text doesn't collide with the clock.
+    func statusBarScrim() -> some View {
+        overlay(alignment: .top) {
+            Color.clear.frame(height: 14)
+                .background {
+                    LinearGradient(stops: [.init(color: .brandMint, location: 0), .init(color: .brandMint.opacity(0.95), location: 0.7),
+                                           .init(color: .brandMint.opacity(0), location: 1)], startPoint: .top, endPoint: .bottom)
+                        .ignoresSafeArea(edges: .top)
+                }
+                .allowsHitTesting(false)
+                .accessibilityHidden(true)
+        }
+    }
+
     /// Frosted white card.
     func card(padding: CGFloat = 16) -> some View {
         self.padding(padding)

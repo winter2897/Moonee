@@ -4,7 +4,7 @@ import SwiftUI
 /// Every design-system component in every state, for review (Debug builds only; Tài khoản → Component Gallery).
 struct ComponentGallery: View {
     enum Section: String, CaseIterable, Identifiable {
-        case colors = "Colours", type = "Type", header = "Header", character = "Moonee", money = "Amounts", tabBar = "Tab bar", jars = "Jars",
+        case colors = "Colours", type = "Type", header = "Header", character = "Moonee", money = "Amounts", jars = "Jars",
              bills = "Bills", chat = "Chat", input = "Input", charts = "Charts", empty = "Empty"
         var id: String { rawValue }
     }
@@ -56,7 +56,6 @@ struct ComponentGallery: View {
         case .header: header
         case .character: character
         case .money: money
-        case .tabBar: tabBar
         case .jars: jars
         case .bills: bills
         case .chat: chat
@@ -157,19 +156,6 @@ struct ComponentGallery: View {
             Text("VoiceOver: " + AmountFormat.spoken(1_250_000, "VND")).font(.caption).foregroundStyle(Color.inkSecondary)
         }
         .card()
-    }
-
-    @State private var tab = 1
-    private var tabBar: some View {
-        let items: [MooneeTabBar<Int>.Item] = [.init(tab: 0, title: "Tổng quan", symbol: "house"), .init(tab: 1, title: "Ngân sách", symbol: "wallet.bifold"),
-                                               .init(tab: 2, title: "Quan tâm", symbol: "chart.bar"), .init(tab: 3, title: "Tài khoản", symbol: "person")]
-        return VStack(spacing: 40) {
-            Color.clear.frame(height: 10)
-            MooneeTabBar(items: items, selection: $tab) {}
-            MooneeTabBar(items: items, selection: .constant(3)) {}
-            Text("Press and hold (+) to see the pressed state.").font(.caption).foregroundStyle(Color.inkSecondary)
-        }
-        .padding(.horizontal, -16)
     }
 
     private var jars: some View {

@@ -12,16 +12,6 @@
         }
       }
     },
-    "Add with Moonee": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ghi với Moonee"
-          }
-        }
-      }
-    },
     "Attach photo": {
       "localizations": {
         "vi": {
