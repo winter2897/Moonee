@@ -381,14 +381,15 @@ extension Schema {
 
 enum Seed {
     /// The 6-jar rule, also used by "Restore defaults".
+    // ponytail: colours are S2's colour-blind-safe JarPalette.hex[0...5], inlined because S1 merges first; use JarPalette.hex[i] after S2 lands.
     static var defaultJars: [Jar] {
         [
-            Jar(key: "jar.essentials", icon: "house.fill", colorHex: 0x22C55E, percent: 55, order: 0),
-            Jar(key: "jar.investing", icon: "chart.line.uptrend.xyaxis", colorHex: 0x3B82F6, percent: 10, order: 1),
-            Jar(key: "jar.savings", icon: "banknote.fill", colorHex: 0x14B8A6, percent: 10, order: 2),
-            Jar(key: "jar.growth", icon: "book.fill", colorHex: 0x8B5CF6, percent: 10, order: 3),
-            Jar(key: "jar.play", icon: "sparkles", colorHex: 0xF59E0B, percent: 10, order: 4),
-            Jar(key: "jar.giving", icon: "heart.fill", colorHex: 0xEF4444, percent: 5, order: 5),
+            Jar(key: "jar.essentials", icon: "house.fill", colorHex: 0xEAB308, percent: 55, order: 0),
+            Jar(key: "jar.investing", icon: "chart.line.uptrend.xyaxis", colorHex: 0x0D9488, percent: 10, order: 1),
+            Jar(key: "jar.savings", icon: "banknote.fill", colorHex: 0x60A5FA, percent: 10, order: 2),
+            Jar(key: "jar.growth", icon: "book.fill", colorHex: 0x9333EA, percent: 10, order: 3),
+            Jar(key: "jar.play", icon: "sparkles", colorHex: 0xF472B6, percent: 10, order: 4),
+            Jar(key: "jar.giving", icon: "heart.fill", colorHex: 0xA3E635, percent: 5, order: 5),
         ]
     }
 
