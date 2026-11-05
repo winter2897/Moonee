@@ -1,5 +1,14 @@
 import Foundation
 
+/// One statement line, ready to become a `Txn`. `externalID` lets re-imports skip lines already saved.
+struct ImportDraft: Equatable {
+    var externalID: String
+    var amount: Int
+    var kind: TxKind
+    var date: Date
+    var memo: String
+}
+
 /// A bank statement exported as CSV. Columns are guessed from common Vietnamese/English bank headers
 /// (VCB, Techcombank, MB, ACB…: "Ngày giao dịch", "Ghi nợ"/"Ghi có" or one signed "Số tiền", "Nội dung")
 /// and the user can correct the guess.
@@ -33,7 +42,7 @@ struct StatementCSV {
     var detected: Mapping { Self.detect(header) }
 
     /// Rows without a parseable date or a non-zero amount (totals, footers) are skipped.
-    func drafts(_ m: Mapping) -> [BankDraft] {
+    func drafts(_ m: Mapping) -> [ImportDraft] {
         var occurrences: [String: Int] = [:]
         return rows.compactMap { r in
             func col(_ i: Int?) -> String { i.flatMap { r.indices.contains($0) ? r[$0] : nil }?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "" }
@@ -50,7 +59,7 @@ struct StatementCSV {
                 occurrences[key, default: 0] += 1
                 key += "#\(occurrences[key]!)"
             }
-            return BankDraft(externalID: "csv:" + key, account: "", bank: "", amount: abs(net),
+            return ImportDraft(externalID: "csv:" + key, amount: abs(net),
                              kind: net < 0 ? .expense : .income, date: date, memo: memo)
         }
     }

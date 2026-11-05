@@ -3,14 +3,5 @@
 <plist version="1.0">
 <dict>
 	<!-- Merged with the generated Info.plist (GENERATE_INFOPLIST_FILE); keys build settings can't express. -->
-	<key>BGTaskSchedulerPermittedIdentifiers</key>
-	<array>
-		<string>com.haiquan.moonee.accountant.refresh</string>
-		<string>com.haiquan.moonee.banksync</string>
-	</array>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-	</array>
 </dict>
 </plist>

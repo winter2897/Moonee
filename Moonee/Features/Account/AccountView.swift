@@ -20,11 +20,13 @@ struct AccountView: View {
                 VStack(spacing: 0) {
                     AccountRow(symbol: "tag", title: "Danh mục") { CategoriesView() }
                     Divider().padding(.leading, 44)
-                    AccountRow(symbol: "square.stack.3d.up", title: "6 chiếc lọ tài chính") { JarsView() }
+                    AccountRow(symbol: "wallet.bifold", title: "Ví") { WalletsView() }
                     Divider().padding(.leading, 44)
-                    AccountRow(symbol: "brain.head.profile", title: "AI kế toán & Báo cáo") { AccountantView() }
+                    AccountRow(symbol: "square.stack.3d.up", title: "Tuỳ chỉnh lọ") { JarSettingsView() }
                     Divider().padding(.leading, 44)
-                    AccountRow(symbol: "building.columns", title: "Liên kết ngân hàng") { BankLinkView() }
+                    AccountRow(symbol: "arrow.triangle.branch", title: "Gán danh mục vào lọ") { JarMappingView() }
+                    Divider().padding(.leading, 44)
+                    AccountRow(symbol: "brain.head.profile", title: "Trợ lý Moonee (AI)") { AISettingsView() }
                 }
                 .card(padding: 12)
             }

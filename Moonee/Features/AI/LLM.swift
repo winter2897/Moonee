@@ -104,7 +104,7 @@ struct OpenRouterLLM: LLM {
         guard let url = URL(string: baseURL.trimmingCharacters(in: .init(charactersIn: "/ ")) + "/chat/completions") else {
             throw LLMError("Base URL không hợp lệ")
         }
-        var req = URLRequest(url: url, timeoutInterval: 60)
+        var req = URLRequest(url: url, timeoutInterval: 180) // ponytail: free models queue 40–70s; lower once on a paid model
         req.httpMethod = "POST"
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")

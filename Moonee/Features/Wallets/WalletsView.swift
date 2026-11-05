@@ -8,52 +8,50 @@ struct WalletsView: View {
     @State private var adding = false
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 14) {
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Text("Tổng số dư").font(.subheadline)
-                        Spacer()
-                        Button { hidden.toggle() } label: {
-                            Image(systemName: hidden ? "eye.slash" : "eye").padding(8).background(.white.opacity(0.2), in: .circle)
-                        }
-                    }
-                    Text(hidden ? "••••••• đ" : wallets.reduce(0) { $0 + $1.balance }.vnd)
-                        .font(.system(size: 34, weight: .bold, design: .rounded))
-                        .contentTransition(.numericText())
-                    Spacer(minLength: 40)
-                }
-                .foregroundStyle(.white)
-                .padding(20)
-                .background(alignment: .bottom) { Hills().frame(height: 80) }
-                .background(LinearGradient(colors: [.mooneeGreen, .mooneeDark], startPoint: .topLeading, endPoint: .bottomTrailing))
-                .clipShape(.rect(cornerRadius: 24))
-                .shadow(color: .mooneeGreen.opacity(0.3), radius: 14, y: 6)
-
-                VStack(spacing: 0) {
-                    ForEach(wallets) { w in
-                        Button { editing = w } label: { WalletRow(wallet: w, hidden: hidden) }
-                            .buttonStyle(.plain)
-                        if w != wallets.last { Divider().padding(.leading, 52) }
+        VStack(spacing: 14) {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text("Tổng số dư").font(.subheadline)
+                    Spacer()
+                    Button { hidden.toggle() } label: {
+                        Image(systemName: hidden ? "eye.slash" : "eye").padding(8).background(.white.opacity(0.2), in: .circle)
                     }
                 }
-                .card(padding: 12)
+                Text(hidden ? "••••••• đ" : wallets.reduce(0) { $0 + $1.balance }.vnd)
+                    .font(.system(size: 34, weight: .bold, design: .rounded))
+                    .contentTransition(.numericText())
+                Spacer(minLength: 40)
+            }
+            .foregroundStyle(.white)
+            .padding(20)
+            .background(alignment: .bottom) { Hills().frame(height: 80) }
+            .background(LinearGradient(colors: [.mooneeGreen, .mooneeDark], startPoint: .topLeading, endPoint: .bottomTrailing))
+            .clipShape(.rect(cornerRadius: 24))
+            .shadow(color: .mooneeGreen.opacity(0.3), radius: 14, y: 6)
 
-                Button { adding = true } label: { Label("Thêm ví", systemImage: "plus") }
-                    .font(.headline)
-                    .foregroundStyle(Color.mooneeDark)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 14)
-                    .background(Color.mooneeGreen.opacity(0.12), in: .capsule)
+            VStack(spacing: 0) {
+                ForEach(wallets) { w in
+                    Button { editing = w } label: { WalletRow(wallet: w, hidden: hidden) }
+                        .buttonStyle(.plain)
+                    if w != wallets.last { Divider().padding(.leading, 52) }
+                }
             }
-            .foregroundStyle(Color.mooneeInk)
-            .mooneeScreen("Ví")
-            .toolbar {
-                Button("Thêm ví", systemImage: "plus") { adding = true }
-            }
-            .sheet(isPresented: $adding) { WalletForm(wallet: nil, nextOrder: wallets.count) }
-            .sheet(item: $editing) { WalletForm(wallet: $0, nextOrder: wallets.count) }
+            .card(padding: 12)
+
+            Button { adding = true } label: { Label("Thêm ví", systemImage: "plus") }
+                .font(.headline)
+                .foregroundStyle(Color.mooneeDark)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 14)
+                .background(Color.mooneeGreen.opacity(0.12), in: .capsule)
         }
+        .foregroundStyle(Color.mooneeInk)
+        .mooneeScreen("Ví")
+        .toolbar {
+            Button("Thêm ví", systemImage: "plus") { adding = true }
+        }
+        .sheet(isPresented: $adding) { WalletForm(wallet: nil, nextOrder: wallets.count) }
+        .sheet(item: $editing) { WalletForm(wallet: $0, nextOrder: wallets.count) }
     }
 }
 
