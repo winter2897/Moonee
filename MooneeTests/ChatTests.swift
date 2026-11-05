@@ -69,10 +69,10 @@ import Testing
     @Test func categoryEditTeachesTheNextParse() throws {
         let first = try #require(say("highlands 55k").first)
         let fun = try category("category.entertainment")
-        ChatBook.setCategory(fun, of: first, in: context)
+        TxnEdit.setCategory(fun, of: first, in: context)
         #expect(first.jar?.key == "jar.play") // re-pinned
-        ChatBook.setCategory(try category("category.shopping"), of: first, in: context)
-        ChatBook.setCategory(fun, of: first, in: context)
+        TxnEdit.setCategory(try category("category.shopping"), of: first, in: context)
+        TxnEdit.setCategory(fun, of: first, in: context)
         try context.save()
         #expect(try context.fetchCount(FetchDescriptor<MerchantRule>()) == 1) // one rule per merchant, updated
 
@@ -114,5 +114,93 @@ import Testing
         #expect(t.amount == 58_000)
         #expect(t.note == "HIGHLANDS COFFEE")
         #expect(t.missing.isEmpty)
+    }
+
+    // MARK: Ask back instead of saving half a transaction
+
+    @Test func transferWithoutDestinationAsksForTheWallet() throws {
+        context.insert(Wallet(name: "Vietcombank", type: .bank, order: 1))
+        let cash = try #require(ChatBook.Lookup(context).wallets.first)
+        var p = ParsedTxn(amount: 500_000, currency: "VND", kind: .transfer, date: .now, note: "")
+        let book = ChatBook.Lookup(context)
+        #expect(book.unresolved(p) == .toWallet)
+        #expect(ChatBook.save([p], source: .text, rawInput: "", in: context).isEmpty) // money never goes nowhere
+        #expect(book.choices(.toWallet, for: p) == ["Vietcombank"])
+
+        p.toWallet = cash.name
+        #expect(book.unresolved(p) == .toWallet) // to itself is no transfer
+
+        #expect(ChatBook.fill(&p, .toWallet, from: "vietcombank nhé", context: parser()))
+        let t = try #require(ChatBook.save([p], source: .text, rawInput: "", in: context).first)
+        #expect(t.wallet == cash && t.toWallet?.name == "Vietcombank")
+    }
+
+    @Test func jarTransferAsksForTheMissingJar() throws {
+        var p = ParsedTxn(amount: 300_000, currency: "VND", kind: .jarTransfer, jar: "jar.savings", date: .now, note: "")
+        let book = ChatBook.Lookup(context)
+        #expect(book.unresolved(p) == .toJar)
+        #expect(ChatBook.save([p], source: .text, rawInput: "", in: context).isEmpty)
+        #expect(book.choices(.toJar, for: p).count == 5) // every jar but the source
+
+        #expect(!ChatBook.fill(&p, .toJar, from: "ừm", context: parser()))
+        #expect(ChatBook.fill(&p, .toJar, from: "hưởng thụ", context: parser()))
+        let t = try #require(ChatBook.save([p], source: .text, rawInput: "", in: context).first)
+        #expect(t.jar?.key == "jar.savings" && t.toJar?.key == "jar.play")
+
+        var noSource = ParsedTxn(amount: 1, currency: "VND", kind: .jarTransfer, date: .now, note: "")
+        #expect(book.unresolved(noSource) == .jar)
+        #expect(ChatBook.fill(&noSource, .jar, from: "tiết kiệm", context: parser()) && noSource.jar == "jar.savings")
+    }
+
+    @Test func amountAnswerFillsTheWaitingTransaction() {
+        var p = ParsedTxn(amount: nil, currency: "VND", kind: .expense, categoryKey: "category.food", date: .now, note: "ăn trưa")
+        #expect(ChatBook.Lookup(context).unresolved(p) == .amount)
+        #expect(ChatBook.fill(&p, .amount, from: "65k", context: parser()))
+        #expect(p.amount == 65_000 && p.missing.isEmpty)
+    }
+
+    // MARK: Undo and debts
+
+    @Test func undoDeletesTheDebtItsLendCreated() throws {
+        let m = ChatMessage(fromUser: false, text: "")
+        context.insert(m)
+        m.txns = say("cho Nam mượn 2tr")
+        #expect(try context.fetchCount(FetchDescriptor<Debt>()) == 1)
+        ChatBook.undo(m, in: context)
+        try context.save()
+        #expect(try context.fetchCount(FetchDescriptor<Debt>()) == 0)
+    }
+
+    @Test func undoKeepsADebtThatHasOtherTransactions() throws {
+        let earlier = try #require(say("cho Nam mượn 1tr").first)
+        let m = ChatMessage(fromUser: false, text: "")
+        context.insert(m)
+        m.txns = say("cho Nam mượn 2tr")
+        ChatBook.undo(m, in: context)
+        try context.save()
+        let debts = try context.fetch(FetchDescriptor<Debt>())
+        #expect(debts.count == 1 && debts.first === earlier.debt)
+        #expect(debts.first?.txns?.count == 1)
+    }
+
+    // MARK: The shared editor
+
+    @Test func editorRescalesAnIncomesSplits() throws {
+        let income = try #require(say("lương 10tr").first)
+        TxnEdit.apply(to: income, amount: 20_000_000, date: income.date, note: income.note, category: income.category,
+                      wallet: income.wallet, toWallet: nil, in: context)
+        let splits = income.splits ?? []
+        #expect(splits.map(\.amount).reduce(0, +) == 20_000_000)
+        #expect(splits.first { $0.jar?.key == "jar.giving" }?.amount == 1_000_000) // 5% kept
+    }
+
+    @Test func editorCategoryChangeRepinsAndLearns() throws {
+        let t = try #require(say("highlands 55k").first)
+        TxnEdit.apply(to: t, amount: t.amount, date: t.date, note: "  Highlands ", category: try category("category.entertainment"),
+                      wallet: t.wallet, toWallet: nil, in: context)
+        try context.save()
+        #expect(t.note == "Highlands" && t.jar?.key == "jar.play")
+        #expect(try context.fetch(FetchDescriptor<MerchantRule>()).map(\.pattern) == ["highlands"])
+        #expect(say("highlands 40k").first?.category?.key == "category.entertainment")
     }
 }
