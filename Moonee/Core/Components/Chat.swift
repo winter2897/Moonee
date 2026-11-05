@@ -229,6 +229,8 @@ struct PressScaleStyle: ButtonStyle {
 struct ChatInputBar: View {
     @Binding var text: String
     var isRecording = false
+    /// Lets the screen focus the text field (the Moonee tab opens with the keyboard up).
+    var focus: FocusState<Bool>.Binding? = nil
     var onPhoto: () -> Void = {}
     var onMic: () -> Void = {}
     var onSend: () -> Void = {}
@@ -256,9 +258,10 @@ struct ChatInputBar: View {
                     }
                     .accessibilityElement(children: .combine)
                 } else {
-                    TextField(String(localized: "Message Moonee…", table: "Components"), text: $text, axis: .vertical)
+                    let field = TextField(String(localized: "Message Moonee…", table: "Components"), text: $text, axis: .vertical)
                         .lineLimit(1...4)
                         .foregroundStyle(Color.ink)
+                    if let focus { field.focused(focus) } else { field }
                 }
             }
             .padding(.horizontal, 18).padding(.vertical, 12)

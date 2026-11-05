@@ -31,25 +31,31 @@ enum AppTab: Hashable { case overview, budget, moonee, watchlist, account }
 /// Each tab's root view lives in its feature folder, so feature sessions never need to edit this file.
 struct RootView: View {
     @State private var tab = AppTab.overview
+    /// Where the chat's back button returns to.
+    @State private var lastTab = AppTab.overview
     @AppStorage(Prefs.hideBalances) private var hideBalances = false
 
     var body: some View {
         TabView(selection: $tab) {
             Tab(value: .overview) { OverviewView() }
             Tab(value: .budget) { BudgetView() }
-            Tab(value: .moonee) { ChatView() }
+            Tab(value: .moonee) { ChatView { tab = lastTab } }
             Tab(value: .watchlist) { WatchlistView() }
             Tab(value: .account) { AccountView() }
         }
         .toolbar(.hidden, for: .tabBar)
+        .onChange(of: tab) { old, _ in if old != .moonee { lastTab = old } }
         .safeAreaInset(edge: .bottom) {
-            MooneeTabBar(items: [
-                .init(tab: .overview, title: String(localized: "Overview"), symbol: "house"),
-                .init(tab: .budget, title: String(localized: "Budget"), symbol: "wallet.bifold"),
-                .init(tab: .watchlist, title: String(localized: "Watchlist"), symbol: "chart.bar"),
-                .init(tab: .account, title: String(localized: "Account"), symbol: "person"),
-            ], selection: $tab) { tab = .moonee }
-            .fixedSize(horizontal: false, vertical: true)
+            // The chat is full screen with its own input bar (mockup); the bar comes back on Back.
+            if tab != .moonee {
+                MooneeTabBar(items: [
+                    .init(tab: .overview, title: String(localized: "Overview"), symbol: "house"),
+                    .init(tab: .budget, title: String(localized: "Budget"), symbol: "wallet.bifold"),
+                    .init(tab: .watchlist, title: String(localized: "Watchlist"), symbol: "chart.bar"),
+                    .init(tab: .account, title: String(localized: "Account"), symbol: "person"),
+                ], selection: $tab) { tab = .moonee }
+                .fixedSize(horizontal: false, vertical: true)
+            }
         }
         .environment(\.balanceHidden, hideBalances)
         .tint(.mooneeGreen)
