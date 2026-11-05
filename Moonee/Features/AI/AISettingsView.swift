@@ -29,15 +29,15 @@ extension AIMode {
         }
     }
 
-    /// What leaves the phone in this mode (spec §6.2).
-    var cloudNote: String {
+    /// What leaves the phone in this mode (spec §6.2), naming the BYOK provider.
+    func cloudNote(_ provider: String) -> String {
         switch self {
         case .onDevice, .local:
             String(localized: "Nothing is sent to the cloud. Moonee has no server.", table: "Account")
         case .byok:
-            String(localized: "Sent to your provider: what you type to Moonee, the chat so far, and the numbers Moonee looks up to answer (totals, jar balances, matching transactions). Sent with your key, straight from this iPhone; Moonee has no server.", table: "Account")
+            String(localized: "Sent to \(provider): what you type to Moonee, the chat so far, and the numbers Moonee looks up to answer (totals, jar balances, matching transactions). Sent with your key, straight from this iPhone; Moonee has no server.", table: "Account")
         case .hybrid:
-            String(localized: "Typed transactions stay on this iPhone. For questions, advice and reports, your message, the chat so far and the numbers Moonee looks up are sent to your provider with your key. Moonee has no server.", table: "Account")
+            String(localized: "Typed transactions stay on this iPhone. For questions, advice and reports, your message, the chat so far and the numbers Moonee looks up are sent to \(provider) with your key. Moonee has no server.", table: "Account")
         }
     }
 }
@@ -45,9 +45,12 @@ extension AIMode {
 extension CloudProvider {
     var title: String {
         switch self {
-        case .openAICompatible: "OpenRouter"
+        case .openRouter: "OpenRouter"
+        case .deepSeek: "DeepSeek"
+        case .openAI: "OpenAI"
         case .anthropic: "Anthropic"
         case .gemini: "Google Gemini"
+        case .custom: String(localized: "Custom (OpenAI-compatible)", table: "Account")
         }
     }
 }
@@ -76,13 +79,16 @@ private extension Skill {
 struct AISettingsView: View {
     @AppStorage(LLMSettings.modeKey) private var mode = LLMSettings.mode
     @AppStorage(LLMSettings.cloudKey) private var provider = LLMSettings.cloudProvider
-    @AppStorage(LLMSettings.baseURLKey) private var baseURL = LLMSettings.defaultBaseURL
+    @AppStorage(LLMSettings.baseURLKey) private var customURL = ""
     @AppStorage(LLMSettings.customPromptKey) private var customPrompt = ""
     @State private var skillsOff = LLMSettings.skillsOff
     @State private var apiKey = ""
     @State private var model = ""
     @State private var testResult: String?
     @State private var testing = false
+    @State private var keyCheck: KeyCheck = .idle
+
+    enum KeyCheck: Equatable { case idle, checking, ok(Int), failed(String) }
 
     private var usesCloud: Bool { mode == .byok || mode == .hybrid }
 
@@ -129,33 +135,55 @@ struct AISettingsView: View {
                         .labelsHidden()
                         .fixedSize()
                     }
-                    SecureField(String(localized: "API key", table: "Account"), text: $apiKey)
-                        .onChange(of: apiKey) { LLMSettings.setAPIKey(apiKey.trimmingCharacters(in: .whitespacesAndNewlines), for: provider) }
-                    LabeledContent(String(localized: "Model", table: "Account")) {
-                        TextField(provider.defaultModel, text: $model).multilineTextAlignment(.trailing)
-                            .onChange(of: model) { UserDefaults.standard.set(model.trimmingCharacters(in: .whitespaces), forKey: provider.modelKey) }
-                    }
-                    if provider == .openAICompatible {
+                    if provider == .custom {
                         LabeledContent(String(localized: "Base URL", table: "Account")) {
-                            TextField(LLMSettings.defaultBaseURL, text: $baseURL).multilineTextAlignment(.trailing).keyboardType(.URL)
+                            TextField(text: $customURL, prompt: Text(verbatim: "https://…/v1")) { Text("Base URL", tableName: "Account") }
+                                .multilineTextAlignment(.trailing).keyboardType(.URL)
                         }
                     }
+                    SecureField(String(localized: "API key", table: "Account"), text: $apiKey)
+                        .onChange(of: apiKey) {
+                            LLMSettings.setAPIKey(apiKey.trimmingCharacters(in: .whitespacesAndNewlines), for: provider)
+                            keyCheck = .idle
+                        }
+                    if !apiKey.isEmpty {
+                        Button(action: checkKey) {
+                            HStack {
+                                Text("Test key", tableName: "Account")
+                                Spacer()
+                                if keyCheck == .checking { ProgressView() }
+                            }
+                        }
+                        .disabled(keyCheck == .checking || LLMSettings.baseURL(provider).isEmpty)
+                        switch keyCheck {
+                        case .ok(let n):
+                            Label { Text("Key works. \(n) models available.", tableName: "Account") } icon: { Image(systemName: "checkmark.circle.fill") }
+                                .font(.footnote).foregroundStyle(Color.brandDeep)
+                        case .failed(let message):
+                            Label(message, systemImage: "exclamationmark.triangle.fill").font(.footnote).foregroundStyle(Color.danger)
+                        default: EmptyView()
+                        }
+                    }
+                    NavigationLink {
+                        ModelPickerView(provider: provider, baseURL: LLMSettings.baseURL(provider), apiKey: apiKey.trimmingCharacters(in: .whitespacesAndNewlines),
+                                        selection: $model)
+                    } label: {
+                        LabeledContent(String(localized: "Model", table: "Account")) {
+                            Text(model.isEmpty ? provider.defaultModel : model).lineLimit(1).truncationMode(.middle)
+                        }
+                    }
+                    .onChange(of: model) { UserDefaults.standard.set(model, forKey: provider.modelKey) }
                 } header: {
                     Text("Your API key", tableName: "Account")
                 } footer: {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("The key is kept in this iPhone's Keychain. You pay your provider directly.", tableName: "Account")
-                        if provider == .openAICompatible {
-                            Text("Change the base URL to use any OpenAI-compatible server.", tableName: "Account")
-                        }
-                    }
+                    Text("The key is kept in this iPhone's Keychain. You pay your provider directly.", tableName: "Account")
                 }
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
             }
 
             Section {
-                Label { Text(mode.cloudNote) } icon: { Image(systemName: usesCloud ? "icloud.and.arrow.up" : "lock.shield") }
+                Label { Text(mode.cloudNote(provider.title)) } icon: { Image(systemName: usesCloud ? "icloud.and.arrow.up" : "lock.shield") }
                     .font(.footnote)
                 Button(action: test) {
                     HStack {
@@ -223,6 +251,22 @@ struct AISettingsView: View {
         apiKey = LLMSettings.apiKey(for: provider) ?? ""
         model = UserDefaults.standard.string(forKey: provider.modelKey) ?? ""
         testResult = nil
+        keyCheck = .idle
+    }
+
+    /// Loads the model list with the typed key: proves the key works and fills the picker's cache.
+    private func checkKey() {
+        keyCheck = .checking
+        let (p, key, base) = (provider, apiKey.trimmingCharacters(in: .whitespacesAndNewlines), LLMSettings.baseURL(provider))
+        Task {
+            do {
+                let list = try await LLMSettings.client(p, key: key, model: "", baseURL: base).listModels()
+                try? ModelCache().save(list, for: p, baseURL: base)
+                keyCheck = .ok(list.count)
+            } catch {
+                keyCheck = .failed(ModelPickerView.message(for: error))
+            }
+        }
     }
 
     private func test() {

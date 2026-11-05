@@ -144,7 +144,13 @@ struct LedgerTests {
         salary.allocate(jars: [needs, play], in: context)
         #expect(balances() == before)
         #expect(pho.jar == needs)
-        #expect(food.name == "Food & Drinks")
+        // The name still comes from the key, in the UI language; check both catalogues without depending on the device language.
+        #expect(food.customName == nil && food.name == String(localized: "category.food"))
+        func catalog(_ lang: String) -> String? {
+            Bundle.main.path(forResource: lang, ofType: "lproj").flatMap(Bundle.init(path:))?.localizedString(forKey: "category.food", value: nil, table: nil)
+        }
+        #expect(catalog("en") == "Food & Drinks")
+        #expect(catalog("vi") == "Ăn uống")
     }
 }
 
