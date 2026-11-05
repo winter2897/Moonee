@@ -130,7 +130,7 @@
 				};
 			};
 			buildConfigurationList = AA0000000000000000000013 /* Build configuration list for PBXProject "Moonee" */;
-			developmentRegion = vi;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				vi,
@@ -203,14 +203,15 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Moonee;
-				INFOPLIST_KEY_NSCameraUsageDescription = "Moonee dùng camera để chụp hoá đơn và đọc số tiền.";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Moonee dùng micro để bạn nói giao dịch thay vì gõ.";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Moonee chuyển giọng nói thành chữ để ghi giao dịch.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Moonee uses the camera to scan receipts and read the amount.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Moonee uses the microphone so you can say a transaction instead of typing it.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Moonee turns your speech into text to log transactions.";
 				INFOPLIST_FILE = "Moonee-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -234,14 +235,15 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Moonee;
-				INFOPLIST_KEY_NSCameraUsageDescription = "Moonee dùng camera để chụp hoá đơn và đọc số tiền.";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Moonee dùng micro để bạn nói giao dịch thay vì gõ.";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Moonee chuyển giọng nói thành chữ để ghi giao dịch.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Moonee uses the camera to scan receipts and read the amount.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Moonee uses the microphone so you can say a transaction instead of typing it.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Moonee turns your speech into text to log transactions.";
 				INFOPLIST_FILE = "Moonee-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -271,7 +273,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -291,7 +293,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;

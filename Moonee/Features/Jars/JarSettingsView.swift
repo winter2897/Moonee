@@ -5,6 +5,8 @@ import SwiftUI
 struct JarDraft: Identifiable {
     let id = UUID()
     var jar: Jar?
+    /// Default jars keep their key; the name is only stored when the user changes it.
+    var key: String?
     var name: String
     var icon: String
     var colorHex: Int
@@ -12,6 +14,7 @@ struct JarDraft: Identifiable {
 
     init(_ jar: Jar, existing: Jar? = nil) {
         self.jar = existing
+        key = jar.key
         name = jar.name
         icon = jar.icon
         colorHex = jar.colorHex
@@ -19,10 +22,16 @@ struct JarDraft: Identifiable {
     }
 
     init() {
-        name = "Lọ mới"
+        name = String(localized: "New jar")
         icon = "star.fill"
         colorHex = 0x64748B
         percent = 0
+    }
+
+    /// nil while the name is still the default jar's translated name.
+    var customName: String? {
+        let trimmed = name.trimmingCharacters(in: .whitespaces)
+        return key.map { String(localized: String.LocalizationValue($0)) } == trimmed ? nil : trimmed
     }
 }
 
@@ -60,7 +69,7 @@ struct JarSettingsView: View {
                 .onDelete { drafts.remove(atOffsets: $0) }
                 .onMove { drafts.move(fromOffsets: $0, toOffset: $1) }
 
-                Button("Thêm lọ", systemImage: "plus") {
+                Button("Add jar", systemImage: "plus") {
                     drafts.append(JarDraft())
                     editing = drafts.count - 1
                 }
@@ -69,19 +78,19 @@ struct JarSettingsView: View {
             }
 
             Section {
-                Button("Khôi phục mặc định", systemImage: "arrow.counterclockwise") { resetDefaults() }
+                Button("Restore defaults", systemImage: "arrow.counterclockwise") { resetDefaults() }
             } footer: {
-                Text("55% Thiết yếu · 10% Đầu tư · 10% Tiết kiệm · 10% Phát triển bản thân · 10% Hưởng thụ · 5% Từ thiện")
+                Text(Seed.defaultJars.map { "\($0.percent)% \($0.name)" }.joined(separator: " · "))
             }
         }
         .scrollContentBackground(.hidden)
         .background(MooneeBackground())
         .foregroundStyle(Color.mooneeInk)
-        .navigationTitle("Tuỳ chỉnh lọ")
+        .navigationTitle("Customize jars")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) { EditButton() }
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Lưu") { save() }.fontWeight(.semibold).disabled(!canSave)
+                Button("Save") { save() }.fontWeight(.semibold).disabled(!canSave)
             }
         }
         .sheet(isPresented: Binding(get: { editing != nil }, set: { if !$0 { editing = nil } })) {
@@ -96,12 +105,12 @@ struct JarSettingsView: View {
 
     private var remainderHeader: some View {
         HStack {
-            Text("Tổng \(100 - remainder)%")
+            Text("Total \(100 - remainder)%")
             Spacer()
             if remainder == 0 {
-                Label("Đủ 100%", systemImage: "checkmark.circle.fill").foregroundStyle(Color.mooneeDark)
+                Label("Adds up to 100%", systemImage: "checkmark.circle.fill").foregroundStyle(Color.mooneeDark)
             } else {
-                Label(remainder > 0 ? "Còn \(remainder)%" : "Thừa \(-remainder)%", systemImage: "exclamationmark.triangle.fill")
+                Label(remainder > 0 ? "\(remainder)% left" as LocalizedStringKey : "\(-remainder)% over", systemImage: "exclamationmark.triangle.fill")
                     .foregroundStyle(.orange)
             }
         }
@@ -109,10 +118,10 @@ struct JarSettingsView: View {
         .textCase(nil)
     }
 
-    /// Reuses jars with a default name so their categories stay linked; other jars are removed on save.
+    /// Reuses jars with a default key so their categories stay linked; other jars are removed on save.
     private func resetDefaults() {
         let current = drafts
-        drafts = Seed.defaultJars.map { def in JarDraft(def, existing: current.first { $0.name == def.name }?.jar) }
+        drafts = Seed.defaultJars.map { def in JarDraft(def, existing: current.first { $0.key == def.key }?.jar) }
     }
 
     private func save() {
@@ -120,11 +129,11 @@ struct JarSettingsView: View {
         for jar in jars where !kept.contains(ObjectIdentifier(jar)) { context.delete(jar) }
         for (i, d) in drafts.enumerated() {
             let jar = d.jar ?? {
-                let j = Jar(name: d.name, icon: d.icon, colorHex: d.colorHex, percent: d.percent, order: i)
+                let j = Jar(key: d.key, icon: d.icon, colorHex: d.colorHex, percent: d.percent, order: i)
                 context.insert(j)
                 return j
             }()
-            jar.name = d.name.trimmingCharacters(in: .whitespaces)
+            jar.customName = d.customName
             jar.icon = d.icon
             jar.colorHex = d.colorHex
             jar.percent = d.percent
@@ -146,11 +155,11 @@ private struct JarEditor: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Tên lọ") { TextField("Tên", text: $draft.name) }
-                Section("Tỉ lệ") {
-                    Stepper("\(draft.percent)% thu nhập", value: $draft.percent, in: 0...100)
+                Section("Jar name") { TextField("Name", text: $draft.name) }
+                Section("Share") {
+                    Stepper("\(draft.percent)% of income", value: $draft.percent, in: 0...100)
                 }
-                Section("Biểu tượng") {
+                Section("Icon") {
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 6), spacing: 12) {
                         ForEach(Self.icons, id: \.self) { icon in
                             IconBadge(symbol: icon, color: Color(hex: draft.colorHex), size: 40)
@@ -160,7 +169,7 @@ private struct JarEditor: View {
                     }
                     .padding(.vertical, 4)
                 }
-                Section("Màu") {
+                Section("Color") {
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 5), spacing: 12) {
                         ForEach(Self.colors, id: \.self) { hex in
                             Circle().fill(Color(hex: hex)).frame(width: 34, height: 34)
@@ -171,9 +180,9 @@ private struct JarEditor: View {
                     .padding(.vertical, 4)
                 }
             }
-            .navigationTitle(draft.name.isEmpty ? "Lọ" : draft.name)
+            .navigationTitle(draft.name.isEmpty ? String(localized: "Jar") : draft.name)
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar { Button("Xong") { dismiss() }.fontWeight(.semibold) }
+            .toolbar { Button("Done") { dismiss() }.fontWeight(.semibold) }
         }
         .presentationDetents([.large])
     }

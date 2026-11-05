@@ -3,13 +3,13 @@ import SwiftUI
 
 struct CategoriesView: View {
     @Environment(\.modelContext) private var context
-    @Query(sort: \Category.name) private var categories: [Category]
+    @Query(sort: \Category.order) private var categories: [Category]
     @State private var addingKind: TxKind?
     @State private var newName = ""
 
     var body: some View {
         List {
-            ForEach(TxKind.allCases, id: \.self) { kind in
+            ForEach([TxKind.expense, .income], id: \.self) { kind in
                 Section {
                     ForEach(categories.filter { $0.kind == kind }) { c in
                         HStack(spacing: 12) {
@@ -23,7 +23,7 @@ struct CategoriesView: View {
                         let items = categories.filter { $0.kind == kind }
                         offsets.forEach { context.delete(items[$0]) }
                     }
-                    Button("Thêm danh mục", systemImage: "plus") { newName = ""; addingKind = kind }
+                    Button("Add category", systemImage: "plus") { newName = ""; addingKind = kind }
                 } header: {
                     Text(kind.title)
                 }
@@ -31,14 +31,14 @@ struct CategoriesView: View {
         }
         .scrollContentBackground(.hidden)
         .background(MooneeBackground())
-        .navigationTitle("Danh mục")
-        .alert("Danh mục mới", isPresented: Binding(get: { addingKind != nil }, set: { if !$0 { addingKind = nil } })) {
-            TextField("Tên", text: $newName)
-            Button("Huỷ", role: .cancel) {}
-            Button("Thêm") {
+        .navigationTitle("Categories")
+        .alert("New category", isPresented: Binding(get: { addingKind != nil }, set: { if !$0 { addingKind = nil } })) {
+            TextField("Name", text: $newName)
+            Button("Cancel", role: .cancel) {}
+            Button("Add") {
                 let name = newName.trimmingCharacters(in: .whitespaces)
                 if let kind = addingKind, !name.isEmpty {
-                    context.insert(Category(name: name, icon: "tag.fill", colorHex: 0x64748B, kind: kind))
+                    context.insert(Category(customName: name, icon: "tag.fill", colorHex: 0x64748B, kind: kind, order: categories.count))
                 }
             }
         }
