@@ -42,7 +42,12 @@ struct ChatView: View {
                     }
                     .padding(.horizontal, 16).padding(.vertical, 8)
                 }
+                // The keyboard opens with the tab (spec §1) but always gets out of the way:
+                // drag the chat (it bounces even when short) or tap outside a control.
                 .scrollDismissesKeyboard(.interactively)
+                .scrollBounceBehavior(.always)
+                .contentShape(.rect)
+                .onTapGesture { focused = false }
                 .defaultScrollAnchor(.bottom, for: .initialOffset)
                 .defaultScrollAnchor(.bottom, for: .sizeChanges)
                 .defaultScrollAnchor(.top, for: .alignment) // a short chat sits under the hero, as in the mockup
@@ -121,7 +126,7 @@ struct ChatView: View {
             }
             .padding(.horizontal, 16)
 
-            let size: CGFloat = focused ? 110 : 180
+            let size: CGFloat = focused ? 64 : 104 // mockup ≈ 103 pt; ponytail: S2-11 MooneeHero replaces this
             MooneeCharacter(mood: currentMood)
                 .frame(height: size)
                 .frame(maxWidth: .infinity)
