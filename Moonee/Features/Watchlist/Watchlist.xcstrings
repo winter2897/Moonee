@@ -22,6 +22,16 @@
         }
       }
     },
+    "Assets · Investing · Watch": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tài sản · Đầu tư · Theo dõi"
+          }
+        }
+      }
+    },
     "Cancel": {
       "localizations": {
         "vi": {
@@ -338,16 +348,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Giá trị"
-          }
-        }
-      }
-    },
-    "Watchlist": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Quan tâm"
           }
         }
       }

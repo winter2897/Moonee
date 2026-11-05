@@ -27,29 +27,36 @@ struct WatchlistView: View {
             Ledger(txns: txns.filter { $0.date < end }, wallets: wallets, jars: []).netWorth(assets: assetTotal)
         }
         NavigationStack {
-            VStack(spacing: 14) {
-                NetWorthCard(total: breakdown.total, currency: currency, points: points, change: NetWorthHistory.change(points))
-                if breakdown.gross > 0 || breakdown.debts > 0 {
-                    CompositionCard(breakdown: breakdown, currency: currency)
-                }
-                AssetsCard(assets: assets, currency: currency, onAdd: { adding = true }, onEdit: { editing = $0 })
-                if !assets.isEmpty {
-                    Button { updating = true } label: {
-                        VStack(spacing: 6) {
-                            Image(systemName: "square.3.layers.3d").font(.title3).foregroundStyle(Color.brandPrimary)
-                            Text("Update assets", tableName: "Watchlist").font(.footnote.weight(.semibold))
-                        }
-                        .frame(maxWidth: .infinity)
-                        .card(padding: 14)
+            ScrollView {
+                VStack(spacing: 14) {
+                    MooneeHeader(Text("Assets · Investing · Watch", tableName: "Watchlist")) {
+                        Button { adding = true } label: { HeaderCircle("plus") }
+                            .accessibilityLabel(Text("Add asset", tableName: "Watchlist"))
                     }
-                    .buttonStyle(.plain)
+                    MooneeHero(mood: .happy, compact: true)
+                    NetWorthCard(total: breakdown.total, currency: currency, points: points, change: NetWorthHistory.change(points))
+                    if breakdown.gross > 0 || breakdown.debts > 0 {
+                        CompositionCard(breakdown: breakdown, currency: currency)
+                    }
+                    AssetsCard(assets: assets, currency: currency, onAdd: { adding = true }, onEdit: { editing = $0 })
+                    if !assets.isEmpty {
+                        Button { updating = true } label: {
+                            VStack(spacing: 6) {
+                                Image(systemName: "square.3.layers.3d").font(.title3).foregroundStyle(Color.brandPrimary)
+                                Text("Update assets", tableName: "Watchlist").font(.chip)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .card(padding: 14)
+                        }
+                        .buttonStyle(.plain)
+                    }
                 }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 24)
             }
+            .background(MooneeBackground())
             .foregroundStyle(Color.ink)
-            .mooneeScreen(String(localized: "Watchlist", table: "Watchlist"))
-            .toolbar {
-                Button(String(localized: "Add asset", table: "Watchlist"), systemImage: "plus") { adding = true }
-            }
+            .toolbar(.hidden, for: .navigationBar)
             .sheet(isPresented: $adding) { AssetForm(asset: nil) }
             .sheet(item: $editing) { AssetForm(asset: $0) }
             .sheet(isPresented: $updating) { UpdatePricesSheet(assets: assets) }
@@ -70,9 +77,9 @@ private struct NetWorthCard: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(alignment: .top, spacing: 12) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("Net worth", tableName: "Watchlist").font(.headline)
+                    Text("Net worth", tableName: "Watchlist").font(.sectionTitle)
                     AmountText(total, currency: currency)
-                        .font(.system(size: 32, weight: .bold, design: .rounded))
+                        .heroAmountFont()
                         .foregroundStyle(total < 0 ? Color.danger : Color.ink)
                 }
                 .layoutPriority(1)
@@ -93,7 +100,7 @@ private struct NetWorthCard: View {
                     }
                     Text("vs last month", tableName: "Watchlist").fontWeight(.regular).foregroundStyle(Color.inkSecondary)
                 }
-                .font(.footnote.weight(.semibold))
+                .font(.secondaryText.weight(.semibold))
                 .foregroundStyle(up ? Color.income : Color.danger)
             }
         }
@@ -145,7 +152,7 @@ private struct CompositionCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Composition", tableName: "Watchlist").font(.headline)
+            Text("Composition", tableName: "Watchlist").font(.sectionTitle)
             HStack(spacing: 12) {
                 DonutChart(slices: rows.map { .init(label: $0.label, value: Double(abs($0.value)), color: $0.color) }) {
                     DonutCenter(minor: breakdown.total, currency: currency)
@@ -211,11 +218,11 @@ private struct AssetsCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("Your assets", tableName: "Watchlist").font(.headline)
+                Text("Your assets", tableName: "Watchlist").font(.sectionTitle)
                 Spacer()
                 if !assets.isEmpty {
                     Button(String(localized: "Add asset", table: "Watchlist"), systemImage: "plus.circle.fill", action: onAdd)
-                        .labelStyle(.iconOnly).font(.title2).foregroundStyle(Color.brandPrimary)
+                        .labelStyle(.iconOnly).font(.title3).foregroundStyle(Color.brandPrimary)
                 }
             }
             if assets.isEmpty {
@@ -250,13 +257,13 @@ private struct AssetRow: View {
         HStack(spacing: 12) {
             IconBadge(symbol: asset.kind.symbol, color: asset.kind.color)
             VStack(alignment: .leading, spacing: 2) {
-                Text(asset.symbol).font(.body.weight(.semibold))
+                Text(asset.symbol).font(.rowTitle)
                 HStack(spacing: 4) {
                     Text(asset.quantity.formatted())
                     Text(verbatim: "×")
                     AmountText(asset.unitPrice, currency: asset.currencyCode)
                 }
-                .font(.caption).foregroundStyle(Color.inkSecondary)
+                .font(.secondaryText).foregroundStyle(Color.inkSecondary)
                 Group {
                     if counted {
                         Text("Price updated \(asset.updatedAt.formatted(.relative(presentation: .numeric)))", tableName: "Watchlist")
@@ -264,10 +271,10 @@ private struct AssetRow: View {
                         Text("Not in net worth: priced in \(asset.currencyCode)", tableName: "Watchlist")
                     }
                 }
-                .font(.caption2).foregroundStyle(counted ? Color.inkSecondary : Color.warningText)
+                .font(.caption).foregroundStyle(counted ? Color.inkSecondary : Color.warningText)
             }
             Spacer(minLength: 8)
-            AmountText(asset.value, currency: asset.currencyCode).font(.body.weight(.semibold))
+            AmountText(asset.value, currency: asset.currencyCode).font(.rowTitle)
         }
         .contentShape(.rect)
         .padding(.vertical, 2)
