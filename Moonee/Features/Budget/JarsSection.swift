@@ -66,7 +66,7 @@ struct JarsSection: View {
         return VStack(alignment: .leading, spacing: 10) {
             // Title and month chip share a line when they fit, else stack (large Dynamic Type).
             ViewThatFits(in: .horizontal) {
-                ForEach([Font.subheadline.weight(.semibold), .footnote.weight(.semibold)], id: \.self) { font in
+                ForEach([Font.rowTitle, .secondaryText.weight(.semibold)], id: \.self) { font in
                     HStack {
                         Text(loc("Total budget this month")).font(font).fixedSize()
                         Spacer(minLength: 8)
@@ -74,11 +74,11 @@ struct JarsSection: View {
                     }
                 }
                 VStack(alignment: .leading, spacing: 8) {
-                    Text(loc("Total budget this month")).font(.subheadline.weight(.semibold))
+                    Text(loc("Total budget this month")).font(.rowTitle)
                     monthPicker
                 }
             }
-            AmountText(budget, currency: currency).font(.system(size: 34, weight: .bold, design: .rounded))
+            AmountText(budget, currency: currency).heroAmountFont()
             let spentLine = HStack(spacing: 4) {
                 Text(loc("Spent")).foregroundStyle(Color.inkSecondary)
                 AmountText(spent, currency: currency).fontWeight(.semibold)
@@ -91,7 +91,7 @@ struct JarsSection: View {
                 HStack(spacing: 4) { spentLine.fixedSize(); Text(verbatim: "·").foregroundStyle(Color.inkSecondary); leftLine.fixedSize() }
                 VStack(alignment: .leading, spacing: 4) { spentLine; leftLine }
             }
-            .font(.subheadline)
+            .font(.secondaryText)
             HStack(spacing: 12) {
                 MooneeProgressBar(progress: progress, tint: level.fill, height: 12)
                 Text("\(Int((progress * 100).rounded()))%").font(.headline).monospacedDigit().foregroundStyle(level.text)
@@ -113,7 +113,7 @@ struct JarsSection: View {
                 Text(Self.monthTitle(month.start)).lineLimit(1)
                 Image(systemName: "chevron.down").font(.caption.weight(.semibold))
             }
-            .font(.footnote.weight(.medium))
+            .font(.chip)
             .foregroundStyle(Color.ink)
             .padding(.horizontal, 10).padding(.vertical, 7)
             .background(Color.surface, in: .capsule)
@@ -139,15 +139,12 @@ struct JarsSection: View {
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(Color.danger).font(.title3)
             VStack(alignment: .leading, spacing: 8) {
-                Text(String(localized: "\(fix.to?.name ?? "") is below zero", table: "Budget")).font(.subheadline.weight(.semibold))
+                Text(String(localized: "\(fix.to?.name ?? "") is below zero", table: "Budget")).font(.rowTitle)
                 if let from = fix.from {
                     Text(String(localized: "Move \(AmountFormat.string(fix.amount, currency)) from \(from.name) to cover it?", table: "Budget"))
-                        .font(.footnote).foregroundStyle(Color.inkSecondary)
+                        .font(.secondaryText).foregroundStyle(Color.inkSecondary)
                     Button(loc("Move money")) { transfer = fix }
-                        .font(.footnote.weight(.semibold))
-                        .padding(.horizontal, 14).frame(minHeight: 36)
-                        .foregroundStyle(.white)
-                        .background(LinearGradient.brand, in: .capsule)
+                        .buttonStyle(OutlinePillStyle(filled: true))
                 }
             }
             Spacer(minLength: 0)
@@ -236,11 +233,11 @@ struct JarDetailView: View {
             VStack(spacing: 14) {
                 VStack(spacing: 12) {
                     HStack(spacing: 14) {
-                        IconBadge(symbol: jar.icon, color: jar.color, size: 52)
+                        IconBadge(symbol: jar.icon, color: jar.color, size: 44)
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(String(localized: "\(jar.percent)% of each income", table: "Budget")).font(.footnote).foregroundStyle(Color.inkSecondary)
+                            Text(String(localized: "\(jar.percent)% of each income", table: "Budget")).font(.secondaryText).foregroundStyle(Color.inkSecondary)
                             AmountText(m.endBalance, currency: currency)
-                                .font(.system(size: 30, weight: .bold, design: .rounded))
+                                .heroAmountFont()
                                 .foregroundStyle(m.endBalance < 0 ? Color.danger : Color.ink)
                         }
                         Spacer()
@@ -253,7 +250,7 @@ struct JarDetailView: View {
                     line(loc("Spent this month"), -m.spent)
                     if level == .over || level == .negative {
                         Label(loc("This jar is over. Move money from another jar to balance it."), systemImage: "exclamationmark.circle.fill")
-                            .font(.footnote).foregroundStyle(Color.danger).frame(maxWidth: .infinity, alignment: .leading)
+                            .font(.secondaryText).foregroundStyle(Color.danger).frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
                 .card()
@@ -273,7 +270,7 @@ struct JarDetailView: View {
 
                 BudgetSectionHeader(title: loc("This month")) { EmptyView() }
                 if moves.isEmpty {
-                    Text(loc("Nothing in this jar yet this month.")).font(.subheadline).foregroundStyle(Color.inkSecondary)
+                    Text(loc("Nothing in this jar yet this month.")).font(.bodyText).foregroundStyle(Color.inkSecondary)
                         .frame(maxWidth: .infinity).padding(.vertical, 20)
                 } else {
                     VStack(spacing: 0) {
@@ -323,7 +320,7 @@ struct JarDetailView: View {
             IconBadge(symbol: t.kind == .jarTransfer ? "arrow.left.arrow.right" : t.category?.icon ?? "circle.fill",
                       color: t.category?.color ?? .brandDeep, size: 36)
             VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.subheadline.weight(.medium)).lineLimit(1)
+                Text(title).font(.rowTitle).lineLimit(1)
                 Text(t.date.formatted(date: .abbreviated, time: .omitted)).font(.caption).foregroundStyle(Color.inkSecondary)
             }
             Spacer()
@@ -343,7 +340,7 @@ struct FlowChips: View {
         FlowLayout(spacing: 8) {
             ForEach(items, id: \.0) { name, icon, color in
                 Label(name, systemImage: icon)
-                    .font(.footnote.weight(.medium))
+                    .font(.chip)
                     .padding(.horizontal, 10).padding(.vertical, 6)
                     .background(color.opacity(0.14), in: .capsule)
             }
@@ -389,5 +386,50 @@ struct FlowLayout: Layout {
             rows[rows.count - 1] = r
         }
         return rows
+    }
+}
+
+/// Header chart button: this month's spending by jar (full reports come with S10).
+struct JarSpendingChart: View {
+    @Query(sort: \Jar.order) private var jars: [Jar]
+    @Query private var txns: [Txn]
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        let month = Calendar.current.dateInterval(of: .month, for: .now)!
+        let ledger = Ledger(txns: txns, wallets: [], jars: jars)
+        let rows = jars.map { ($0, ledger.jarMonth($0.persistentModelID, in: month).spent) }
+        let total = rows.reduce(0) { $0 + $1.1 }
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 16) {
+                    DonutChart(slices: rows.map { .init(label: $0.0.name, value: Double($0.1), color: $0.0.color) }) {
+                        VStack(spacing: 2) {
+                            Text(loc("Spent")).font(.secondaryText).foregroundStyle(Color.inkSecondary)
+                            AmountText(total, currency: Money.defaultCurrency).font(.cardAmount)
+                        }
+                    }
+                    .frame(maxWidth: 240)
+                    VStack(spacing: 0) {
+                        ForEach(rows, id: \.0.persistentModelID) { jar, spent in
+                            HStack(spacing: 12) {
+                                IconBadge(symbol: jar.icon, color: jar.color)
+                                Text(jar.name).font(.rowTitle)
+                                Spacer()
+                                AmountText(spent, currency: Money.defaultCurrency).font(.rowTitle)
+                            }
+                            .padding(.vertical, 8)
+                        }
+                    }
+                    .card(padding: 12)
+                }
+                .padding(16)
+            }
+            .background(MooneeBackground())
+            .foregroundStyle(Color.ink)
+            .navigationTitle(loc("Spending by jar"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar { Button(loc("Done")) { dismiss() } }
+        }
     }
 }
