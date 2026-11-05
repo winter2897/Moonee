@@ -78,6 +78,40 @@ struct AssistantTests {
         #expect(r.txns.first?.wallet == nil)                   // not one of the user's wallets
     }
 
+    /// Seen in the local-model eval: small models flip kinds the rules read from an explicit word.
+    @Test(arguments: [
+        ("thưởng tết 5tr", #"{"amountText":"5tr","kind":"expense","category":"category.bonus","note":"Thưởng"}"#),
+        ("grab 32k", #"{"amountText":"32k","kind":"income","category":"category.otherIncome","note":"Grab"}"#),
+        ("vay mẹ 3 triệu", #"{"amountText":"3 triệu","kind":"lend","person":"mẹ","note":"Vay mẹ"}"#),
+    ])
+    func modelCannotOverruleAnExplicitCue(text: String, item: String) async {
+        let r = await assistant(cloud: ScriptedLLM(replies: [Self.json(item)])).parse(text, context: ctx)
+        #expect(r.usedModel == false)
+        #expect(r.txns == QuickParser.parse(text, context: ctx))
+    }
+
+    @Test func modelFillsWhatTheRulesLeftOpen() async {
+        // No keyword for "highlands": the rules leave the category empty, the model's label is kept.
+        let reply = Self.json(#"{"amountText":"59k","kind":"expense","category":"category.food","note":"Highlands"}"#)
+        let r = await assistant(cloud: ScriptedLLM(replies: [reply])).parse("highlands 59k", context: ctx)
+        #expect(r.usedModel)
+        #expect(r.txns.first?.categoryKey == "category.food")
+        // A keyword the rules know wins over a different model label.
+        let other = Self.json(#"{"amountText":"2 lít","kind":"expense","category":"category.other","note":"Nhậu"}"#)
+        let n = await assistant(cloud: ScriptedLLM(replies: [other])).parse("nhậu 2 lít", context: ctx)
+        #expect(n.txns.first?.categoryKey == QuickParser.parse("nhậu 2 lít", context: ctx).first?.categoryKey)
+    }
+
+    @Test func paddedAmountlessItemsAreRejected() async {
+        let reply = Self.json(#"""
+            {"amountText":"120k","kind":"expense","category":"category.health","note":"Thuốc"},
+            {"amountText":null,"kind":"expense","note":""}
+            """#)
+        let r = await assistant(cloud: ScriptedLLM(replies: [reply])).parse("mua thuốc cảm 120k", context: ctx)
+        #expect(r.usedModel == false)
+        #expect(r.txns.count == 1)
+    }
+
     @Test func learnedMerchantBeatsTheModel() async {
         var c = ctx
         c.merchantRules = ["highlands": "category.custom.coffee"]

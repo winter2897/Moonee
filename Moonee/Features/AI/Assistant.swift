@@ -8,7 +8,7 @@ struct AIRouter: Sendable {
     var mode: AIMode
     /// Apple Foundation Models, when the device has Apple Intelligence.
     var onDevice: (any LLM)?
-    /// Downloaded open model (MLX / llama.cpp), plugged in later.
+    /// Downloaded open model run with MLX (`LocalLLM`).
     var local: (any LLM)?
     /// BYOK cloud model with a key.
     var cloud: (any LLM)?
@@ -39,6 +39,10 @@ struct Assistant: Sendable {
     var tools: MooneeTools
     /// Moonee answers in the UI language (spec §10.4); input may be any language.
     var language = Assistant.uiLanguage
+    /// Skill ids the user switched off in AI settings: no model runs for them (rules / plain numbers instead).
+    var skillsOff = LLMSettings.skillsOff
+    /// The user's own instructions (Settings → Advanced), added to every answer prompt.
+    var customPrompt = LLMSettings.customPrompt
 
     enum Output: Sendable, Equatable {
         /// Save right away and show cards (spec §3.2); ask for `missing` fields first. `usedModel` false = rule parser.
@@ -71,7 +75,7 @@ struct Assistant: Sendable {
     /// Reads transactions with the first model that gives valid output, else the rule parser.
     func parse(_ text: String, context: ParserContext) async -> (txns: [ParsedTxn], usedModel: Bool) {
         let rules = QuickParser.parse(text, context: context)
-        for model in router.candidates(for: .parse) {
+        for model in skillsOff.contains(Skill.transactionParser.id) ? [] : router.candidates(for: .parse) {
             let instructions = parseInstructions(short: model.isSmall, context: context)
             if let items = try? await model.extractTransactions(instructions: instructions, text: text),
                let txns = TransactionExtractor.validate(items, text: text, rules: rules, context: context) {
@@ -91,10 +95,11 @@ struct Assistant: Sendable {
             facts = r
             return r
         }
-        for model in router.candidates(for: skill.job) {
+        for model in skillsOff.contains(skill.id) ? [] : router.candidates(for: skill.job) {
             var request = LLMRequest(
                 system: Skill.persona(language: language) + "\n\n" + skill.instructions(language: language, short: model.isSmall),
                 messages: history + [.init(role: .user, text: text)])
+            if !customPrompt.isEmpty { request.system += "\n\nThe user's own instructions:\n" + customPrompt }
             if model.isSmall {
                 let lines = await prefetched().map { "\($0.tool): \($0.json)" }.joined(separator: "\n")
                 request.system += "\n\nFACTS (computed by the app; use only these numbers):\n" + lines
@@ -140,7 +145,9 @@ struct Assistant: Sendable {
 }
 
 /// Turns a model's reading into transactions, trusting it only for labels: amounts and dates are recomputed by
-/// `QuickParser` from the words the model quoted, and must agree with the rule parser. Any doubt → nil (caller falls back).
+/// `QuickParser` from the words the model quoted, and must agree with the rule parser. Where the rules saw an explicit
+/// cue (a kind word, a category keyword) they win; the model fills the gaps ("highlands 59k"). Any doubt → nil
+/// (caller falls back). The local-model eval showed small models flipping kinds and padding the list.
 enum TransactionExtractor {
     static func validate(_ items: [AIParsedTxn], text: String, rules: [ParsedTxn], context: ParserContext) -> [ParsedTxn]? {
         guard !items.isEmpty else { return nil }
@@ -160,6 +167,8 @@ enum TransactionExtractor {
                 amount = v
             }
             let pair = unpaired.firstIndex { $0.amount == amount?.amount }.map { unpaired.remove(at: $0) }
+            // "thưởng 5tr" is income and "grab 32k" an expense whatever a small model says.
+            if let pair, pair.kind != kind, pair.kind != .expense || pair.categoryKey != nil { return nil }
 
             var t = ParsedTxn(
                 amount: amount?.amount, currency: amount?.currency ?? context.currency, kind: kind,
@@ -170,7 +179,7 @@ enum TransactionExtractor {
                 let allowed = Set((kind == .income ? DefaultKeys.incomeCategories : DefaultKeys.expenseCategories)
                     + context.categories.values + context.merchantRules.values)
                 let learned = context.merchantRules.first { haystack.contains(fold($0.key)) }?.value // user's own edits win
-                t.categoryKey = learned ?? item.category.flatMap { allowed.contains($0) ? $0 : nil } ?? pair?.categoryKey
+                t.categoryKey = learned ?? pair?.categoryKey ?? item.category.flatMap { allowed.contains($0) ? $0 : nil }
             }
             t.wallet = wallet(item.wallet, context) ?? pair?.wallet
             t.toWallet = wallet(item.toWallet, context) ?? pair?.toWallet
@@ -182,9 +191,11 @@ enum TransactionExtractor {
             t.missing = ParsedTxn.missing(of: t)
             out.append(t)
         }
-        // The rule parser reads money reliably: the model must find exactly the same amounts.
+        // The rule parser reads money reliably: the model must find exactly the same amounts, and no extra
+        // amount-less items (small models pad the list).
         let ruleAmounts = rules.compactMap(\.amount).sorted()
-        guard ruleAmounts.isEmpty || ruleAmounts == out.compactMap(\.amount).sorted() else { return nil }
+        guard ruleAmounts.isEmpty || (out.allSatisfy { $0.amount != nil } && ruleAmounts == out.compactMap(\.amount).sorted())
+        else { return nil }
         return out
     }
 

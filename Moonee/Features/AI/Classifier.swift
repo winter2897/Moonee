@@ -46,7 +46,7 @@ enum Classifier {
         // Models like to wrap JSON in prose or ```json fences: take the outermost object.
         guard let start = reply.firstIndex(of: "{"), let end = reply.lastIndex(of: "}"), start < end,
               let payload = try? JSONDecoder().decode(Payload.self, from: Data(reply[start...end].utf8))
-        else { throw LLMError("AI trả về JSON không hợp lệ") }
+        else { throw LLMError("The AI returned invalid JSON") }
 
         let byID = Dictionary(items.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
         func canonical(_ name: String, in list: [String]) -> String? {
