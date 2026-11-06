@@ -16,7 +16,7 @@
 		<string>LaunchBackground</string>
 		<!-- First frame of the SwiftUI splash (App/Splash.swift): same colour, same Moonee, centred at its own size. -->
 		<key>UIImageName</key>
-		<string>moonee.greeting</string>
+		<string>moonee.happy</string>
 	</dict>
 </dict>
 </plist>
