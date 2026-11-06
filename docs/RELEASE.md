@@ -102,9 +102,7 @@ In English and Vietnamese.
 
 ### Vietnamese (vi)
 
-**Tên** (≤30): `Moonee: Bạn tài chính AI`
-
-**Phụ đề** (≤30): `Trò chuyện để tiết kiệm hơn`
+**Tên / Phụ đề:** dùng bản tiếng Anh (chủ app chọn, 06/11/2026). Không thêm Tên/Phụ đề tiếng Việt trong App Information: Apple không cho bản vi trùng tên với bản en, và khi không có bản vi thì App Store Việt Nam hiện bản tiếng Anh.
 
 **Văn bản quảng cáo** (≤170):
 > Nói, gõ hay chụp hoá đơn là xong: Moonee tự ghi, tự phân loại và chia thu nhập vào các lọ. Mua một lần, không tài khoản, không quảng cáo. Dữ liệu là của bạn.
