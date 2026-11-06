@@ -7,9 +7,7 @@ struct BudgetView: View {
     @State private var path = NavigationPath()
     @State private var sheet: BudgetSheet?
     @State private var month = Calendar.current.dateInterval(of: .month, for: .now)!
-    #if DEBUG
     @Environment(\.modelContext) private var context
-    #endif
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -47,9 +45,12 @@ struct BudgetView: View {
             .navigationDestination(for: BudgetRoute.self) { $0.view }
             .sheet(item: $sheet) { $0.view }
         }
-        #if DEBUG
-        .task { BudgetDemo.seedIfRequested(context) }
-        #endif
+        .task {
+            #if DEBUG
+            BudgetDemo.seedIfRequested(context)
+            #endif
+            BudgetActions.catchUpIncome(in: context) // a salary logged in chat moves on to the next payday
+        }
     }
 }
 
@@ -131,20 +132,22 @@ extension BudgetRow where Subtitle == EmptyView {
 }
 
 /// Money typed in the major unit ("45000", "12.50"), stored as minor units.
+/// Parsed on every keystroke: a `value:format:` field only commits when editing ends, so tapping Save while
+/// typing lost the last digit (2000000 saved as 200000).
 struct AmountField: View {
     let title: String
     @Binding var minor: Int
     var currency = Money.defaultCurrency
-    @State private var major: Decimal?
+    @State private var text = ""
 
     var body: some View {
         LabeledContent(title) {
-            TextField(AmountFormat.string(0, currency), value: $major, format: .number)
+            TextField(AmountFormat.string(0, currency), text: $text)
                 .keyboardType(.decimalPad)
                 .multilineTextAlignment(.trailing)
                 .monospacedDigit()
-                .onChange(of: major) { _, m in minor = Money(major: m ?? 0, currency).minor }
-                .onAppear { if minor != 0 { major = Money(minor, currency).major } }
+                .onChange(of: text) { _, t in minor = Money(major: (try? Decimal(t, format: .number)) ?? 0, currency).minor }
+                .onAppear { if minor != 0, text.isEmpty { text = Money(minor, currency).major.formatted(.number) } }
         }
     }
 }

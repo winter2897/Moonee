@@ -12,10 +12,10 @@ struct MooneeTools: Sendable {
     var search = WebSearch.current()
     var prices = MarketPrices()
 
-    var all: [AITool] { [spendingSummary, listTransactions, jarBalances, splitIncome, savingsPlan, monthClose, webSearch, marketPrice] }
+    var all: [AITool] { [monthBudget, spendingSummary, listTransactions, jarBalances, splitIncome, savingsPlan, monthClose, webSearch, marketPrice] }
 
     /// Every tool name, for skill files and the skill editor (a test keeps it equal to `all`).
-    static let allNames = ["spendingSummary", "listTransactions", "jarBalances", "splitIncome", "savingsPlan", "monthClose",
+    static let allNames = ["monthBudget", "spendingSummary", "listTransactions", "jarBalances", "splitIncome", "savingsPlan", "monthClose",
                            "webSearch", "marketPrice"]
 
     /// In the order given (a skill lists its most useful tool first).
@@ -25,6 +25,22 @@ struct MooneeTools: Sendable {
     }
 
     // MARK: Tools
+
+    var monthBudget: AITool {
+        AITool(name: "monthBudget",
+               description: "This month's budget exactly as the Budget tab shows it: total budget the jars hold, spent, left to spend, left after the bills still due, money in wallets not split into jars yet, income received, the expected salary and payday, unpaid bills due this month, and each jar's budget, spent and left.",
+               parameters: .object([])) { (_: ToolArgs) -> BudgetReply in
+            guard let b = try await ledger.budget() else { throw LLMError("budget unavailable") }
+            let due = { (d: BudgetFacts.Due) in BudgetReply.Due(name: d.name, amount: money(d.amount), date: day(d.date), estimate: d.isEstimate ? true : nil) }
+            return BudgetReply(
+                month: "\(day(b.month.start)) – \(day(b.month.end.addingTimeInterval(-1)))", today: day(now()),
+                totalBudget: money(b.budget), spent: money(b.spent), left: money(b.left),
+                billsStillDue: money(b.billsTotal), leftAfterBills: money(b.left - b.billsTotal),
+                unallocated: money(b.unallocated), incomeReceived: money(b.income),
+                expectedIncome: b.expectedIncome.map(due), billsDueThisMonth: b.bills.map(due),
+                jars: b.jars.map { .init(name: $0.name, budget: money($0.budget), spent: money($0.spent), left: money($0.balance)) })
+        }
+    }
 
     var spendingSummary: AITool {
         AITool(name: "spendingSummary",
@@ -244,6 +260,15 @@ struct ToolArgs: Codable, Sendable {
 }
 
 // MARK: - Results
+
+struct BudgetReply: Encodable {
+    struct Due: Encodable { var name, amount, date: String; var estimate: Bool? }
+    struct Jar: Encodable { var name, budget, spent, left: String }
+    var month, today, totalBudget, spent, left, billsStillDue, leftAfterBills, unallocated, incomeReceived: String
+    var expectedIncome: [Due]
+    var billsDueThisMonth: [Due]
+    var jars: [Jar]
+}
 
 struct Summary: Encodable {
     struct Category: Encodable { var name: String; var spent: String; var share: String }

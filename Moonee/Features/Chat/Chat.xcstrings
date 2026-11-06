@@ -1111,6 +1111,39 @@
           }
         }
       }
+    },
+    "This month you have **%@** left to spend of **%@** (spent **%@**).": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tháng này bạn còn **%1$@** để tiêu trên tổng **%2$@** (đã chi **%3$@**)."
+          }
+        }
+      }
+    },
+    "After the bills still due: **%@**.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trừ các hoá đơn sắp tới thì còn **%@**."
+          }
+        }
+      }
+    },
+    "Next income: **%@** (%@) on %@.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khoản thu tới: **%1$@** (%2$@) vào %3$@."
+          }
+        }
+      }
     }
   }
 }

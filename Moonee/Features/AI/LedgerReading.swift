@@ -8,6 +8,12 @@ protocol LedgerReading: Sendable {
     var currency: String { get }
     func jars() async throws -> [LedgerJar]
     func transactions(in interval: DateInterval) async throws -> [LedgerTxn]
+    /// This month's Budget tab numbers (`BudgetFacts`), or nil when the books can't give them.
+    func budget() async throws -> BudgetFacts?
+}
+
+extension LedgerReading {
+    func budget() async throws -> BudgetFacts? { nil }
 }
 
 struct LedgerJar: Sendable, Equatable {
@@ -30,7 +36,7 @@ struct LedgerTxn: Sendable, Equatable {
     var jarKey: String?
     /// Jar transfer: the destination jar.
     var toJarKey: String?
-    /// Income: how it was split into jars (jar key → minor units).
+    /// Income (or unallocated money split into jars): how it was split into jars (jar key → minor units).
     var splits: [String: Int] = [:]
     var note = ""
     var person: String?
@@ -80,6 +86,7 @@ struct JarFlows {
             case .jarTransfer:
                 if let j = t.jarKey { outflow[j, default: 0] += t.amount }
                 if let j = t.toJarKey { inflow[j, default: 0] += t.amount }
+                for (jar, v) in t.splits { inflow[jar, default: 0] += v } // unallocated money split into jars
             case .transfer, .lend, .borrow, .repay: break // spec §4.5: debts and wallet moves never touch jars
             }
         }

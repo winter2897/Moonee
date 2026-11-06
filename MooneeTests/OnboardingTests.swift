@@ -97,9 +97,9 @@ import Testing
         let jars = try context.fetch(FetchDescriptor<Jar>(sortBy: [SortDescriptor(\.order)]))
         OnboardingBook.applyJars([60, 10, 10, 10, 5, 5], to: jars, in: context)
         #expect(jars.map(\.percent) == [60, 10, 10, 10, 5, 5])
-        #expect(jars.map(\.initialBalance) == [6_000_000, 1_000_000, 1_000_000, 1_000_000, 500_000, 500_000]) // 12tr − 2tr card debt
-        let ledger = Ledger(txns: [], wallets: [], jars: jars)
-        #expect(ledger.jarBalance(jars[0].persistentModelID) == 6_000_000)
+        let ledger = Ledger(txns: try context.fetch(FetchDescriptor<Txn>()), wallets: try context.fetch(FetchDescriptor<Wallet>()), jars: jars)
+        #expect(jars.map { ledger.jarBalance($0.persistentModelID) } == [6_000_000, 1_000_000, 1_000_000, 1_000_000, 500_000, 500_000]) // 12tr − 2tr card debt
+        #expect(ledger.unallocated == 0)
 
         OnboardingBook.applyJars([50, 10], to: jars, in: context) // invalid: nothing changes
         #expect(jars[0].percent == 60)

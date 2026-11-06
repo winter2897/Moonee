@@ -172,7 +172,7 @@ struct AssistantTests {
         let out = await assistant(cloud: model).handle("Tháng này mình ăn uống hết bao nhiêu?", context: ctx)
         #expect(out == .answer("Tháng này bạn chi ₫2,500,000 cho ăn uống nè!", skill: "spending-coach"))
         let req = try #require(model.requests.first)
-        #expect(req.tools.map(\.name) == ["spendingSummary", "listTransactions", "jarBalances", "savingsPlan"])
+        #expect(req.tools.map(\.name) == ["monthBudget", "spendingSummary", "listTransactions", "jarBalances", "savingsPlan"])
         #expect(req.system.contains("spending-coach"))
         #expect(!req.system.contains("jar-budgeting")) // only the routed skill is loaded
         #expect(req.system.contains("Moonee"))

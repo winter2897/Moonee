@@ -10,11 +10,11 @@ struct OnboardingChat: View {
     var onFinish: () -> Void
 
     enum Question {
-        case income, regular, wallets, bills, jars, aiMode, reminders, security, done
+        case income, regular, payday, wallets, bills, jars, aiMode, reminders, security, done
         /// The progress bar: step 2 money, 3 budget, 4 assistant.
         var step: Int {
             switch self {
-            case .income, .regular, .wallets: 2
+            case .income, .regular, .payday, .wallets: 2
             case .bills, .jars: 3
             case .aiMode, .reminders, .security, .done: 4
             }
@@ -120,6 +120,7 @@ struct OnboardingChat: View {
         switch q {
         case .income: return L("About how much do you earn a month? A rough range is fine.")
         case .regular: return L("Is it a fixed salary, or does it change from month to month?")
+        case .payday: return L("Which day of the month does it usually come in? On that day Moonee asks you to confirm it and splits it into your jars.")
         case .wallets: return L("Where do you keep your money? Tick your wallets and what is in them today.")
         case .bills: return L("Any fixed bills every month? Tap one to add it with its amount and due day.")
         case .jars:
@@ -170,6 +171,7 @@ struct OnboardingChat: View {
         switch question {
         case .income: incomePanel
         case .regular: regularPanel
+        case .payday: paydayPanel
         case .wallets: walletsPanel
         case .bills: billsPanel
         case .jars: jarsPanel
@@ -218,14 +220,36 @@ struct OnboardingChat: View {
                 QuickReplyChip(title: L("Fixed salary"), symbol: "calendar") { setRegular(true, said: L("Fixed salary")) }
                 QuickReplyChip(title: L("It varies"), symbol: "waveform.path.ecg") { setRegular(false, said: L("It varies")) }
             }
-            skipButton { skip(to: .wallets) }
+            skipButton { skip(to: income == nil ? .wallets : .payday) }
         }
     }
 
     private func setRegular(_ value: Bool, said: String) {
         regular = value
         UserDefaults.standard.set(value, forKey: Prefs.incomeRegular)
-        answer(said, next: .wallets)
+        answer(said, next: income == nil ? .wallets : .payday)
+    }
+
+    private var paydayPanel: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 72), spacing: 8, alignment: .leading)], alignment: .leading, spacing: 0) {
+                ForEach([1, 5, 10, 15, 20, 25], id: \.self) { day in
+                    QuickReplyChip(title: L("Day \(day)")) { setPayday(day) }
+                }
+            }
+            Menu {
+                ForEach(1...31, id: \.self) { day in Button(L("Day \(day)")) { setPayday(day) } }
+            } label: {
+                Label(L("Another day"), systemImage: "calendar").font(.chip.weight(.semibold)).foregroundStyle(Color.brandDeep)
+                    .frame(minHeight: 44).contentShape(.rect)
+            }
+            skipButton { skip(to: .wallets) }
+        }
+    }
+
+    private func setPayday(_ day: Int) {
+        if let income { OnboardingBook.saveSalary(income, payday: day, regular: regular, in: context) }
+        answer(L("Day \(day)"), next: .wallets)
     }
 
     private var walletsPanel: some View {

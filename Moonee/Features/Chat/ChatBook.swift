@@ -279,6 +279,15 @@ struct ChatCardLine: Codable, Equatable {
                 }
                 guard !rows.isEmpty else { continue }
                 return ([String(localized: "Here's what's in your jars right now:", table: "Chat")] + rows).joined(separator: "\n")
+            case "monthBudget":
+                var text = String(localized: "This month you have **\(s("left"))** left to spend of **\(s("totalBudget"))** (spent **\(s("spent"))**).", table: "Chat")
+                if (o["billsDueThisMonth"] as? [Any])?.isEmpty == false {
+                    text += " " + String(localized: "After the bills still due: **\(s("leftAfterBills"))**.", table: "Chat")
+                }
+                if let pay = (o["expectedIncome"] as? [[String: Any]])?.first {
+                    text += "\n" + String(localized: "Next income: **\(s("amount", pay))** (\(s("name", pay))) on \(s("date", pay)).", table: "Chat")
+                }
+                return text
             case "monthClose":
                 return String(localized: "This month: income **\(s("income"))**, spent **\(s("spent"))**, saved **\(s("saved"))**.", table: "Chat")
             case "splitIncome":

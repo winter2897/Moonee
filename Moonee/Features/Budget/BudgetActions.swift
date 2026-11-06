@@ -35,12 +35,37 @@ func loc(_ key: String.LocalizationValue) -> String { String(localized: key, tab
         return t
     }
 
+    /// Wallet money no jar holds yet (`Ledger.unallocated`), from the store.
+    static func unallocated(in context: ModelContext) -> Int {
+        Ledger(txns: (try? context.fetch(FetchDescriptor<Txn>())) ?? [], wallets: (try? context.fetch(FetchDescriptor<Wallet>())) ?? [],
+               jars: (try? context.fetch(FetchDescriptor<Jar>())) ?? []).unallocated
+    }
+
+    /// "Split into jars": puts unallocated money into the jars by their percents, as one dated jarTransfer with no
+    /// source jar and a split per jar (written by `allocate`). Nothing to split or no percents → nil.
+    @discardableResult
+    static func splitUnallocated(_ amount: Int, jars: [Jar], date: Date = .now, in context: ModelContext) -> Txn? {
+        guard amount > 0, jars.contains(where: { $0.percent > 0 }) else { return nil }
+        let t = Txn(amount: amount, kind: .jarTransfer, date: date, note: loc("Split into jars"))
+        context.insert(t)
+        t.allocate(jars: jars, in: context)
+        return t
+    }
+
+    /// Where a bill is paid from / an income lands when it names no wallet: the first wallet that is not a credit card
+    /// (a salary goes to the first bank account).
+    static func defaultWallet(income: Bool = false, in context: ModelContext) -> Wallet? {
+        let wallets = (try? context.fetch(FetchDescriptor<Wallet>(sortBy: [SortDescriptor(\.order)]))) ?? []
+        return (income ? wallets.first { $0.type == .bank } : nil) ?? wallets.first { $0.type != .credit } ?? wallets.first
+    }
+
     /// Spec §4.3 "Paid": records the expense (pinned to its category's jar) and moves the bill one period on.
+    /// An income recurring (salary) is "Received" the same way: an income split into the jars by `allocate`.
     @discardableResult
     static func markPaid(_ bill: Recurring, amount: Int? = nil, date: Date = .now, jars: [Jar], in context: ModelContext,
                          calendar: Calendar = .current) -> Txn {
-        let t = Txn(amount: amount ?? bill.amount, kind: .expense, currencyCode: bill.currencyCode, date: date, note: bill.name,
-                    category: bill.category, wallet: bill.wallet)
+        let t = Txn(amount: amount ?? bill.amount, kind: bill.isIncome ? .income : .expense, currencyCode: bill.currencyCode,
+                    date: date, note: bill.name, category: bill.category, wallet: bill.wallet ?? defaultWallet(income: bill.isIncome, in: context))
         context.insert(t)
         t.allocate(jars: jars, in: context)
         bill.lastPaid = date
@@ -48,6 +73,32 @@ func loc(_ key: String.LocalizationValue) -> String { String(localized: key, tab
         bill.dueDay = anchor
         bill.nextDue = nextDue(after: bill.nextDue, bill.frequency, day: anchor, calendar: calendar)
         return t
+    }
+
+    /// An income recurring counts as received for its current payday once an income of its category is logged
+    /// from a week before payday on (chat "nhận lương 15tr" or "Received"), so it is never asked for or counted twice.
+    static func isReceived(_ income: Recurring, txns: [Txn], calendar: Calendar = .current) -> Bool {
+        guard income.isIncome, let category = income.category,
+              let from = calendar.date(byAdding: .day, value: -7, to: calendar.startOfDay(for: income.nextDue)) else { return false }
+        return txns.contains { $0.kind == .income && $0.category == category && $0.date >= from }
+    }
+
+    /// Income recurrings due by the end of today and not received yet: the Budget tab asks "Received?".
+    static func dueIncome(_ recurrings: [Recurring], txns: [Txn], now: Date = .now, calendar: Calendar = .current) -> [Recurring] {
+        let end = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: now))!
+        return recurrings.filter { $0.isIncome && $0.nextDue < end && !isReceived($0, txns: txns, calendar: calendar) }
+            .sorted { $0.nextDue < $1.nextDue }
+    }
+
+    /// Moves a salary that was already logged (e.g. through chat) on to its next payday.
+    static func catchUpIncome(in context: ModelContext, calendar: Calendar = .current) {
+        let txns = (try? context.fetch(FetchDescriptor<Txn>())) ?? []
+        for r in (try? context.fetch(FetchDescriptor<Recurring>())) ?? [] where isReceived(r, txns: txns, calendar: calendar) {
+            let anchor = r.dueDay ?? calendar.component(.day, from: r.nextDue)
+            r.dueDay = anchor
+            r.lastPaid = txns.filter { $0.kind == .income && $0.category == r.category }.map(\.date).max()
+            r.nextDue = nextDue(after: r.nextDue, r.frequency, day: anchor, calendar: calendar)
+        }
     }
 
     /// One period after `due`. Monthly/yearly bills land on `day` (a 31st bill is due Feb 28, then Mar 31 again).
@@ -72,6 +123,11 @@ func loc(_ key: String.LocalizationValue) -> String { String(localized: key, tab
         }
         return today
     }
+}
+
+extension Recurring {
+    /// A salary or other expected income (its category is an income one), not a bill.
+    var isIncome: Bool { category?.kind == .income }
 }
 
 extension Ledger.JarMonth {

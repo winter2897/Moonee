@@ -189,6 +189,17 @@
         }
       }
     },
+    "An income: when it comes in, it is split into your jars by their percents.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đây là khoản thu: khi nhận, tiền được chia vào các lọ theo %."
+          }
+        }
+      }
+    },
     "Anything to log today?": {
       "extractionState": "manual",
       "localizations": {
@@ -651,6 +662,17 @@
         }
       }
     },
+    "Expected %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dự kiến %@"
+          }
+        }
+      }
+    },
     "From": {
       "extractionState": "manual",
       "localizations": {
@@ -702,6 +724,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mức nhắc nhở"
+          }
+        }
+      }
+    },
+    "Income": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thu nhập"
           }
         }
       }
@@ -794,6 +827,17 @@
         }
       }
     },
+    "Mark received": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã nhận"
+          }
+        }
+      }
+    },
     "Medium": {
       "extractionState": "manual",
       "localizations": {
@@ -834,6 +878,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Thêm"
+          }
+        }
+      }
+    },
+    "More than your wallets hold.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Các lọ đang nhiều hơn tiền trong ví."
           }
         }
       }
@@ -948,6 +1003,17 @@
         }
       }
     },
+    "Not in a jar yet.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa nằm trong lọ nào."
+          }
+        }
+      }
+    },
     "Not set": {
       "extractionState": "manual",
       "localizations": {
@@ -999,6 +1065,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Số dư ban đầu"
+          }
+        }
+      }
+    },
+    "Paid into": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhận vào ví"
           }
         }
       }
@@ -1252,6 +1329,17 @@
         }
       }
     },
+    "Split into jars": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chia vào các lọ"
+          }
+        }
+      }
+    },
     "Statement day": {
       "extractionState": "manual",
       "localizations": {
@@ -1303,6 +1391,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Đây là số ước tính. Nhập số tiền bạn đã trả thật nhé."
+          }
+        }
+      }
+    },
+    "This income varies. Enter what you actually received.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khoản thu này không cố định. Nhập số tiền bạn thực nhận."
           }
         }
       }
@@ -1402,6 +1501,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Loại"
+          }
+        }
+      }
+    },
+    "Unallocated": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa chia vào lọ"
           }
         }
       }
