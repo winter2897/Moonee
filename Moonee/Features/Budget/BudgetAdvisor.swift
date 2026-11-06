@@ -400,7 +400,9 @@ struct BudgetAdvisor: Sendable {
     func why(_ p: Plan) -> String {
         var parts: [String] = []
         if let e = essentials, p.shares[e.id] ?? 0 > 0, p.bills + p.spending > 0 {
-            parts.append(String(localized: "\(e.name) covers \(short(p.bills)) of bills and \(short(p.spending)) of everyday needs until \(day(p.until)).", table: "Budget"))
+            parts.append(p.bills > 0
+                ? String(localized: "\(e.name) covers \(short(p.bills)) of bills and \(short(p.spending)) of everyday needs until \(day(p.until)).", table: "Budget")
+                : String(localized: "\(e.name) covers \(short(p.spending)) of everyday needs until \(day(p.until)).", table: "Budget"))
         }
         if p.refill > 0 { parts.append(String(localized: "\(short(p.refill)) refills jars below zero.", table: "Budget")) }
         if p.emergency > 0, let s = savings {
