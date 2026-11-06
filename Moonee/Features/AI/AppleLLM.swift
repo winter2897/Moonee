@@ -1,20 +1,38 @@
 import Foundation
 import FoundationModels
 
-/// Apple Foundation Models (iOS 26, Apple Intelligence devices). Small: gets short skills and pre-computed facts.
+/// Apple Foundation Models (iOS 26, Apple Intelligence devices). Small: gets the compact prompt (`CompactPrompt`) and
+/// pre-computed facts. Its context window is 4096 tokens on iOS 26 (instructions + prompt + answer).
 /// ponytail: on-device tool calling is unreliable in Vietnamese (tested on macOS 27), so `Assistant` only gives it tools' results.
 struct AppleLLM: LLM {
     var isSmall: Bool { true }
+    /// Set when Apple Intelligence can't speak the app's language (`AppleStatus.languageUnsupported`): answers in this one.
+    var replyLanguage: String?
 
     static var isAvailable: Bool { SystemLanguageModel.default.isAvailable }
 
+    /// Tokens the model can hold (4096 on iOS 26.0–26.3, read from the system from 26.4).
+    static var contextSize: Int { SystemLanguageModel.default.contextSize }
+
+    /// Errors come back as `AINotice` (too long, guardrails, language…) so the chat can say what happened.
     func respond(_ r: LLMRequest) async throws -> String {
-        let session = LanguageModelSession(tools: try r.tools.map(FoundationTool.init), instructions: r.system)
-        return try await session.respond(to: Self.prompt(r.messages)).content
+        do {
+            // Rewording the app's own numbers: the permissive guardrails stop false alarms on money words ("nợ", "vay").
+            let model = SystemLanguageModel(guardrails: .permissiveContentTransformations)
+            let session = LanguageModelSession(model: model, tools: try r.tools.map(FoundationTool.init), instructions: r.system)
+            return try await session.respond(to: Self.prompt(r.messages)).content
+        } catch {
+            throw AINotice(error)
+        }
     }
 
     func extractTransactions(instructions: String, text: String) async throws -> [AIParsedTxn] {
-        try await LanguageModelSession(instructions: instructions).respond(to: text, generating: AIParsedTxnList.self).content.transactions
+        do {
+            return try await LanguageModelSession(instructions: instructions)
+                .respond(to: text, generating: AppleParsedTxnList.self).content.transactions.map(\.parsed)
+        } catch {
+            throw AINotice(error)
+        }
     }
 
     /// Earlier turns go inline: small models do better with one flat prompt than a long transcript.
@@ -73,6 +91,45 @@ struct AIParsedTxn: Codable, Equatable, Sendable {
 @Generable
 struct AIParsedTxnList: Codable, Sendable {
     var transactions: [AIParsedTxn]
+}
+
+/// Apple's on-device model leaves optional fields null (the S9 eval: `amountText` null 28/28, tested again on
+/// macOS 27): required strings, empty = none, make it copy the amount and pick a category.
+@Generable(description: "One transaction in the user's message")
+struct AppleParsedTxn {
+    @Guide(description: "The money words copied exactly from the message, e.g. \"45k\", \"1tr2\", \"$12\". Never convert or compute. Empty if the message has no amount.")
+    var amountText: String
+    @Guide(description: "expense, income, transfer (between wallets), jarTransfer (between jars), lend, borrow or repay",
+           .anyOf(EntryKind.allCases.map(\.rawValue)))
+    var kind: String
+    @Guide(description: "A category key from the list, only for expense or income. Empty if unsure.")
+    var category: String
+    @Guide(description: "Wallet paid from or moved from, a name from the list")
+    var wallet: String?
+    @Guide(description: "Wallet moved to, a name from the list")
+    var toWallet: String?
+    @Guide(description: "Jar moved from, a jar key from the list")
+    var jar: String?
+    @Guide(description: "Jar moved to, a jar key from the list")
+    var toJar: String?
+    @Guide(description: "The other person when lending, borrowing or repaying, as written")
+    var person: String?
+    @Guide(description: "Date words copied exactly from the message, e.g. \"hôm qua\", \"last monday\". Empty if none.")
+    var dateText: String
+    @Guide(description: "A short note in the user's words, without the amount and date words")
+    var note: String
+
+    var parsed: AIParsedTxn {
+        func value(_ s: String?) -> String? { s.flatMap { $0.trimmingCharacters(in: .whitespaces).isEmpty ? nil : $0 } }
+        return AIParsedTxn(amountText: value(amountText), kind: kind, category: value(category), wallet: value(wallet),
+                           toWallet: value(toWallet), jar: value(jar), toJar: value(toJar), person: value(person),
+                           dateText: value(dateText), note: note)
+    }
+}
+
+@Generable
+struct AppleParsedTxnList {
+    var transactions: [AppleParsedTxn]
 }
 
 extension AIParsedTxn {

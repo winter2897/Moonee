@@ -16,6 +16,7 @@ struct ChatView: View {
     @State private var inputSource = TxSource.text
     @FocusState private var focused: Bool
     @State private var busy = false
+    @State private var lastNotice: String?
     @State private var mood = MooneeMood.greeting
     /// Parsed without an amount; Moonee asked "how much?" and the next message fills it in.
     @State private var pending: ParsedTxn?
@@ -247,8 +248,11 @@ struct ChatView: View {
         busy = true
         let assistant = Assistant(router: LLMSettings.router(), tools: MooneeTools(ledger: StoreLedger(context)), catalog: SkillCatalog(context))
         Task {
-            let out = await assistant.handle(input, history: history, context: parser)
+            let r = await assistant.reply(input, history: history, context: parser)
+            let out = r.output
             withAnimation { busy = false }
+            // Why the chosen model didn't answer (Apple Intelligence off, too long…), once until it changes.
+            if let notice = r.noticeText, notice != lastNotice { lastNotice = notice; reply(notice, mood: .confused) }
             switch out {
             case .transactions(let txns, _): record(txns, source: source, raw: input)
             case .answer(let answer, _, let sources): reply(answer, mood: .happy, sources: sources)

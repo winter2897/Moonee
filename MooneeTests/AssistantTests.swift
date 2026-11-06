@@ -21,7 +21,7 @@ struct AssistantTests {
         let a = ObjectIdentifier(apple), c = ObjectIdentifier(cloud)
         #expect(ids(.onDevice, .advice) == [a])
         #expect(ids(.byok, .parse) == [c])
-        #expect(ids(.local, .parse) == [])                // no local model yet → rules only
+        #expect(ids(.local, .parse) == [a])               // no local model yet → Apple stands in (still on the phone)
         #expect(ids(.hybrid, .parse) == [a])              // typed transactions stay on the phone
         #expect(ids(.hybrid, .quickAnswer) == [a, c])
         #expect(ids(.hybrid, .advice) == [c, a])
@@ -135,7 +135,7 @@ struct AssistantTests {
         var a = assistant(.onDevice, onDevice: broken)
         a.router.local = cloud
         a.router.mode = .hybrid
-        let r = await a.parse("phở 45k", context: ctx)
+        let r = await a.parse("xyz 45k", context: ctx) // no category cue: the small models are asked
         #expect(r.usedModel)
         #expect(broken.requests.count == 1)
     }

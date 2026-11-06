@@ -263,9 +263,13 @@ struct ChatCardLine: Codable, Equatable {
                 guard !hits.isEmpty else { return String(localized: "Moonee searched the web but found nothing useful.", table: "Chat") }
                 return ([String(localized: "Here's what Moonee found on the web:", table: "Chat")] + hits).joined(separator: "\n")
             case "marketPrice":
-                let prices = (o["prices"] as? [[String: Any]] ?? []).map { s("price", $0) }.filter { !$0.isEmpty }
-                guard !prices.isEmpty else { continue }
-                var text = "**\(s("coin").capitalized) (\(s("symbol").uppercased()))**: " + prices.joined(separator: " · ")
+                let rows = (o["prices"] as? [[String: Any]] ?? []).filter { !s("price", $0).isEmpty }
+                guard !rows.isEmpty else { continue }
+                var text = if let name = o["name"] as? String { // gold, exchange rates: one labelled row per price
+                    (["**\(name)**"] + rows.map { "• \(s("label", $0)): **\(s("price", $0))**" }).joined(separator: "\n")
+                } else {
+                    "**\(s("coin").capitalized) (\(s("symbol").uppercased()))**: " + rows.map { s("price", $0) }.joined(separator: " · ")
+                }
                 if !s("source").isEmpty { text += "\n" + String(localized: "Source: \(s("source"))", table: "Chat") }
                 return text
             case "savingsPlan":

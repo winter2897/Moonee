@@ -7,6 +7,8 @@ import Security
 protocol LLM: Sendable {
     /// Small on-device models get the short skill text and pre-computed tool results instead of tool calls.
     var isSmall: Bool { get }
+    /// The language this model answers in when it can't use the app's (Apple without Vietnamese → "en"); nil = the app's.
+    var replyLanguage: String? { get }
     /// Runs the tool loop (the model may call `request.tools` several times) and returns the final text.
     func respond(_ request: LLMRequest) async throws -> String
     /// Structured read of a chat message. Default: JSON through `respond`; Foundation Models uses `@Generable`.
@@ -40,6 +42,7 @@ struct LLMError: LocalizedError, Equatable {
 
 extension LLM {
     var isSmall: Bool { false }
+    var replyLanguage: String? { nil }
 
     func complete(system: String, user: String) async throws -> String {
         try await respond(LLMRequest(system: system, messages: [.init(role: .user, text: user)]))
@@ -164,8 +167,8 @@ enum HTTP {
         return try await json(req, headers: headers, send: send)
     }
 
-    static func getJSON(_ url: URL, headers: [String: String], send: HTTPTransport) async throws -> [String: Any] {
-        try await json(URLRequest(url: url, timeoutInterval: 30), headers: headers, send: send)
+    static func getJSON(_ url: URL, headers: [String: String], timeout: TimeInterval = 30, send: HTTPTransport) async throws -> [String: Any] {
+        try await json(URLRequest(url: url, timeoutInterval: timeout), headers: headers, send: send)
     }
 
     private static func json(_ request: URLRequest, headers: [String: String], send: HTTPTransport) async throws -> [String: Any] {
@@ -279,7 +282,9 @@ enum LLMSettings {
 
     /// The models the current settings allow, for `Assistant`.
     static func router() -> AIRouter {
-        AIRouter(mode: mode, onDevice: AppleLLM.isAvailable ? AppleLLM() : nil, local: LocalLLM.current, cloud: cloud(cloudProvider))
+        let apple = AppleStatus.current()
+        return AIRouter(mode: mode, onDevice: apple.canRun ? AppleLLM(replyLanguage: apple == .languageUnsupported ? "en" : nil) : nil,
+                        local: LocalLLM.current, cloud: cloud(cloudProvider), appleStatus: apple)
     }
 
     /// A configured BYOK model, or nil when it has no key.
@@ -303,15 +308,7 @@ enum LLMSettings {
         (UserDefaults.standard.string(forKey: customPromptKey) ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    static var appleStatus: String {
-        switch SystemLanguageModel.default.availability {
-        case .available: String(localized: "Ready (Apple Intelligence, managed by iOS)", table: "Account")
-        case .unavailable(.deviceNotEligible): String(localized: "This iPhone does not support Apple Intelligence", table: "Account")
-        case .unavailable(.appleIntelligenceNotEnabled): String(localized: "Turn on Apple Intelligence in Settings", table: "Account")
-        case .unavailable(.modelNotReady): String(localized: "iOS is still downloading the model, try again later", table: "Account")
-        case .unavailable: String(localized: "The on-device model is not ready", table: "Account")
-        }
-    }
+    static var appleStatus: String { AppleStatus.current().text }
 
     /// OpenRouter key (filled from `.env` by DevSecrets).
     static var apiKey: String? {
