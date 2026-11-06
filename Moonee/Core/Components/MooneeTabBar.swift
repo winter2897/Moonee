@@ -23,7 +23,7 @@ struct MooneeTabBar<Tab: Hashable>: View {
         let half = items.count / 2
         HStack(spacing: 0) {
             ForEach(items.indices, id: \.self) { i in
-                if i == half { Color.clear.frame(width: 64) }
+                if i == half { Color.clear.frame(width: 60) }
                 tabButton(items[i])
             }
         }
@@ -46,7 +46,7 @@ struct MooneeTabBar<Tab: Hashable>: View {
             .offset(y: -8)
             .accessibilityLabel(Text("Add with Moonee", tableName: "Components"))
         }
-        .padding(.horizontal, 16)
+        .padding(.horizontal, 12)
     }
 
     private func tabButton(_ item: Item) -> some View {
@@ -54,11 +54,14 @@ struct MooneeTabBar<Tab: Hashable>: View {
         return Button {
             withAnimation(reduceMotion ? nil : .smooth(duration: 0.35)) { selection = item.tab }
         } label: {
-            VStack(spacing: 3) {
+            VStack(spacing: 2) {
                 Image(systemName: item.symbol).font(.system(size: 20, weight: selected ? .semibold : .regular))
                 // At accessibility sizes the labels can't fit 4 across: icons only, with the Large Content Viewer on long press.
                 if !typeSize.isAccessibilitySize {
-                    Text(item.title).font(.caption.weight(selected ? .semibold : .regular)).lineLimit(1).minimumScaleFactor(0.7)
+                    // System tab-bar size. The 8 pt inset keeps the text off the pill's curved ends (radius 26); a long
+                    // label (any language) shrinks to fit instead of touching them.
+                    Text(item.title).font(.caption2.weight(selected ? .semibold : .medium)).lineLimit(1)
+                        .minimumScaleFactor(0.75).padding(.horizontal, 8)
                 }
             }
             .foregroundStyle(selected ? Color.brandDeep : Color.ink.opacity(0.75))
