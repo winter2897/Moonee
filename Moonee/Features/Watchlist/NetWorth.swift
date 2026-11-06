@@ -1,44 +1,37 @@
 import Foundation
 import SwiftData
 
-/// Net worth split into the four slices of the Watchlist donut. `total` equals `Ledger.netWorth(assets:)`.
-struct NetWorthBreakdown: Equatable {
-    /// Wallets with money in them + foreign currency held.
+/// What net worth is made of, by type: the donut's slices and the screen's sections. `total` equals `Ledger.netWorth(assets:)`.
+struct NetWorthParts: Equatable {
+    /// Wallets with money in them.
     var cash = 0
-    /// Gold, silver, stocks, crypto.
-    var investments = 0
-    /// Other assets + money lent out.
-    var other = 0
-    /// Card debt + money borrowed, as a positive number.
-    var debts = 0
+    /// Manual assets by type, in the ledger's currency.
+    var assets: [AssetKind: Int] = [:]
+    /// Money people still owe you.
+    var lent = 0
+    /// Credit cards (and overdrawn wallets) in debt, as a positive number.
+    var cardDebt = 0
+    /// Money you still owe people, as a positive number.
+    var borrowed = 0
 
-    var total: Int { cash + investments + other - debts }
-    /// What is owned, before debts. The donut's percentages are shares of this.
-    var gross: Int { cash + investments + other }
-}
-
-extension AssetKind {
-    var slice: WritableKeyPath<NetWorthBreakdown, Int> {
-        switch self {
-        case .fx: \.cash
-        case .gold, .silver, .stock, .crypto: \.investments
-        case .other: \.other
-        }
-    }
+    /// What you own before debts. The donut's percentages are shares of this.
+    var owned: Int { cash + assets.values.reduce(0, +) + lent }
+    var debts: Int { cardDebt + borrowed }
+    var total: Int { owned - debts }
 }
 
 extension Ledger {
     /// `assets`: values already in the ledger's currency (see `Asset.counted`).
-    func breakdown(assets: [(kind: AssetKind, value: Int)]) -> NetWorthBreakdown {
-        var b = NetWorthBreakdown()
+    func parts(assets: [(kind: AssetKind, value: Int)]) -> NetWorthParts {
+        var p = NetWorthParts()
         for balance in walletBalances.values {
-            if balance >= 0 { b.cash += balance } else { b.debts -= balance } // a card in debt
+            if balance >= 0 { p.cash += balance } else { p.cardDebt -= balance }
         }
         for (debt, remaining) in debtRemaining {
-            if debtDirections[debt] == .borrowed { b.debts += remaining } else { b.other += remaining }
+            if debtDirections[debt] == .borrowed { p.borrowed += remaining } else { p.lent += remaining }
         }
-        for a in assets { b[keyPath: a.kind.slice] += a.value }
-        return b
+        for a in assets { p.assets[a.kind, default: 0] += a.value }
+        return p
     }
 }
 
@@ -93,7 +86,7 @@ enum NetWorthHistory {
         var id: Date { month }
     }
 
-    /// The sparkline: the last `months` months, then this month at the live total. A past month uses its snapshot,
+    /// The chart: the last `months` months, then this month at the live total. A past month uses its snapshot,
     /// or without one `estimate(end of month)`. Months before `since` (the first transaction) are left out.
     static func points(_ snapshots: [(month: Date, total: Int)], current: Int, since: Date?, estimate: (Date) -> Int,
                        now: Date = .now, months: Int = 6, calendar: Calendar = .current) -> [Point] {
@@ -109,13 +102,16 @@ enum NetWorthHistory {
         return past + [Point(month: thisMonth, total: current)]
     }
 
-    /// Change against last month (snapshot or estimate). nil when there is no last month (new user).
-    static func change(_ points: [Point], now: Date = .now, calendar: Calendar = .current) -> (amount: Int, percent: Double?)? {
-        let thisMonth = calendar.dateInterval(of: .month, for: now)!.start
-        let lastMonth = calendar.date(byAdding: .month, value: -1, to: thisMonth)!
-        guard let previous = points.first(where: { $0.month == lastMonth }),
-              let current = points.first(where: { $0.month == thisMonth }) else { return nil }
-        let amount = current.total - previous.total
-        return (amount, previous.total == 0 ? nil : Double(amount) / Double(abs(previous.total)))
+    /// Change over the points shown: last minus first. nil with fewer than two points (new user).
+    static func change(_ points: [Point]) -> (amount: Int, percent: Double?)? {
+        guard let first = points.first, let last = points.last, points.count > 1 else { return nil }
+        let amount = last.total - first.total
+        return (amount, first.total == 0 ? nil : Double(amount) / Double(abs(first.total)))
+    }
+
+    /// The point a chart selection falls on: the month the touch is in (points are month starts, sorted),
+    /// clamped to the first point before the chart starts.
+    static func nearest(_ points: [Point], to date: Date) -> Point? {
+        points.last { $0.month <= date } ?? points.first
     }
 }
