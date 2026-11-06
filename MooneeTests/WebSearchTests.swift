@@ -161,6 +161,8 @@ struct WebSearchTests {
 
         #expect(MarketPrices.symbol(in: "giá bitcoin hôm nay") == "bitcoin")
         #expect(MarketPrices.symbol(in: "ETH bao nhiêu") == "ethereum")
+        #expect(MarketPrices.symbol(in: "ราคาบิตคอยน์วันนี้") == "bitcoin")
+        #expect(MarketPrices.symbol(in: "ລາຄາບິດຄອຍມື້ນີ້") == "bitcoin")
         #expect(MarketPrices.symbol(in: "giá vàng") == "GOLD")
         #expect(MooneeTools.allNames == tools.all.map(\.name))
     }

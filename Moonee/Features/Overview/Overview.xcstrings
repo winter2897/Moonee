@@ -3,6 +3,18 @@
   "strings": {
     "%@ has used %lld%% of this month. Go easy for now!": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກະປຸກ %@ ໃຊ້ໄປແລ້ວ %lld%% ຂອງເດືອນນີ້ ຄ່ອຍໆ ໃຊ້ເດີ!"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กระปุก %@ ใช้ไปแล้ว %lld%% ของเดือนนี้ ค่อยๆ ใช้นะ!"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -13,6 +25,18 @@
     },
     "%@ is due in %lld days.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ຈະຄົບກຳນົດໃນອີກ %lld ມື້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ จะครบกำหนดในอีก %lld วัน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -23,6 +47,18 @@
     },
     "%@ is due today.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ຄົບກຳນົດມື້ນີ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ครบกำหนดวันนี้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -33,6 +69,18 @@
     },
     "%@ is due tomorrow.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ຄົບກຳນົດມື້ອື່ນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ครบกำหนดพรุ่งนี้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -43,6 +91,18 @@
     },
     "%@ is in the red. Move some money in from another jar?": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກະປຸກ %@ ຕິດລົບແລ້ວ ໂອນເງິນຈາກກະປຸກອື່ນມາເຕີມບໍ?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กระปุก %@ ติดลบแล้ว โอนเงินจากกระปุกอื่นมาเติมไหม?"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -53,6 +113,18 @@
     },
     "%@ is over this month's budget. Let's slow down a little.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກະປຸກ %@ ເກີນງົບປະມານເດືອນນີ້ແລ້ວ ໃຊ້ຊ້າລົງແດ່ເດີ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กระปุก %@ เกินงบเดือนนี้แล้ว ใช้ช้าลงหน่อยนะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -63,6 +135,18 @@
     },
     "%@ is overdue. Pay it soon to avoid fees.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ກາຍກຳນົດແລ້ວ ຮີບຈ່າຍຈະໄດ້ບໍ່ຖືກຄ່າປັບ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ เลยกำหนดแล้ว รีบจ่ายจะได้ไม่โดนค่าปรับ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -73,6 +157,18 @@
     },
     "%@ report": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍງານ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายงาน %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -83,6 +179,18 @@
     },
     "All transactions": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍການທັງໝົດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายการทั้งหมด"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -93,6 +201,18 @@
     },
     "Avg %@: %@": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສະເລ່ຍ%@: %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เฉลี่ย%@: %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -103,6 +223,18 @@
     },
     "Big number: what is left in the jar. Bar: spent this month out of what the jar had for the month.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕົວເລກໃຫຍ່: ເງິນທີ່ເຫຼືອໃນກະປຸກ ແຖບ: ຍອດທີ່ໃຊ້ເດືອນນີ້ ທຽບກັບເງິນທີ່ກະປຸກມີໃນເດືອນນີ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตัวเลขใหญ่: เงินที่เหลือในกระปุก แถบ: ยอดที่ใช้เดือนนี้ เทียบกับเงินที่กระปุกมีในเดือนนี้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -113,6 +245,18 @@
     },
     "Bills due in 7 days": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃບບິນທີ່ຄົບກຳນົດໃນ 7 ມື້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บิลที่ครบกำหนดใน 7 วัน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -123,6 +267,18 @@
     },
     "Changes compared with last month.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທຽບກັບເດືອນແລ້ວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เทียบกับเดือนที่แล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -133,6 +289,18 @@
     },
     "Changes compared with last week.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທຽບກັບອາທິດແລ້ວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เทียบกับสัปดาห์ที่แล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -143,6 +311,18 @@
     },
     "Changes compared with last year.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທຽບກັບປີກາຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เทียบกับปีที่แล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -153,6 +333,18 @@
     },
     "Difference": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສ່ວນຕ່າງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ส่วนต่าง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -163,6 +355,18 @@
     },
     "Expenses": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຈ່າຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายจ่าย"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -173,6 +377,18 @@
     },
     "Good afternoon!": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສະບາຍດີຕອນບ່າຍ!"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สวัสดีตอนบ่าย!"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -183,6 +399,18 @@
     },
     "Good afternoon, %@": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສະບາຍດີຕອນບ່າຍ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สวัสดีตอนบ่าย %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -193,6 +421,18 @@
     },
     "Good evening!": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສະບາຍດີຕອນແລງ!"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สวัสดีตอนเย็น!"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -203,6 +443,18 @@
     },
     "Good evening, %@": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສະບາຍດີຕອນແລງ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สวัสดีตอนเย็น %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -213,6 +465,18 @@
     },
     "Good morning!": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສະບາຍດີຕອນເຊົ້າ!"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อรุณสวัสดิ์!"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -223,6 +487,18 @@
     },
     "Good morning, %@": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສະບາຍດີຕອນເຊົ້າ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อรุณสวัสดิ์ %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -233,6 +509,18 @@
     },
     "Income": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຮັບ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายรับ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -243,6 +531,18 @@
     },
     "Income and expenses this month, compared with last month.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຮັບ ແລະ ລາຍຈ່າຍເດືອນນີ້ ທຽບກັບເດືອນແລ້ວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายรับและรายจ่ายเดือนนี้ เทียบกับเดือนที่แล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -253,6 +553,18 @@
     },
     "Income and expenses this week, compared with last week.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຮັບ ແລະ ລາຍຈ່າຍອາທິດນີ້ ທຽບກັບອາທິດແລ້ວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายรับและรายจ่ายสัปดาห์นี้ เทียบกับสัปดาห์ที่แล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -263,6 +575,18 @@
     },
     "Income and expenses this year, compared with last year.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຮັບ ແລະ ລາຍຈ່າຍປີນີ້ ທຽບກັບປີກາຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายรับและรายจ่ายปีนี้ เทียบกับปีที่แล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -273,6 +597,18 @@
     },
     "Jars this month": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກະປຸກເດືອນນີ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กระปุกเดือนนี้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -283,6 +619,18 @@
     },
     "Last month": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເດືອນແລ້ວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เดือนที่แล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -293,6 +641,18 @@
     },
     "Last week": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ອາທິດແລ້ວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สัปดาห์ที่แล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -303,6 +663,18 @@
     },
     "Last year": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປີກາຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปีที่แล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -313,6 +685,18 @@
     },
     "Net worth": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊັບສິນສຸດທິ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ความมั่งคั่งสุทธิ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -323,6 +707,18 @@
     },
     "No spending in this period.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍັງບໍ່ມີລາຍຈ່າຍໃນຊ່ວງນີ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยังไม่มีรายจ่ายในช่วงนี้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -333,6 +729,18 @@
     },
     "No transactions yet": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍັງບໍ່ມີລາຍການ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยังไม่มีรายการ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -343,6 +751,18 @@
     },
     "Nothing logged today yet. Tell me what you spent?": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ມື້ນີ້ຍັງບໍ່ໄດ້ບັນທຶກຫຍັງເລີຍ ໃຊ້ຫຍັງໄປແດ່ ເລົ່າໃຫ້ຟັງແດ່?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "วันนี้ยังไม่ได้จดอะไรเลย ใช้อะไรไปบ้าง เล่าให้ฟังหน่อยสิ?"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -353,6 +773,18 @@
     },
     "Other": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ອື່ນໆ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อื่นๆ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -363,6 +795,18 @@
     },
     "Overview": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ພາບລວມ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ภาพรวม"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -373,6 +817,18 @@
     },
     "Period": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໄລຍະເວລາ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ช่วงเวลา"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -383,6 +839,18 @@
     },
     "Recent transactions": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍການລ່າສຸດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายการล่าสุด"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -393,6 +861,18 @@
     },
     "Ring: spent this month out of what the jar had. Amount: what is left.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ວົງມົນ: ໃຊ້ໄປເດືອນນີ້ທຽບກັບເງິນທີ່ກະປຸກມີ. ຕົວເລກ: ຍອດທີ່ເຫຼືອ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "วงกลม: ใช้ไปเดือนนี้เทียบกับเงินที่กระปุกมี ตัวเลข: ยอดที่เหลือ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -403,6 +883,18 @@
     },
     "Saved": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເກັບໄດ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เก็บได้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -413,6 +905,18 @@
     },
     "Spending": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຈ່າຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายจ่าย"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -423,6 +927,18 @@
     },
     "Spending by category": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຈ່າຍຕາມໝວດໝູ່"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายจ่ายตามหมวดหมู่"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -433,6 +949,18 @@
     },
     "Spending over time": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຈ່າຍສະສົມ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายจ่ายสะสม"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -443,6 +971,18 @@
     },
     "Spent": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃຊ້ໄປ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใช้ไป"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -453,6 +993,18 @@
     },
     "Tap + and tell Moonee “lunch 45k” to log your first one.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແຕະ + ແລ້ວບອກ Moonee ວ່າ “ເຝີ 30ພັນ” ເພື່ອບັນທຶກລາຍການທຳອິດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แตะ + แล้วบอก Moonee ว่า “ข้าวผัด 60” เพื่อจดรายการแรก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -463,6 +1015,18 @@
     },
     "This month": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເດືອນນີ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เดือนนี้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -473,6 +1037,18 @@
     },
     "This week": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ອາທິດນີ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สัปดาห์นี้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -483,6 +1059,18 @@
     },
     "This year": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປີນີ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปีนี้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -493,6 +1081,18 @@
     },
     "Total balance": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍອດເງິນລວມ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยอดคงเหลือรวม"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -503,6 +1103,18 @@
     },
     "Touch and hold the chart to see each day.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແຕະຄ້າງທີ່ກຣາຟເພື່ອເບິ່ງແຕ່ລະມື້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แตะค้างที่กราฟเพื่อดูแต่ละวัน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -513,6 +1125,18 @@
     },
     "Your jars are on track this month. Nice work!": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເດືອນນີ້ກະປຸກຂອງເຈົ້າຍັງໄປໄດ້ດີ ເກັ່ງຫຼາຍ!"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เดือนนี้กระปุกของคุณยังไปได้สวย เก่งมาก!"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",

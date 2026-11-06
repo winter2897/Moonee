@@ -3,6 +3,18 @@
   "strings": {
     "%@ / %@ per 1M": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ / %@ ຕໍ່ 1 ລ້ານໂທເຄັນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ / %@ ต่อ 1 ล้านโทเค็น"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -13,6 +25,18 @@
     },
     "%@ context": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍລິບົດ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บริบท %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -26,6 +50,18 @@
     },
     "%lld models": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ໂມເດວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld โมเดล"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -36,6 +72,18 @@
     },
     "%lld transactions. Column names stay in English so the file imports back in any language.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ລາຍການ. ຊື່ຖັນຈະເປັນພາສາອັງກິດ ເພື່ອໃຫ້ນຳໄຟລ໌ກັບເຂົ້າມາໄດ້ບໍ່ວ່າຈະໃຊ້ພາສາໃດ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld รายการ ชื่อคอลัมน์จะเป็นภาษาอังกฤษ เพื่อให้นำไฟล์กลับเข้ามาได้ไม่ว่าจะใช้ภาษาไหน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -46,6 +94,18 @@
     },
     "A cloud model with your own key. Smartest, needs internet.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂມເດວຄລາວທີ່ໃຊ້ຄີຂອງເຈົ້າເອງ. ສະຫຼາດທີ່ສຸດ, ຕ້ອງໃຊ້ອິນເຕີເນັດ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โมเดลบนคลาวด์ที่ใช้คีย์ของคุณเอง ฉลาดที่สุด ต้องใช้อินเทอร์เน็ต"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -56,6 +116,18 @@
     },
     "A skill that is off never calls a model: Moonee shows the plain numbers instead.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທັກສະທີ່ປິດໄວ້ຈະບໍ່ເອີ້ນໃຊ້ໂມເດວ: Moonee ຈະສະແດງແຕ່ຕົວເລກໃຫ້ແທນ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ทักษะที่ปิดอยู่จะไม่เรียกใช้โมเดล: Moonee จะแสดงแค่ตัวเลขให้แทน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -66,6 +138,18 @@
     },
     "AI assistant": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຜູ້ຊ່ວຍ AI"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ผู้ช่วย AI"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -76,6 +160,18 @@
     },
     "AI mode": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂໝດ AI"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โหมด AI"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -86,6 +182,18 @@
     },
     "API key": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API key"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API key"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -96,6 +204,18 @@
     },
     "About Moonee": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກ່ຽວກັບ Moonee"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เกี่ยวกับ Moonee"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -106,6 +226,18 @@
     },
     "Account": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບັນຊີ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บัญชี"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -116,6 +248,18 @@
     },
     "Added to every answer, e.g. “Keep answers under three sentences.” Numbers are always computed by the app.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເພີ່ມໃສ່ທຸກຄຳຕອບ ເຊັ່ນ “ຕອບບໍ່ເກີນສາມປະໂຫຍກ.” ສ່ວນຕົວເລກແອັບຈະຄິດໄລ່ເອງສະເໝີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใส่ไว้กับทุกคำตอบ เช่น “ตอบไม่เกินสามประโยค” ส่วนตัวเลขแอปจะคำนวณเองเสมอ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -126,6 +270,18 @@
     },
     "Advanced": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຂັ້ນສູງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ขั้นสูง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -136,6 +292,18 @@
     },
     "An open model (Gemma, Qwen…) you download. Private, offline, free.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂມເດວແບບເປີດ (Gemma, Qwen…) ທີ່ດາວໂຫຼດລົງເຄື່ອງ. ເປັນສ່ວນຕົວ, ໃຊ້ອອບລາຍໄດ້, ຟຣີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โมเดลแบบเปิด (Gemma, Qwen…) ที่ดาวน์โหลดลงเครื่อง เป็นส่วนตัว ใช้ออฟไลน์ได้ ฟรี"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -146,6 +314,18 @@
     },
     "Apple Intelligence on this iPhone. Private, offline, free.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Intelligence ໃນ iPhone ເຄື່ອງນີ້. ເປັນສ່ວນຕົວ, ໃຊ້ອອບລາຍໄດ້, ຟຣີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Intelligence บน iPhone เครื่องนี้ เป็นส่วนตัว ใช้ออฟไลน์ได้ ฟรี"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -156,6 +336,18 @@
     },
     "Apple on-device": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple ໃນເຄື່ອງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple ในเครื่อง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -166,6 +358,18 @@
     },
     "Asks when Moonee opens and when you come back after this long.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຂໍໃຫ້ປົດລັອກເມື່ອເປີດ Moonee ແລະ ເມື່ອເຈົ້າກັບມາຫຼັງຜ່ານໄປຕາມເວລານີ້."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ขอปลดล็อกเมื่อเปิด Moonee และเมื่อคุณกลับมาหลังผ่านไปตามเวลานี้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -176,6 +380,18 @@
     },
     "Assign categories to jars": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຈັດໝວດໝູ່ເຂົ້າກະປຸກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "จัดหมวดหมู่เข้ากระปุก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -186,6 +402,18 @@
     },
     "Automatic (%@)": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ອັດຕະໂນມັດ (%@)"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อัตโนมัติ (%@)"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -196,6 +424,18 @@
     },
     "Avatar %lld": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ອະວາຕາ %lld"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อวาตาร์ %lld"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -206,6 +446,18 @@
     },
     "Base URL": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Base URL"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Base URL"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -216,6 +468,18 @@
     },
     "Can't reach the provider. Check your internet connection.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຊື່ອມຕໍ່ຜູ້ໃຫ້ບໍລິການບໍ່ໄດ້. ກວດເບິ່ງອິນເຕີເນັດກ່ອນເດີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เชื่อมต่อผู้ให้บริการไม่ได้ ลองเช็กอินเทอร์เน็ตดูนะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -226,6 +490,18 @@
     },
     "Cancel": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍົກເລີກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยกเลิก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -236,6 +512,18 @@
     },
     "Categories": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໝວດໝູ່"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "หมวดหมู่"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -246,6 +534,18 @@
     },
     "Categories, jars & wallets": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໝວດໝູ່, ກະປຸກ ແລະ ກະເປົາເງິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "หมวดหมู่ กระปุก และกระเป๋าเงิน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -256,6 +556,18 @@
     },
     "Choose avatar": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເລືອກອະວາຕາ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เลือกอวาตาร์"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -264,8 +576,42 @@
         }
       }
     },
+    "Close Moonee and open it again to switch the language.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປິດ Moonee ແລ້ວເປີດໃໝ່ອີກຄັ້ງເພື່ອປ່ຽນພາສາເດີ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปิด Moonee แล้วเปิดใหม่อีกครั้งเพื่อเปลี่ยนภาษานะ"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đóng Moonee rồi mở lại để đổi ngôn ngữ nhé."
+          }
+        }
+      }
+    },
     "Connected: %@": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຊື່ອມຕໍ່ແລ້ວ: %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เชื่อมต่อแล้ว: %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -276,6 +622,18 @@
     },
     "Continue": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສືບຕໍ່"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ต่อไป"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -286,6 +644,18 @@
     },
     "Currency": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສະກຸນເງິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สกุลเงิน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -296,6 +666,18 @@
     },
     "Custom (OpenAI-compatible)": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກຳນົດເອງ (ຮອງຮັບ OpenAI)"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กำหนดเอง (รองรับ OpenAI)"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -306,6 +688,18 @@
     },
     "Custom instructions": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄຳສັ່ງເພີ່ມເຕີມ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คำสั่งเพิ่มเติม"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -316,6 +710,18 @@
     },
     "Customize jars": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປັບແຕ່ງກະປຸກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปรับแต่งกระปุก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -326,6 +732,18 @@
     },
     "Data": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຂໍ້ມູນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ข้อมูล"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -336,6 +754,18 @@
     },
     "Delete all data": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລຶບຂໍ້ມູນທັງໝົດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ลบข้อมูลทั้งหมด"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -346,6 +776,18 @@
     },
     "Delete all data?": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລຶບຂໍ້ມູນທັງໝົດບໍ?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ลบข้อมูลทั้งหมดไหม?"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -356,6 +798,18 @@
     },
     "Delete everything": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລຶບທັງໝົດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ลบทั้งหมด"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -366,6 +820,18 @@
     },
     "Delete everything for good?": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລຶບທຸກຢ່າງຖາວອນເລີຍບໍ?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ลบทุกอย่างแบบถาวรเลยไหม?"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -376,6 +842,18 @@
     },
     "Display name": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊື່ທີ່ສະແດງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ชื่อที่แสดง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -386,6 +864,18 @@
     },
     "Export CSV": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສົ່ງອອກ CSV"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ส่งออก CSV"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -396,6 +886,18 @@
     },
     "Export a CSV first if you may want your data later.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຖ້າອາດຈະຕ້ອງໃຊ້ຂໍ້ມູນພາຍຫຼັງ ສົ່ງອອກ CSV ເກັບໄວ້ກ່ອນເດີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ถ้าอาจต้องใช้ข้อมูลทีหลัง ส่งออก CSV เก็บไว้ก่อนนะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -406,6 +908,18 @@
     },
     "For servers that don't list their models.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສຳລັບເຊີບເວີທີ່ບໍ່ສະແດງລາຍຊື່ໂມເດວ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สำหรับเซิร์ฟเวอร์ที่ไม่แสดงรายการโมเดล"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -416,6 +930,18 @@
     },
     "Free": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຟຣີ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ฟรี"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -426,6 +952,18 @@
     },
     "From your region": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕາມພາກພື້ນຂອງເຄື່ອງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตามภูมิภาคของเครื่อง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -436,6 +974,18 @@
     },
     "General": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທົ່ວໄປ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ทั่วไป"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -446,6 +996,18 @@
     },
     "Help & feedback": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊ່ວຍເຫຼືອ ແລະ ຄຳຕິຊົມ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ช่วยเหลือและคำติชม"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -456,6 +1018,18 @@
     },
     "Hidden amounts show as *****.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍອດເງິນທີ່ເຊື່ອງໄວ້ຈະສະແດງເປັນ *****."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยอดเงินที่ซ่อนไว้จะแสดงเป็น *****"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -466,6 +1040,18 @@
     },
     "Hide balances": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຊື່ອງຍອດເງິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ซ่อนยอดเงิน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -476,6 +1062,18 @@
     },
     "Hide content in App Switcher": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຊື່ອງເນື້ອຫາໃນໜ້າສະຫຼັບແອັບ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ซ่อนเนื้อหาในตัวสลับแอป"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -486,6 +1084,18 @@
     },
     "High": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຫຼາຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "มาก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -496,6 +1106,18 @@
     },
     "Hybrid": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໄຮບຣິດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไฮบริด"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -506,6 +1128,18 @@
     },
     "Immediately": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທັນທີ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ทันที"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -516,6 +1150,18 @@
     },
     "Jar budgeting": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຈັດງົບແບບກະປຸກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "จัดงบแบบกระปุก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -526,6 +1172,18 @@
     },
     "Key works. %lld models available.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄີໃຊ້ໄດ້. ມີ %lld ໂມເດວໃຫ້ເລືອກ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คีย์ใช้ได้ มี %lld โมเดลให้เลือก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -536,6 +1194,18 @@
     },
     "Language": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ພາສາ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ภาษา"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -544,18 +1214,20 @@
         }
       }
     },
-    "Language opens Moonee in the Settings app, where iOS lets you pick the app's language.": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ngôn ngữ mở trang Moonee trong app Cài đặt, nơi iOS cho chọn ngôn ngữ của app."
-          }
-        }
-      }
-    },
     "Loading models…": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກຳລັງໂຫຼດລາຍຊື່ໂມເດວ…"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กำลังโหลดรายการโมเดล…"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -566,6 +1238,18 @@
     },
     "Local": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃນເຄື່ອງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ในเครื่อง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -576,6 +1260,18 @@
     },
     "Local model": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂມເດວໃນເຄື່ອງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โมเดลในเครื่อง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -586,6 +1282,18 @@
     },
     "Local models": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂມເດວໃນເຄື່ອງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โมเดลในเครื่อง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -596,6 +1304,18 @@
     },
     "Lock after": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລັອກຫຼັງຈາກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ล็อกหลังจาก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -606,6 +1326,18 @@
     },
     "Lock with %@": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລັອກດ້ວຍ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ล็อกด้วย %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -616,6 +1348,18 @@
     },
     "Low": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໜ້ອຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "น้อย"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -626,6 +1370,18 @@
     },
     "Medium": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປານກາງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปานกลาง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -636,6 +1392,18 @@
     },
     "Model": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂມເດວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โมเดล"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -646,6 +1414,18 @@
     },
     "Month-end checklist and report.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍການກວດ ແລະ ລາຍງານທ້າຍເດືອນ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เช็กลิสต์และรายงานสิ้นเดือน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -656,6 +1436,18 @@
     },
     "Month-end close": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປິດບັນຊີເດືອນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปิดยอดเดือน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -666,6 +1458,18 @@
     },
     "Moonee has no server and no account. Your data stays on this iPhone (and in your own iCloud when sync is on). Nothing is sent anywhere unless you pick a cloud AI with your own key; AI settings show exactly what is sent.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ບໍ່ມີເຊີບເວີ ແລະ ບໍ່ຕ້ອງມີບັນຊີ. ຂໍ້ມູນຂອງເຈົ້າຢູ່ໃນ iPhone ເຄື່ອງນີ້ (ແລະ ໃນ iCloud ຂອງເຈົ້າເອງ ເມື່ອເປີດຊິງ). ບໍ່ມີຫຍັງຖືກສົ່ງອອກໄປໃສ ເວັ້ນແຕ່ເຈົ້າເລືອກໃຊ້ AI ຄລາວດ້ວຍຄີຂອງເຈົ້າເອງ; ການຕັ້ງຄ່າ AI ຈະບອກໄວ້ຊັດເຈນວ່າສົ່ງຫຍັງໄປແດ່."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ไม่มีเซิร์ฟเวอร์และไม่ต้องมีบัญชี ข้อมูลของคุณอยู่ใน iPhone เครื่องนี้ (และใน iCloud ของคุณเองเมื่อเปิดซิงค์) ไม่มีอะไรถูกส่งออกไปไหน เว้นแต่คุณเลือกใช้ AI บนคลาวด์ด้วยคีย์ของคุณเอง ซึ่งในการตั้งค่า AI จะบอกไว้ชัดเจนว่าส่งอะไรไปบ้าง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -676,6 +1480,18 @@
     },
     "Moonee is locked": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ຖືກລັອກຢູ່"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ล็อกอยู่"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -686,6 +1502,18 @@
     },
     "Moonee starts again like a new install.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ຈະເລີ່ມໃໝ່ຄືກັບຫາກໍຕິດຕັ້ງ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee จะเริ่มใหม่เหมือนเพิ่งติดตั้ง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -696,6 +1524,18 @@
     },
     "Moonee's finance skills adapt ideas from the finance plugin of anthropics/knowledge-work-plugins (Apache-2.0).": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທັກສະດ້ານການເງິນຂອງ Moonee ດັດແປງແນວຄິດມາຈາກປລັກອິນ finance ຂອງ anthropics/knowledge-work-plugins (Apache-2.0)."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ทักษะด้านการเงินของ Moonee ดัดแปลงแนวคิดมาจากปลั๊กอิน finance ของ anthropics/knowledge-work-plugins (Apache-2.0)"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -706,6 +1546,18 @@
     },
     "Moonee: a friendly money assistant": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee: ຜູ້ຊ່ວຍການເງິນທີ່ເປັນກັນເອງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee: ผู้ช่วยการเงินแสนเป็นกันเอง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -716,6 +1568,18 @@
     },
     "More": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເພີ່ມເຕີມ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เพิ่มเติม"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -726,6 +1590,18 @@
     },
     "No list yet. Pull to refresh, or type a model ID.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍັງບໍ່ມີລາຍຊື່. ດຶງລົງເພື່ອໂຫຼດໃໝ່ ຫຼື ພິມ ID ໂມເດວ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยังไม่มีรายการ ดึงลงเพื่อรีเฟรช หรือพิมพ์ ID โมเดล"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -736,6 +1612,18 @@
     },
     "No model is set up for this mode yet.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂໝດນີ້ຍັງບໍ່ໄດ້ຕັ້ງຄ່າໂມເດວ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โหมดนี้ยังไม่ได้ตั้งค่าโมเดล"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -746,6 +1634,18 @@
     },
     "None": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ມີ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มี"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -756,6 +1656,18 @@
     },
     "Nothing is sent to the cloud. Moonee has no server.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ມີຫຍັງຖືກສົ່ງຂຶ້ນຄລາວ. Moonee ບໍ່ມີເຊີບເວີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มีอะไรถูกส่งขึ้นคลาวด์ Moonee ไม่มีเซิร์ฟเวอร์"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -766,6 +1678,18 @@
     },
     "Off": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປິດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปิด"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -776,6 +1700,18 @@
     },
     "Off: only Moonee's built-in rules read what you type.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປິດ: ມີແຕ່ກົດໃນຕົວຂອງ Moonee ທີ່ອ່ານສິ່ງທີ່ເຈົ້າພິມ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปิด: มีแค่กฎในตัวของ Moonee ที่อ่านสิ่งที่คุณพิมพ์"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -786,6 +1722,18 @@
     },
     "On": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເປີດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เปิด"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -796,6 +1744,18 @@
     },
     "On-device": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃນເຄື່ອງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ในเครื่อง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -806,6 +1766,18 @@
     },
     "Passcode": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລະຫັດຜ່ານ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รหัสผ่าน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -816,6 +1788,18 @@
     },
     "Privacy": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄວາມເປັນສ່ວນຕົວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ความเป็นส่วนตัว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -826,6 +1810,18 @@
     },
     "Profile": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂປຣໄຟລ໌"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โปรไฟล์"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -836,6 +1832,18 @@
     },
     "Provider": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຜູ້ໃຫ້ບໍລິການ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ผู้ให้บริการ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -846,6 +1854,18 @@
     },
     "Questions about your spending, with tips.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຖາມເລື່ອງການໃຊ້ຈ່າຍ ພ້ອມເຄັດລັບ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ถามเรื่องการใช้จ่าย พร้อมเคล็ดลับ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -856,6 +1876,18 @@
     },
     "Rate the app": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃຫ້ຄະແນນແອັບ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ให้คะแนนแอป"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -866,6 +1898,18 @@
     },
     "Read transactions": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ອ່ານລາຍການ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อ่านรายการ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -876,6 +1920,18 @@
     },
     "Ready (Apple Intelligence, managed by iOS)": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ພ້ອມໃຊ້ (Apple Intelligence, ຈັດການໂດຍ iOS)"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "พร้อมใช้ (Apple Intelligence ดูแลโดย iOS)"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -886,6 +1942,18 @@
     },
     "Refresh": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂຫຼດໃໝ່"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รีเฟรช"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -896,6 +1964,18 @@
     },
     "Reminders": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ການແຈ້ງເຕືອນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "การแจ้งเตือน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -906,6 +1986,18 @@
     },
     "Removes every transaction, wallet, jar, goal and setting from this iPhone. This cannot be undone.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລຶບທຸກລາຍການ, ກະເປົາເງິນ, ກະປຸກ, ເປົ້າໝາຍ ແລະ ການຕັ້ງຄ່າທັງໝົດອອກຈາກ iPhone ເຄື່ອງນີ້. ກູ້ຄືນບໍ່ໄດ້ເດີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ลบทุกรายการ กระเป๋าเงิน กระปุก เป้าหมาย และการตั้งค่าทั้งหมดออกจาก iPhone เครื่องนี้ ย้อนกลับไม่ได้นะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -914,8 +2006,42 @@
         }
       }
     },
+    "Same as iPhone": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕາມພາສາຂອງ iPhone"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตามภาษาของ iPhone"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giống iPhone"
+          }
+        }
+      }
+    },
     "Search models": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊອກຫາໂມເດວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ค้นหาโมเดล"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -926,6 +2052,18 @@
     },
     "Security": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄວາມປອດໄພ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ความปลอดภัย"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -936,6 +2074,18 @@
     },
     "Sent to %@: what you type to Moonee, the chat so far, and the numbers Moonee looks up to answer (totals, jar balances, matching transactions). Sent with your key, straight from this iPhone; Moonee has no server.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສົ່ງໄປຫາ %@: ສິ່ງທີ່ເຈົ້າພິມຫາ Moonee, ແຊັດກ່ອນໜ້າ ແລະ ຕົວເລກທີ່ Moonee ຊອກມາເພື່ອຕອບ (ຍອດລວມ, ຍອດເງິນໃນກະປຸກ, ລາຍການທີ່ກ່ຽວຂ້ອງ). ສົ່ງດ້ວຍຄີຂອງເຈົ້າ ໂດຍກົງຈາກ iPhone ເຄື່ອງນີ້; Moonee ບໍ່ມີເຊີບເວີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ส่งไปที่ %@: สิ่งที่คุณพิมพ์ถึง Moonee แชทก่อนหน้า และตัวเลขที่ Moonee ค้นมาเพื่อตอบ (ยอดรวม ยอดคงเหลือในกระปุก รายการที่เกี่ยวข้อง) ส่งด้วยคีย์ของคุณตรงจาก iPhone เครื่องนี้ Moonee ไม่มีเซิร์ฟเวอร์"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -946,6 +2096,18 @@
     },
     "Set a passcode on this iPhone first.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕັ້ງລະຫັດຜ່ານໃຫ້ iPhone ເຄື່ອງນີ້ກ່ອນເດີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตั้งรหัสผ่านให้ iPhone เครื่องนี้ก่อนนะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -956,6 +2118,18 @@
     },
     "Set up your profile": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕັ້ງຄ່າໂປຣໄຟລ໌"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตั้งค่าโปรไฟล์"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -966,6 +2140,18 @@
     },
     "Share Moonee": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແບ່ງປັນ Moonee"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แชร์ Moonee"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -976,6 +2162,18 @@
     },
     "Sign in to iCloud (or turn on iCloud for Moonee) in the Settings app to sync. Until then your data stays on this iPhone.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຂົ້າສູ່ລະບົບ iCloud (ຫຼື ເປີດ iCloud ໃຫ້ Moonee) ໃນແອັບການຕັ້ງຄ່າເພື່ອຊິງ. ລະຫວ່າງນີ້ຂໍ້ມູນຂອງເຈົ້າຈະຢູ່ໃນ iPhone ເຄື່ອງນີ້."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ลงชื่อเข้า iCloud (หรือเปิด iCloud ให้ Moonee) ในแอปการตั้งค่าเพื่อซิงค์ ระหว่างนี้ข้อมูลของคุณจะอยู่ใน iPhone เครื่องนี้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -986,6 +2184,18 @@
     },
     "Skills": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທັກສະ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ทักษะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -996,6 +2206,18 @@
     },
     "Spending coach": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄູຝຶກການໃຊ້ຈ່າຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โค้ชการใช้จ่าย"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1006,6 +2228,18 @@
     },
     "Splitting income and balancing jars.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແບ່ງລາຍຮັບ ແລະ ດຸ່ນດ່ຽງກະປຸກ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แบ่งรายรับและจัดสมดุลกระปุก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1016,6 +2250,18 @@
     },
     "Stored on this device only": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເກັບໄວ້ໃນເຄື່ອງນີ້ເທົ່ານັ້ນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เก็บไว้ในเครื่องนี้เท่านั้น"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1026,6 +2272,18 @@
     },
     "Stored on this device only · No account needed": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເກັບໄວ້ໃນເຄື່ອງນີ້ເທົ່ານັ້ນ · ບໍ່ຕ້ອງມີບັນຊີ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เก็บไว้ในเครื่องนี้เท่านั้น · ไม่ต้องมีบัญชี"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1036,6 +2294,18 @@
     },
     "Support & about": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊ່ວຍເຫຼືອ ແລະ ກ່ຽວກັບແອັບ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ช่วยเหลือและเกี่ยวกับแอป"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1046,6 +2316,18 @@
     },
     "Test connection": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທົດສອບການເຊື່ອມຕໍ່"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ทดสอบการเชื่อมต่อ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1056,6 +2338,18 @@
     },
     "Test key": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທົດສອບຄີ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ทดสอบคีย์"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1066,6 +2360,18 @@
     },
     "Thanks": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຂອບໃຈ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ขอบคุณ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1076,6 +2382,18 @@
     },
     "The key is kept in this iPhone's Keychain. You pay your provider directly.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄີເກັບໄວ້ໃນ Keychain ຂອງ iPhone ເຄື່ອງນີ້. ເຈົ້າຈ່າຍຄ່າບໍລິການໃຫ້ຜູ້ໃຫ້ບໍລິການໂດຍກົງ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คีย์เก็บไว้ใน Keychain ของ iPhone เครื่องนี้ คุณจ่ายค่าบริการให้ผู้ให้บริการโดยตรง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1086,6 +2404,18 @@
     },
     "The on-device model is not ready": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂມເດວໃນເຄື່ອງຍັງບໍ່ພ້ອມ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โมเดลในเครื่องยังไม่พร้อม"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1096,6 +2426,18 @@
     },
     "The provider rejected this key. Check it and try again.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຜູ້ໃຫ້ບໍລິການບໍ່ຮັບຄີນີ້. ກວດເບິ່ງແລ້ວລອງໃໝ່ອີກຄັ້ງ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ผู้ให้บริการไม่รับคีย์นี้ ตรวจสอบแล้วลองใหม่อีกครั้ง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1106,6 +2448,18 @@
     },
     "This iPhone does not support Apple Intelligence": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPhone ເຄື່ອງນີ້ບໍ່ຮອງຮັບ Apple Intelligence"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPhone เครื่องนี้ไม่รองรับ Apple Intelligence"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1116,6 +2470,18 @@
     },
     "This server has no model list. Type a model ID instead.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຊີບເວີນີ້ບໍ່ມີລາຍຊື່ໂມເດວ. ພິມ ID ໂມເດວແທນໄດ້ເລີຍ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เซิร์ฟเวอร์นี้ไม่มีรายการโมเดล พิมพ์ ID โมเดลแทนได้เลย"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1126,6 +2492,18 @@
     },
     "Tools": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຄື່ອງມື"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เครื่องมือ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1136,6 +2514,18 @@
     },
     "Transactions are read on this iPhone; advice and reports use your cloud key.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍການຈະຖືກອ່ານໃນ iPhone ເຄື່ອງນີ້; ຄຳແນະນຳ ແລະ ລາຍງານໃຊ້ຄີຄລາວຂອງເຈົ້າ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายการจะถูกอ่านบน iPhone เครื่องนี้ ส่วนคำแนะนำและรายงานใช้คีย์คลาวด์ของคุณ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1146,6 +2536,18 @@
     },
     "Turn on Apple Intelligence in Settings": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເປີດ Apple Intelligence ໃນການຕັ້ງຄ່າ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เปิด Apple Intelligence ในการตั้งค่า"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1156,6 +2558,18 @@
     },
     "Turn on the app lock": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເປີດລັອກແອັບ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เปิดล็อกแอป"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1166,6 +2580,18 @@
     },
     "Type a model ID": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ພິມ ID ໂມເດວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "พิมพ์ ID โมเดล"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1176,6 +2602,18 @@
     },
     "Typed transactions stay on this iPhone. For questions, advice and reports, your message, the chat so far and the numbers Moonee looks up are sent to %@ with your key. Moonee has no server.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍການທີ່ເຈົ້າພິມຈະຢູ່ໃນ iPhone ເຄື່ອງນີ້. ສຳລັບຄຳຖາມ, ຄຳແນະນຳ ແລະ ລາຍງານ, ຂໍ້ຄວາມຂອງເຈົ້າ, ແຊັດກ່ອນໜ້າ ແລະ ຕົວເລກທີ່ Moonee ຊອກມາ ຈະຖືກສົ່ງໄປຫາ %@ ດ້ວຍຄີຂອງເຈົ້າ. Moonee ບໍ່ມີເຊີບເວີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายการที่คุณพิมพ์จะอยู่ใน iPhone เครื่องนี้ สำหรับคำถาม คำแนะนำ และรายงาน ข้อความของคุณ แชทก่อนหน้า และตัวเลขที่ Moonee ค้นมาจะถูกส่งไปที่ %@ ด้วยคีย์ของคุณ Moonee ไม่มีเซิร์ฟเวอร์"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1186,6 +2624,18 @@
     },
     "Unlock Moonee": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປົດລັອກ Moonee"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปลดล็อก Moonee"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1196,6 +2646,18 @@
     },
     "Unlock with %@": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປົດລັອກດ້ວຍ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปลดล็อกด้วย %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1206,6 +2668,18 @@
     },
     "Use": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃຊ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใช้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1216,6 +2690,18 @@
     },
     "Used for new transactions and for amounts like “45k”. Amounts already saved keep their currency.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃຊ້ກັບລາຍການໃໝ່ ແລະ ການອ່ານຈຳນວນເງິນ ເຊັ່ນ “25ພັນ”. ຈຳນວນເງິນທີ່ບັນທຶກໄວ້ແລ້ວຈະໃຊ້ສະກຸນເງິນເດີມ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใช้กับรายการใหม่และการอ่านยอดเงิน เช่น “120” ส่วนยอดที่บันทึกไว้แล้วจะใช้สกุลเงินเดิม"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1226,6 +2712,18 @@
     },
     "Version %@": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເວີຊັນ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เวอร์ชัน %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1236,6 +2734,18 @@
     },
     "Wallets": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກະເປົາເງິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กระเป๋าเงิน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1246,6 +2756,18 @@
     },
     "What leaves this iPhone": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຂໍ້ມູນຫຍັງອອກຈາກ iPhone ແດ່"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ข้อมูลอะไรออกจาก iPhone บ้าง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1256,6 +2778,18 @@
     },
     "Your API key": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API key ຂອງເຈົ້າ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API key ของคุณ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1266,6 +2800,18 @@
     },
     "Your API key (BYOK)": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API key ຂອງເຈົ້າ (BYOK)"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API key ของคุณ (BYOK)"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1276,6 +2822,18 @@
     },
     "Your data is stored on this iPhone only.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຂໍ້ມູນຂອງເຈົ້າເກັບໄວ້ໃນ iPhone ເຄື່ອງນີ້ເທົ່ານັ້ນ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ข้อมูลของคุณเก็บไว้ใน iPhone เครื่องนี้เท่านั้น"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1286,6 +2844,18 @@
     },
     "Your data syncs to your own private iCloud, so a new iPhone or a reinstall gets it back. Nobody else, Moonee included, can read it.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຂໍ້ມູນຂອງເຈົ້າຊິງໄປຫາ iCloud ສ່ວນຕົວຂອງເຈົ້າເອງ, ປ່ຽນ iPhone ໃໝ່ ຫຼື ຕິດຕັ້ງໃໝ່ກໍໄດ້ຂໍ້ມູນຄືນ. ບໍ່ມີໃຜອ່ານໄດ້, ແມ່ນແຕ່ Moonee."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ข้อมูลของคุณซิงค์ไปที่ iCloud ส่วนตัวของคุณเอง เปลี่ยน iPhone ใหม่หรือติดตั้งใหม่ก็ได้ข้อมูลคืน ไม่มีใครอ่านได้ แม้แต่ Moonee"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1296,6 +2866,18 @@
     },
     "Your name": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊື່ຂອງເຈົ້າ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ชื่อของคุณ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1306,6 +2888,18 @@
     },
     "iCloud is not available right now. Your data is safe on this iPhone and syncs when iCloud is back.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕອນນີ້ໃຊ້ iCloud ບໍ່ໄດ້. ຂໍ້ມູນຂອງເຈົ້າຍັງປອດໄພຢູ່ໃນ iPhone ເຄື່ອງນີ້ ແລະ ຈະຊິງເມື່ອ iCloud ກັບມາ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตอนนี้ใช้ iCloud ไม่ได้ ข้อมูลของคุณยังปลอดภัยอยู่ใน iPhone เครื่องนี้ และจะซิงค์เมื่อ iCloud กลับมา"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1316,6 +2910,18 @@
     },
     "iCloud sync": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊິງ iCloud"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ซิงค์ iCloud"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1326,6 +2932,18 @@
     },
     "iOS is still downloading the model, try again later": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iOS ຍັງດາວໂຫຼດໂມເດວຢູ່, ລອງໃໝ່ພາຍຫຼັງເດີ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iOS ยังดาวน์โหลดโมเดลอยู่ ลองใหม่ทีหลังนะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",

@@ -53,8 +53,11 @@ struct Lexicon: Sendable {
     var periods: [String: String] = [:]
     /// Receipt lines that hold the total ("tổng cộng", "total"). Longest first.
     var receiptTotals: [String] = []
+    /// Spelled-out numbers for languages that write them as one run ("ห้าสิบ" = 50): digits 1–9, the tens/hundreds…
+    /// units, and odd ones (Lao "ຊາວ" = 20). The tokeniser turns a run of these into digits.
+    var numberWords: [String: Int] = [:]
 
-    static let all: [Lexicon] = [.vi, .en]
+    static let all: [Lexicon] = [.vi, .en, .th, .lo]
 }
 
 // MARK: - Matching helpers shared by the parser and the skill router
@@ -66,12 +69,21 @@ struct Token {
     let lower: String
     /// `lower` without diacritics ("đ" → "d").
     let folded: String
+    /// Written straight after the previous word, no space: Thai and Lao don't put spaces between words.
+    var glued = false
     var hasDiacritics: Bool { lower != folded }
 
-    init(_ word: String) {
+    init(_ word: String, glued: Bool = false) {
         original = word.trimmingCharacters(in: Token.edge)
         lower = original.lowercased().precomposedStringWithCanonicalMapping
         folded = Token.fold(lower)
+        self.glued = glued
+    }
+
+    /// A spelled-out number: shows as written, matches as digits.
+    private init(number: Int, original: String, glued: Bool) {
+        self.original = original
+        (lower, folded, self.glued) = (String(number), String(number), glued)
     }
 
     /// A lexicon word matches with its diacritics, or folded when the user typed none ("hom qua").
@@ -86,7 +98,113 @@ struct Token {
     }
 
     static func split(_ text: String) -> [Token] {
-        text.split(whereSeparator: \.isWhitespace).map { Token(String($0)) }.filter { !$0.original.isEmpty }
+        spellNumbers(words(text).map { Token($0.text, glued: $0.glued) }.filter { !$0.original.isEmpty })
+    }
+
+    /// Text again from some tokens: a space only where the user typed one.
+    static func join(_ tokens: some Sequence<Token>, _ text: KeyPath<Token, String> = \.original) -> String {
+        tokens.enumerated().map { ($0.offset > 0 && !$0.element.glued ? " " : "") + $0.element[keyPath: text] }.joined()
+    }
+
+    /// Words split by spaces; a Thai or Lao run is cut into words by the system's dictionary word breaker (ICU),
+    /// and digits glued to it come apart ("กาแฟ50บาท" → กาแฟ · 50 · บาท). Thai and Lao digits become 0–9.
+    static func words(_ text: String) -> [(text: String, glued: Bool)] {
+        text.split(whereSeparator: \.isWhitespace).flatMap { chunk -> [(text: String, glued: Bool)] in
+            let word = String(String.UnicodeScalarView(chunk.unicodeScalars.map(asciiDigit)))
+            guard word.unicodeScalars.contains(where: isSEAsianLetter) else { return [(word, false)] }
+            var out: [(text: String, glued: Bool)] = []
+            var start = word.startIndex
+            while start < word.endIndex {
+                let letters = isSEAsianLetter(word.unicodeScalars[start])
+                let end = word[start...].firstIndex { isSEAsianLetter($0.unicodeScalars.first!) != letters } ?? word.endIndex
+                let run = String(word[start..<end])
+                if letters {
+                    run.enumerateSubstrings(in: run.startIndex..., options: .byWords) { w, _, _, _ in
+                        if let w { out.append((w, !out.isEmpty)) }
+                    }
+                } else {
+                    out.append((run, !out.isEmpty))
+                }
+                start = end
+            }
+            return out
+        }
+    }
+
+    private static func isSEAsianLetter(_ c: Unicode.Scalar) -> Bool {
+        switch c.value {
+        case 0x0E01...0x0E3A, 0x0E40...0x0E4E, 0x0E81...0x0ECE, 0x0EDC...0x0EDF: true // Thai, Lao; not ฿ or digits
+        default: false
+        }
+    }
+
+    private static func asciiDigit(_ c: Unicode.Scalar) -> Unicode.Scalar {
+        switch c.value {
+        case 0x0E50...0x0E59: Unicode.Scalar(c.value - 0x0E50 + 0x30)! // ๐–๙
+        case 0x0ED0...0x0ED9: Unicode.Scalar(c.value - 0x0ED0 + 0x30)! // ໐–໙
+        default: c
+        }
+    }
+
+    // MARK: Spelled-out numbers (Thai, Lao)
+
+    private static let numberWords: [String: Int] = Lexicon.all.reduce(into: [:]) { $0.merge($1.numberWords) { a, _ in a } }
+    private static let longestNumberWord = numberWords.keys.map(\.count).max() ?? 0
+    private static let units: Set<Int> = [10, 100, 1_000, 10_000, 100_000, 1_000_000]
+
+    /// "ห้าสิบ" → [5, 10]; nil unless the whole word is number words (so "ห้าง" and "สามี" stay words).
+    private static func numberParts(_ word: String) -> [Int]? {
+        var parts: [Int] = [], rest = Substring(word)
+        while !rest.isEmpty {
+            guard let n = (1...min(longestNumberWord, rest.count)).reversed().lazy
+                .compactMap({ len in numberWords[String(rest.prefix(len))].map { (len: len, v: $0) } }).first else { return nil }
+            parts.append(n.v)
+            rest = rest.dropFirst(n.len)
+        }
+        return parts.isEmpty ? nil : parts
+    }
+
+    /// [2, 1000, 5, 100] → 2500. A unit multiplies what is smaller than it, so Lao "ຫ້າສິບພັນ" = 50,000; a digit after
+    /// a thousands unit is the next one down, as people say it: "สองพันห้า" = 2,500, "แสนห้า" = 150,000.
+    static func value(of parts: [Int]) -> Int {
+        var total = 0, digit: Int?, lastUnit = 1
+        for v in parts {
+            if units.contains(v) {
+                let small = total % v
+                let n = small + (digit ?? 0)
+                total += -small + (n == 0 ? 1 : n) * v
+                (digit, lastUnit) = (nil, v)
+            } else if v < 10 {
+                digit = v
+            } else {
+                total += v // ຊາວ = 20
+                (digit, lastUnit) = (nil, 10)
+            }
+        }
+        return total + (digit.map { lastUnit >= 1_000 ? $0 * lastUnit / 10 : $0 } ?? 0)
+    }
+
+    /// Joins runs of number words into one numeric token. Units right after digits stay words, so "2พัน" is 2 × พัน.
+    private static func spellNumbers(_ tokens: [Token]) -> [Token] {
+        guard !numberWords.isEmpty, tokens.contains(where: { $0.lower.unicodeScalars.contains(where: isSEAsianLetter) }) else { return tokens }
+        var out: [Token] = []
+        var i = 0
+        while i < tokens.count {
+            var parts: [Int] = [], j = i
+            while j < tokens.count, j == i || tokens[j].glued, let p = numberParts(tokens[j].lower) {
+                parts += p
+                j += 1
+            }
+            let afterDigits = out.last?.folded.last?.isNumber == true
+            if parts.isEmpty || (afterDigits && parts.allSatisfy(units.contains)) {
+                out.append(tokens[i])
+                i += 1
+            } else {
+                out.append(Token(number: value(of: parts), original: join(tokens[i..<j]), glued: tokens[i].glued))
+                i = j
+            }
+        }
+        return out
     }
 }
 
@@ -94,7 +212,8 @@ struct Token {
 typealias Phrase = [String]
 
 extension Phrase {
-    init(phrase: String) { self = phrase.lowercased().precomposedStringWithCanonicalMapping.split(separator: " ").map(String.init) }
+    /// Split like the input is, so a Thai or Lao phrase meets the same word breaks.
+    init(phrase: String) { self = Token.words(phrase).map { Token($0.text).lower }.filter { !$0.isEmpty } }
 
     func matches(_ tokens: [Token], at i: Int) -> Bool {
         i + count <= tokens.count && indices.allSatisfy { tokens[i + $0].matches(self[$0]) }
