@@ -12,6 +12,16 @@
         }
       }
     },
+    "%@, %@, 1 tael": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@, 1 lượng"
+          }
+        }
+      }
+    },
     "%lld on": {
       "localizations": {
         "vi": {
@@ -22,12 +32,52 @@
         }
       }
     },
+    "1 %@ in VND": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 %@ ra VND"
+          }
+        }
+      }
+    },
     "Add at least one trigger word, or Moonee will never use the skill.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Thêm ít nhất một từ kích hoạt, nếu không Moonee sẽ không bao giờ dùng skill này."
+          }
+        }
+      }
+    },
+    "Apple Intelligence doesn't speak your language on this iPhone yet, so Moonee replied in English.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Intelligence trên iPhone này chưa hỗ trợ tiếng Việt, nên Moonee trả lời bằng tiếng Anh nhé."
+          }
+        }
+      }
+    },
+    "Apple Intelligence doesn't support this language yet.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Intelligence chưa hỗ trợ ngôn ngữ này."
+          }
+        }
+      }
+    },
+    "Apple Intelligence wouldn't answer that one.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Intelligence không chịu trả lời câu này."
           }
         }
       }
@@ -82,12 +132,12 @@
         }
       }
     },
-    "For questions about gold, exchange rates, crypto and news. OpenRouter, OpenAI, Anthropic and Gemini search on their own; with other providers or on-device, add a Tavily or Brave key.": {
+    "For other questions (stocks, interest rates, news), add a Tavily or Brave key, or use OpenRouter, OpenAI, Anthropic or Gemini.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dùng khi bạn hỏi giá vàng, tỷ giá, tiền ảo và tin tức. OpenRouter, OpenAI, Anthropic và Gemini tự tìm được; với nhà cung cấp khác hoặc model trên máy, hãy thêm key Tavily hoặc Brave."
+            "value": "Với câu hỏi khác (chứng khoán, lãi suất, tin tức), hãy thêm key Tavily hoặc Brave, hoặc dùng OpenRouter, OpenAI, Anthropic hay Gemini."
           }
         }
       }
@@ -98,6 +148,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hãy đặt tên cho skill."
+          }
+        }
+      }
+    },
+    "Gold prices": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giá vàng"
+          }
+        }
+      }
+    },
+    "Gold prices, exchange rates and crypto come from PNJ, Vietcombank and CoinGecko; only the item you ask about is sent, never your data.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giá vàng, tỷ giá và tiền ảo lấy từ PNJ, Vietcombank và CoinGecko; chỉ gửi đi thứ bạn hỏi, không bao giờ gửi dữ liệu của bạn."
+          }
+        }
+      }
+    },
+    "Gold, exchange rates and crypto always come from PNJ, Vietcombank and CoinGecko, no key needed.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giá vàng, tỷ giá và tiền ảo luôn lấy từ PNJ, Vietcombank và CoinGecko, không cần key."
           }
         }
       }
@@ -152,6 +232,26 @@
         }
       }
     },
+    "Moonee asked your other on-device model instead.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee nhờ model còn lại trên máy trả lời thay nhé."
+          }
+        }
+      }
+    },
+    "Moonee used the app's own numbers for now.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee tạm trả lời bằng số liệu có sẵn trong app nhé."
+          }
+        }
+      }
+    },
     "Moonee uses your skill when a question contains one of its trigger words. Numbers still come from the app.": {
       "localizations": {
         "vi": {
@@ -188,6 +288,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tắt"
+          }
+        }
+      }
+    },
+    "Ready, but Apple Intelligence doesn't speak your language yet: Moonee answers in English": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã sẵn sàng, nhưng Apple Intelligence chưa hỗ trợ tiếng Việt: Moonee sẽ trả lời bằng tiếng Anh"
           }
         }
       }
@@ -252,6 +362,26 @@
         }
       }
     },
+    "Searching with %@'s built-in search.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang dùng tìm kiếm có sẵn của %@."
+          }
+        }
+      }
+    },
+    "Searching with your %@ key.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang tìm bằng key %@ của bạn."
+          }
+        }
+      }
+    },
     "Short version for on-device models": {
       "localizations": {
         "vi": {
@@ -282,12 +412,32 @@
         }
       }
     },
+    "That was a bit long for the on-device model.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Câu này hơi dài so với model trên máy."
+          }
+        }
+      }
+    },
     "The file needs a front matter block between --- lines with name, description, triggers and tools.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "File cần phần đầu nằm giữa hai dòng --- gồm name, description, triggers và tools."
+          }
+        }
+      }
+    },
+    "The on-device model hit a snag.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Model trên máy vừa gặp trục trặc."
           }
         }
       }
@@ -342,12 +492,12 @@
         }
       }
     },
-    "Web search is off. Add a Tavily or Brave key below, or use a provider with built-in search.": {
+    "Web search is off.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tìm kiếm web đang tắt. Thêm key Tavily hoặc Brave bên dưới, hoặc dùng nhà cung cấp có sẵn tìm kiếm."
+            "value": "Tìm kiếm web đang tắt."
           }
         }
       }
@@ -398,6 +548,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "Skill của bạn"
+          }
+        }
+      }
+    },
+    "buy": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mua vào"
+          }
+        }
+      }
+    },
+    "buy, cash": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mua tiền mặt"
+          }
+        }
+      }
+    },
+    "buy, transfer": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mua chuyển khoản"
+          }
+        }
+      }
+    },
+    "sell": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bán ra"
           }
         }
       }
