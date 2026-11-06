@@ -120,6 +120,20 @@ enum DocFixtures {
         row("Grab  -45.000 VND", 0.39),
     ]
 
+    /// A Thai bank slip: amounts with satang, labels glued to Thai words.
+    static let thaiSlip = [
+        row("โอนเงินสำเร็จ", 0.15, 0.025),
+        row("06/11/2026 08:15", 0.19),
+        row("1,500.00 บาท", 0.25, 0.045),
+        row("จาก", 0.33),
+        row("นาย สมชาย ใจดี", 0.36, 0.016),
+        row("ไปยัง", 0.42),
+        row("น.ส. สมหญิง รักเรียน", 0.45, 0.016),
+        row("เลขที่รายการ: 015309081534ATF00123", 0.52),
+        row("ค่าธรรมเนียม  0.00 บาท", 0.56),
+        row("ยอดเงินคงเหลือ  12,345.67 บาท", 0.6),
+    ]
+
     /// A chat screenshot: no money.
     static let chat = [
         row("09:41", 0.02, 0.018),

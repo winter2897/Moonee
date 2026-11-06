@@ -4,6 +4,18 @@
   "strings": {
     "%lld days overdue": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກາຍກຳນົດ %lld ມື້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เลยกำหนด %lld วัน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -14,6 +26,18 @@
     },
     "Add with Moonee": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບັນທຶກກັບ Moonee"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บันทึกกับ Moonee"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -24,6 +48,18 @@
     },
     "Attach photo": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແນບຮູບ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แนบรูป"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -34,6 +70,18 @@
     },
     "Balance hidden": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຊື່ອງຍອດເງິນໄວ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ซ่อนยอดเงินอยู่"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -44,6 +92,18 @@
     },
     "Budget used": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ງົບປະມານທີ່ໃຊ້ແລ້ວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใช้งบไปแล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -54,6 +114,18 @@
     },
     "Done": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແລ້ວໆ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เสร็จ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -64,6 +136,18 @@
     },
     "Due today": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄົບກຳນົດມື້ນີ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ครบกำหนดวันนี้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -74,6 +158,18 @@
     },
     "Edit": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແກ້ໄຂ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แก้ไข"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -84,6 +180,18 @@
     },
     "In %lld days": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ອີກ %lld ມື້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อีก %lld วัน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -94,6 +202,18 @@
     },
     "Listening…": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ກຳລັງຟັງ…"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee กำลังฟัง…"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -104,6 +224,18 @@
     },
     "Mark paid": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໝາຍວ່າຈ່າຍແລ້ວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ทำเครื่องหมายว่าจ่ายแล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -114,6 +246,18 @@
     },
     "Message Moonee…": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສົ່ງຂໍ້ຄວາມຫາ Moonee…"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "พิมพ์หา Moonee…"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -124,6 +268,18 @@
     },
     "Paid": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຈ່າຍແລ້ວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "จ่ายแล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -134,6 +290,18 @@
     },
     "Saved to your ledger": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບັນທຶກລົງປຶ້ມບັນຊີແລ້ວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บันทึกลงสมุดบัญชีแล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -144,6 +312,18 @@
     },
     "Send": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສົ່ງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ส่ง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -154,6 +334,18 @@
     },
     "Sent": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສົ່ງແລ້ວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ส่งแล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -164,6 +356,18 @@
     },
     "Stop recording": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຢຸດບັນທຶກສຽງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "หยุดอัดเสียง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -174,6 +378,18 @@
     },
     "Tap a line to edit": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແຕະໃສ່ລາຍການເພື່ອແກ້ໄຂ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แตะที่รายการเพื่อแก้ไข"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -184,6 +400,18 @@
     },
     "Undo": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍົກເລີກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เลิกทำ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -194,6 +422,18 @@
     },
     "Undone, nothing was saved": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍົກເລີກແລ້ວ ບໍ່ໄດ້ບັນທຶກຫຍັງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เลิกทำแล้ว ไม่ได้บันทึกอะไร"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -204,6 +444,18 @@
     },
     "Voice input": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເວົ້າເພື່ອປ້ອນຂໍ້ມູນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "พูดเพื่อป้อนข้อมูล"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -214,6 +466,18 @@
     },
     "about": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປະມານ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ประมาณ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -224,6 +488,18 @@
     },
     "Saved": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບັນທຶກແລ້ວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บันทึกแล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",

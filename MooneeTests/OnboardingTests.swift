@@ -34,6 +34,8 @@ import Testing
         let vndRanges = OnboardingBook.incomeRanges(currency: "VND")
         #expect(vndRanges.map(\.mid) == [7_000_000, 15_000_000, 30_000_000, 50_000_000])
         #expect(OnboardingBook.incomeRanges(currency: "USD").map(\.mid) == [150_000, 300_000, 600_000, 1_000_000]) // cents
+        #expect(OnboardingBook.incomeRanges(currency: "THB").map(\.mid) == [10_000, 22_000, 45_000, 80_000].map { Money(major: Decimal($0), "THB").minor })
+        #expect(OnboardingBook.incomeRanges(currency: "LAK").map(\.mid) == [2_000_000, 4_500_000, 9_000_000, 15_000_000].map { Money(major: Decimal($0), "LAK").minor })
     }
 
     @Test func walletsReuseSeededCashAndStoreCardDebtNegative() throws {
@@ -97,9 +99,9 @@ import Testing
         let jars = try context.fetch(FetchDescriptor<Jar>(sortBy: [SortDescriptor(\.order)]))
         OnboardingBook.applyJars([60, 10, 10, 10, 5, 5], to: jars, in: context)
         #expect(jars.map(\.percent) == [60, 10, 10, 10, 5, 5])
-        #expect(jars.map(\.initialBalance) == [6_000_000, 1_000_000, 1_000_000, 1_000_000, 500_000, 500_000]) // 12tr − 2tr card debt
-        let ledger = Ledger(txns: [], wallets: [], jars: jars)
-        #expect(ledger.jarBalance(jars[0].persistentModelID) == 6_000_000)
+        let ledger = Ledger(txns: try context.fetch(FetchDescriptor<Txn>()), wallets: try context.fetch(FetchDescriptor<Wallet>()), jars: jars)
+        #expect(jars.map { ledger.jarBalance($0.persistentModelID) } == [6_000_000, 1_000_000, 1_000_000, 1_000_000, 500_000, 500_000]) // 12tr − 2tr card debt
+        #expect(ledger.unallocated == 0)
 
         OnboardingBook.applyJars([50, 10], to: jars, in: context) // invalid: nothing changes
         #expect(jars[0].percent == 60)
@@ -108,6 +110,7 @@ import Testing
     @Test func suggestedMode() {
         #expect(OnboardingBook.suggestedMode(appleAvailable: true, localFits: true, language: "en") == .onDevice)
         #expect(OnboardingBook.suggestedMode(appleAvailable: true, localFits: true, language: "vi") == .local)
+        #expect(OnboardingBook.suggestedMode(appleAvailable: true, localFits: true, language: "th") == .local)
         #expect(OnboardingBook.suggestedMode(appleAvailable: true, localFits: false, language: "vi") == .onDevice)
         #expect(OnboardingBook.suggestedMode(appleAvailable: false, localFits: true, language: "en") == .local)
         #expect(OnboardingBook.suggestedMode(appleAvailable: false, localFits: false, language: "en") == .byok)

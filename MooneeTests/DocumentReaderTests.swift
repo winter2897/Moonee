@@ -95,6 +95,16 @@ struct DocumentReaderTests {
         #expect(doc.items[1].categoryKey == "category.food" && doc.items[3].categoryKey == "category.transport")
     }
 
+    @Test func thaiBankSlip() throws {
+        let doc = read(DocFixtures.thaiSlip)
+        let item = try #require(doc.items.first)
+        #expect(doc.type == .payment && doc.items.count == 1)
+        #expect(item.amount == 150_000 && item.currency == "THB") // 1,500.00 baht, not the balance
+        #expect(item.kind == .sent && item.counterparty == "น.ส. สมหญิง รักเรียน")
+        #expect(item.reference == "015309081534ATF00123")
+        #expect(item.date == at(6, 11, 8, 15))
+    }
+
     @Test func chatScreenshotIsNotMoney() {
         #expect(read(DocFixtures.chat) == DocRead(type: .other, items: []))
     }

@@ -21,14 +21,22 @@ import AVFoundation
     /// Bumped per recording, so a late callback from the previous one changes nothing.
     private var run = 0
 
-    /// The recognizer locale for the app's language (vi or en), e.g. vi-VN; nil when the device has none.
+    /// Set when the app's language has no recognizer and dictation runs in a neighbour (Lao → Thai); the chat says so.
+    private(set) var fallbackLocale: Locale?
+
+    /// Languages Speech doesn't recognise (no lo-LA as of iOS 26) → the closest one it does.
+    nonisolated static let fallbacks = ["lo": "th"]
+    nonisolated static let preferred = ["vi": "vi-VN", "th": "th-TH", "lo": "lo-LA", "en": "en-US"]
+
+    /// The recognizer locale for the app's language, e.g. vi-VN, th-TH; nil when the device has none.
     nonisolated static func recognizerLocale(app: String? = Bundle.main.preferredLocalizations.first,
                                              region: String? = Locale.current.region?.identifier,
                                              supported: Set<Locale> = SFSpeechRecognizer.supportedLocales()) -> Locale? {
         let lang = String((app ?? "vi").prefix(2))
         let matches = supported.filter { $0.language.languageCode?.identifier == lang }
+        guard !matches.isEmpty else { return fallbacks[lang].flatMap { recognizerLocale(app: $0, region: region, supported: supported) } }
         return matches.first { $0.region?.identifier == region }
-            ?? matches.first { $0.identifier == (lang == "vi" ? "vi-VN" : "en-US") }
+            ?? matches.first { $0.identifier == preferred[lang] }
             ?? matches.sorted { $0.identifier < $1.identifier }.first
     }
 
@@ -48,6 +56,8 @@ import AVFoundation
             failure = .unavailable
             return
         }
+        let app = Bundle.main.preferredLocalizations.first.map { String($0.prefix(2)) }
+        if locale.language.languageCode?.identifier != app { fallbackLocale = locale }
         guard !stopRequested else { return } // released while the prompts were up
 
         do {

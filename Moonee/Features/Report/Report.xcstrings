@@ -3,6 +3,18 @@
   "strings": {
     "%@ ended in the red: move %@ from %@ to cover it.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກະປຸກ %@ ຕິດລົບ: ໂອນ %@ ຈາກ %@ ມາເຕີມເດີ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กระปุก %@ ติดลบ: โอน %@ จาก %@ มาเติมนะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -13,6 +25,18 @@
     },
     "Avg %@": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສະເລ່ຍ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เฉลี่ย %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -23,6 +47,18 @@
     },
     "By category": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕາມໝວດໝູ່"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตามหมวดหมู่"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -33,6 +69,18 @@
     },
     "Carried over to next month": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍົກຍອດໄປເດືອນໜ້າ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยกยอดไปเดือนหน้า"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -43,6 +91,18 @@
     },
     "Done": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແລ້ວໆ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เสร็จ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -53,6 +113,18 @@
     },
     "Every jar's balance carries over to next month.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍອດເງິນຂອງທຸກກະປຸກຈະຍົກຍອດໄປເດືອນໜ້າ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยอดคงเหลือของทุกกระปุกจะยกยอดไปเดือนหน้า"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -63,6 +135,18 @@
     },
     "Income": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຮັບ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายรับ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -73,6 +157,18 @@
     },
     "Monthly report": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍງານປະຈຳເດືອນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายงานประจำเดือน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -83,6 +179,18 @@
     },
     "Moonee's take": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄວາມເຫັນຈາກ Moonee"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ความเห็นจาก Moonee"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -93,6 +201,18 @@
     },
     "Most of it went to %@ (%@).": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສ່ວນໃຫຍ່ໄປທີ່ %@ (%@)"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ส่วนใหญ่ไปที่ %@ (%@)"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -103,6 +223,18 @@
     },
     "Next month": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເດືອນໜ້າ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เดือนหน้า"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -113,6 +245,18 @@
     },
     "No data for this month": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເດືອນນີ້ຍັງບໍ່ມີຂໍ້ມູນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เดือนนี้ยังไม่มีข้อมูล"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -123,6 +267,18 @@
     },
     "No jar": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ມີກະປຸກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มีกระปุก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -133,6 +289,18 @@
     },
     "Nothing logged this month yet. Tell Moonee your first spend and the report fills itself in.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເດືອນນີ້ຍັງບໍ່ໄດ້ບັນທຶກຫຍັງເລີຍ ບອກ Moonee ລາຍຈ່າຍທຳອິດ ແລ້ວລາຍງານຈະຂຶ້ນມາເອງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เดือนนี้ยังไม่ได้จดอะไรเลย บอก Moonee รายจ่ายแรก แล้วรายงานจะขึ้นมาเอง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -143,6 +311,18 @@
     },
     "Previous month": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເດືອນກ່ອນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เดือนก่อน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -153,6 +333,18 @@
     },
     "Saved": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເກັບໄດ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เก็บได้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -163,6 +355,18 @@
     },
     "Savings rate": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ອັດຕາການອອມ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อัตราการออม"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -173,6 +377,18 @@
     },
     "Spending by jar": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຈ່າຍຕາມກະປຸກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายจ่ายตามกระปุก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -183,6 +399,18 @@
     },
     "Spending by jar, top expenses and Moonee's take": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຈ່າຍຕາມກະປຸກ, ລາຍຈ່າຍກ້ອນໃຫຍ່ ແລະ ຄວາມເຫັນຈາກ Moonee"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายจ่ายตามกระปุก รายจ่ายก้อนใหญ่ และความเห็นจาก Moonee"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -193,6 +421,18 @@
     },
     "Spending trend": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແນວໂນ້ມລາຍຈ່າຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แนวโน้มรายจ่าย"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -203,6 +443,18 @@
     },
     "Spending was %@ more than your income.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃຊ້ຈ່າຍເກີນລາຍຮັບໄປ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใช้จ่ายเกินรายรับไป %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -213,6 +465,18 @@
     },
     "Spent": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃຊ້ໄປ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใช้ไป"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -223,6 +487,18 @@
     },
     "Top expenses": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຈ່າຍກ້ອນໃຫຍ່"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายจ่ายก้อนใหญ่"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -233,6 +509,18 @@
     },
     "Uncategorized": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ມີໝວດໝູ່"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มีหมวดหมู่"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -243,6 +531,18 @@
     },
     "Wrap up last month for me in two or three sentences.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສະຫຼຸບເດືອນແລ້ວໃຫ້ແດ່ ສັກສອງສາມປະໂຫຍກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สรุปเดือนที่แล้วให้หน่อย สักสองสามประโยค"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -253,6 +553,18 @@
     },
     "Wrap up this month for me in two or three sentences.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສະຫຼຸບເດືອນນີ້ໃຫ້ແດ່ ສັກສອງສາມປະໂຫຍກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สรุปเดือนนี้ให้หน่อย สักสองสามประโยค"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -263,6 +575,18 @@
     },
     "You kept %@, %lld%% of your income.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຈົ້າເກັບໄດ້ %@ ຄິດເປັນ %lld%% ຂອງລາຍຮັບ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คุณเก็บได้ %@ คิดเป็น %lld%% ของรายรับ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -273,6 +597,18 @@
     },
     "You spent %@, %lld%% less than the month before. Nice work! 🎉": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຈົ້າໃຊ້ໄປ %@ ໜ້ອຍກວ່າເດືອນກ່ອນໜ້າ %lld%% ເກັ່ງຫຼາຍ! 🎉"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คุณใช้ไป %@ น้อยกว่าเดือนก่อนหน้า %lld%% เก่งมาก! 🎉"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -283,6 +619,18 @@
     },
     "You spent %@, %lld%% more than the month before.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຈົ້າໃຊ້ໄປ %@ ຫຼາຍກວ່າເດືອນກ່ອນໜ້າ %lld%%"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คุณใช้ไป %@ มากกว่าเดือนก่อนหน้า %lld%%"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -293,6 +641,18 @@
     },
     "You spent %@.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຈົ້າໃຊ້ໄປ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คุณใช้ไป %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -303,6 +663,18 @@
     },
     "Your %@ report is ready": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍງານ %@ ຂອງເຈົ້າພ້ອມແລ້ວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายงาน %@ ของคุณพร้อมแล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -313,6 +685,18 @@
     },
     "vs the month before": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທຽບກັບເດືອນກ່ອນໜ້າ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เทียบกับเดือนก่อนหน้า"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",

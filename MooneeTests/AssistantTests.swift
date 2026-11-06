@@ -155,15 +155,16 @@ struct AssistantTests {
         #expect(Skill.route(text, context: ctx).id == skill)
     }
 
-    @Test func skillFilesExistInBothLanguages() {
+    @Test func skillFilesExistInEveryLanguage() {
         for skill in Skill.all {
-            for lang in ["vi", "en"] {
+            for lang in Lexicon.all.map(\.language) {
                 let full = skill.instructions(language: lang, short: false), short = skill.instructions(language: lang, short: true)
                 #expect(full.contains(skill.id), "\(skill.id).\(lang)")
                 #expect(!short.isEmpty && short.count < full.count / 2, "\(skill.id).\(lang) short")
             }
         }
         #expect(Skill.persona(language: "vi").contains("Moonee"))
+        for lang in ["th", "lo"] { #expect(Skill.persona(language: lang) != Skill.persona(language: "en"), "persona \(lang)") }
         #expect(Skill.persona(language: "fr") == Skill.persona(language: "en")) // missing language → English
     }
 
@@ -172,7 +173,7 @@ struct AssistantTests {
         let out = await assistant(cloud: model).handle("Tháng này mình ăn uống hết bao nhiêu?", context: ctx)
         #expect(out == .answer("Tháng này bạn chi ₫2,500,000 cho ăn uống nè!", skill: "spending-coach"))
         let req = try #require(model.requests.first)
-        #expect(req.tools.map(\.name) == ["spendingSummary", "listTransactions", "jarBalances", "savingsPlan"])
+        #expect(req.tools.map(\.name) == ["monthBudget", "spendingSummary", "listTransactions", "jarBalances", "savingsPlan"])
         #expect(req.system.contains("spending-coach"))
         #expect(!req.system.contains("jar-budgeting")) // only the routed skill is loaded
         #expect(req.system.contains("Moonee"))

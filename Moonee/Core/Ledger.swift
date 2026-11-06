@@ -8,7 +8,8 @@ import Foundation
 /// - income: wallet +, jars + by its stored splits only (no splits = unallocated). Splits and the expense jar are
 ///   fixed when the txn is saved (`Txn.allocate`), so editing percents or remapping a category never rewrites history.
 /// - transfer: wallet → toWallet (paying a card is a transfer into it, not a second expense).
-/// - jarTransfer: jar → toJar, no wallet moves.
+/// - jarTransfer: jar → toJar, no wallet moves. With splits and no source jar it is a split of unallocated money
+///   (wallet money no jar holds yet, `unallocated`) into the jars.
 /// - lend/borrow/repay: wallet and debt book only, never jars.
 // ponytail: one currency per ledger; amounts in other currencies are summed as-is. Add FX when multi-currency wallets ship.
 struct Ledger<ID: Hashable> {
@@ -21,7 +22,7 @@ struct Ledger<ID: Hashable> {
         var jar: ID?
         var toJar: ID?
         var debt: ID?
-        /// income only; empty = unallocated.
+        /// income: its split into jars (empty = unallocated). jarTransfer: extra jar inflows (splitting unallocated money).
         var splits: [ID: Int] = [:]
     }
 
@@ -91,6 +92,22 @@ struct Ledger<ID: Hashable> {
         return walletBalances.values.reduce(0, +) + assets + debts
     }
 
+    /// Money in wallets (plus lent out, minus borrowed) that no jar holds yet: "Unallocated" on the Budget tab.
+    /// Positive = to split into jars; negative = the jars promise more than there is. Spec §4.1, decision 06/11.
+    var unallocated: Int { netWorth() - jarBalances.values.reduce(0, +) }
+
+    /// What the given jars hold for the month: Σ start + added, Σ spent. "Total budget" / "Spent" / "Left" on the Budget tab.
+    func monthTotals(_ jars: [ID], in month: DateInterval) -> JarMonth {
+        jars.map { jarMonth($0, in: month) }.reduce(JarMonth(start: 0, added: 0, spent: 0, balance: 0)) {
+            JarMonth(start: $0.start + $1.start, added: $0.added + $1.added, spent: $0.spent + $1.spent, balance: $0.balance + $1.balance)
+        }
+    }
+
+    /// Income received in `interval` (Overview and Budget show the same number).
+    func income(in interval: DateInterval) -> Int {
+        entries.reduce(0) { $1.kind == .income && interval.start <= $1.date && $1.date < interval.end ? $0 + $1.amount : $0 }
+    }
+
     /// Splits an income by percents. Floors each share; the rounding remainder goes to the largest jar, so shares sum to `amount`.
     static func split(_ amount: Int, by percents: [(ID, Int)]) -> [ID: Int] {
         guard let biggest = percents.max(by: { $0.1 < $1.1 }), percents.contains(where: { $0.1 > 0 }) else { return [:] }
@@ -120,6 +137,7 @@ struct Ledger<ID: Hashable> {
         case .expense: e.jar.map { [($0, -e.amount)] } ?? []
         case .income: e.splits.map { ($0.key, $0.value) }
         case .jarTransfer: [(e.jar, -e.amount), (e.toJar, e.amount)].compactMap { id, d in id.map { ($0, d) } }
+            + e.splits.map { ($0.key, $0.value) }
         case .transfer, .lend, .borrow, .repay: []
         }
     }

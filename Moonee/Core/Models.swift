@@ -117,7 +117,8 @@ private func displayName(key: String?, customName: String?) -> String {
     var debt: Debt?
     /// The chat message whose card shows this txn (S4 chat; inverse declared on `ChatMessage.txns`).
     var chatMessage: ChatMessage?
-    /// income only: how it was split into jars, written at save by `allocate`. Empty = unallocated.
+    /// income: how it was split into jars, written at save by `allocate`. Empty = unallocated.
+    /// jarTransfer with no jars: unallocated money split into the jars.
     @Relationship(deleteRule: .cascade, inverse: \IncomeSplit.txn) var splits: [IncomeSplit]? = []
 
     init(amount: Int, kind: TxKind, currencyCode: String = Money.defaultCurrency, date: Date = .now, note: String = "",
@@ -148,11 +149,12 @@ private func displayName(key: String?, customName: String?) -> String {
     /// Call once whenever a txn is created (chat, form, import, onboarding): pins an expense to its category's jar
     /// and splits an income by the jars' current percents, so later percent edits or category remaps keep history.
     /// Skips what is already set, so a manual split or jar choice wins.
+    /// A jarTransfer with no jars is a split of unallocated money (`BudgetActions.splitUnallocated`): split like an income.
     func allocate(jars: [Jar], in context: ModelContext) {
         switch kind {
         case .expense:
             if jar == nil { jar = category?.jar }
-        case .income where (splits ?? []).isEmpty:
+        case .income where (splits ?? []).isEmpty, .jarTransfer where jar == nil && toJar == nil && (splits ?? []).isEmpty:
             for (jar, share) in Ledger<Jar>.split(amount, by: jars.sorted { $0.order < $1.order }.map { ($0, $0.percent) }) {
                 let s = IncomeSplit(amount: share, jar: jar)
                 context.insert(s)

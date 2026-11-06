@@ -3,6 +3,18 @@
   "strings": {
     "%lld%%": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%%"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%%"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -13,6 +25,18 @@
     },
     "%lld%% left": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຫຼືອ %lld%%"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เหลือ %lld%%"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -23,6 +47,18 @@
     },
     "%lld%% of income": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%% ຂອງລາຍຮັບ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%% ของรายรับ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -33,6 +69,18 @@
     },
     "%lld%% over": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເກີນ %lld%%"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เกิน %lld%%"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -46,6 +94,18 @@
     },
     "Account": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບັນຊີ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บัญชี"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -56,6 +116,18 @@
     },
     "Add": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເພີ່ມ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เพิ่ม"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -66,6 +138,18 @@
     },
     "Add category": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເພີ່ມໝວດໝູ່"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เพิ่มหมวดหมู่"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -76,6 +160,18 @@
     },
     "Add jar": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເພີ່ມກະປຸກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เพิ่มกระปุก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -86,6 +182,18 @@
     },
     "Add wallet": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເພີ່ມກະເປົາເງິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เพิ่มกระเป๋าเงิน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -96,6 +204,18 @@
     },
     "Adds up to 100%": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄົບ 100%"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ครบ 100%"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -106,6 +226,18 @@
     },
     "Assign categories": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຈັດໝວດໝູ່"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "จัดหมวดหมู่"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -116,6 +248,18 @@
     },
     "Assign categories to jars": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຈັດໝວດໝູ່ເຂົ້າກະປຸກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "จัดหมวดหมู่เข้ากระปุก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -126,6 +270,18 @@
     },
     "Assigned": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຈັດແລ້ວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "จัดแล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -136,6 +292,18 @@
     },
     "Bank account": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບັນຊີທະນາຄານ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บัญชีธนาคาร"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -146,6 +314,18 @@
     },
     "Borrow": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຢືມ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยืม"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -156,6 +336,18 @@
     },
     "Budget": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ງົບປະມານ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "งบ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -166,6 +358,18 @@
     },
     "Cancel": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍົກເລີກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยกเลิก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -176,6 +380,18 @@
     },
     "Cash": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເງິນສົດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เงินสด"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -186,6 +402,18 @@
     },
     "Cash wallet": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກະເປົາເງິນສົດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กระเป๋าเงินสด"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -196,6 +424,18 @@
     },
     "Categories": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໝວດໝູ່"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "หมวดหมู่"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -206,6 +446,18 @@
     },
     "Color": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສີ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สี"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -216,6 +468,18 @@
     },
     "Credit card": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບັດເຄຣດິດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บัตรเครดิต"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -226,6 +490,18 @@
     },
     "Credit limit": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ວົງເງິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "วงเงิน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -236,6 +512,18 @@
     },
     "Customize jars": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປັບແຕ່ງກະປຸກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปรับแต่งกระปุก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -246,6 +534,18 @@
     },
     "Data stays on this device (offline)": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຂໍ້ມູນຢູ່ໃນເຄື່ອງນີ້ (ອອບລາຍ)"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ข้อมูลอยู่ในเครื่องนี้ (ออฟไลน์)"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -256,6 +556,18 @@
     },
     "Delete wallet": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລຶບກະເປົາເງິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ลบกระเป๋าเงิน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -266,6 +578,18 @@
     },
     "Deleting a wallet also deletes its transactions.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ການລຶບກະເປົາເງິນ ຈະລຶບລາຍການຂອງກະເປົານີ້ນຳ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ลบกระเป๋าเงินแล้ว รายการในกระเป๋านี้จะถูกลบไปด้วย"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -276,6 +600,18 @@
     },
     "Done": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແລ້ວໆ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เสร็จ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -286,6 +622,18 @@
     },
     "E-wallet": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກະເປົາເງິນອອນລາຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อีวอลเล็ต"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -296,6 +644,18 @@
     },
     "Edit wallet": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແກ້ໄຂກະເປົາເງິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แก้ไขกระเป๋าเงิน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -306,6 +666,18 @@
     },
     "Expense": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຈ່າຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายจ่าย"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -316,6 +688,18 @@
     },
     "Icon": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໄອຄອນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไอคอน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -326,6 +710,18 @@
     },
     "Income": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຮັບ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายรับ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -336,6 +732,18 @@
     },
     "Jar": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກະປຸກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กระปุก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -346,6 +754,18 @@
     },
     "Jar name": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊື່ກະປຸກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ชื่อกระปุก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -356,6 +776,18 @@
     },
     "Jar transfer": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂອນລະຫວ່າງກະປຸກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โอนระหว่างกระปุก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -366,6 +798,18 @@
     },
     "Lend": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃຫ້ຢືມ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ให้ยืม"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -376,6 +820,18 @@
     },
     "Limit: %@": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ວົງເງິນ: %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "วงเงิน: %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -386,6 +842,18 @@
     },
     "Month": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເດືອນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เดือน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -396,6 +864,18 @@
     },
     "Moonee": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -406,6 +886,18 @@
     },
     "Moonee assistant (AI)": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຜູ້ຊ່ວຍ Moonee (AI)"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ผู้ช่วย Moonee (AI)"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -416,6 +908,18 @@
     },
     "Name": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊື່"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ชื่อ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -426,6 +930,18 @@
     },
     "New category": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໝວດໝູ່ໃໝ່"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "หมวดหมู่ใหม่"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -436,6 +952,18 @@
     },
     "New jar": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກະປຸກໃໝ່"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กระปุกใหม่"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -446,6 +974,18 @@
     },
     "No jar": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ມີກະປຸກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มีกระปุก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -456,6 +996,18 @@
     },
     "No jar (%lld)": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ມີກະປຸກ (%lld)"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มีกระปุก (%lld)"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -466,6 +1018,18 @@
     },
     "Not built yet – see docs/FEATURES.md %@": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍັງບໍ່ໄດ້ເຮັດ – ເບິ່ງ docs/FEATURES.md %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยังไม่ได้ทำ – ดู docs/FEATURES.md %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -476,6 +1040,18 @@
     },
     "Opening balance": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍອດເງິນເລີ່ມຕົ້ນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยอดเงินเริ่มต้น"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -486,6 +1062,18 @@
     },
     "Overview": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ພາບລວມ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ภาพรวม"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -496,6 +1084,18 @@
     },
     "Personal finance": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ການເງິນສ່ວນຕົວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "การเงินส่วนตัว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -506,6 +1106,18 @@
     },
     "Repay": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສົ່ງຄືນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คืนเงิน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -516,6 +1128,18 @@
     },
     "Restore defaults": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກັບຄືນຄ່າເລີ່ມຕົ້ນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คืนค่าเริ่มต้น"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -526,6 +1150,18 @@
     },
     "Save": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບັນທຶກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บันทึก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -536,6 +1172,18 @@
     },
     "Share": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສັດສ່ວນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สัดส่วน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -546,6 +1194,18 @@
     },
     "Spending in these categories is not counted in any jar.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຈ່າຍໃນໝວດໝູ່ເຫຼົ່ານີ້ ຍັງບໍ່ຖືກນັບເຂົ້າກະປຸກໃດເລີຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายจ่ายในหมวดหมู่เหล่านี้ยังไม่ถูกนับเข้ากระปุกไหนเลย"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -556,6 +1216,18 @@
     },
     "Total %lld%%": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລວມ %lld%%"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รวม %lld%%"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -566,6 +1238,18 @@
     },
     "Total balance": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍອດເງິນລວມ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยอดเงินรวม"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -576,6 +1260,18 @@
     },
     "Transfer": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂອນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โอน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -586,6 +1282,18 @@
     },
     "Type": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປະເພດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ประเภท"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -596,6 +1304,18 @@
     },
     "Wallet name": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊື່ກະເປົາເງິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ชื่อกระเป๋าเงิน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -606,6 +1326,18 @@
     },
     "Wallets": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກະເປົາເງິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กระเป๋าเงิน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -616,6 +1348,18 @@
     },
     "Watchlist": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕິດຕາມ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ติดตาม"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -626,6 +1370,18 @@
     },
     "Week": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ອາທິດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สัปดาห์"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -636,6 +1392,18 @@
     },
     "Year": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປີ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปี"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -651,6 +1419,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bonus"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂບນັດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โบนัส"
           }
         },
         "vi": {
@@ -670,6 +1450,18 @@
             "value": "Charity"
           }
         },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ການກຸສົນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "การกุศล"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -685,6 +1477,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Education"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ການສຶກສາ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "การศึกษา"
           }
         },
         "vi": {
@@ -704,6 +1508,18 @@
             "value": "Entertainment"
           }
         },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບັນເທີງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บันเทิง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -719,6 +1535,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Food & Drinks"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ອາຫານ ແລະ ເຄື່ອງດື່ມ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อาหารและเครื่องดื่ม"
           }
         },
         "vi": {
@@ -738,6 +1566,18 @@
             "value": "Health"
           }
         },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສຸຂະພາບ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สุขภาพ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -753,6 +1593,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Housing"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທີ່ຢູ່ອາໄສ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ที่อยู่อาศัย"
           }
         },
         "vi": {
@@ -772,6 +1624,18 @@
             "value": "Other"
           }
         },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ອື່ນໆ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อื่นๆ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -787,6 +1651,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Other income"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຮັບອື່ນໆ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายรับอื่นๆ"
           }
         },
         "vi": {
@@ -806,6 +1682,18 @@
             "value": "Salary"
           }
         },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເງິນເດືອນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เงินเดือน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -821,6 +1709,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Shopping"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊື້ເຄື່ອງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ช้อปปิ้ง"
           }
         },
         "vi": {
@@ -840,6 +1740,18 @@
             "value": "Transport"
           }
         },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ການເດີນທາງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "การเดินทาง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -855,6 +1767,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Essentials"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຈຳເປັນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "จำเป็น"
           }
         },
         "vi": {
@@ -874,6 +1798,18 @@
             "value": "Giving"
           }
         },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແບ່ງປັນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แบ่งปัน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -889,6 +1825,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Self-growth"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ພັດທະນາຕົນເອງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "พัฒนาตัวเอง"
           }
         },
         "vi": {
@@ -908,6 +1856,18 @@
             "value": "Investing"
           }
         },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລົງທຶນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ลงทุน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -925,6 +1885,18 @@
             "value": "Play"
           }
         },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄວາມສຸກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ความสุข"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -940,6 +1912,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Savings"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເງິນອອມ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เงินออม"
           }
         },
         "vi": {

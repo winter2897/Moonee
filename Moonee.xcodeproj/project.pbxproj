@@ -150,6 +150,8 @@
 			knownRegions = (
 				vi,
 				en,
+				th,
+				lo,
 				Base,
 			);
 			mainGroup = AA0000000000000000000004;

@@ -9,7 +9,6 @@ struct AccountView: View {
     @AppStorage(LLMSettings.modeKey) private var aiMode = LLMSettings.mode
     @AppStorage(Prefs.reminderLevel) private var reminderLevel = ReminderLevel.medium.rawValue
     @AppStorage(Money.currencyKey) private var currency: String?
-    @Environment(\.openURL) private var openURL
     @Environment(\.requestReview) private var requestReview
 
     var body: some View {
@@ -20,16 +19,9 @@ struct AccountView: View {
                 }
 
                 Section {
-                    // Language is iOS's per-app setting (spec §6.1): the row opens Moonee's page in Settings.
-                    Button { openURL(URL(string: UIApplication.openSettingsURLString)!) } label: {
-                        LabeledContent {
-                            HStack(spacing: 6) {
-                                Text(AppLanguage.current)
-                                Image(systemName: "arrow.up.forward").font(.footnote).foregroundStyle(.tertiary)
-                            }
-                        } label: { SettingsLabel("Language", symbol: "globe", color: .blue) }
+                    NavigationLink { LanguagePicker() } label: {
+                        LabeledContent { Text(AppLanguage.current) } label: { SettingsLabel("Language", symbol: "globe", color: .blue) }
                     }
-                    .foregroundStyle(.primary)
                     NavigationLink { CurrencyPicker(selection: $currency) } label: {
                         LabeledContent { Text(Money.label(Money.defaultCurrency)) } label: {
                             SettingsLabel("Currency", symbol: "dollarsign", color: .green)
@@ -40,8 +32,6 @@ struct AccountView: View {
                     }
                 } header: {
                     Text("General", tableName: "Account")
-                } footer: {
-                    Text("Language opens Moonee in the Settings app, where iOS lets you pick the app's language.", tableName: "Account")
                 }
 
                 Section {

@@ -400,6 +400,10 @@ import Testing
         #expect(SpeechInput.recognizerLocale(app: "en", region: "GB", supported: supported)?.identifier == "en-GB")
         #expect(SpeechInput.recognizerLocale(app: "en", region: "VN", supported: supported)?.identifier == "en-US")
         #expect(SpeechInput.recognizerLocale(app: "vi", region: "VN", supported: []) == nil)
+        let thai: Set<Locale> = supported.union([Locale(identifier: "th-TH")])
+        #expect(SpeechInput.recognizerLocale(app: "th", region: "TH", supported: thai)?.identifier == "th-TH")
+        #expect(SpeechInput.recognizerLocale(app: "lo", region: "LA", supported: thai)?.identifier == "th-TH") // no Lao: Thai
+        #expect(SpeechInput.recognizerLocale(app: "lo", region: "LA", supported: thai.union([Locale(identifier: "lo-LA")]))?.identifier == "lo-LA")
     }
 
     @Test func pdfReceiptIsReadFromItsText() async throws {

@@ -75,7 +75,7 @@ struct DocumentWords: Sendable {
     /// Generic words in wallet names ("Ví MoMo" is found as "MoMo").
     var walletWords: [String] = []
 
-    static let all: [DocumentWords] = [.vi, .en]
+    static let all: [DocumentWords] = [.vi, .en, .th, .lo]
 
     static let lists: [WritableKeyPath<DocumentWords, [String]>] = [
         \.success, \.transfer, \.incoming, \.amountLabels, \.toLabels, \.fromLabels, \.merchantLabels, \.referenceLabels,
@@ -260,7 +260,16 @@ enum DocumentReader {
             " " + String(fold(s).map { $0.isLetter || $0.isNumber ? $0 : " " }).split(separator: " ").joined(separator: " ") + " "
         }
 
-        static func contains(_ text: String, _ phrase: String) -> Bool { padded(text).contains(padded(phrase)) }
+        /// Thai and Lao write words without spaces: their phrases match anywhere.
+        static func spaceless(_ s: String) -> Bool { s.unicodeScalars.contains { (0x0E00...0x0EFF).contains($0.value) } }
+
+        static func contains(_ text: String, _ phrase: String) -> Bool {
+            spaceless(phrase) ? fold(text).contains(fold(phrase)) : padded(text).contains(padded(phrase))
+        }
+
+        static func begins(_ text: String, _ phrase: String) -> Bool {
+            spaceless(phrase) ? fold(text).trimmingCharacters(in: .whitespaces).hasPrefix(fold(phrase)) : padded(text).hasPrefix(padded(phrase))
+        }
         func has(_ text: String, _ list: KeyPath<DocumentWords, [String]>) -> Bool { all[keyPath: list].contains { Words.contains(text, $0) } }
 
         private func money(_ text: String) -> Bool { !QuickParser.amounts(in: text, context: context).filter(\.strong).isEmpty }
@@ -274,7 +283,7 @@ enum DocumentReader {
                 let text = l.text.trimmingCharacters(in: .whitespacesAndNewlines)
                 guard !text.isEmpty else { continue }
                 let money = money(text)
-                if !money, all.chromeSections.contains(where: { Words.padded(text).hasPrefix(Words.padded($0)) }) { break }
+                if !money, all.chromeSections.contains(where: { Words.begins(text, $0) }) { break }
                 if has(text, \.chromeLines) || has(text, \.chromeSections) { labelAbove = !money; continue }
                 defer { labelAbove = false }
                 if labelAbove, money, Token.split(text).count <= 2 { continue }
@@ -293,7 +302,8 @@ enum DocumentReader {
             for label in labels.map(fold).sorted(by: { $0.count > $1.count }) {
                 for start in starts where folded[start...].starts(with: label) {
                     let after = folded[(start + label.count)...]
-                    guard after.isEmpty || after.first == ":" || after.starts(with: "  ") || (label.contains(" ") && after.first == " ")
+                    let loose = label.contains(" ") || spaceless(label) // a one-word label must stand apart; Thai/Lao have no spaces to tell
+                guard after.isEmpty || after.first == ":" || after.starts(with: "  ") || (loose && after.first == " ")
                     else { continue }
                     return t.dropFirst(start + label.count).trimmingCharacters(in: CharacterSet(charactersIn: ":-–#").union(.whitespaces))
                 }

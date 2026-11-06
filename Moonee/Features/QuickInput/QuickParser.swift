@@ -218,9 +218,10 @@ private struct Compiled {
     }
 }
 
-/// "cho * mượn|vay" → [.word(["cho"]), .star, .word(["mượn", "vay"])].
+/// "cho * mượn|vay" → [.word(["cho"]), .star, .word(["mượn", "vay"])]. An alternative may be several words once
+/// split ("เงินเดือน" → เงิน · เดือน).
 private struct Pattern {
-    enum Part { case word([String]), star }
+    enum Part { case word([Phrase]), star }
     /// Where a person may be: these words, the word at/after an index, or the word before an index.
     enum Capture { case words([Int]), after(Int), before(Int) }
 
@@ -228,7 +229,7 @@ private struct Pattern {
 
     init(_ s: String) {
         parts = s.lowercased().precomposedStringWithCanonicalMapping.split(separator: " ").map {
-            $0 == "*" ? .star : .word($0.split(separator: "|").map(String.init))
+            $0 == "*" ? .star : .word($0.split(separator: "|").map { Phrase(phrase: String($0)) })
         }
     }
 
@@ -250,8 +251,10 @@ private struct Pattern {
         let rest = parts.dropFirst()
         switch head {
         case .word(let alts):
-            guard i < tokens.count, alts.contains(where: tokens[i].matches) else { return nil }
-            return run(rest, tokens, i + 1)
+            for p in alts where p.matches(tokens, at: i) {
+                if let caps = run(rest, tokens, i + p.count) { return caps }
+            }
+            return nil
         case .star where rest.isEmpty:
             return [.after(i)]
         case .star:
@@ -361,7 +364,7 @@ private struct Scan {
         var text = tokens[i].folded
         let plus = text.hasPrefix("+")
         if plus || text.hasPrefix("-") { text.removeFirst() }
-        guard let m = text.wholeMatch(of: #/([$€£¥₫])?(\d+(?:[.,]\d+)*)([^\d.,]*)(\d*)/#),
+        guard let m = text.wholeMatch(of: #/([$€£¥₫฿₭])?(\d+(?:[.,]\d+)*)([^\d.,]*)(\d*)/#),
               let base = Scan.number(String(m.output.2)) else { return nil }
 
         var multiplier: Decimal = 1
@@ -399,6 +402,11 @@ private struct Scan {
         if parts.count > 1, parts.dropFirst().allSatisfy({ $0.count == 3 }) {
             return Decimal(string: parts.joined()).map { ($0, true) }
         }
+        // "1,500.00" / "1.500,50": grouped thousands with cents (Thai slips), one decimal mark at the end.
+        if parts.count > 2, let mark = s.last(where: { $0 == "." || $0 == "," }), s.filter({ $0 == mark }).count == 1,
+           parts.dropFirst().dropLast().allSatisfy({ $0.count == 3 }), parts.last!.count <= 2 {
+            return Decimal(string: parts.dropLast().joined() + "." + parts.last!).map { ($0, true) }
+        }
         if parts.count == 2 { return Decimal(string: "\(parts[0]).\(parts[1])").map { ($0, false) } }
         return parts.count == 1 ? Decimal(string: s).map { ($0, false) } : nil
     }
@@ -429,7 +437,7 @@ private struct Scan {
 
         var category: String?
         if kind == .expense || kind == .income {
-            let text = tokens.map(\.lower).joined(separator: " ")
+            let text = Token.join(tokens, \.lower)
             category = context.merchantRules.first { text.contains($0.key.lowercased()) }?.value
                 ?? mentions(context.categories.map { ($0.value, [Phrase(phrase: $0.key)]) }, used: used).all.first
                 ?? lexiconCategory(kind: kind, used: used)
@@ -455,7 +463,7 @@ private struct Scan {
                 && !lx.notPerson.contains(where: tokens[j].matches) && !lx.separators.contains(where: tokens[j].matches)
         }
         func isTitle(_ j: Int) -> Bool { tokens.indices.contains(j) && lx.honorifics.contains(where: tokens[j].matches) }
-        let picked: [Int]
+        var picked: [Int]
         switch cap {
         case .words(let js):
             picked = js.filter(ok)
@@ -466,7 +474,15 @@ private struct Scan {
             guard ok(j) else { return nil }
             picked = isTitle(j - 1) ? [j - 1, j] : [j]
         }
-        let name = picked.map { tokens[$0].original }.joined(separator: " ")
+        // Thai and Lao names break into pieces ("สมชาย" → สม · ชาย): take one more glued piece.
+        // ponytail: two pieces at most, and a glued verb after a name ("แม่ซื้อ") needs a `notPerson` entry.
+        if case .after = cap, let j = picked.last.map({ $0 + 1 }), tokens.indices.contains(j), tokens[j].glued, ok(j) {
+            picked.append(j)
+        }
+        if case .before = cap, let j = picked.first.map({ $0 - 1 }), tokens.indices.contains(j), tokens[j + 1].glued, ok(j), !isTitle(j + 1) {
+            picked.insert(j, at: 0)
+        }
+        let name = Token.join(picked.map { tokens[$0] })
         return name.isEmpty ? nil : name
     }
 
@@ -503,8 +519,9 @@ private struct Scan {
     }
 
     private func note(used: Set<Int>) -> String {
-        let words = tokens.indices.filter { !used.contains($0) }.map { tokens[$0].original }.drop { $0.hasPrefix("+") }
-        let note = words.joined(separator: " ")
+        var words = tokens.indices.filter { !used.contains($0) }.map { tokens[$0] }.drop { $0.original.hasPrefix("+") }
+        if !words.isEmpty { words[words.startIndex].glued = false }
+        let note = Token.join(words)
         return note.prefix(1).uppercased() + note.dropFirst()
     }
 }
