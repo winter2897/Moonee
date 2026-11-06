@@ -1,20 +1,26 @@
+import PDFKit
 import PhotosUI
 import SwiftUI
+import UniformTypeIdentifiers
 
-/// The chat's input. Idle: one pill with (+), "Type or hold to talk", mic (dictate into the field) and a round voice
-/// button (hold to talk, release to send). Typing: the pill grows into a card, the text on top and
-/// (+) · model chip · mic · send below. One `AnyLayout` for both, so the text field keeps its focus.
+/// The chat's input. Idle: one pill with (+), "Type or hold to talk", mic and camera. Typing: the pill grows into a card,
+/// the text on top and (+) · model chip · mic · camera · send below (send only once there is text).
+/// One `AnyLayout` for both, so the text field keeps its focus.
+/// The mic: tap to start, tap again to send what was heard; or hold to talk and let go to send.
 struct ChatComposer: View {
     @Binding var text: String
     var focus: FocusState<Bool>.Binding
+    /// Starting or recording (`SpeechInput.isActive`).
     let isRecording: Bool
     let onPlus: () -> Void
-    let onMic: () -> Void
-    let onHoldStart: () -> Void
-    let onHoldEnd: () -> Void
+    let onVoiceStart: () -> Void
+    let onVoiceEnd: () -> Void
+    let onCamera: () -> Void
     let onSend: () -> Void
     let onChangeModel: () -> Void
-    @State private var holding = false
+    @State private var pressedAt: Date?
+    /// This touch began while recording: it ends the recording (tap-to-stop).
+    @State private var stopOnRelease = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var typing: Bool { focus.wrappedValue || !text.isEmpty }
@@ -31,11 +37,12 @@ struct ChatComposer: View {
                     ModelChip(onChangeModel: onChangeModel)
                     Spacer(minLength: 4)
                     micButton
-                    sendButton
+                    cameraButton
+                    if canSend { sendButton }
                 }
             } else {
                 micButton
-                voiceButton
+                cameraButton
             }
         }
         .padding(.horizontal, 6).padding(.vertical, typing ? 8 : 4)
@@ -43,11 +50,12 @@ struct ChatComposer: View {
         .overlay { if isRecording { RoundedRectangle(cornerRadius: typing ? 24 : 30).strokeBorder(Color.brandPrimary.opacity(0.6), lineWidth: 1.5) } }
         .shadow(color: .brandDeep.opacity(0.08), radius: 10, y: 3)
         .animation(reduceMotion ? nil : .snappy(duration: 0.25), value: typing)
+        .animation(reduceMotion ? nil : .snappy(duration: 0.2), value: canSend)
     }
 
     private var field: some View {
         TextField(String(localized: "Type or hold to talk", table: "Chat"), text: $text, axis: .vertical)
-            .font(.bodyText)
+            .font(.body)
             .foregroundStyle(Color.ink)
             .lineLimit(typing ? 1...6 : 1...1)
             .focused(focus)
@@ -59,7 +67,8 @@ struct ChatComposer: View {
                     HStack(spacing: 8) {
                         Image(systemName: "waveform").foregroundStyle(Color.brandPrimary)
                             .symbolEffect(.variableColor.iterative, isActive: !reduceMotion)
-                        Text("Listening…", tableName: "Chat").font(.bodyText).foregroundStyle(Color.ink)
+                        Text(pressedAt == nil ? "Listening… tap to send" : "Listening… let go to send", tableName: "Chat")
+                            .font(.body).foregroundStyle(Color.ink).lineLimit(1).minimumScaleFactor(0.8)
                     }
                     .padding(.horizontal, typing ? 10 : 4)
                     .accessibilityElement(children: .combine)
@@ -72,7 +81,7 @@ struct ChatComposer: View {
             focus.wrappedValue = false // the sheet opens over a closed keyboard; the field never takes this tap
             onPlus()
         } label: {
-            Image(systemName: "plus").font(.system(size: 16, weight: .semibold)).foregroundStyle(Color.brandDeep)
+            Image(systemName: "plus").font(.body.weight(.semibold)).foregroundStyle(Color.brandDeep)
                 .frame(width: 34, height: 34).background(Color.brandMintSoft, in: .circle)
                 .frame(width: 44, height: 44).contentShape(.circle)
         }
@@ -80,43 +89,57 @@ struct ChatComposer: View {
         .accessibilityLabel(Text("Add to chat", tableName: "Chat"))
     }
 
+    /// Tap: start, tap again: send. Hold: talk, let go: send. Recording starts on touch-down either way.
     private var micButton: some View {
-        Button(action: onMic) {
-            Image(systemName: isRecording && !holding ? "stop.fill" : "mic")
-                .font(.system(size: 18, weight: .medium)).foregroundStyle(isRecording && !holding ? Color.danger : Color.brandDeep)
+        let recordingTap = isRecording && pressedAt == nil
+        return Image(systemName: recordingTap ? "arrow.up" : "mic.fill")
+            .font(.body.weight(.semibold))
+            .foregroundStyle(isRecording ? .white : Color.brandDeep)
+            .frame(width: 36, height: 36)
+            .background(isRecording ? AnyShapeStyle(LinearGradient.brand) : AnyShapeStyle(Color.clear), in: .circle)
+            .scaleEffect(pressedAt != nil && isRecording && !reduceMotion ? 1.15 : 1)
+            .frame(width: 44, height: 44).contentShape(.circle)
+            .gesture(DragGesture(minimumDistance: 0)
+                .onChanged { _ in
+                    guard pressedAt == nil else { return }
+                    pressedAt = .now
+                    stopOnRelease = isRecording
+                    if !isRecording { onVoiceStart() }
+                }
+                .onEnded { _ in
+                    let held = pressedAt.map { Date.now.timeIntervalSince($0) > 0.4 } ?? false
+                    pressedAt = nil
+                    if stopOnRelease || held { onVoiceEnd() }
+                })
+            .animation(reduceMotion ? nil : .snappy(duration: 0.15), value: pressedAt)
+            .accessibilityElement()
+            .accessibilityLabel(isRecording ? Text("Send voice message", tableName: "Chat") : Text("Voice message", tableName: "Chat"))
+            .accessibilityHint(isRecording ? Text(verbatim: "") : Text("Hold to talk, or tap to start and tap again to send.", tableName: "Chat"))
+            .accessibilityAddTraits(.isButton)
+            .accessibilityAction { isRecording ? onVoiceEnd() : onVoiceStart() }
+    }
+
+    private var cameraButton: some View {
+        Button {
+            focus.wrappedValue = false
+            onCamera()
+        } label: {
+            Image(systemName: "camera").font(.body.weight(.semibold)).foregroundStyle(Color.brandDeep)
                 .frame(width: 44, height: 44).contentShape(.circle)
         }
         .buttonStyle(PressScaleStyle())
-        .accessibilityLabel(isRecording ? Text("Stop recording", tableName: "Chat") : Text("Dictate", tableName: "Chat"))
-    }
-
-    /// Hold to talk: recording starts on touch-down and the message is sent on release.
-    private var voiceButton: some View {
-        Image(systemName: "waveform")
-            .font(.system(size: 17, weight: .semibold)).foregroundStyle(.white)
-            .frame(width: 38, height: 38)
-            .background(LinearGradient.brand, in: .circle)
-            .scaleEffect(holding && !reduceMotion ? 1.15 : 1)
-            .frame(width: 44, height: 44).contentShape(.circle)
-            .gesture(DragGesture(minimumDistance: 0)
-                .onChanged { _ in if !holding { holding = true; onHoldStart() } }
-                .onEnded { _ in holding = false; onHoldEnd() })
-            .animation(reduceMotion ? nil : .snappy(duration: 0.15), value: holding)
-            .accessibilityElement()
-            .accessibilityLabel(Text("Hold to talk", tableName: "Chat"))
-            .accessibilityAddTraits(.isButton)
-            .accessibilityAction { isRecording ? onHoldEnd() : onHoldStart() } // VoiceOver: double-tap to start, again to send
+        .disabled(isRecording)
+        .accessibilityLabel(Text("Take a photo of a receipt", tableName: "Chat"))
     }
 
     private var sendButton: some View {
         Button(action: onSend) {
-            Image(systemName: "arrow.up").font(.system(size: 17, weight: .bold)).foregroundStyle(.white)
-                .frame(width: 38, height: 38).background(LinearGradient.brand, in: .circle)
+            Image(systemName: "arrow.up").font(.body.weight(.bold)).foregroundStyle(.white)
+                .frame(width: 36, height: 36).background(LinearGradient.brand, in: .circle)
                 .frame(width: 44, height: 44).contentShape(.circle)
         }
         .buttonStyle(PressScaleStyle())
-        .disabled(!canSend)
-        .opacity(canSend ? 1 : 0.4)
+        .transition(.scale.combined(with: .opacity))
         .accessibilityLabel(Text("Send", tableName: "Chat"))
     }
 }
@@ -231,13 +254,16 @@ struct ModelChip: View {
     }
 }
 
-/// "Add to chat": camera and recent photos (system picker, no library permission needed), receipt photo, skills, web search settings.
+/// "Add to chat": camera and recent photos (system picker, no library permission needed), a file (photo or PDF),
+/// skills, web search settings.
 struct AddToChatSheet: View {
     let onImage: (UIImage) -> Void
+    let onPDF: (PDFDocument, String) -> Void
+    let onUnreadable: () -> Void
     @Environment(\.dismiss) private var dismiss
     @State private var item: PhotosPickerItem?
     @State private var webSearch = LLMSettings.webSearch
-    @State private var showLibrary = false
+    @State private var showFiles = false
     @State private var showCamera = false
 
     var body: some View {
@@ -249,25 +275,27 @@ struct AddToChatSheet: View {
                             Button { showCamera = true } label: {
                                 VStack(spacing: 6) {
                                     Image(systemName: "camera.fill").font(.title2)
-                                    Text("Camera", tableName: "Chat").font(.chip)
+                                    Text("Camera", tableName: "Chat").font(.footnote.weight(.semibold))
                                 }
                                 .foregroundStyle(Color.brandDeep)
-                                .frame(width: 88, height: 88)
+                                .frame(width: 88).frame(maxHeight: .infinity)
                                 .background(Color.brandMintSoft, in: .rect(cornerRadius: 16))
                             }
                             .buttonStyle(.plain)
+                            .accessibilityLabel(Text("Take a photo of a receipt", tableName: "Chat"))
                         }
-                        PhotosPicker(selection: $item, matching: .images) { EmptyView() }
+                        // The system's own strip of recent photos: tap one to read it as a receipt.
+                        PhotosPicker(selection: $item, matching: .images, preferredItemEncoding: .compatible) { EmptyView() }
                             .photosPickerStyle(.compact)
-                            .photosPickerDisabledCapabilities(.selectionActions)
+                            .photosPickerDisabledCapabilities([.selectionActions, .collectionNavigation, .search])
                             .photosPickerAccessoryVisibility(.hidden, edges: .all)
-                            .frame(height: 88)
                     }
+                    .frame(height: 120)
                     .listRowInsets(EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12))
                 }
                 Section {
-                    Button { showLibrary = true } label: {
-                        Label { Text("Choose receipt photo", tableName: "Chat") } icon: { Image(systemName: "doc.text.image") }
+                    Button { showFiles = true } label: {
+                        Label { Text("Add file", tableName: "Chat") } icon: { Image(systemName: "doc.badge.plus") }
                     }
                     NavigationLink { SkillsView() } label: {
                         Label { Text("Skills", tableName: "Chat") } icon: { Image(systemName: "wand.and.stars") }
@@ -278,7 +306,7 @@ struct AddToChatSheet: View {
                     // Search also needs a backend: a provider with built-in search, or a Tavily / Brave key (AI settings).
                     if webSearch, SearchSettings.backend() == nil {
                         NavigationLink { AISettingsView() } label: {
-                            Text("Set up web search", tableName: "Chat").font(.secondaryText).foregroundStyle(Color.brandDeep)
+                            Text("Set up web search", tableName: "Chat").font(.subheadline).foregroundStyle(Color.brandDeep)
                         }
                     }
                 }
@@ -292,17 +320,37 @@ struct AddToChatSheet: View {
                     Button { dismiss() } label: { Image(systemName: "xmark") }.accessibilityLabel(Text("Close", tableName: "Chat"))
                 }
             }
-            .photosPicker(isPresented: $showLibrary, selection: $item, matching: .images)
+            .fileImporter(isPresented: $showFiles, allowedContentTypes: [.image, .pdf]) { result in
+                guard case .success(let url) = result else { return }
+                open(url)
+            }
             .fullScreenCover(isPresented: $showCamera) {
                 CameraPicker { image in pick(image) }.ignoresSafeArea()
             }
             .onChange(of: webSearch) { _, on in LLMSettings.webSearch = on }
-            .onChange(of: item) { _, item in
-                guard let item else { return }
+            .onChange(of: item) { _, picked in
+                guard let picked else { return }
                 Task {
-                    if let data = try? await item.loadTransferable(type: Data.self), let image = UIImage(data: data) { pick(image) }
+                    let data = try? await picked.loadTransferable(type: Data.self)
+                    item = nil // the same photo can be picked again
+                    if let data, let image = UIImage(data: data) { pick(image) } else { dismiss(); onUnreadable() }
                 }
             }
+        }
+    }
+
+    /// A picked file: an image goes to OCR, a PDF to its text (or OCR of its pages).
+    private func open(_ url: URL) {
+        let scoped = url.startAccessingSecurityScopedResource()
+        defer { if scoped { url.stopAccessingSecurityScopedResource() } }
+        dismiss()
+        let data = try? Data(contentsOf: url) // read now: access ends with this function
+        if UTType(filenameExtension: url.pathExtension)?.conforms(to: .pdf) == true, let data, let pdf = PDFDocument(data: data) {
+            onPDF(pdf, url.lastPathComponent)
+        } else if let data, let image = UIImage(data: data) {
+            onImage(image)
+        } else {
+            onUnreadable()
         }
     }
 

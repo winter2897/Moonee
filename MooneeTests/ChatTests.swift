@@ -1,5 +1,7 @@
 import Foundation
+import PDFKit
 import SwiftData
+import UIKit
 import Testing
 @testable import Moonee
 
@@ -345,5 +347,71 @@ import Testing
         #expect(ChatEngine.local("Qwen3 1.7B").label(effort: nil) == "Qwen3 1.7B")
         #expect(ChatEngine.cloud(.anthropic, model: "claude-sonnet-5-5").label(effort: .high)
                 == "claude-sonnet-5-5 · " + ModelChip.title(.high))
+    }
+
+    // MARK: Feedback round 3
+
+    @Test func dailyThreadIsNamedAfterItsDayAndANewChatAfterItsFirstSentence() {
+        let cal = Self.hcm
+        let daily = ChatThreads.forNewMessage(open: nil, resumed: false, now: at(6, 9), calendar: cal, in: context)
+        #expect(!daily.isManual)
+        #expect(ChatThreads.dailyTitle(daily.day, calendar: cal).hasSuffix("06/11/26"))
+        let manual = ChatThreads.start(now: at(6, 10), calendar: cal, in: context)
+        let m = ChatMessage(fromUser: true, text: "Lập kế hoạch tiết kiệm mua xe. Mỗi tháng nên để bao nhiêu?")
+        context.insert(m)
+        ChatThreads.add(m, to: manual)
+        #expect(manual.isManual && manual.displayTitle == "Lập kế hoạch tiết kiệm mua xe")
+        #expect(ChatThreads.title(from: "giá 45.000 hôm nay") == "giá 45.000 hôm nay") // a decimal point is not a sentence end
+    }
+
+    @Test func modelTitleIsCleanedUp() async {
+        let llm = ScriptedLLM(replies: ["\"Tiết kiệm mua xe.\"\nextra"])
+        #expect(await ChatThreads.modelTitle(for: "Lập kế hoạch tiết kiệm mua xe", using: llm) == "Tiết kiệm mua xe")
+        #expect(await ChatThreads.modelTitle(for: "x", using: nil) == nil)
+    }
+
+    @Test func savedLineSaysWhatWhereAndHowMuch() {
+        let one = say("ăn sáng ở GS25 40k")
+        let line = ChatLines.saved(one, variant: 0)
+        #expect(line.contains(Money(40_000, "VND").formatted()) && line.contains("GS25"))
+        #expect(!line.contains("1 transaction"))
+        let many = say("ăn trưa 65k, cafe 35k")
+        #expect(ChatLines.saved(many, variant: 0).contains(Money(100_000, "VND").formatted()))
+        #expect(ChatLines.saved(say("ăn trưa 65k, lương 10tr"), variant: 0).contains("2")) // mixed kinds: no total
+    }
+
+    @Test func notesReadNaturallyMidSentence() {
+        #expect(ChatLines.midSentence("Ăn sáng ở GS25") == "ăn sáng ở GS25")
+        #expect(ChatLines.midSentence("GS25 cafe") == "GS25 cafe")
+        #expect(ChatLines.midSentence("iPhone case") == "iPhone case")
+    }
+
+    @Test func everyExpenseGetsACategoryAndJar() {
+        let t = say("zxqw 40k").first
+        #expect(t?.category?.key == "category.other")
+        let card = t.map { ChatCardLine($0).item() }
+        #expect(card?.category.isEmpty == false && card?.when == nil) // today's card shows category · jar, no date
+    }
+
+    @Test func voiceUsesTheAppLanguage() {
+        let supported: Set<Locale> = [Locale(identifier: "vi-VN"), Locale(identifier: "en-US"), Locale(identifier: "en-GB")]
+        #expect(SpeechInput.recognizerLocale(app: "vi", region: "VN", supported: supported)?.identifier == "vi-VN")
+        #expect(SpeechInput.recognizerLocale(app: "en", region: "GB", supported: supported)?.identifier == "en-GB")
+        #expect(SpeechInput.recognizerLocale(app: "en", region: "VN", supported: supported)?.identifier == "en-US")
+        #expect(SpeechInput.recognizerLocale(app: "vi", region: "VN", supported: []) == nil)
+    }
+
+    @Test func pdfReceiptIsReadFromItsText() async throws {
+        let data = UIGraphicsPDFRenderer(bounds: CGRect(x: 0, y: 0, width: 300, height: 400)).pdfData { ctx in
+            ctx.beginPage()
+            for (i, line) in ["Highlands Coffee", "Bạc xỉu  39.000", "Tổng cộng  58.000"].enumerated() {
+                (line as NSString).draw(at: CGPoint(x: 20, y: 20 + i * 30), withAttributes: [.font: UIFont.systemFont(ofSize: 14)])
+            }
+        }
+        let pdf = try #require(PDFDocument(data: data))
+        let lines = await ChatBook.lines(in: pdf)
+        #expect(lines.contains { $0.contains("Tổng cộng") })
+        let t = ChatBook.receipt(lines, context: parser())
+        #expect(t.amount == 58_000 && t.note == "Highlands Coffee")
     }
 }

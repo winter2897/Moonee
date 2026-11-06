@@ -2,16 +2,6 @@
   "sourceLanguage": "en",
   "version": "1.0",
   "strings": {
-    "**Hi there!** 👋\nWhat can Moonee do for you today? Log a spend, ask about your money, or snap a receipt.": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "**Chào bạn!** 👋\nHôm nay Moonee giúp gì được cho bạn? Bạn có thể ghi chi tiêu, hỏi tình hình tài chính, hoặc chụp hoá đơn cho Moonee nhé."
-          }
-        }
-      }
-    },
     "Add key": {
       "localizations": {
         "vi": {
@@ -72,16 +62,6 @@
         }
       }
     },
-    "Choose receipt photo": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chọn ảnh hoá đơn"
-          }
-        }
-      }
-    },
     "Close": {
       "localizations": {
         "vi": {
@@ -112,16 +92,6 @@
         }
       }
     },
-    "Dictate": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Đọc để nhập chữ"
-          }
-        }
-      }
-    },
     "Done": {
       "localizations": {
         "vi": {
@@ -148,40 +118,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mức suy nghĩ"
-          }
-        }
-      }
-    },
-    "Got it! Moonee logged %lld transactions for you:": {
-      "localizations": {
-        "en": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Got it! Moonee logged %lld transaction for you:"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Got it! Moonee logged %lld transactions for you:"
-                }
-              }
-            }
-          }
-        },
-        "vi": {
-          "variations": {
-            "plural": {
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Moonee đã ghi nhận %lld giao dịch cho bạn rồi nè:"
-                }
-              }
-            }
           }
         }
       }
@@ -236,62 +172,12 @@
         }
       }
     },
-    "Hmm, Moonee didn't quite get that 🤔 Try something like “phở 45k” or “how much did I spend this month?”": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hmm, Moonee chưa hiểu lắm 🤔 Bạn thử nhắn kiểu “phở 45k” hoặc “tháng này mình chi bao nhiêu?” nha."
-          }
-        }
-      }
-    },
-    "Hold to talk": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Giữ để nói"
-          }
-        }
-      }
-    },
     "How much is left in my Play jar?": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Còn bao nhiêu để hưởng thụ?"
-          }
-        }
-      }
-    },
-    "How much was **%@**? Tell Moonee the amount, e.g. 45k.": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "**%@** hết bao nhiêu tiền vậy bạn? Nhắn Moonee số tiền nhé, ví dụ 45k."
-          }
-        }
-      }
-    },
-    "How much was it? Tell Moonee the amount, e.g. 45k.": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Khoản này bao nhiêu tiền vậy bạn? Nhắn Moonee số tiền nhé, ví dụ 45k."
-          }
-        }
-      }
-    },
-    "Listening…": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Đang nghe…"
           }
         }
       }
@@ -342,16 +228,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gợi ý tiết kiệm cuối tháng"
-          }
-        }
-      }
-    },
-    "Moonee couldn't read that photo 😵 Try again with the whole receipt in good light.": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Moonee chưa đọc được ảnh này 😵 Bạn chụp lại cả tờ hoá đơn, đủ sáng giúp Moonee nha."
           }
         }
       }
@@ -522,16 +398,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nguồn"
-          }
-        }
-      }
-    },
-    "Stop recording": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dừng ghi âm"
           }
         }
       }
@@ -766,12 +632,482 @@
         }
       }
     },
-    "📷 Receipt": {
+    "**Hi there!**\nWhat can Moonee do for you today? Log a spend, ask about your money, or snap a receipt.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "📷 Hoá đơn"
+            "value": "**Chào bạn!**\nHôm nay Moonee giúp gì được cho bạn? Bạn có thể ghi chi tiêu, hỏi tình hình tài chính, hoặc chụp hoá đơn cho Moonee nhé."
+          }
+        }
+      }
+    },
+    "Moonee logged all %lld for you.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ghi lại đủ %lld khoản cho bạn rồi nhé."
+          }
+        }
+      }
+    },
+    "Done, %lld transactions are in your books.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xong, %lld giao dịch đã vào sổ rồi nè."
+          }
+        }
+      }
+    },
+    "Moonee logged %lld transactions, **%@** in total.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ghi lại %1$lld khoản, tổng cộng **%2$@** rồi nhé."
+          }
+        }
+      }
+    },
+    "All %lld are in: **%@** altogether.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xong cả %1$lld khoản, tổng **%2$@** nha."
+          }
+        }
+      }
+    },
+    "Moonee noted **%@** for %@ %@.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ghi lại **%1$@** %2$@ %3$@ rồi nhé."
+          }
+        }
+      }
+    },
+    "Got it, **%@** on %@ %@ is in your books.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ok nè, **%1$@** cho %2$@ %3$@ đã vào sổ."
+          }
+        }
+      }
+    },
+    "Done! **%@** for %@ %@, all saved.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xong! **%1$@** cho %2$@ %3$@, Moonee lưu rồi đó."
+          }
+        }
+      }
+    },
+    "Nice, **%@** came in from %@ %@.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tuyệt, có **%1$@** tiền vào từ %2$@ %3$@ nhé."
+          }
+        }
+      }
+    },
+    "Money in! **%@** from %@ %@, split into your jars.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Có tiền vào! **%1$@** từ %2$@ %3$@, Moonee chia vào các lọ rồi."
+          }
+        }
+      }
+    },
+    "Moved **%@** from %@ to %@.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee chuyển **%1$@** từ %2$@ sang %3$@ rồi nhé."
+          }
+        }
+      }
+    },
+    "Moved **%@** from the %@ jar to %@.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee chuyển **%1$@** từ lọ %2$@ sang lọ %3$@ rồi nha."
+          }
+        }
+      }
+    },
+    "Noted, you lent out **%@**.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ghi lại bạn cho mượn **%@** rồi nhé."
+          }
+        }
+      }
+    },
+    "Noted, you lent %@ **%@**.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ghi lại bạn cho %1$@ mượn **%2$@** rồi nhé."
+          }
+        }
+      }
+    },
+    "Noted, you borrowed **%@**.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ghi lại bạn đi mượn **%@** nhé."
+          }
+        }
+      }
+    },
+    "Noted, you borrowed **%@** from %@.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ghi lại bạn mượn %2$@ **%1$@** nhé."
+          }
+        }
+      }
+    },
+    "Noted a repayment of **%@**.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ghi lại khoản trả nợ **%@** rồi nhé."
+          }
+        }
+      }
+    },
+    "Noted, **%@** repaid with %@.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ghi lại **%1$@** trả nợ với %2$@ rồi nhé."
+          }
+        }
+      }
+    },
+    "yesterday": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "hôm qua"
+          }
+        }
+      }
+    },
+    "on %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ngày %@"
+          }
+        }
+      }
+    },
+    "Where did it go? Pick a wallet below.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiền đi đâu vậy bạn? Chọn ví bên dưới nhé."
+          }
+        }
+      }
+    },
+    "Take it out of which jar?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lấy ra từ lọ nào nè?"
+          }
+        }
+      }
+    },
+    "And which jar does it land in?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Còn bỏ vào lọ nào vậy bạn?"
+          }
+        }
+      }
+    },
+    "How much was it? Just the number is fine, like 45k.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khoản này bao nhiêu tiền vậy bạn? Nhắn số thôi cũng được, ví dụ 45k."
+          }
+        }
+      }
+    },
+    "What was the amount? Something like 45k works.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hết bao nhiêu tiền nè? Nhắn kiểu 45k là Moonee hiểu."
+          }
+        }
+      }
+    },
+    "How much was **%@**? Just the number is fine, like 45k.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**%@** hết bao nhiêu vậy bạn? Nhắn số thôi cũng được, ví dụ 45k."
+          }
+        }
+      }
+    },
+    "How much did **%@** cost? Something like 45k works.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn chi cho **%@** bao nhiêu thế? Nhắn kiểu 45k là được."
+          }
+        }
+      }
+    },
+    "Hmm, Moonee didn't quite get that. Try something like “phở 45k” or “how much did I spend this month?”": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hmm, Moonee chưa hiểu lắm. Bạn thử nhắn kiểu “phở 45k” hoặc “tháng này mình chi bao nhiêu?” nha."
+          }
+        }
+      }
+    },
+    "Sorry, that one slipped past Moonee. Something like “coffee 30k” or “what's left in my jars?” works.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ơ, câu này Moonee chưa bắt kịp. Bạn nhắn kiểu “cà phê 30k” hay “các lọ còn bao nhiêu?” là được nè."
+          }
+        }
+      }
+    },
+    "Moonee couldn't read that receipt. Try again with the whole receipt in good light.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee chưa đọc được hoá đơn này. Bạn chụp lại cả tờ, đủ sáng giúp Moonee nha."
+          }
+        }
+      }
+    },
+    "Moonee couldn't open that file. Try a photo or a PDF of the receipt.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee chưa mở được tệp này. Bạn thử ảnh hoặc PDF của hoá đơn nhé."
+          }
+        }
+      }
+    },
+    "Moonee needs the microphone and speech recognition to hear you. Turn them on in Settings › Moonee.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee cần quyền Micro và Nhận dạng giọng nói để nghe bạn. Bạn bật trong Cài đặt › Moonee nhé."
+          }
+        }
+      }
+    },
+    "Voice input isn't available on this iPhone right now. Check that Siri & Dictation is on, or type it instead.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Máy này chưa nhận giọng nói được. Bạn kiểm tra Siri & Đọc chính tả đã bật chưa, hoặc gõ giúp Moonee nha."
+          }
+        }
+      }
+    },
+    "Moonee can't find a microphone. Check that no other app is using it.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee không tìm thấy micro. Bạn xem có app nào khác đang dùng micro không nhé."
+          }
+        }
+      }
+    },
+    "Moonee couldn't catch that. Hold the mic and try again?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee nghe chưa rõ. Bạn giữ nút micro rồi nói lại nhé?"
+          }
+        }
+      }
+    },
+    "Moonee didn't hear anything. Hold the mic while you talk, then let go.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee chưa nghe thấy gì cả. Bạn giữ nút micro trong lúc nói, nói xong thì thả ra nhé."
+          }
+        }
+      }
+    },
+    "That was quiet! Tap the mic, say it, then tap again to send.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Im re luôn! Bạn chạm micro, nói, rồi chạm lần nữa để gửi nha."
+          }
+        }
+      }
+    },
+    "(running low)": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(sắp hết)"
+          }
+        }
+      }
+    },
+    "(over budget)": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(vượt mức)"
+          }
+        }
+      }
+    },
+    "Transactions %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ghi nhận giao dịch ngày %@"
+          }
+        }
+      }
+    },
+    "Listening… tap to send": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang nghe… chạm để gửi"
+          }
+        }
+      }
+    },
+    "Listening… let go to send": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang nghe… thả ra để gửi"
+          }
+        }
+      }
+    },
+    "Send voice message": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gửi tin nhắn thoại"
+          }
+        }
+      }
+    },
+    "Voice message": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tin nhắn thoại"
+          }
+        }
+      }
+    },
+    "Hold to talk, or tap to start and tap again to send.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giữ để nói, hoặc chạm để bắt đầu và chạm lần nữa để gửi."
+          }
+        }
+      }
+    },
+    "Take a photo of a receipt": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chụp ảnh hoá đơn"
+          }
+        }
+      }
+    },
+    "Add file": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm tệp"
+          }
+        }
+      }
+    },
+    "Receipt photo": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ảnh hoá đơn"
           }
         }
       }

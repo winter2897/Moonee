@@ -4,7 +4,10 @@ import SwiftData
 /// One conversation with Moonee. A new one starts on the first message of each day, or when the user asks.
 /// Deleting it deletes its messages, never the transactions they made (those live in the ledger).
 @Model final class ChatThread {
+    /// A manual chat's name: the first sentence, then a short model-written title when a model is set up.
     var title: String = ""
+    /// Started with "New chat". The daily thread is named after its day instead.
+    var isManual: Bool = false
     /// Start of the local day it belongs to.
     var day: Date = Date.now
     var isPinned: Bool = false
@@ -17,6 +20,11 @@ import SwiftData
     }
 
     var sortedMessages: [ChatMessage] { (messages ?? []).sorted { $0.date < $1.date } }
+
+    /// "Transactions 06/11/26" for the day's thread; a manual chat's own title.
+    var displayTitle: String {
+        isManual ? (title.isEmpty ? String(localized: "New chat", table: "Chat") : title) : ChatThreads.dailyTitle(day)
+    }
 }
 
 /// The rules of threads, kept out of the views so they are testable with a pinned clock and calendar.
@@ -43,20 +51,43 @@ import SwiftData
     /// "New chat": an empty thread for today, even if today already has one.
     static func start(now: Date = .now, calendar: Calendar = .current, in context: ModelContext) -> ChatThread {
         let t = ChatThread(day: calendar.startOfDay(for: now), createdAt: now)
+        t.isManual = true
         context.insert(t)
         return t
     }
 
-    /// Adds a message; the thread's first user message titles it.
+    /// Adds a message; a manual chat's first user message titles it.
     static func add(_ message: ChatMessage, to thread: ChatThread) {
         message.thread = thread
         if thread.title.isEmpty, message.fromUser { thread.title = title(from: message.text) }
     }
 
-    /// The first line, at most 40 characters on a word boundary.
-    // ponytail: rule-based title; ask the model for a summary once titles matter more.
+    /// "Transactions dd/MM/yy" (vi: "Ghi nhận giao dịch ngày dd/MM/yy"), the same digits in every language.
+    nonisolated static func dailyTitle(_ day: Date, calendar: Calendar = .current) -> String {
+        let f = DateFormatter()
+        f.calendar = calendar
+        f.timeZone = calendar.timeZone
+        f.dateFormat = "dd/MM/yy"
+        let date = f.string(from: day)
+        return String(localized: "Transactions \(date)", table: "Chat")
+    }
+
+    /// A manual chat's short title from its first message, written by the model the chat uses. Nil = keep the rule title.
+    static func modelTitle(for text: String, using llm: (any LLM)?) async -> String? {
+        guard let llm, let raw = try? await llm.complete(
+            system: "Write a 2 to 5 word title for a personal-finance chat that starts with the user's message. "
+                + "Use the message's language. Reply with the title only: no quotes, no period.",
+            user: text) else { return nil }
+        let line = raw.split(whereSeparator: \.isNewline).first.map(String.init) ?? ""
+        let clean = line.trimmingCharacters(in: CharacterSet(charactersIn: "\"'“”‘’.*# ").union(.whitespaces))
+        return clean.isEmpty ? nil : title(from: clean)
+    }
+
+    /// The first sentence, at most 40 characters on a word boundary.
     nonisolated static func title(from text: String) -> String {
-        let line = text.split(whereSeparator: \.isNewline).first.map(String.init)?.trimmingCharacters(in: .whitespaces) ?? ""
+        let first = text.split(whereSeparator: \.isNewline).first.map(String.init) ?? ""
+        let sentence = first.split(separator: /[.!?](\s|$)/).first.map(String.init) ?? first
+        let line = sentence.trimmingCharacters(in: .whitespaces)
         guard line.count > 40 else { return line }
         let cut = line.prefix(40)
         return (cut.lastIndex(of: " ").map { String(cut[..<$0]) } ?? String(cut)) + "…"
@@ -86,7 +117,7 @@ import SwiftData
         let found = threads
             .filter { !($0.messages ?? []).isEmpty }
             .filter { t in
-                q.isEmpty || t.title.localizedStandardContains(q) || (t.messages ?? []).contains { $0.text.localizedStandardContains(q) }
+                q.isEmpty || t.displayTitle.localizedStandardContains(q) || (t.messages ?? []).contains { $0.text.localizedStandardContains(q) }
             }
             .sorted { $0.createdAt > $1.createdAt }
         var out: [Section] = []

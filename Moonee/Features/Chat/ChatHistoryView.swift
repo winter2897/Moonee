@@ -69,7 +69,7 @@ struct ChatHistoryView: View {
         } label: {
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(t.title.isEmpty ? String(localized: "New chat", table: "Chat") : t.title)
+                    Text(t.displayTitle)
                         .font(.rowTitle).foregroundStyle(Color.ink).lineLimit(1)
                     if let last = t.sortedMessages.last {
                         Text(last.text.replacingOccurrences(of: "**", with: ""))
