@@ -1,10 +1,12 @@
 import PDFKit
+import Photos
 import PhotosUI
 import SwiftUI
 import UniformTypeIdentifiers
 
 /// The chat's input. Idle: one pill with (+), "Type or hold to talk", mic and camera. Typing: the pill grows into a card,
-/// the text on top and (+) · model chip · mic · camera · send below (send only once there is text).
+/// attached photos / files on top (each with an ✕), the text, then (+) · model chip · mic · camera · send
+/// (send once there is text or an attachment).
 /// One `AnyLayout` for both, so the text field keeps its focus.
 /// The mic: tap to start, tap again to send what was heard; or hold to talk and let go to send.
 struct ChatComposer: View {
@@ -12,6 +14,8 @@ struct ChatComposer: View {
     var focus: FocusState<Bool>.Binding
     /// Starting or recording (`SpeechInput.isActive`).
     let isRecording: Bool
+    var attachments: [ChatAttachment] = []
+    var onRemoveAttachment: (ChatAttachment.ID) -> Void = { _ in }
     let onPlus: () -> Void
     let onVoiceStart: () -> Void
     let onVoiceEnd: () -> Void
@@ -23,13 +27,14 @@ struct ChatComposer: View {
     @State private var stopOnRelease = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    private var typing: Bool { focus.wrappedValue || !text.isEmpty }
-    private var canSend: Bool { !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+    private var typing: Bool { focus.wrappedValue || !text.isEmpty || !attachments.isEmpty }
+    private var canSend: Bool { !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || !attachments.isEmpty }
 
     var body: some View {
         let layout = typing ? AnyLayout(VStackLayout(alignment: .leading, spacing: 4)) : AnyLayout(HStackLayout(spacing: 2))
         layout {
             if !typing { plusButton }
+            if !attachments.isEmpty { AttachmentChips(items: attachments, onRemove: onRemoveAttachment) }
             field
             if typing {
                 HStack(spacing: 2) {
@@ -51,10 +56,12 @@ struct ChatComposer: View {
         .shadow(color: .brandDeep.opacity(0.08), radius: 10, y: 3)
         .animation(reduceMotion ? nil : .snappy(duration: 0.25), value: typing)
         .animation(reduceMotion ? nil : .snappy(duration: 0.2), value: canSend)
+        .animation(reduceMotion ? nil : .snappy(duration: 0.2), value: attachments.map(\.id))
     }
 
     private var field: some View {
-        TextField(String(localized: "Type or hold to talk", table: "Chat"), text: $text, axis: .vertical)
+        TextField(attachments.isEmpty ? String(localized: "Type or hold to talk", table: "Chat") : String(localized: "Describe it (optional)", table: "Chat"),
+                  text: $text, axis: .vertical)
             .font(.body)
             .foregroundStyle(Color.ink)
             .lineLimit(typing ? 1...6 : 1...1)
@@ -254,17 +261,18 @@ struct ModelChip: View {
     }
 }
 
-/// "Add to chat": camera and recent photos (system picker, no library permission needed), a file (photo or PDF),
-/// skills, web search settings.
+/// "Add to chat": camera, recent photos (PhotoKit), the gallery (top right, several at once), a file (photo or PDF),
+/// skills, web search. Everything picked is attached to the composer, not sent: the user can describe it first.
 struct AddToChatSheet: View {
-    let onImage: (UIImage) -> Void
-    let onPDF: (PDFDocument, String) -> Void
+    @Binding var attachments: [ChatAttachment]
     let onUnreadable: () -> Void
     @Environment(\.dismiss) private var dismiss
-    @State private var item: PhotosPickerItem?
+    @State private var galleryItems: [PhotosPickerItem] = []
     @State private var webSearch = LLMSettings.webSearch
     @State private var showFiles = false
     @State private var showCamera = false
+    /// Strip photos ticked and still loading: checkmarked at once.
+    @State private var loading: Set<String> = []
 
     var body: some View {
         NavigationStack {
@@ -284,11 +292,7 @@ struct AddToChatSheet: View {
                             .buttonStyle(.plain)
                             .accessibilityLabel(Text("Take a photo of a receipt", tableName: "Chat"))
                         }
-                        // The system's own strip of recent photos: tap one to read it as a receipt.
-                        PhotosPicker(selection: $item, matching: .images, preferredItemEncoding: .compatible) { EmptyView() }
-                            .photosPickerStyle(.compact)
-                            .photosPickerDisabledCapabilities([.selectionActions, .collectionNavigation, .search])
-                            .photosPickerAccessoryVisibility(.hidden, edges: .all)
+                        RecentPhotosStrip(selected: Set(attachments.compactMap(\.assetID)).union(loading), onToggle: toggle)
                     }
                     .frame(height: 120)
                     .listRowInsets(EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12))
@@ -317,46 +321,58 @@ struct AddToChatSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button { dismiss() } label: { Image(systemName: "xmark") }.accessibilityLabel(Text("Close", tableName: "Chat"))
+                    // Photos ticked in the strip are already attached: closing keeps them.
+                    Button { dismiss() } label: { Image(systemName: attachments.isEmpty ? "xmark" : "checkmark") }
+                        .accessibilityLabel(attachments.isEmpty ? Text("Close", tableName: "Chat") : Text("Done", tableName: "Chat"))
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    PhotosPicker(selection: $galleryItems, matching: .images, preferredItemEncoding: .compatible) {
+                        Image(systemName: "photo.on.rectangle")
+                    }
+                    .accessibilityLabel(Text("Choose photos", tableName: "Chat"))
                 }
             }
             .fileImporter(isPresented: $showFiles, allowedContentTypes: [.image, .pdf]) { result in
                 guard case .success(let url) = result else { return }
-                open(url)
+                if let a = ChatAttachment.load(url) { attach([a]) } else { dismiss(); onUnreadable() }
             }
             .fullScreenCover(isPresented: $showCamera) {
-                CameraPicker { image in pick(image) }.ignoresSafeArea()
+                CameraPicker { image in attach([ChatAttachment(content: .image(image))]) }.ignoresSafeArea()
             }
             .onChange(of: webSearch) { _, on in LLMSettings.webSearch = on }
-            .onChange(of: item) { _, picked in
-                guard let picked else { return }
+            .onChange(of: galleryItems) { _, picked in
+                guard !picked.isEmpty else { return }
+                galleryItems = [] // the same photos can be picked again
                 Task {
-                    let data = try? await picked.loadTransferable(type: Data.self)
-                    item = nil // the same photo can be picked again
-                    if let data, let image = UIImage(data: data) { pick(image) } else { dismiss(); onUnreadable() }
+                    var loaded: [ChatAttachment] = []
+                    for item in picked { if let a = await ChatAttachment.load(item) { loaded.append(a) } }
+                    attach(loaded)
+                    if loaded.count < picked.count { onUnreadable() }
                 }
             }
         }
     }
 
-    /// A picked file: an image goes to OCR, a PDF to its text (or OCR of its pages).
-    private func open(_ url: URL) {
-        let scoped = url.startAccessingSecurityScopedResource()
-        defer { if scoped { url.stopAccessingSecurityScopedResource() } }
-        dismiss()
-        let data = try? Data(contentsOf: url) // read now: access ends with this function
-        if UTType(filenameExtension: url.pathExtension)?.conforms(to: .pdf) == true, let data, let pdf = PDFDocument(data: data) {
-            onPDF(pdf, url.lastPathComponent)
-        } else if let data, let image = UIImage(data: data) {
-            onImage(image)
-        } else {
-            onUnreadable()
+    /// A strip photo: tap to attach, tap again to take it off. The sheet stays open to pick more.
+    private func toggle(_ asset: PHAsset) {
+        let id = asset.localIdentifier
+        if let i = attachments.firstIndex(where: { $0.assetID == id }) {
+            attachments.remove(at: i)
+            return
+        }
+        guard loading.insert(id).inserted else { return }
+        Task {
+            let image = await RecentPhotosStrip.image(for: asset)
+            loading.remove(id)
+            guard let image else { onUnreadable(); return }
+            attachments.append(ChatAttachment(content: .image(image), assetID: id))
         }
     }
 
-    private func pick(_ image: UIImage) {
+    /// Camera, gallery, file: attached, then back to the composer to describe them.
+    private func attach(_ items: [ChatAttachment]) {
+        attachments += items
         dismiss()
-        onImage(image)
     }
 }
 
