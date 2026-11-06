@@ -30,14 +30,19 @@ struct JarsSection: View {
         let isNow = month.start <= .now && .now < month.end
         Section {
             monthPicker
+            MonthSummary(spent: facts.spent, budget: facts.budget, currency: currency)
+            LabeledContent(loc("Income")) { AmountText(facts.income, currency: currency).foregroundStyle(Color.ink) }
             if isNow { unallocatedRows(facts.unallocated) }
             if isNow {
                 ForEach(BudgetActions.dueIncome(recurrings, txns: txns)) { incomeDueRow($0) }
             }
-            LabeledContent(loc("Income")) { AmountText(facts.income, currency: currency).foregroundStyle(Color.ink) }
-            LabeledContent(loc("Total budget")) { AmountText(facts.budget, currency: currency).foregroundStyle(Color.ink) }
-            SpentProgress(spent: facts.spent, budget: facts.budget, currency: currency)
-            LabeledContent(loc("Left")) { AmountText(facts.left, currency: currency).foregroundStyle(Color.ink) }
+            // Mascot: a past month that closed within its budget, with no jar in the red, gets a small cheer.
+            if month.end <= .now, facts.budget > 0, facts.left >= 0, !facts.jars.contains(where: { $0.balance < 0 }) {
+                MooneeNoteCard(mood: .celebrate,
+                               text: String(localized: "You kept \(AmountFormat.string(facts.left, currency)) in your jars.", table: "Budget"),
+                               title: String(localized: "\(month.start.budgetMonthTitle) closed under budget!", table: "Budget"),
+                               animated: true)
+            }
         } header: {
             Text(loc("This month"))
         }
@@ -146,7 +151,7 @@ private struct BudgetJarRow: View {
                 AmountText(month.endBalance, currency: Money.defaultCurrency)
                     .foregroundStyle(month.endBalance < 0 ? Color.danger : Color.ink)
             }
-            ProgressView(value: min(progress, 1)).tint(level.fill)
+            GrowBar(progress: progress, color: level == .normal ? jar.color : level.fill)
         }
         .padding(.vertical, 2)
     }
@@ -179,8 +184,67 @@ private struct SpentProgress: View {
                 Text(loc("Spent"))
                 Text(verbatim: "\(Int((progress * 100).rounded()))%")
             }
-            ProgressView(value: min(progress, 1)).tint(BudgetLevel(progress: progress).fill)
+            GrowBar(progress: progress, color: BudgetLevel(progress: progress).fill)
         }
+    }
+}
+
+/// The month at a glance: what is left (rolling), out of the budget, and a tick meter of what is spent.
+private struct MonthSummary: View {
+    let spent: Int
+    let budget: Int
+    let currency: String
+
+    var body: some View {
+        let progress = BudgetLevel.progress(spent: spent, budget: budget)
+        let level = BudgetLevel(progress: progress)
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .firstTextBaseline) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(loc("Left")).font(.subheadline).foregroundStyle(Color.inkSecondary)
+                    RollingAmount(budget - spent, currency: currency).font(.heroAmount)
+                        .foregroundStyle(budget - spent < 0 ? Color.danger : Color.ink)
+                }
+                Spacer(minLength: 8)
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text(loc("Total budget")).font(.caption).foregroundStyle(Color.inkSecondary)
+                    AmountText(budget, currency: currency).font(.subheadline.weight(.semibold)).foregroundStyle(Color.ink)
+                }
+            }
+            TickMeter(progress: progress, color: level.fill, count: 30, height: 26)
+            HStack(spacing: 4) {
+                if let symbol = level.symbol { Image(systemName: symbol).foregroundStyle(level.text) }
+                Text(loc("Spent"))
+                AmountText(spent, currency: currency).fontWeight(.semibold).foregroundStyle(Color.ink)
+                Spacer()
+                Text(verbatim: "\(Int((progress * 100).rounded()))%").monospacedDigit()
+                    .foregroundStyle(level == .normal ? Color.inkSecondary : level.text)
+            }
+            .font(.footnote)
+            .foregroundStyle(Color.inkSecondary)
+        }
+        .padding(.vertical, 6)
+        .accessibilityElement(children: .combine)
+    }
+}
+
+/// Capsule progress bar that grows in from the left, in the jar's colour.
+private struct GrowBar: View {
+    let progress: Double
+    let color: Color
+    @State private var grow = 0.0
+
+    var body: some View {
+        GeometryReader { geo in
+            ZStack(alignment: .leading) {
+                Capsule().fill(Color.track)
+                Capsule().fill(color.gradient)
+                    .frame(width: max(progress > 0 ? 6 : 0, geo.size.width * min(max(progress, 0), 1) * grow))
+            }
+        }
+        .frame(height: 6)
+        .growIn($grow)
+        .accessibilityHidden(true)
     }
 }
 

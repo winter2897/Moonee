@@ -11,6 +11,16 @@
         }
       }
     },
+    "Avg %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TB %@"
+          }
+        }
+      }
+    },
     "By category": {
       "localizations": {
         "vi": {

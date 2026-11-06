@@ -54,6 +54,9 @@ import Testing
         #expect(m.cumulative[10].current == nil)
         #expect(m.cumulative[19].previous == 400)
         #expect(m.cumulative[30].previous == 400 && m.cumulative[30].current == nil)
+        #expect(m.perBucket[8].current == 300 && m.perBucket[9].current == 1_149 && m.perBucket[10].current == nil)
+        #expect(m.perBucket[19].previous == 400 && m.perBucket[20].previous == 0)
+        #expect(m.previousAverage == 400 / 31)
         #expect(m.categories.map(\.id) == ["category.food", "other"])
         #expect(m.categories.map(\.amount) == [450, 999])
 

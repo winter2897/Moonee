@@ -15,6 +15,8 @@ import SwiftUI
     var undoneLines: Data?
     /// JSON of the pages a web answer came from (`WebSource`), shown as chips under the bubble.
     var sourcesData: Data?
+    /// JSON `[StoredAttachment]`: the photos (small thumbnails) and file names a user message was sent with.
+    @Attribute(.externalStorage) var attachmentsData: Data?
     @Relationship(deleteRule: .nullify, inverse: \Txn.chatMessage) var txns: [Txn]? = []
     /// The conversation it belongs to (inverse declared on `ChatThread.messages`).
     var thread: ChatThread?
@@ -196,7 +198,8 @@ struct ChatCardLine: Codable, Equatable {
             case .transfer: t.toWallet = book.wallet(p.toWallet)
             case .jarTransfer: (t.jar, t.toJar) = (book.jar(p.jar), book.jar(p.toJar))
             case .lend, .borrow, .repay: t.debt = debt(p.person, kind, p.currency)
-            case .expense, .income: break
+            case .expense: t.jar = book.jar(p.jar) // a jar the user named; else allocate takes the category's
+            case .income: break
             }
             t.allocate(jars: book.jars, in: context)
             out.append(t)
@@ -250,6 +253,24 @@ struct ChatCardLine: Codable, Equatable {
                           categoryKey: context.merchantRules.first { lower.contains($0.key) }?.value
                               ?? QuickParser.hints(in: merchant, context: context).categoryKey,
                           date: context.now, note: merchant)
+        t.missing = ParsedTxn.missing(of: t)
+        return t
+    }
+
+    /// A receipt sent with the user's words ("ăn trưa với team", "cafe hôm qua, lọ hưởng thụ"): they name it, and
+    /// their category, jar and day win over the receipt's guess. The receipt's amount wins; theirs fills a missing one.
+    nonisolated static func receipt(_ lines: [String], context: ParserContext, described text: String) -> ParsedTxn {
+        var t = receipt(lines, context: context)
+        let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return t }
+        let said = QuickParser.parse(text, context: context).first
+        let hints = QuickParser.hints(in: text, context: context)
+        let note = said?.note.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        t.note = note.isEmpty ? text : note
+        t.categoryKey = said?.categoryKey ?? hints.categoryKey ?? QuickParser.hints(in: t.note, context: context).categoryKey ?? t.categoryKey
+        t.jar = hints.jarKey ?? t.jar
+        if let day = QuickParser.date(in: text, context: context) { t.date = day }
+        if t.amount == nil, let a = QuickParser.amount(in: text, context: context) { (t.amount, t.currency) = (a.amount, a.currency) }
         t.missing = ParsedTxn.missing(of: t)
         return t
     }
