@@ -55,9 +55,12 @@ enum ChatLines {
     }
 
     /// "Ăn sáng ở GS25" reads "ăn sáng ở GS25" inside a sentence; "GS25 cafe" or "ATM" keep their capitals.
+    /// A name ("Nguyễn Phước Thịnh", "Highlands Coffee") keeps its capitals too.
     static func midSentence(_ note: String) -> String {
-        let first = note.prefix { !$0.isWhitespace }
-        guard first.filter(\.isUppercase).count == 1, first.first?.isUppercase == true else { return note }
+        let words = note.split(whereSeparator: \.isWhitespace)
+        let first = words.first ?? ""
+        guard first.filter(\.isUppercase).count == 1, first.first?.isUppercase == true,
+              words.count < 2 || words[1].first?.isUppercase != true else { return note }
         return note.prefix(1).lowercased() + note.dropFirst()
     }
 
@@ -82,6 +85,18 @@ enum ChatLines {
         case .toJar:
             return pick([String(localized: "Which jar should it go into?", table: "Chat"),
                          String(localized: "And which jar does it land in?", table: "Chat")], variant)
+        case .kind:
+            let amount = Money(p.amount ?? 0, p.currency).formatted()
+            if p.kind == .income {
+                guard let person = p.person else {
+                    return String(localized: "**\(amount)** came in. Was it income, a loan to you, or someone paying you back?", table: "Chat")
+                }
+                return String(localized: "Got **\(amount)** from \(person). Income, a loan to you, or them paying you back?", table: "Chat")
+            }
+            guard let person = p.person else {
+                return String(localized: "Sent **\(amount)**. Was it spending, a loan, or paying back a debt?", table: "Chat")
+            }
+            return String(localized: "Sent **\(amount)** to \(person). Spending, a loan, or paying back a debt?", table: "Chat")
         case .amount, .person:
             let what = p.note.trimmingCharacters(in: .whitespaces)
             if what.isEmpty {
@@ -106,6 +121,14 @@ enum ChatLines {
 
     static var unreadableReceipt: String {
         String(localized: "Moonee couldn't read that receipt. Try again with the whole receipt in good light.", table: "Chat")
+    }
+
+    static var notMoney: String {
+        String(localized: "Moonee doesn't see a receipt, transfer or bill in that photo, so nothing was saved.", table: "Chat")
+    }
+
+    static var alreadyRecorded: String {
+        String(localized: "Moonee already has that one in your books (same transaction ID), so it wasn't saved again.", table: "Chat")
     }
 
     static var unreadableFile: String {

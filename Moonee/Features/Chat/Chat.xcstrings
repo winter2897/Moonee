@@ -1201,6 +1201,126 @@
           }
         }
       }
+    },
+    "Income": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thu nhập"
+          }
+        }
+      }
+    },
+    "I borrowed it": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mình đi vay"
+          }
+        }
+      }
+    },
+    "Paid back to me": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Được trả nợ"
+          }
+        }
+      }
+    },
+    "Spending": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chi tiêu"
+          }
+        }
+      }
+    },
+    "I lent it": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cho mượn"
+          }
+        }
+      }
+    },
+    "Paying back a debt": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trả nợ"
+          }
+        }
+      }
+    },
+    "**%@** came in. Was it income, a loan to you, or someone paying you back?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhận **%@** — thu nhập, đi vay hay được trả nợ?"
+          }
+        }
+      }
+    },
+    "Got **%@** from %@. Income, a loan to you, or them paying you back?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhận **%@** từ %@ — thu nhập, đi vay hay được trả nợ?"
+          }
+        }
+      }
+    },
+    "Sent **%@**. Was it spending, a loan, or paying back a debt?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chuyển **%@** — chi tiêu, cho mượn hay trả nợ?"
+          }
+        }
+      }
+    },
+    "Sent **%@** to %@. Spending, a loan, or paying back a debt?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chuyển **%@** cho %@ — chi tiêu, cho mượn hay trả nợ?"
+          }
+        }
+      }
+    },
+    "Moonee doesn't see a receipt, transfer or bill in that photo, so nothing was saved.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee không thấy hoá đơn, giao dịch chuyển tiền hay hoá đơn dịch vụ nào trong ảnh này, nên chưa ghi gì nhé."
+          }
+        }
+      }
+    },
+    "Moonee already has that one in your books (same transaction ID), so it wasn't saved again.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giao dịch này Moonee ghi rồi (trùng mã giao dịch), nên không ghi lại nữa nhé."
+          }
+        }
+      }
     }
   }
 }

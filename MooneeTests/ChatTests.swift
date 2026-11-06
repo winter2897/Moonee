@@ -109,10 +109,11 @@ import Testing
         #expect(c.categories.values.contains("category.food"))
     }
 
-    @Test func receiptTakesTheTotalLine() {
+    @Test func receiptTakesTheTotalLine() throws {
         var c = ParserContext()
         c.currency = "VND"
-        let t = ChatBook.receipt(["HIGHLANDS COFFEE", "Phin sữa đá  29.000", "Bánh mì  29.000", "Tổng cộng  58.000", "Tiền khách đưa  100.000"], context: c)
+        let t = try #require(ChatBook.receipt(OCRLine.plain(["HIGHLANDS COFFEE", "Phin sữa đá  29.000", "Bánh mì  29.000", "Tổng cộng  58.000",
+                                                             "Tiền khách đưa  100.000"]), context: c).first)
         #expect(t.amount == 58_000)
         #expect(t.note == "HIGHLANDS COFFEE")
         #expect(t.missing.isEmpty)
@@ -409,9 +410,10 @@ import Testing
             }
         }
         let pdf = try #require(PDFDocument(data: data))
-        let lines = await ChatBook.lines(in: pdf)
-        #expect(lines.contains { $0.contains("Tổng cộng") })
-        let t = ChatBook.receipt(lines, context: parser())
+        let lines = await ReceiptScanner.lines(in: pdf)
+        #expect(lines.contains { $0.text.contains("Tổng cộng") })
+        #expect(lines.map(\.y) == lines.map(\.y).sorted() && lines.allSatisfy { $0.height > 0 }) // with its layout
+        let t = try #require(ChatBook.receipt(lines, context: parser()).first)
         #expect(t.amount == 58_000 && t.note == "Highlands Coffee")
     }
 }

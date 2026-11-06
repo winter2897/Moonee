@@ -292,12 +292,32 @@
         }
       }
     },
+    "Read photos and receipts": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đọc ảnh và hoá đơn"
+          }
+        }
+      }
+    },
     "Ready, but Apple Intelligence doesn't speak your language yet: Moonee answers in English": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Đã sẵn sàng, nhưng Apple Intelligence chưa hỗ trợ tiếng Việt: Moonee sẽ trả lời bằng tiếng Anh"
+          }
+        }
+      }
+    },
+    "Receipts, transfer screenshots, bills and statements. Off: only Moonee's built-in rules read them.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoá đơn, ảnh chụp chuyển khoản, hoá đơn dịch vụ và sao kê. Tắt: chỉ dùng quy tắc có sẵn của Moonee để đọc."
           }
         }
       }

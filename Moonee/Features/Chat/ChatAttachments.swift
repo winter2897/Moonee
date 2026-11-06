@@ -35,12 +35,17 @@ struct ChatAttachment: Identifiable {
         }
     }
 
-    /// The receipt's text: OCR of a photo, a PDF's text (or OCR of its pages).
-    func lines() async -> [String] {
+    /// The document's rows with their layout: OCR of a photo, a PDF's text (or OCR of its pages).
+    func lines() async -> [OCRLine] {
         switch content {
         case .image(let image): (try? await ReceiptScanner.lines(in: image)) ?? []
-        case .pdf(let pdf, _): await ChatBook.lines(in: pdf)
+        case .pdf(let pdf, _): await ReceiptScanner.lines(in: pdf)
         }
+    }
+
+    /// A photo for models that see images, small enough to send; a PDF goes as its text.
+    var jpeg: Data? {
+        if case .image(let image) = content { image.scaled(maxSide: 1600).jpegData(compressionQuality: 0.7) } else { nil }
     }
 
     /// A file from the importer: a PDF or an image; nil when it can't be read.

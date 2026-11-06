@@ -354,8 +354,10 @@ struct ChatView: View {
         }
     }
 
-    /// Text + photos / PDFs as one message: each one is OCR'd into an expense (spec §3.1), the text says what it was
-    /// (`ChatBook.receipt(_:context:described:)`). Several receipts make several transactions on one card.
+    /// Text + photos / PDFs as one message (spec §3.1). Each is read as a document (`Assistant.readDocument`: a model
+    /// when one is set up, else the rules): a receipt or bill is an expense, a transfer screenshot asks what it was,
+    /// a statement gives several transactions, anything else nothing. The text says what it was
+    /// (`ChatBook.transactions(_:context:described:)`); with no money in the photos, the text alone is read.
     private func send(_ raw: String, with files: [ChatAttachment]) {
         guard !busy else { return }
         if speech.isRecording { speech.stop() }
@@ -365,17 +367,29 @@ struct ChatView: View {
         m.attachments = files.map(\.stored)
         post(m)
         busy = true
+        let assistant = Assistant(router: LLMSettings.router(), tools: MooneeTools(ledger: StoreLedger(context)), catalog: SkillCatalog(context))
+        let seesImages = assistant.router.candidates(for: .parse).contains { $0.acceptsImages }
         Task {
             let parser = ParserContext(context)
-            var parsed: [ParsedTxn] = [], raws = [note], unread = 0
+            var parsed: [ParsedTxn] = [], raws = [note], unread = 0, notMoney = 0
             for f in files {
                 let lines = await f.lines()
                 if lines.isEmpty { unread += 1; continue }
-                parsed.append(ChatBook.receipt(lines, context: parser, described: note))
-                raws.append(lines.joined(separator: "\n"))
+                let doc = await assistant.readDocument(lines, image: seesImages ? f.jpeg : nil, context: parser).read
+                let txns = ChatBook.transactions(doc, context: parser, described: note)
+                if txns.isEmpty { notMoney += 1; continue }
+                parsed += txns
+                raws.append(lines.map(\.text).joined(separator: "\n"))
             }
+            if parsed.isEmpty, notMoney > 0, !note.isEmpty { // "grab về nhà 45k" with a photo that shows no money
+                parsed = QuickParser.parse(note, context: parser)
+                if !parsed.isEmpty { notMoney = 0 }
+            }
+            let (fresh, duplicates) = ChatBook.fresh(parsed, in: context)
             busy = false
-            if !parsed.isEmpty { record(parsed, source: .image, raw: raws.filter { !$0.isEmpty }.joined(separator: "\n\n")) }
+            if !fresh.isEmpty { record(fresh, source: .image, raw: raws.filter { !$0.isEmpty }.joined(separator: "\n\n")) }
+            if duplicates > 0 { reply(ChatLines.alreadyRecorded, mood: .happy) }
+            if notMoney > 0 { reply(ChatLines.notMoney, mood: .confused) }
             if unread > 0 { reply(ChatLines.unreadableReceipt, mood: .confused) }
         }
     }

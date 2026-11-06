@@ -12,12 +12,21 @@ struct OpenAICompatibleLLM: LLM {
     var provider: CloudProvider = .custom
     var send: HTTPTransport = HTTP.live
 
+    /// DeepSeek's chat API takes text only; elsewhere a model without vision fails and the photo is read from OCR instead.
+    var acceptsImages: Bool { provider != .deepSeek }
+
+    static func content(_ m: LLMMessage) -> Any {
+        guard !m.images.isEmpty else { return m.text }
+        return [["type": "text", "text": m.text]]
+            + m.images.map { ["type": "image_url", "image_url": ["url": "data:image/jpeg;base64," + $0.base64EncodedString()]] }
+    }
+
     func respond(_ r: LLMRequest) async throws -> String {
         guard let url = URL(string: baseURL.trimmingCharacters(in: .init(charactersIn: "/ ")) + "/chat/completions") else {
             throw LLMError("Invalid base URL")
         }
         var messages: [[String: Any]] = [["role": "system", "content": r.system]]
-            + r.messages.map { ["role": $0.role.rawValue, "content": $0.text] }
+            + r.messages.map { ["role": $0.role.rawValue, "content": Self.content($0)] }
         for _ in 0..<LLMRequest.maxToolRounds {
             var body: [String: Any] = ["model": model, "messages": messages]
             // OpenAI's reasoning models (o-series, gpt-5) reject any temperature but the default.
@@ -55,9 +64,17 @@ struct AnthropicLLM: LLM {
     var baseURL = "https://api.anthropic.com"
     var send: HTTPTransport = HTTP.live
 
+    var acceptsImages: Bool { true }
+
+    static func content(_ m: LLMMessage) -> Any {
+        guard !m.images.isEmpty else { return m.text }
+        return m.images.map { ["type": "image", "source": ["type": "base64", "media_type": "image/jpeg", "data": $0.base64EncodedString()]] }
+            + [["type": "text", "text": m.text]]
+    }
+
     func respond(_ r: LLMRequest) async throws -> String {
         guard let url = URL(string: baseURL + "/v1/messages") else { throw LLMError("Invalid base URL") }
-        var messages: [[String: Any]] = r.messages.map { ["role": $0.role.rawValue, "content": $0.text] }
+        var messages: [[String: Any]] = r.messages.map { ["role": $0.role.rawValue, "content": Self.content($0)] }
         let system = r.json ? r.system + "\n\nReply with one JSON object and nothing else." : r.system
         for _ in 0..<LLMRequest.maxToolRounds {
             var body: [String: Any] = ["model": model, "max_tokens": 2048, "system": system, "messages": messages]
@@ -92,9 +109,14 @@ struct GeminiLLM: LLM {
     var baseURL = "https://generativelanguage.googleapis.com/v1beta"
     var send: HTTPTransport = HTTP.live
 
+    var acceptsImages: Bool { true }
+
     func respond(_ r: LLMRequest) async throws -> String {
         guard let url = URL(string: "\(baseURL)/models/\(model):generateContent") else { throw LLMError("Invalid model name") }
-        var contents: [[String: Any]] = r.messages.map { ["role": $0.role == .user ? "user" : "model", "parts": [["text": $0.text]]] }
+        var contents: [[String: Any]] = r.messages.map { m in
+            let images: [[String: Any]] = m.images.map { ["inline_data": ["mime_type": "image/jpeg", "data": $0.base64EncodedString()]] }
+            return ["role": m.role == .user ? "user" : "model", "parts": images + [["text": m.text]]]
+        }
         for _ in 0..<LLMRequest.maxToolRounds {
             var config: [String: Any] = ["temperature": 0.2]
             if r.json { config["responseMimeType"] = "application/json" }

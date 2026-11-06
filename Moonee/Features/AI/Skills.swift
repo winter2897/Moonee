@@ -32,7 +32,7 @@ struct Skill: Sendable, Hashable {
     /// Outside, current info (prices, rates, news): the only skill with web access.
     /// `.advice`: in hybrid mode the cloud model (with its built-in search) answers first.
     static let marketLookup = Skill(id: "market-lookup", tools: ["marketPrice", "webSearch"], job: .advice)
-    static let all = [transactionParser, jarBudgeting, closeManagement, spendingCoach, marketLookup]
+    static let all = [transactionParser, receiptReader, jarBudgeting, closeManagement, spendingCoach, marketLookup]
 
     var isBuiltIn: Bool { Skill.all.contains(self) }
 
