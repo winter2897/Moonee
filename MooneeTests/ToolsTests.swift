@@ -78,7 +78,8 @@ struct ToolsTests {
         #expect(c["savingsRate"] as? String == "+56%")
         #expect(c["uncategorizedCount"] as? Int == 1)
         #expect(c["negativeJars"] as? [String] == ["Hưởng thụ"])
-        #expect(c["suggestedMoves"] as? [[String: String]] == [["from": "Thiết yếu", "to": "Hưởng thụ", "amount": "₫200,000"]])
+        // Moonee's order: Play is the one below zero, so Growth gives first; Essentials never does.
+        #expect(c["suggestedMoves"] as? [[String: String]] == [["from": "Phát triển bản thân", "to": "Hưởng thụ", "amount": "₫200,000"]])
         let jars = try #require(c["jars"] as? [[String: String]])
         #expect(jars.first { $0["name"] == "Hưởng thụ" }?["closing"] == "-₫200,000")
         #expect(jars.first { $0["name"] == "Thiết yếu" }?["closing"] == "₫2,300,000")

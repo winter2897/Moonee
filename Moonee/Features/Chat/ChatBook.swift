@@ -177,6 +177,22 @@ struct ChatCardLine: Codable, Equatable {
                (.repay, String(localized: "Paying back a debt", table: "Chat"))]
     }
 
+    /// Moonee's advice right after a spend (spec §4.6): the jar it emptied and how to fix it (or that the wallets are
+    /// empty), or the emergency-fund check after a big one. The same text as the Budget card.
+    static func adviceAfter(_ saved: [Txn], in context: ModelContext) -> String? {
+        let spends = saved.filter { $0.kind == .expense }
+        guard !spends.isEmpty else { return nil }
+        let facts = BudgetFacts(context)
+        let jars = Set(spends.compactMap { $0.jar?.parserKey })
+        if let a = facts.advice.first(where: { $0.kind == .noMoney || ($0.kind == .negativeJar && jars.contains($0.ref ?? "")) }) {
+            return "**\(a.title).** \(a.text)" + (a.why.map { " " + $0 } ?? "")
+        }
+        let advisor = facts.advisor
+        guard let big = spends.max(by: { $0.amount < $1.amount }), let income = advisor.input.income?.amount,
+              big.amount * 3 >= income else { return nil }
+        return advisor.emergencyNote(spending: big.amount, from: big.jar?.parserKey)
+    }
+
     /// Saves every parsed transaction that is complete and allocates it to jars once. The rest are skipped:
     /// the chat asks for what is missing (`Lookup.unresolved`) instead of guessing.
     static func save(_ parsed: [ParsedTxn], source: TxSource, rawInput: String, in context: ModelContext) -> [Txn] {
@@ -330,6 +346,9 @@ struct ChatCardLine: Codable, Equatable {
                 }
                 if let pay = (o["expectedIncome"] as? [[String: Any]])?.first {
                     text += "\n" + String(localized: "Next income: **\(s("amount", pay))** (\(s("name", pay))) on \(s("date", pay)).", table: "Chat")
+                }
+                if let a = (o["advice"] as? [[String: Any]])?.first { // Moonee's advice, same as the Budget card
+                    text += "\n\n**\(s("title", a)).** \(s("text", a))" + ((a["why"] as? String).map { " " + $0 } ?? "")
                 }
                 return text
             case "monthClose":

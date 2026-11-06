@@ -64,8 +64,9 @@ extension BudgetAdvisor.Input: Equatable {
 }
 
 extension PersistentModel {
-    /// Identifies a bill, card or income in an `Advice` (this run of the app only, never stored).
-    var ref: String { "\(persistentModelID)" }
+    /// Identifies a bill, card or income in an `Advice`: the object in this context (a context keeps one instance per
+    /// record). Never stored. Not `persistentModelID`'s text: unsaved records can print alike.
+    var ref: String { "\(ObjectIdentifier(self))" }
 }
 
 /// What the user did with Moonee's advice: muted kinds, the day's cap, what Automatic did (spec §4.6).

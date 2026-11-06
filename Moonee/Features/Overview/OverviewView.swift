@@ -49,7 +49,8 @@ struct OverviewView: View {
     private var dashboard: some View {
         let s = DashboardStats(txns: txns, wallets: wallets, jars: jars, assets: assets, period: period)
         let due = DashboardStats.billsDue(bills)
-        let note = MooneeNote.make(level: MooneeNote.Level(rawValue: level) ?? .medium,
+        let advice = AdvisorMemory.pick(BudgetFacts(txns: txns, wallets: wallets, jars: jars, recurrings: bills).advice)
+        let note = MooneeNote.make(level: MooneeNote.Level(rawValue: level) ?? .medium, advice: advice,
                                    jars: s.jars.map { .init(name: $0.jar.name, balance: $0.month.balance, progress: $0.month.progress) },
                                    bills: due.map { ($0.name, $0.nextDue) },
                                    spentToday: txns.reduce(0) { $1.kind == .expense && Calendar.current.isDateInToday($1.date) ? $0 + $1.amount : $0 })
@@ -154,7 +155,7 @@ extension MooneeNote {
         switch symbol {
         case "sparkles": .happy
         case "moon.zzz.fill": .sleepy
-        case "bell.fill": .thinking
+        case "bell.fill", "lightbulb.fill": .thinking
         default: .worried
         }
     }

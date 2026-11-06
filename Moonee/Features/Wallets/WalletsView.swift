@@ -44,6 +44,11 @@ struct WalletsSection: View {
                 LabeledContent(loc("Total in wallets")) {
                     AmountText(wallets.reduce(0) { $0 + balance($1) }, currency: Money.defaultCurrency).foregroundStyle(Color.ink)
                 }
+                if wallets.contains(where: { !$0.inBudget }) {
+                    LabeledContent(loc("In budget")) {
+                        AmountText(ledger.budgetBalance, currency: Money.defaultCurrency).foregroundStyle(Color.ink)
+                    }
+                }
                 if debt > 0 {
                     LabeledContent(loc("Card debt")) { AmountText(debt, currency: Money.defaultCurrency).foregroundStyle(Color.danger) }
                 }
@@ -76,7 +81,8 @@ private struct WalletRow: View {
 
     var body: some View {
         BudgetRow(title: wallet.name, symbol: wallet.type.symbol, tint: wallet.type.color) {
-            Text(wallet.type.title).foregroundStyle(Color.inkSecondary)
+            Text(wallet.inBudget ? wallet.type.title : String(localized: "\(wallet.type.title) · not in budget", table: "Budget"))
+                .foregroundStyle(Color.inkSecondary)
         } value: {
             AmountText(balance, currency: wallet.currencyCode).foregroundStyle(balance < 0 ? Color.danger : Color.ink)
         }
@@ -183,6 +189,7 @@ struct WalletForm: View {
     @State private var limit = 0
     @State private var statementDay: Int?
     @State private var dueDay: Int?
+    @State private var inBudget = true
     @State private var confirmDelete = false
 
     init(wallet: Wallet?) {
@@ -195,6 +202,7 @@ struct WalletForm: View {
         _limit = State(initialValue: wallet.creditLimit ?? 0)
         _statementDay = State(initialValue: wallet.statementDay)
         _dueDay = State(initialValue: wallet.dueDay)
+        _inBudget = State(initialValue: wallet.inBudget)
     }
 
     var body: some View {
@@ -206,6 +214,12 @@ struct WalletForm: View {
                         ForEach(WalletType.allCases, id: \.self) { Label($0.title, systemImage: $0.symbol).tag($0) }
                     }
                     AmountField(title: type == .credit ? loc("Debt when added") : loc("Opening balance"), minor: $initial)
+                }
+                Section {
+                    Toggle(loc("Count in budget"), isOn: $inBudget)
+                } footer: {
+                    Text(inBudget ? loc("Spending money: it sits in your jars or in Unallocated.")
+                                  : loc("Money set aside (savings, investments): it counts in net worth only, never in jars."))
                 }
                 if type == .credit {
                     Section {
@@ -220,6 +234,7 @@ struct WalletForm: View {
                     Section { Button(loc("Delete wallet"), role: .destructive) { confirmDelete = true } }
                 }
             }
+            .onChange(of: type) { _, t in if wallet == nil { inBudget = t.countsInBudgetByDefault } }
             .navigationTitle(wallet == nil ? loc("Add wallet") : loc("Edit wallet"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -250,6 +265,7 @@ struct WalletForm: View {
         if wallet == nil { context.insert(w) }
         w.name = name.trimmingCharacters(in: .whitespaces)
         w.type = type
+        w.inBudget = inBudget
         w.initialBalance = type == .credit ? -initial : initial
         w.creditLimit = type == .credit && limit > 0 ? limit : nil
         w.statementDay = type == .credit ? statementDay : nil

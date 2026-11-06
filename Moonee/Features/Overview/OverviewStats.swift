@@ -139,9 +139,13 @@ struct MooneeNote: Equatable {
     /// SF Symbol for the note row.
     let symbol: String
 
-    /// Most urgent first: negative jar, over-budget jar, bill due (all levels) → jar ≥ 80% (medium+) → evening nudge (high).
-    static func make(level: Level, jars: [JarState], bills: [(name: String, due: Date)], spentToday: Int,
+    /// Most urgent first: Moonee's advice (the Budget card's, spec §4.6), negative jar, over-budget jar, bill due
+    /// (all levels) → jar ≥ 80% (medium+) → evening nudge (high).
+    static func make(level: Level, advice: BudgetAdvisor.Advice? = nil, jars: [JarState], bills: [(name: String, due: Date)], spentToday: Int,
                      now: Date = .now, calendar: Calendar = .current) -> MooneeNote {
+        if let a = advice {
+            return .init(text: "\(a.title). \(a.text)", symbol: a.kind.isWarning ? "exclamationmark.triangle.fill" : "lightbulb.fill")
+        }
         if let j = jars.first(where: { $0.balance < 0 }) {
             return .init(text: String(localized: "\(j.name) is in the red. Move some money in from another jar?", table: "Overview"), symbol: "exclamationmark.triangle.fill")
         }

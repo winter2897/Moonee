@@ -12,6 +12,7 @@ struct BudgetView: View {
     var body: some View {
         NavigationStack(path: $path) {
             List {
+                AdvisorSection(sheet: $sheet)
                 JarsSection(month: $month, sheet: $sheet, path: $path)
                 WalletsSection(sheet: $sheet)
                 BillsSection(sheet: $sheet)
@@ -24,6 +25,7 @@ struct BudgetView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
                         Button(loc("Move between jars"), systemImage: "arrow.left.arrow.right") { sheet = .transfer(JarTransferDraft()) }
+                        Button(loc("Buy an asset or save"), systemImage: "chart.line.uptrend.xyaxis") { sheet = .setAside(.buy) }
                         Button(loc("Add jar"), systemImage: "square.stack.3d.up") { path.append(BudgetRoute.jarSettings(add: true, edit: nil)) }
                         Button(loc("Add wallet"), systemImage: "wallet.bifold") { sheet = .wallet(nil) }
                         Button(loc("Add bill"), systemImage: "calendar.badge.plus") { sheet = .bill(nil) }
@@ -37,6 +39,7 @@ struct BudgetView: View {
                         Button(loc("Edit income split"), systemImage: "percent") { path.append(BudgetRoute.jarSettings(add: false, edit: nil)) }
                         Button(loc("Assign categories to jars"), systemImage: "arrow.triangle.branch") { path.append(BudgetRoute.mapping) }
                         Button(loc("Reminders"), systemImage: "bell") { path.append(BudgetRoute.reminders) }
+                        Button(loc("Moonee's help"), systemImage: "lightbulb") { path.append(BudgetRoute.advisor) }
                     } label: {
                         Label(loc("More"), systemImage: "ellipsis")
                     }
@@ -50,6 +53,7 @@ struct BudgetView: View {
             BudgetDemo.seedIfRequested(context)
             #endif
             BudgetActions.catchUpIncome(in: context) // a salary logged in chat moves on to the next payday
+            Autopilot.run(context)
         }
     }
 }
@@ -60,6 +64,7 @@ enum BudgetRoute: Hashable {
     case jarSettings(add: Bool, edit: PersistentIdentifier?)
     case mapping
     case reminders
+    case advisor
 
     @ViewBuilder var view: some View {
         switch self {
@@ -67,6 +72,7 @@ enum BudgetRoute: Hashable {
         case .jarSettings(let add, let edit): JarSettingsView(startAdding: add, editJar: edit)
         case .mapping: JarMappingView()
         case .reminders: ReminderSettingsView()
+        case .advisor: AdvisorSettingsView()
         }
     }
 }
@@ -78,6 +84,7 @@ enum BudgetSheet: Identifiable {
     case payCard(Wallet, debt: Int)
     case bill(Recurring?)
     case payBill(Recurring)
+    case setAside(SetAsideSheet.Mode)
     case chart
 
     var id: String {
@@ -87,6 +94,7 @@ enum BudgetSheet: Identifiable {
         case .payCard(let w, _): "pay.\(w.persistentModelID)"
         case .bill(let b): "bill.\(b.map { "\($0.persistentModelID)" } ?? "new")"
         case .payBill(let b): "paid.\(b.persistentModelID)"
+        case .setAside(let m): "setAside.\(m.rawValue)"
         case .chart: "chart"
         }
     }
@@ -98,6 +106,7 @@ enum BudgetSheet: Identifiable {
         case .payCard(let w, let debt): PayCardSheet(card: w, debt: debt)
         case .bill(let b): RecurringForm(bill: b)
         case .payBill(let b): PayBillSheet(bill: b)
+        case .setAside(let m): SetAsideSheet(mode: m)
         case .chart: JarSpendingChart()
         }
     }

@@ -15,6 +15,7 @@ struct WatchlistView: View {
     @State private var period = ChartPeriod.sixMonths
     @State private var editing: Asset?
     @State private var adding = false
+    @State private var setAside: SetAsideSheet.Mode?
 
     private let currency = Money.defaultCurrency
 
@@ -51,9 +52,19 @@ struct WatchlistView: View {
             .navigationTitle(String(localized: "Watchlist", table: "Watchlist"))
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button(String(localized: "Add asset", table: "Watchlist"), systemImage: "plus") { adding = true }
+                    Menu {
+                        Button(String(localized: "Add asset", table: "Watchlist"), systemImage: "plus") { adding = true }
+                        // Spec §4.2 rule A.5: bought with budget money, it comes out of a jar; sold, it lands in Unallocated.
+                        Button(loc("Buy an asset"), systemImage: "cart") { setAside = .buy }
+                        Button(loc("Sell an asset"), systemImage: "arrow.uturn.backward") { setAside = .sell }
+                        Button(loc("Deposit into savings"), systemImage: "lock") { setAside = .deposit }
+                        Button(loc("Withdraw from savings"), systemImage: "lock.open") { setAside = .withdraw }
+                    } label: {
+                        Label(String(localized: "Add asset", table: "Watchlist"), systemImage: "plus")
+                    }
                 }
             }
+            .sheet(item: $setAside) { SetAsideSheet(mode: $0) }
             .sheet(isPresented: $adding) { AssetForm(asset: nil) }
             .sheet(item: $editing) { AssetForm(asset: $0) }
             .task(id: parts.total) { NetWorthSnapshot.record(parts.total, currency: currency, in: context) }

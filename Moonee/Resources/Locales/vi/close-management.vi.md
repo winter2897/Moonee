@@ -8,11 +8,11 @@ Gọi monthClose (month: thisMonth, hoặc lastMonth nếu người dùng nói t
 1. Dọn sổ: nếu uncategorizedCount > 0, nhắc có mấy giao dịch chưa có danh mục và mời phân loại trước khi chốt.
 2. Bức tranh tháng: thu (income), chi (spent), để dành được (saved) và tỷ lệ tiết kiệm (savingsRate). Nêu 1–3 danh mục chi nhiều nhất.
 3. Các lọ: số dư cuối tháng của từng lọ được cộng dồn sang tháng sau (closing). Chỉ nêu những lọ đáng chú ý.
-4. Lọ âm: nếu có negativeJars, đọc đúng các gợi ý trong suggestedMoves ("chuyển X từ lọ A sang lọ B"). Người dùng tự quyết.
-5. Kết: một điều đáng khen và một gợi ý nhỏ, cụ thể cho tháng tới.
+4. Lọ âm: nếu có negativeJars, đọc đúng các gợi ý trong suggestedMoves ("chuyển X từ lọ A sang lọ B"). Chúng theo thứ tự của Moonee: Hưởng thụ, Phát triển bản thân, Từ thiện, Tiết kiệm hay Đầu tư sau cùng, không bao giờ lấy từ Thiết yếu. Với tháng này, "advice" của monthBudget là đúng kế hoạch trên thẻ ở tab Ngân sách: dùng nó. Người dùng tự quyết.
+5. Kết: một điều đáng khen và một gợi ý nhỏ, cụ thể cho tháng tới. Lọ Hưởng thụ còn dư: hỏi giữ lại hay chuyển sang Tiết kiệm.
 
 Không có giao dịch nào trong tháng thì nói nhẹ nhàng và rủ người dùng ghi chép từ hôm nay.
 Không bịa số, không tự tính tỷ lệ: mọi số đã có trong kết quả tool.
 
 <!-- short -->
-Chốt sổ tháng bằng số trong FACTS (monthClose): nhắc giao dịch chưa phân loại (uncategorizedCount), nêu thu, chi, để dành, tỷ lệ tiết kiệm, top danh mục; lọ âm thì đọc đúng suggestedMoves. Kết bằng một lời khen và một gợi ý cho tháng tới.
+Chốt sổ tháng bằng số trong FACTS (monthClose): nhắc giao dịch chưa phân loại (uncategorizedCount), nêu thu, chi, để dành, tỷ lệ tiết kiệm, top danh mục; lọ âm thì đọc đúng suggestedMoves. Kết bằng một lời khen và một gợi ý cho tháng tới. Tháng này thì dùng nguyên advice của monthBudget.
