@@ -283,6 +283,8 @@ private func displayName(key: String?, customName: String?) -> String {
     var remindDaysBefore: Int = 1
     /// When "Paid" was last tapped (Budget shows it under "Paid this month").
     var lastPaid: Date?
+    /// Day of month the bill is due (31 stays 31; short months use their last day). nil = the day of `nextDue`.
+    var dueDay: Int?
     var wallet: Wallet?
     var category: Category?
 

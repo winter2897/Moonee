@@ -1,82 +1,115 @@
 import SwiftData
 import SwiftUI
 
-/// Recurring & bills segment (spec §4.3): due/overdue/upcoming bills with "Paid", and what was paid this month.
+/// Recurring & bills section of the Budget list (spec §4.3), soonest due first. Swipe right or long-press for "Mark paid".
 struct BillsSection: View {
+    @Binding var sheet: BudgetSheet?
     @Environment(\.modelContext) private var context
     @Query(sort: \Recurring.nextDue) private var bills: [Recurring]
     @Query private var jars: [Jar]
-    @State private var editing: Recurring?
-    @State private var adding = false
-    /// Estimated bills ask for the real amount before "Paid" records it.
-    @State private var confirming: Recurring?
-    @State private var paidAmount: Decimal = 0
 
     var body: some View {
         let cal = Calendar.current
-        let month = cal.dateInterval(of: .month, for: .now)!
         let soon = cal.date(byAdding: .day, value: 30, to: cal.startOfDay(for: .now))!
         let dueSoon = bills.filter { $0.nextDue < soon }
-        let paid = bills.filter { $0.lastPaid.map(month.contains) ?? false }
-        VStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 8) {
-                Text(loc("Due in the next 30 days")).font(.rowTitle)
-                AmountText(dueSoon.reduce(0) { $0 + $1.amount }, currency: Money.defaultCurrency)
-                    .heroAmountFont()
-                Text(String(localized: "\(dueSoon.count) due · \(paid.count) paid this month", table: "Budget"))
-                    .font(.secondaryText).foregroundStyle(Color.inkSecondary)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .card(padding: 18)
-
-            BudgetSectionHeader(title: loc("Recurring & Bills")) {
-                Button(loc("Add"), systemImage: "plus") { adding = true }.fontWeight(.semibold)
-            }
+        Section {
             if bills.isEmpty {
-                EmptyState(title: loc("No bills yet"), message: loc("Add rent, electricity, internet or subscriptions and Moonee will remind you before they're due.")) {
-                    Button(loc("Add a bill")) { adding = true }.buttonStyle(MooneeButtonStyle()).padding(.top, 4)
+                ContentUnavailableView {
+                    Label(loc("No bills yet"), systemImage: "calendar")
+                } description: {
+                    Text(loc("Add rent, electricity, internet or subscriptions and Moonee will remind you before they're due."))
+                } actions: {
+                    Button(loc("Add bill")) { sheet = .bill(nil) }
+                }
+            } else {
+                LabeledContent(loc("Due in the next 30 days")) {
+                    AmountText(dueSoon.reduce(0) { $0 + $1.amount }, currency: Money.defaultCurrency).foregroundStyle(Color.ink)
                 }
             }
-            VStack(spacing: 8) {
-                ForEach(bills) { b in
-                    BillCard(name: b.name, symbol: b.category?.icon ?? "calendar", amount: b.amount, currency: b.currencyCode,
-                             due: b.nextDue, estimate: b.isEstimate) { pay(b) }
-                        .contentShape(.rect)
-                        .onTapGesture { editing = b }
-                }
-            }
-            if !paid.isEmpty {
-                BudgetSectionHeader(title: loc("Paid this month")) { EmptyView() }
-                VStack(spacing: 8) {
-                    ForEach(paid) { b in
-                        BillCard(name: b.name, symbol: b.category?.icon ?? "calendar", amount: b.amount, currency: b.currencyCode,
-                                 due: b.lastPaid ?? b.nextDue, paid: true)
+            ForEach(bills) { b in
+                Button { sheet = .bill(b) } label: { BillRow(bill: b) }
+                    .swipeActions(edge: .leading) {
+                        Button(loc("Mark paid"), systemImage: "checkmark") { pay(b) }.tint(Color.brandPrimary)
                     }
-                }
+                    .swipeActions(edge: .trailing) {
+                        Button(loc("Delete"), systemImage: "trash", role: .destructive) { context.delete(b) }
+                    }
+                    .contextMenu {
+                        Button(loc("Mark paid"), systemImage: "checkmark.circle") { pay(b) }
+                        Button(loc("Edit"), systemImage: "pencil") { sheet = .bill(b) }
+                        Button(loc("Delete"), systemImage: "trash", role: .destructive) { context.delete(b) }
+                    }
             }
-        }
-        .sheet(isPresented: $adding) { RecurringForm(bill: nil) }
-        .sheet(item: $editing) { RecurringForm(bill: $0) }
-        .alert(loc("How much was it?"), isPresented: Binding(get: { confirming != nil }, set: { if !$0 { confirming = nil } })) {
-            TextField(loc("Amount"), value: $paidAmount, format: .number).keyboardType(.decimalPad)
-            Button(loc("Cancel"), role: .cancel) {}
-            Button(loc("Mark paid")) {
-                if let b = confirming, paidAmount > 0 {
-                    BudgetActions.markPaid(b, amount: Money(major: paidAmount, b.currencyCode).minor, jars: jars, in: context)
-                }
-            }
-        } message: {
-            Text(loc("This bill is an estimate. Enter what you actually paid."))
+        } header: {
+            Text(loc("Recurring & Bills"))
         }
     }
 
+    /// Estimated bills ask for the real amount first.
     private func pay(_ b: Recurring) {
-        if b.isEstimate {
-            paidAmount = Money(b.amount, b.currencyCode).major
-            confirming = b
-        } else {
-            withAnimation { _ = BudgetActions.markPaid(b, jars: jars, in: context) }
+        if b.isEstimate { sheet = .payBill(b) } else { withAnimation { _ = BudgetActions.markPaid(b, jars: jars, in: context) } }
+    }
+}
+
+/// Name, due state and date, amount. Paid this month shows "Paid · next date".
+private struct BillRow: View {
+    let bill: Recurring
+
+    var body: some View {
+        let paid = bill.lastPaid.map { Calendar.current.isDate($0, equalTo: .now, toGranularity: .month) } ?? false
+        let status = BillStatus(due: bill.nextDue, paid: paid)
+        let date = Text(bill.nextDue, format: .dateTime.day().month())
+        BudgetRow(title: bill.name, symbol: bill.category?.icon ?? "calendar", tint: bill.category?.color ?? .brandDeep) {
+            ((status.symbol.map { Text(Image(systemName: $0)) + Text(verbatim: " ") } ?? Text(verbatim: "")) + status.label)
+                .foregroundStyle(status.color)
+            + Text(verbatim: " · ").foregroundStyle(Color.inkSecondary)
+            + (paid ? Text(String(localized: "next \(bill.nextDue.formatted(.dateTime.day().month()))", table: "Budget")) : date)
+                .foregroundStyle(Color.inkSecondary)
+        } value: {
+            VStack(alignment: .trailing, spacing: 2) {
+                AmountText(bill.amount, currency: bill.currencyCode)
+                if bill.isEstimate { Text(loc("Estimate")).font(.caption).foregroundStyle(Color.inkSecondary) }
+            }
         }
+    }
+}
+
+/// "Mark paid" for an estimated bill: enter what was actually paid.
+struct PayBillSheet: View {
+    let bill: Recurring
+    @Environment(\.modelContext) private var context
+    @Environment(\.dismiss) private var dismiss
+    @Query private var jars: [Jar]
+    @State private var amount: Int
+
+    init(bill: Recurring) {
+        self.bill = bill
+        _amount = State(initialValue: bill.amount)
+    }
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    AmountField(title: loc("Amount"), minor: $amount, currency: bill.currencyCode)
+                } footer: {
+                    Text(loc("This bill is an estimate. Enter what you actually paid."))
+                }
+            }
+            .navigationTitle(bill.name)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) { Button(loc("Cancel")) { dismiss() } }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(loc("Mark paid")) {
+                        BudgetActions.markPaid(bill, amount: amount, jars: jars, in: context)
+                        dismiss()
+                    }
+                    .disabled(amount <= 0)
+                }
+            }
+        }
+        .presentationDetents([.medium])
     }
 }
 
@@ -176,6 +209,10 @@ struct RecurringForm: View {
         b.amount = amount
         b.isEstimate = isEstimate
         b.frequency = frequency
+        // Only a new due date resets the anchor day (editing a 31st bill in February keeps 31).
+        if bill == nil || !Calendar.current.isDate(b.nextDue, inSameDayAs: nextDue) {
+            b.dueDay = Calendar.current.component(.day, from: nextDue)
+        }
         b.nextDue = nextDue
         b.remindDaysBefore = remindDaysBefore
         b.category = category

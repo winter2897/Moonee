@@ -25,9 +25,9 @@ struct JarMappingView: View {
                 ForEach(categories.filter { $0.jar != nil }) { row($0) }
             }
         }
+        .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
         .background(MooneeBackground())
-        .foregroundStyle(Color.mooneeInk)
         .navigationTitle("Assign categories")
     }
 
@@ -36,10 +36,7 @@ struct JarMappingView: View {
             Text("No jar").tag(nil as Jar?)
             ForEach(jars) { Label($0.name, systemImage: $0.icon).tag($0 as Jar?) }
         } label: {
-            HStack(spacing: 12) {
-                IconBadge(symbol: c.icon, color: c.color, size: 32)
-                Text(c.name)
-            }
+            Label { Text(c.name) } icon: { Image(systemName: c.icon).foregroundStyle(c.color) }
         }
         .pickerStyle(.menu)
         .tint(c.jar == nil ? .orange : .mooneeDark)
