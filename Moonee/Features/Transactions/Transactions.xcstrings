@@ -2,6 +2,46 @@
   "sourceLanguage": "en",
   "version": "1.0",
   "strings": {
+    "All categories": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tất cả danh mục"
+          }
+        }
+      }
+    },
+    "All jars": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tất cả lọ"
+          }
+        }
+      }
+    },
+    "All time": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mọi lúc"
+          }
+        }
+      }
+    },
+    "All wallets": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tất cả ví"
+          }
+        }
+      }
+    },
     "Amount (%@)": {
       "localizations": {
         "vi": {
@@ -28,6 +68,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Danh mục"
+          }
+        }
+      }
+    },
+    "Clear filters": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá bộ lọc"
           }
         }
       }
@@ -72,12 +122,32 @@
         }
       }
     },
+    "Edit": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sửa"
+          }
+        }
+      }
+    },
     "Edit transaction": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Sửa giao dịch"
+          }
+        }
+      }
+    },
+    "Filters": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bộ lọc"
           }
         }
       }
@@ -102,12 +172,42 @@
         }
       }
     },
+    "Last month": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tháng trước"
+          }
+        }
+      }
+    },
     "Moonee remembers your category for next time.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Lần sau Moonee sẽ tự nhớ danh mục này cho bạn."
+          }
+        }
+      }
+    },
+    "No matching transactions": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có giao dịch phù hợp"
+          }
+        }
+      }
+    },
+    "No transactions yet": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa có giao dịch nào"
           }
         }
       }
@@ -142,12 +242,82 @@
         }
       }
     },
+    "Search notes, categories, wallets": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tìm ghi chú, danh mục, ví"
+          }
+        }
+      }
+    },
+    "Tap + and tell Moonee “lunch 45k” to log your first one.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhấn + và nhắn Moonee “ăn trưa 45k” để ghi khoản đầu tiên nhé."
+          }
+        }
+      }
+    },
+    "This month": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tháng này"
+          }
+        }
+      }
+    },
+    "This week": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tuần này"
+          }
+        }
+      }
+    },
+    "This year": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Năm nay"
+          }
+        }
+      }
+    },
     "To wallet": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Đến ví"
+          }
+        }
+      }
+    },
+    "Today": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hôm nay"
+          }
+        }
+      }
+    },
+    "Transactions": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sổ giao dịch"
           }
         }
       }
@@ -168,6 +338,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ví"
+          }
+        }
+      }
+    },
+    "Yesterday": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hôm qua"
           }
         }
       }
