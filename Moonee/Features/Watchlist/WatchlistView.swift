@@ -32,13 +32,16 @@ struct WatchlistView: View {
         NavigationStack {
             Group {
                 if assets.isEmpty && parts.owned == 0 && parts.debts == 0 {
-                    ContentUnavailableView {
-                        Label(String(localized: "No assets yet", table: "Watchlist"), systemImage: "chart.pie")
-                    } description: {
-                        Text("Add gold, stocks, crypto or foreign currency with the price you know. Moonee adds them to your net worth.", tableName: "Watchlist")
-                    } actions: {
-                        Button(String(localized: "Add asset", table: "Watchlist")) { adding = true }
-                            .buttonStyle(.borderedProminent)
+                    ScrollView {
+                        EmptyState(mood: .sleepy, title: String(localized: "No assets yet", table: "Watchlist"),
+                                   message: String(localized: "Add gold, stocks, crypto or foreign currency with the price you know. Moonee adds them to your net worth.", table: "Watchlist")) {
+                            Button(String(localized: "Add asset", table: "Watchlist")) { adding = true }
+                                .buttonStyle(MooneeButtonStyle())
+                        }
+                        .card()
+                        .padding(.horizontal, 16)
+                        .padding(.top, 24)
+                        .reveal()
                     }
                 } else {
                     list(ledger: ledger, parts: parts, points: points)
@@ -168,6 +171,7 @@ private struct NetWorthHeader: View {
     let points: [NetWorthHistory.Point]
     @Binding var period: ChartPeriod
     @State private var selectedDate: Date?
+    @State private var grow = 0.0
     @Environment(\.balanceHidden) private var hidden
     @Environment(\.locale) private var locale
 
@@ -184,19 +188,21 @@ private struct NetWorthHeader: View {
             }
             .font(.subheadline)
             .foregroundStyle(.secondary)
-            AmountText(shown, currency: currency)
+            Group {
+                if selected == nil { RollingAmount(total, currency: currency) }
+                else { AmountText(shown, currency: currency).contentTransition(.numericText(value: Double(shown))) }
+            }
                 .font(.largeTitle.bold())
                 .fontDesign(.rounded)
+                .animation(.smooth, value: shown)
                 .foregroundStyle(shown < 0 ? Color.danger : Color.ink)
             if selected == nil, let change = NetWorthHistory.change(points), let first = points.first {
                 ChangeLine(amount: change.amount, percent: change.percent, since: first.month, currency: currency)
             }
             if points.count > 1 {
-                Picker(String(localized: "Period", table: "Watchlist"), selection: $period) {
-                    ForEach(ChartPeriod.allCases, id: \.self) { Text($0.title).tag($0) }
-                }
-                .pickerStyle(.segmented)
-                .padding(.top, 8)
+                CapsuleSwitcher(options: ChartPeriod.allCases.map { ($0, $0.title) }, selection: $period)
+                    .accessibilityLabel(Text("Period", tableName: "Watchlist"))
+                    .padding(.top, 8)
                 chart(selected: selected)
             }
         }
@@ -206,42 +212,66 @@ private struct NetWorthHeader: View {
     private func chart(selected: NetWorthHistory.Point?) -> some View {
         let totals = points.map(\.total)
         let (lo, hi) = (totals.min()!, totals.max()!)
-        let base = lo - max((hi - lo) / 5, 1) // fit the area to the line instead of pulling the axis down to 0
+        let base = Double(lo - max((hi - lo) / 5, 1)) // fit the area to the line instead of pulling the axis down to 0
         return Chart {
-            ForEach(points) { p in
-                AreaMark(x: .value("Month", p.month, unit: .month), yStart: .value("Base", base), yEnd: .value("Net worth", p.total))
-                    .foregroundStyle(LinearGradient(colors: [.brandPrimary.opacity(0.25), .clear], startPoint: .top, endPoint: .bottom))
-                LineMark(x: .value("Month", p.month, unit: .month), y: .value("Net worth", p.total))
-                    .foregroundStyle(Color.brandPrimary)
-                    .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round))
+            ForEach(points) { p in line(p, base: base) }
+            if let last = points.last, selected == nil {
+                PointMark(x: .value("Month", last.month, unit: .month), y: .value("Net worth", risen(last.total, base)))
+                    .foregroundStyle(Color.brandAction)
+                    .symbolSize(70)
             }
-            if let selected {
-                RuleMark(x: .value("Month", selected.month, unit: .month))
-                    .foregroundStyle(Color.inkSecondary.opacity(0.5))
-                PointMark(x: .value("Month", selected.month, unit: .month), y: .value("Net worth", selected.total))
-                    .foregroundStyle(Color.brandPrimary)
-                    .symbolSize(60)
-            }
+            if let selected { selection(selected) }
         }
         .chartXSelection(value: $selectedDate)
-        .chartYScale(domain: base...max(hi, base + 1))
+        .sensoryFeedback(.selection, trigger: selected?.month)
+        .growIn($grow)
+        .chartYScale(domain: base...max(Double(hi), base + 1))
         .chartXAxis {
             AxisMarks(values: .automatic(desiredCount: 4)) { _ in
-                AxisGridLine()
                 AxisValueLabel(format: .dateTime.month(.abbreviated))
             }
         }
         .chartYAxis {
             AxisMarks(position: .trailing, values: .automatic(desiredCount: 3)) { value in
-                AxisGridLine()
+                AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [2, 3]))
                 AxisValueLabel {
                     // The axis would give the amounts away when balances are hidden.
-                    if !hidden, let v = value.as(Int.self) { Text(AmountFormat.string(v, currency, short: true, locale: locale)) }
+                    if !hidden, let v = value.as(Double.self) { Text(AmountFormat.string(Int(v), currency, short: true, locale: locale)) }
                 }
             }
         }
         .frame(height: 180)
         .accessibilityLabel(Text("Net worth by month", tableName: "Watchlist"))
+    }
+
+    /// The line rises from the floor on appear (grow 0 → 1).
+    private func risen(_ total: Int, _ base: Double) -> Double { base + (Double(total) - base) * grow }
+
+    @ChartContentBuilder
+    private func line(_ p: NetWorthHistory.Point, base: Double) -> some ChartContent {
+        let fill = LinearGradient(colors: [.brandPrimary.opacity(0.32), .brandPrimary.opacity(0.02)], startPoint: .top, endPoint: .bottom)
+        let stroke = LinearGradient(colors: [.brandPrimaryLight, .brandAction], startPoint: .leading, endPoint: .trailing)
+        AreaMark(x: .value("Month", p.month, unit: .month), yStart: .value("Base", base), yEnd: .value("Net worth", risen(p.total, base)))
+            .foregroundStyle(fill)
+            .interpolationMethod(.monotone)
+        LineMark(x: .value("Month", p.month, unit: .month), y: .value("Net worth", risen(p.total, base)))
+            .foregroundStyle(stroke)
+            .lineStyle(StrokeStyle(lineWidth: 3, lineCap: .round))
+            .interpolationMethod(.monotone)
+    }
+
+    @ChartContentBuilder
+    private func selection(_ p: NetWorthHistory.Point) -> some ChartContent {
+        RuleMark(x: .value("Month", p.month, unit: .month))
+            .foregroundStyle(Color.brandPrimary.opacity(0.35))
+            .lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 3]))
+        PointMark(x: .value("Month", p.month, unit: .month), y: .value("Net worth", Double(p.total)))
+            .foregroundStyle(Color.brandAction)
+            .symbolSize(90)
+            .annotation(position: .top, spacing: 8, overflowResolution: .init(x: .fit(to: .chart), y: .fit(to: .chart))) {
+                ChartCallout(title: p.month.formatted(.dateTime.month(.wide).year()),
+                             rows: [.init(color: .brandPrimary, amount: p.total)], currency: currency)
+            }
     }
 }
 
@@ -289,7 +319,7 @@ private struct CompositionRow: View {
 
     var body: some View {
         let total = slices.map(\.value).reduce(0, +)
-        HStack(spacing: 16) {
+        AdaptiveStack(spacing: 16) {
             DonutChart(slices: slices.map { .init(label: $0.label, value: $0.value, color: $0.color) }) {
                 VStack(spacing: 0) {
                     Text("Owned", tableName: "Watchlist").font(.caption2).foregroundStyle(.secondary)
@@ -297,18 +327,24 @@ private struct CompositionRow: View {
                 }
             }
             .frame(width: 120)
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 10) {
                 ForEach(slices, id: \.label) { s in
-                    HStack(spacing: 8) {
-                        Circle().fill(s.color).frame(width: 8, height: 8)
-                        Text(s.label).lineLimit(1)
-                        Spacer(minLength: 4)
-                        Text((s.value / total).formatted(.percent.precision(.fractionLength(0...1))))
-                            .monospacedDigit().foregroundStyle(.secondary)
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack(spacing: 8) {
+                            RoundedRectangle(cornerRadius: 3).fill(s.color.gradient).frame(width: 10, height: 10)
+                            Text(s.label).lineLimit(1)
+                            Spacer(minLength: 4)
+                            Text((s.value / total).formatted(.percent.precision(.fractionLength(0...1))))
+                                .monospacedDigit().fontWeight(.semibold).foregroundStyle(Color.ink)
+                        }
+                        .font(.subheadline)
+                        AmountText(Int(s.value), currency: currency, short: true)
+                            .font(.caption).foregroundStyle(Color.inkSecondary).padding(.leading, 18)
                     }
-                    .font(.subheadline)
+                    .accessibilityElement(children: .combine)
                 }
             }
+            .padding(.top, 8)
         }
         .padding(.vertical, 6)
     }

@@ -91,6 +91,16 @@
         }
       }
     },
+    "Avg %@: %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TB %1$@: %2$@"
+          }
+        }
+      }
+    },
     "Big number: what is left in the jar. Bar: spent this month out of what the jar had for the month.": {
       "localizations": {
         "vi": {
@@ -111,6 +121,36 @@
         }
       }
     },
+    "Changes compared with last month.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thay đổi so với tháng trước."
+          }
+        }
+      }
+    },
+    "Changes compared with last week.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thay đổi so với tuần trước."
+          }
+        }
+      }
+    },
+    "Changes compared with last year.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thay đổi so với năm trước."
+          }
+        }
+      }
+    },
     "Difference": {
       "localizations": {
         "vi": {
@@ -127,6 +167,66 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chi tiêu"
+          }
+        }
+      }
+    },
+    "Good afternoon!": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chào buổi chiều!"
+          }
+        }
+      }
+    },
+    "Good afternoon, %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chào buổi chiều, %@"
+          }
+        }
+      }
+    },
+    "Good evening!": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chào buổi tối!"
+          }
+        }
+      }
+    },
+    "Good evening, %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chào buổi tối, %@"
+          }
+        }
+      }
+    },
+    "Good morning!": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chào buổi sáng!"
+          }
+        }
+      }
+    },
+    "Good morning, %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chào buổi sáng, %@"
           }
         }
       }
@@ -287,6 +387,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Giao dịch gần đây"
+          }
+        }
+      }
+    },
+    "Ring: spent this month out of what the jar had. Amount: what is left.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vòng: đã chi trong tháng trên số lọ có. Số tiền: phần còn lại."
+          }
+        }
+      }
+    },
+    "Saved": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Để dành"
+          }
+        }
+      }
+    },
+    "Spending": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chi tiêu"
           }
         }
       }
