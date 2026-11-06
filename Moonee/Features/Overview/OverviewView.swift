@@ -58,7 +58,7 @@ struct OverviewView: View {
             CapsuleSwitcher(options: Period.allCases.map { ($0, $0.title) }, selection: $period)
                 .accessibilityLabel(Text("Period", tableName: "Overview"))
                 .padding(.bottom, 2)
-            MooneeNoteCard(mood: note.mood, text: note.text).card(padding: 12).reveal(0)
+            MooneeNoteCard(mood: note.mood, text: note.text, animated: true).card(padding: 12).reveal(0)
             BalanceCard(stats: s, currency: currency, periodNote: comparedWith).reveal(1)
             SpendingCard(stats: s, currency: currency).reveal(2)
             ReportCard(txns: txns).reveal(3)
