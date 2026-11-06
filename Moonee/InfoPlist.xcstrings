@@ -76,22 +76,28 @@
     "NSPhotoLibraryUsageDescription": {
       "extractionState": "extracted_with_value",
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee shows your recent photos so you can attach receipts to the chat and read their amounts."
+          }
+        },
         "lo": {
           "stringUnit": {
             "state": "translated",
-            "value": "Moonee ອ່ານຮູບໃບບິນຮັບເງິນທີ່ເຈົ້າເລືອກ ເພື່ອປ້ອນຈຳນວນເງິນໃຫ້"
+            "value": "Moonee ສະແດງຮູບລ່າສຸດຂອງເຈົ້າ ເພື່ອໃຫ້ແນບໃບບິນຮັບເງິນໃນແຊັດ ແລະ ອ່ານຍອດເງິນໄດ້"
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "Moonee อ่านรูปใบเสร็จที่คุณเลือกเพื่อกรอกยอดเงินให้"
+            "value": "Moonee แสดงรูปล่าสุดของคุณ เพื่อให้แนบใบเสร็จในแชตและอ่านยอดเงินได้"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Moonee đọc ảnh hoá đơn bạn chọn để điền số tiền."
+            "value": "Moonee hiện các ảnh gần đây để bạn đính kèm hoá đơn vào cuộc trò chuyện và đọc số tiền."
           }
         }
       }

@@ -50,9 +50,9 @@ Fresh installs (a reinstall, a new iPhone without a backup) seed the default jar
 
 ### English (primary, en-US)
 
-**Name** (≤30): `Moonee: Money & Budget Jars`
+**Name** (≤30): `Moonee: Your AI Money Buddy`
 
-**Subtitle** (≤30): `Log spending by chat or voice`
+**Subtitle** (≤30): `Chat Your Way to Savings`
 
 **Promotional text** (≤170):
 > Say it, type it or snap the receipt: Moonee logs it, sorts it and splits your income into jars. Paid once. No account, no ads, no subscription. Your data stays yours.
@@ -102,9 +102,7 @@ In English, Vietnamese, Thai and Lao.
 
 ### Vietnamese (vi)
 
-**Tên** (≤30): `Moonee: Sổ thu chi & Lọ tiền`
-
-**Phụ đề** (≤30): `Ghi chi tiêu chỉ bằng một câu`
+**Tên / Phụ đề:** dùng bản tiếng Anh (chủ app chọn, 06/11/2026). Không thêm Tên/Phụ đề tiếng Việt trong App Information: Apple không cho bản vi trùng tên với bản en, và khi không có bản vi thì App Store Việt Nam hiện bản tiếng Anh.
 
 **Văn bản quảng cáo** (≤170):
 > Nói, gõ hay chụp hoá đơn là xong: Moonee tự ghi, tự phân loại và chia thu nhập vào các lọ. Mua một lần, không tài khoản, không quảng cáo. Dữ liệu là của bạn.
@@ -154,9 +152,7 @@ Có tiếng Việt, tiếng Anh, tiếng Thái và tiếng Lào.
 
 ### Thai (th)
 
-**ชื่อ** (≤30): `Moonee: บันทึกรายรับรายจ่าย`
-
-**คำบรรยายย่อ** (≤30): `จดรายจ่ายแค่พิมพ์ประโยคเดียว`
+**Name / Subtitle:** use the English ones, as for Vietnamese (owner's choice, 2026-11-06): no Thai Name/Subtitle in App Information.
 
 **ข้อความโปรโมท** (≤170):
 > พูด พิมพ์ หรือถ่ายรูปใบเสร็จก็จบ Moonee จดให้ จัดหมวดหมู่ให้ และแบ่งรายรับลงกระปุกให้เอง จ่ายครั้งเดียว ไม่ต้องสมัครบัญชี ไม่มีโฆษณา ข้อมูลเป็นของคุณ
@@ -315,9 +311,9 @@ Repeat with an "iPhone 17 Pro" simulator for 6.3".
 ## 8. Owner-only steps (no session does these)
 
 1. **Agreements**: App Store Connect → Business → accept the **Paid Apps Agreement**, add tax forms and a bank account. A paid app cannot go on sale without it.
-2. **App record**: App Store Connect → Apps → **+** → New App → iOS, name `Moonee: Money & Budget Jars`, primary language English (U.S.), bundle ID `com.haiquan.moonee`, SKU `moonee-ios`, full access. Then add the Vietnamese and Thai localizations (there is no Lao one).
+2. **App record**: App Store Connect → Apps → **+** → New App → iOS, name `Moonee: Your AI Money Buddy`, primary language English (U.S.), bundle ID `com.haiquan.moonee`, SKU `moonee-ios`, full access. Then add the Vietnamese and Thai localizations (there is no Lao one).
 3. **Upload**: Xcode → Window → Organizer → the archive → Distribute App → App Store Connect → Upload; or drag `build/export/Moonee.ipa` into the Transporter app.
 4. **Price**: Pricing and Availability → Price Schedule → base country + price **[PRICE — owner decides]**; Apple fills other storefronts. Availability: all countries or a list. No in-app purchases.
-5. **Metadata**: section 3 in both localizations, screenshots from section 6, App Privacy from section 4, age rating from section 5, category Finance / Productivity, copyright `2026 Quan Tran`, support and privacy policy URLs.
+5. **Metadata**: section 3 in every localization, screenshots from section 6, App Privacy from section 4, age rating from section 5, category Finance / Productivity, copyright `2026 Quan Tran`, support and privacy policy URLs.
 6. **App Review Information**: no sign-in. Notes: "No account or sign-in. All data stays on device and in the user's private iCloud. The assistant parses text like 'coffee 30k' with an on-device rule parser, so it works without any AI setup; Apple Intelligence is used when available. Cloud AI is optional and needs the user's own API key. Local models are optional downloads (Account → AI → Local models). Paid upfront, no in-app purchases." Contact name, phone, email.
 7. **Submit**: version page → Build → pick the TestFlight build → Add for Review → Submit; choose manual or automatic release.

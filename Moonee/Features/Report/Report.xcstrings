@@ -23,6 +23,28 @@
         }
       }
     },
+    "Avg %@": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສະເລ່ຍ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เฉลี่ย %@"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TB %@"
+          }
+        }
+      }
+    },
     "By category": {
       "localizations": {
         "lo": {

@@ -98,6 +98,21 @@ struct DashboardStats {
         categories = slices
     }
 
+    /// Spending in each bucket on its own (not cumulative), this period (nil after now) and the one before.
+    var perBucket: [CumulativePoint] {
+        cumulative.indices.map { i in
+            let p = cumulative[i], before = i > 0 ? cumulative[i - 1] : nil
+            return CumulativePoint(index: p.index, current: p.current.map { $0 - (before?.current ?? 0) },
+                                   previous: p.previous.map { $0 - (before?.previous ?? 0) })
+        }
+    }
+
+    /// Average spending per bucket over the whole previous period: the chart's dashed reference line.
+    var previousAverage: Int {
+        let buckets = cumulative.filter { $0.previous != nil }.count
+        return buckets > 0 ? previousExpense / buckets : 0
+    }
+
     /// Percent change, nil when there is nothing to compare with.
     static func change(_ value: Int, from old: Int) -> Int? {
         old != 0 ? Int((Double(value - old) * 100 / Double(abs(old))).rounded()) : nil

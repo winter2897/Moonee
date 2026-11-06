@@ -1,4 +1,3 @@
-import PDFKit
 import PhotosUI
 import SwiftData
 import SwiftUI
@@ -29,7 +28,9 @@ struct ChatView: View {
     @State private var showAISettings = false
     @State private var showCamera = false
     @State private var showLibrary = false
-    @State private var libraryItem: PhotosPickerItem?
+    @State private var libraryItems: [PhotosPickerItem] = []
+    /// Photos and files waiting in the composer; they go with the next message.
+    @State private var attachments: [ChatAttachment] = []
     @State private var savedCount = 0
     @State private var showReport = false
 
@@ -75,8 +76,9 @@ struct ChatView: View {
                 .onChange(of: busy) { withAnimation { proxy.scrollTo("bottom", anchor: .bottom) } }
             }
             ChatComposer(text: $text, focus: $focused, isRecording: speech.isActive,
+                         attachments: attachments, onRemoveAttachment: { id in attachments.removeAll { $0.id == id } },
                          onPlus: { showAdd = true }, onVoiceStart: startVoice, onVoiceEnd: endVoice, onCamera: openCamera,
-                         onSend: { send(text) }, onChangeModel: { showAISettings = true })
+                         onSend: { attachments.isEmpty ? send(text) : send(text, with: attachments) }, onChangeModel: { showAISettings = true })
                 .padding(.horizontal, 12).padding(.top, 6).padding(.bottom, 10)
         }
         .background(MooneeBackground())
@@ -93,21 +95,20 @@ struct ChatView: View {
         .onChange(of: speech.failure) { _, f in if let f { reply(ChatLines.voice(f), mood: .confused) } }
         .onChange(of: speech.fallbackLocale) { _, l in if let l { reply(ChatLines.voiceFallback(l), mood: .listening) } }
         .sheet(isPresented: $showAdd) {
-            AddToChatSheet(onImage: { image in Task { await scan(image) } },
-                           onPDF: { pdf, name in Task { await scan(pdf, name: name) } },
-                           onUnreadable: { reply(ChatLines.unreadableFile, mood: .confused) })
+            AddToChatSheet(attachments: $attachments, onUnreadable: { reply(ChatLines.unreadableFile, mood: .confused) })
                 .presentationDetents([.medium, .large])
         }
         .fullScreenCover(isPresented: $showCamera) {
-            CameraPicker { image in Task { await scan(image) } }.ignoresSafeArea()
+            CameraPicker { image in attachments.append(ChatAttachment(content: .image(image))) }.ignoresSafeArea()
         }
-        .photosPicker(isPresented: $showLibrary, selection: $libraryItem, matching: .images)
-        .onChange(of: libraryItem) { _, picked in
-            guard let picked else { return }
+        .photosPicker(isPresented: $showLibrary, selection: $libraryItems, matching: .images, preferredItemEncoding: .compatible)
+        .onChange(of: libraryItems) { _, picked in
+            guard !picked.isEmpty else { return }
+            libraryItems = []
             Task {
-                let data = try? await picked.loadTransferable(type: Data.self)
-                libraryItem = nil
-                if let data, let image = UIImage(data: data) { await scan(image) } else { reply(ChatLines.unreadableFile, mood: .confused) }
+                for item in picked {
+                    if let a = await ChatAttachment.load(item) { attachments.append(a) } else { reply(ChatLines.unreadableFile, mood: .confused) }
+                }
             }
         }
         .sheet(isPresented: $showHistory) {
@@ -166,7 +167,9 @@ struct ChatView: View {
     @ViewBuilder private func row(_ i: Int) -> some View {
         let m = messages[i]
         if m.fromUser {
-            ChatBubble(.user, m.text, sent: true)
+            let files = m.attachments
+            if !files.isEmpty { SentAttachments(items: files) }
+            if !m.text.isEmpty || files.isEmpty { ChatBubble(.user, m.text, sent: true) }
         } else {
             ChatBubble(.moonee, m.text, showsAvatar: i == 0 || messages[i - 1].fromUser)
             if !m.sources.isEmpty { SourceChips(sources: m.sources).padding(.leading, 48) }
@@ -207,7 +210,7 @@ struct ChatView: View {
     private func post(_ m: ChatMessage) {
         let t = ChatThreads.forNewMessage(open: thread, resumed: resumed, in: context)
         if t != thread { (thread, resumed) = (t, false) }
-        let naming = t.isManual && t.title.isEmpty && m.fromUser
+        let naming = t.isManual && t.title.isEmpty && m.fromUser && !m.text.isEmpty // photos alone: the next words name it
         context.insert(m)
         ChatThreads.add(m, to: t)
         // A manual chat is named after what it's about: the first sentence now, the model's short title when it answers.
@@ -352,29 +355,29 @@ struct ChatView: View {
         }
     }
 
-    /// Receipt → OCR (Vision) → one expense, saved like a typed one.
-    private func scan(_ image: UIImage) async {
-        post(ChatMessage(fromUser: true, text: String(localized: "Receipt photo", table: "Chat")))
+    /// Text + photos / PDFs as one message: each one is OCR'd into an expense (spec §3.1), the text says what it was
+    /// (`ChatBook.receipt(_:context:described:)`). Several receipts make several transactions on one card.
+    private func send(_ raw: String, with files: [ChatAttachment]) {
+        guard !busy else { return }
+        if speech.isRecording { speech.stop() }
+        let note = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        (text, inputSource, editingCard, pending, attachments) = ("", .text, nil, nil, [])
+        let m = ChatMessage(fromUser: true, text: note)
+        m.attachments = files.map(\.stored)
+        post(m)
         busy = true
-        let lines = (try? await ReceiptScanner.lines(in: image)) ?? []
-        busy = false
-        read(lines)
-    }
-
-    /// PDF receipt → its text (or OCR of its pages) → the same parser as a photo.
-    private func scan(_ pdf: PDFDocument, name: String) async {
-        post(ChatMessage(fromUser: true, text: name))
-        busy = true
-        let lines = await ChatBook.lines(in: pdf)
-        busy = false
-        read(lines)
-    }
-
-    private func read(_ lines: [String]) {
-        if lines.isEmpty {
-            reply(ChatLines.unreadableReceipt, mood: .confused)
-        } else {
-            record([ChatBook.receipt(lines, context: ParserContext(context))], source: .image, raw: lines.joined(separator: "\n"))
+        Task {
+            let parser = ParserContext(context)
+            var parsed: [ParsedTxn] = [], raws = [note], unread = 0
+            for f in files {
+                let lines = await f.lines()
+                if lines.isEmpty { unread += 1; continue }
+                parsed.append(ChatBook.receipt(lines, context: parser, described: note))
+                raws.append(lines.joined(separator: "\n"))
+            }
+            busy = false
+            if !parsed.isEmpty { record(parsed, source: .image, raw: raws.filter { !$0.isEmpty }.joined(separator: "\n\n")) }
+            if unread > 0 { reply(ChatLines.unreadableReceipt, mood: .confused) }
         }
     }
 }

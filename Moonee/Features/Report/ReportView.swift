@@ -14,6 +14,7 @@ struct ReportView: View {
     /// Any day of the month to show; nil = last month if it has data, else this month.
     @State private var anchor: Date?
     @State private var aiComment: (month: Date, text: String)?
+    @State private var grow = 0.0
 
     init(month: Date? = nil) { _anchor = State(initialValue: month) }
 
@@ -29,13 +30,13 @@ struct ReportView: View {
                     EmptyState(mood: .sleepy, title: L("No data for this month"), message: report.ruleComment(currency: currency))
                         .card()
                 } else {
-                    summary(report)
-                    commentCard(report)
-                    byJar(report)
-                    byCategory(report)
-                    trend(report)
-                    top(report)
-                    carryOver(report)
+                    summary(report).reveal(0)
+                    commentCard(report).reveal(1)
+                    byJar(report).reveal(2)
+                    byCategory(report).reveal(3)
+                    TrendCard(report: report, currency: currency).reveal(4)
+                    top(report).reveal(5)
+                    carryOver(report).reveal(6)
                 }
             }
             .padding(.horizontal, 16).padding(.bottom, 24)
@@ -81,7 +82,7 @@ struct ReportView: View {
         VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Spent", tableName: "Report").font(.caption).foregroundStyle(Color.inkSecondary)
-                AmountText(r.spent, currency: currency).heroAmountFont()
+                RollingAmount(r.spent, currency: currency).heroAmountFont()
                 if let c = r.change {
                     // Arrow + sign: colour is never the only cue (spec F).
                     HStack(spacing: 3) {
@@ -119,8 +120,10 @@ struct ReportView: View {
 
     private func commentCard(_ r: MonthReport) -> some View {
         let text = aiComment.flatMap { $0.month == r.month.start ? $0.text : nil } ?? r.ruleComment(currency: currency)
-        return HStack(alignment: .top, spacing: 10) {
-            MooneeAvatar(size: 36)
+        // Mascot: Moonee's face follows the month (saved and spent less → celebrate; overspent → worried).
+        let mood: MooneeMood = r.saved < 0 ? .worried : (r.change ?? 0) <= 0 && r.saved > 0 ? .celebrate : .happy
+        return HStack(alignment: .top, spacing: 12) {
+            MooneeCharacter(mood: mood, animated: false).frame(width: 56, height: 56)
             VStack(alignment: .leading, spacing: 4) {
                 Text("Moonee's take", tableName: "Report").font(.rowTitle)
                 Text(LocalizedStringKey(text)).font(.bodyText).foregroundStyle(Color.inkSecondary)
@@ -171,25 +174,37 @@ struct ReportView: View {
         let before = Self.monthTitle(Calendar.current.date(byAdding: .month, value: -1, to: r.month.start)!, year: false)
         return VStack(alignment: .leading, spacing: 12) {
             sectionTitle(Text("By category", tableName: "Report"), symbol: "square.grid.2x2.fill")
+            HStack(spacing: 14) {
+                legendKey(Text(verbatim: this), AnyShapeStyle(LinearGradient.brand))
+                legendKey(Text(verbatim: before), AnyShapeStyle(Color.ghostBar))
+            }
+            .font(.caption)
+            .foregroundStyle(Color.inkSecondary)
             Chart {
                 ForEach(rows) { s in
-                    BarMark(x: .value("amount", s.total), y: .value("category", s.name))
-                        .foregroundStyle(by: .value("month", this))
+                    BarMark(x: .value("amount", Double(s.total) * grow), y: .value("category", s.name), height: .fixed(12))
+                        .foregroundStyle(s.color.gradient)
+                        .cornerRadius(6)
                         .position(by: .value("month", this))
-                    BarMark(x: .value("amount", s.previous), y: .value("category", s.name))
-                        .foregroundStyle(by: .value("month", before))
+                        .accessibilityLabel("\(s.name), \(this)")
+                        .accessibilityValue(AmountFormat.spoken(s.total, currency))
+                    BarMark(x: .value("amount", Double(s.previous) * grow), y: .value("category", s.name), height: .fixed(12))
+                        .foregroundStyle(Color.ghostBar)
+                        .cornerRadius(6)
                         .position(by: .value("month", before))
+                        .accessibilityLabel("\(s.name), \(before)")
+                        .accessibilityValue(AmountFormat.spoken(s.previous, currency))
                 }
             }
-            .chartForegroundStyleScale([this: Color.brandPrimary, before: Color.brandPrimary.opacity(0.3)])
+            .chartLegend(.hidden)
+            .growIn($grow)
             .chartXAxis {
                 AxisMarks(values: .automatic(desiredCount: 3)) { v in
                     AxisGridLine()
-                    AxisValueLabel { if let n = v.as(Int.self) { Text(AmountFormat.string(n, currency, short: true)) } }
+                    AxisValueLabel { if let n = v.as(Double.self) { Text(AmountFormat.string(Int(n), currency, short: true)) } }
                 }
             }
-            .chartLegend(position: .top, alignment: .leading)
-            .frame(height: CGFloat(rows.count) * 44 + 40)
+            .frame(height: CGFloat(rows.count) * 44 + 24)
             ForEach(rows) { s in
                 HStack(spacing: 8) {
                     Image(systemName: s.icon).foregroundStyle(s.color).frame(width: 20)
@@ -203,26 +218,11 @@ struct ReportView: View {
         .card()
     }
 
-    private func trend(_ r: MonthReport) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            sectionTitle(Text("Spending trend", tableName: "Report"), symbol: "chart.bar.fill")
-            Chart(r.trend) { t in
-                BarMark(x: .value("month", t.month, unit: .month), y: .value("spent", t.spent))
-                    .foregroundStyle(t.month == r.month.start ? AnyShapeStyle(LinearGradient.brand) : AnyShapeStyle(Color.brandPrimary.opacity(0.3)))
-                    .cornerRadius(6)
-                    .accessibilityLabel(t.month.formatted(.dateTime.month(.wide)))
-                    .accessibilityValue(AmountFormat.spoken(t.spent, currency))
-            }
-            .chartXAxis { AxisMarks(values: .stride(by: .month)) { _ in AxisValueLabel(format: .dateTime.month(.abbreviated), centered: true) } }
-            .chartYAxis {
-                AxisMarks(values: .automatic(desiredCount: 3)) { v in
-                    AxisGridLine()
-                    AxisValueLabel { if let n = v.as(Int.self) { Text(AmountFormat.string(n, currency, short: true)) } }
-                }
-            }
-            .frame(height: 150)
+    private func legendKey(_ title: Text, _ style: AnyShapeStyle) -> some View {
+        HStack(spacing: 6) {
+            Capsule().fill(style).frame(width: 14, height: 6)
+            title
         }
-        .card()
     }
 
     private func top(_ r: MonthReport) -> some View {
@@ -279,6 +279,67 @@ struct ReportView: View {
         if case .answer(let text, _, _) = await assistant.answer(ask, skill: .closeManagement, context: ParserContext(context)) {
             aiComment = (r.month.start, text)
         }
+    }
+}
+
+/// Six months of spending: ghost bars, this month in the brand gradient, a dashed 6-month average,
+/// touch a bar for its amount (with a light tick).
+private struct TrendCard: View {
+    let report: MonthReport
+    let currency: String
+    @State private var selectedMonth: Date?
+    @State private var grow = 0.0
+
+    var body: some View {
+        let r = report
+        let cal = Calendar.current
+        let selected = selectedMonth.flatMap { d in r.trend.first { cal.isDate($0.month, equalTo: d, toGranularity: .month) } }
+        let average = r.trend.isEmpty ? 0 : r.trend.reduce(0) { $0 + $1.spent } / r.trend.count
+        let averageText = String(localized: "Avg \(AmountFormat.string(average, currency, short: true))", table: "Report")
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 8) {
+                IconBadge(symbol: "chart.bar.fill", color: .brandDeep, size: 30)
+                Text("Spending trend", tableName: "Report").font(.sectionTitle)
+                Spacer()
+            }
+            Chart {
+                ForEach(r.trend) { t in
+                    let on = selected.map { $0.month == t.month } ?? (t.month == r.month.start)
+                    BarMark(x: .value("month", t.month, unit: .month), y: .value("spent", Double(t.spent) * grow), width: .ratio(0.55))
+                        .foregroundStyle(on ? AnyShapeStyle(LinearGradient.brand) : AnyShapeStyle(Color.ghostBar))
+                        .cornerRadius(8)
+                        .accessibilityLabel(t.month.formatted(.dateTime.month(.wide)))
+                        .accessibilityValue(AmountFormat.spoken(t.spent, currency))
+                }
+                if average > 0 {
+                    RuleMark(y: .value("spent", Double(average) * grow))
+                        .foregroundStyle(Color.inkSecondary.opacity(0.6))
+                        .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 3]))
+                        .annotation(position: .top, alignment: .leading, spacing: 2) { ChartPill(text: averageText) }
+                        .accessibilityLabel(averageText)
+                }
+                if let selected {
+                    RuleMark(x: .value("month", selected.month, unit: .month))
+                        .foregroundStyle(.clear)
+                        .annotation(position: .top, spacing: 0, overflowResolution: .init(x: .fit(to: .chart), y: .fit(to: .chart))) {
+                            ChartCallout(title: ReportView.monthTitle(selected.month),
+                                         rows: [.init(color: .brandPrimary, amount: selected.spent)], currency: currency)
+                        }
+                }
+            }
+            .chartXSelection(value: $selectedMonth)
+            .sensoryFeedback(.selection, trigger: selected?.month)
+            .chartXAxis { AxisMarks(values: .stride(by: .month)) { _ in AxisValueLabel(format: .dateTime.month(.abbreviated), centered: true) } }
+            .chartYAxis {
+                AxisMarks(position: .trailing, values: .automatic(desiredCount: 3)) { v in
+                    AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [2, 3]))
+                    AxisValueLabel { if let n = v.as(Double.self) { Text(AmountFormat.string(Int(n), currency, short: true)) } }
+                }
+            }
+            .frame(height: 170)
+            .growIn($grow)
+        }
+        .card()
     }
 }
 

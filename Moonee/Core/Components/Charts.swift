@@ -49,18 +49,53 @@ struct DonutChart<Center: View>: View {
 
     let slices: [Slice]
     @ViewBuilder var center: Center
+    /// Touch a slice: it pops out, the rest fade, the centre names it (with a light tick).
+    @State private var pick: Double?
+    @State private var grow = 0.0
 
     var body: some View {
-        Chart(slices) { s in
-            SectorMark(angle: .value(s.label, max(s.value, 0)), innerRadius: .ratio(0.66), angularInset: 1.5)
-                .cornerRadius(3)
-                .foregroundStyle(s.color)
-                .accessibilityLabel(s.label)
-                .accessibilityValue(percent(s))
+        let total = slices.map { max($0.value, 0) }.reduce(0, +)
+        let selected = pick.flatMap { p in
+            var running = 0.0
+            return slices.first { running += max($0.value, 0); return p <= running }
+        }
+        Chart {
+            ForEach(slices) { s in
+                SectorMark(angle: .value(s.label, max(s.value, 0)), innerRadius: .ratio(0.64),
+                           outerRadius: .ratio(selected?.id == s.id ? 1 : 0.93), angularInset: 1.5)
+                    .cornerRadius(4)
+                    .foregroundStyle(s.color.gradient)
+                    .opacity(selected == nil || selected?.id == s.id ? 1 : 0.35)
+                    .accessibilityLabel(s.label)
+                    .accessibilityValue(percent(s))
+            }
+            // Sweep-in: an empty sector holds the part of the circle not drawn yet.
+            if grow < 1 {
+                SectorMark(angle: .value("rest", total * (1 - grow) / max(grow, 0.001)), innerRadius: .ratio(0.64))
+                    .foregroundStyle(.clear)
+                    .accessibilityHidden(true)
+            }
         }
         .chartLegend(.hidden)
-        .overlay { center.padding(28) }
+        .chartAngleSelection(value: $pick)
+        .sensoryFeedback(.selection, trigger: selected?.id)
+        .overlay {
+            Group {
+                if let selected {
+                    VStack(spacing: 0) {
+                        Text(selected.label).font(.caption).foregroundStyle(Color.inkSecondary).lineLimit(1)
+                        Text(percent(selected)).font(.headline).foregroundStyle(Color.ink).monospacedDigit()
+                    }
+                    .minimumScaleFactor(0.6)
+                } else {
+                    center
+                }
+            }
+            .padding(28)
+            .allowsHitTesting(false)
+        }
         .aspectRatio(1, contentMode: .fit)
+        .growIn($grow)
     }
 
     private func percent(_ s: Slice) -> String {

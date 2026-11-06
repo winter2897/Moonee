@@ -2,6 +2,28 @@
   "sourceLanguage": "en",
   "version": "1.0",
   "strings": {
+    "%@ closed under budget!": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ປິດເດືອນໄດ້ບໍ່ເກີນງົບ!"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ปิดเดือนได้ไม่เกินงบ!"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ khép lại trong ngân sách!"
+          }
+        }
+      }
+    },
     "%@ has used 80%% of this month's budget. Go easy for a bit!": {
       "extractionState": "manual",
       "localizations": {
@@ -3006,6 +3028,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ví (%lld)"
+          }
+        }
+      }
+    },
+    "You kept %@ in your jars.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຈົ້າເກັບໄວ້ໃນກະປຸກໄດ້ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คุณเก็บไว้ในกระปุกได้ %@"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn còn giữ được %@ trong các lọ."
           }
         }
       }
