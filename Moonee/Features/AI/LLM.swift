@@ -27,8 +27,8 @@ struct LLMRequest: Sendable {
     var json = false
     /// Thinking effort for reasoning models; clients send it only when `supportedEfforts` lists it.
     var effort: ReasoningEffort?
-    /// The answer so far, as it is generated (local models stream; others may call it once at the end or never).
-    var onPartial: (@Sendable (String) -> Void)?
+    /// The answer so far, while a streaming model (LocalLLM) generates; others ignore it.
+    var onPartial: (@Sendable (String) -> Void)? = nil
 
     static let maxToolRounds = 6
 }
