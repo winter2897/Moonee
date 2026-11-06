@@ -47,20 +47,19 @@ enum BudgetLevel: Equatable {
     }
 }
 
-/// Rounded progress bar; overflow is clamped to full.
+/// The system linear `ProgressView`, tinted by budget level; overflow is clamped to full.
+/// `height` > 4 thickens it for a hero bar (jar detail).
 struct MooneeProgressBar: View {
     let progress: Double
     var tint: Color = .brandPrimary
-    var height: CGFloat = 8
+    var height: CGFloat = 4
 
     var body: some View {
-        Capsule().fill(Color.track)
-            .overlay(alignment: .leading) {
-                GeometryReader { g in
-                    Capsule().fill(tint).frame(width: g.size.width * min(max(progress, 0), 1))
-                }
-            }
-            .frame(height: height)
+        ProgressView(value: min(max(progress, 0), 1))
+            .progressViewStyle(.linear)
+            .tint(tint)
+            .scaleEffect(x: 1, y: max(height, 4) / 4, anchor: .center)
+            .frame(height: max(height, 4))
             .accessibilityHidden(true)
     }
 }
@@ -79,7 +78,7 @@ struct PercentChip: View {
         .fixedSize()
         .font(.caption.weight(.semibold))
         .foregroundStyle(level.text)
-        .padding(.horizontal, 8).padding(.vertical, 3)
+        .padding(.horizontal, 7).padding(.vertical, 2)
         .background(level == .normal ? Color.brandMintSoft : level.fill.opacity(0.14), in: .capsule)
     }
 }
@@ -115,50 +114,53 @@ struct JarCard: View {
         .accessibilityElement(children: .combine)
     }
 
-    /// One line, as in the Budget mockup: icon · name / split · bar over "spent / budget" · % chip · chevron.
-    /// No background: the screen groups the rows in one `.card()` with dividers. At accessibility sizes the bar block drops under the name.
+    /// A two-line list row (16 pt side insets, like an inset-grouped List row with a subtitle):
+    /// icon · [name · split …… % chip] over [progress bar …… spent / budget] · chevron.
+    /// No background: the screen groups the rows in one `.card(padding: 0)` with dividers inset 58 pt.
     private var row: some View {
-        let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 6)) : AnyLayout(HStackLayout(spacing: 8))
-        return HStack(spacing: 8) {
+        let ax = typeSize.isAccessibilitySize
+        let amounts = Text(verbatim: hidden ? AmountFormat.mask : "\(AmountFormat.string(spent, currency)) / \(AmountFormat.string(budget, currency))")
+            .font(.caption).monospacedDigit()
+            .foregroundStyle(Color.inkSecondary)
+            .lineLimit(1).minimumScaleFactor(0.8)
+        return HStack(spacing: 12) {
             IconBadge(symbol: symbol, color: color)
-            layout {
-                VStack(alignment: .leading, spacing: 1) {
-                    // One line, as in the mockup ("Phát triển bản thân" shrinks a little); wraps only at accessibility sizes.
+            VStack(alignment: .leading, spacing: 6) {
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
                     Text(name).font(.rowTitle).foregroundStyle(Color.ink)
-                        .lineLimit(typeSize.isAccessibilitySize ? 2 : 1).minimumScaleFactor(0.8)
+                        .lineLimit(ax ? 3 : 1).minimumScaleFactor(0.85)
                     if let subtitle { Text(subtitle).font(.caption).foregroundStyle(Color.inkSecondary) }
+                    Spacer(minLength: 4)
+                    PercentChip(percent: percent, level: level)
                 }
-                .frame(maxWidth: typeSize.isAccessibilitySize ? nil : 120, alignment: .leading)
-                .layoutPriority(1) // the name takes what it needs (≤ 120 pt), the bar gets the rest
-                VStack(alignment: .trailing, spacing: 4) {
-                    MooneeProgressBar(progress: progress, tint: level.fill, height: 6)
-                    // One Text so both amounts shrink together; full amounts in lists (spec §B).
-                    Text(verbatim: hidden ? AmountFormat.mask : "\(AmountFormat.string(spent, currency)) / \(AmountFormat.string(budget, currency))")
-                        .font(.caption2).monospacedDigit()
-                        .foregroundStyle(Color.inkSecondary)
-                        .lineLimit(1).minimumScaleFactor(0.5)
+                if ax {
+                    MooneeProgressBar(progress: progress, tint: level.fill)
+                    amounts
+                } else {
+                    HStack(spacing: 8) {
+                        MooneeProgressBar(progress: progress, tint: level.fill)
+                        amounts.layoutPriority(1)
+                    }
                 }
-                .frame(maxWidth: .infinity)
             }
-            PercentChip(percent: percent, level: level)
-            Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(Color.inkSecondary)
+            Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(.tertiary)
                 .accessibilityHidden(true)
         }
-        .padding(.vertical, 6).padding(.horizontal, 12)
-        .frame(minHeight: 46)
+        .padding(.vertical, 10).padding(.horizontal, 16)
+        .frame(minHeight: 44)
         .contentShape(.rect)
     }
 
     /// Fits 4 across a card (≈ 80 pt each): give it `maxWidth: .infinity`. Amounts are short here (rule in spec §B).
     private var tile: some View {
-        VStack(spacing: 5) {
-            IconBadge(symbol: symbol, color: color, size: 30)
+        VStack(spacing: 4) {
+            IconBadge(symbol: symbol, color: color, size: 28)
             Text(name).font(.secondaryText.weight(.semibold)).foregroundStyle(Color.ink).lineLimit(1).minimumScaleFactor(0.75)
             AmountText(balance, currency: currency, short: true)
                 .font(.caption.weight(.bold))
                 .foregroundStyle(balance < 0 ? Color.danger : Color.ink)
             HStack(spacing: 6) {
-                MooneeProgressBar(progress: progress, tint: level.fill, height: 6)
+                MooneeProgressBar(progress: progress, tint: level.fill)
                 HStack(spacing: 1) {
                     if let s = level.symbol { Image(systemName: s).imageScale(.small) }
                     Text("\(percent)%").monospacedDigit()
@@ -170,7 +172,6 @@ struct JarCard: View {
         }
         .padding(.horizontal, 8).padding(.vertical, 10)
         .frame(maxWidth: .infinity)
-        .background(Color.surface.opacity(0.85), in: .rect(cornerRadius: 16))
-        .shadow(color: .brandDeep.opacity(0.06), radius: 8, y: 3)
+        .background(Color.brandMint.opacity(0.6), in: .rect(cornerRadius: 14, style: .continuous))
     }
 }

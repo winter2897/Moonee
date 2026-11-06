@@ -79,9 +79,18 @@ struct ComponentGallery: View {
             swatches([("income", .income), ("expense", .expense), ("warning", .warning), ("warningText", .warningText), ("danger", .danger)])
             title("Jar palette (12)")
             swatches(JarPalette.hex.indices.map { ("jar.\($0 + 1)", JarPalette.color($0)) })
-            title("Buttons")
-            Button("Lưu giao dịch") {}.buttonStyle(MooneeButtonStyle())
-            PillPicker(options: [(0, "Tuần"), (1, "Tháng"), (2, "Năm")], selection: .constant(1))
+            title("Buttons (system styles, brand tint)")
+            VStack(alignment: .leading, spacing: 12) {
+                Button("Lưu giao dịch") {}.buttonStyle(MooneeButtonStyle())
+                Button("Lưu giao dịch") {}.buttonStyle(MooneeButtonStyle()).disabled(true)
+                HStack {
+                    Button("Hoàn tác", systemImage: "arrow.uturn.backward") {}.buttonStyle(OutlinePillStyle())
+                    Button("Xong") {}.buttonStyle(OutlinePillStyle(filled: true))
+                    Button("Đã trả") {}.buttonStyle(OutlinePillStyle()).disabled(true)
+                }
+                PillPicker(options: [(0, "Tuần"), (1, "Tháng"), (2, "Năm")], selection: $period)
+            }
+            .card()
         }
     }
 
@@ -177,11 +186,11 @@ struct ComponentGallery: View {
             title("Rows in one card: normal / ≥80% / over / negative")
             VStack(spacing: 0) {
                 JarCard(name: "Thiết yếu", symbol: "fork.knife", color: JarPalette.color(0), balance: 2_250_000, spent: 3_250_000, budget: 5_500_000, currency: "VND", subtitle: "55%")
-                Divider().padding(.leading, 56)
+                Divider().padding(.leading, 58)
                 JarCard(name: "Tiết kiệm", symbol: "banknote", color: JarPalette.color(2), balance: 600_000, spent: 2_400_000, budget: 3_000_000, currency: "VND", subtitle: "10%")
-                Divider().padding(.leading, 56)
+                Divider().padding(.leading, 58)
                 JarCard(name: "Hưởng thụ", symbol: "gamecontroller", color: JarPalette.color(4), balance: -250_000, spent: 2_250_000, budget: 2_000_000, currency: "VND", subtitle: "10%")
-                Divider().padding(.leading, 56)
+                Divider().padding(.leading, 58)
                 JarCard(name: "Phát triển bản thân", symbol: "book", color: JarPalette.color(3), balance: -150_000, spent: 300_000, budget: 500_000, currency: "VND", subtitle: "10%")
             }
             .card(padding: 0)
@@ -195,14 +204,22 @@ struct ComponentGallery: View {
         }
     }
 
+    @State private var period = 1
+
     private var bills: some View {
         let day: (Int) -> Date = { Calendar.current.date(byAdding: .day, value: $0, to: .now)! }
         return VStack(alignment: .leading, spacing: 8) {
             title("upcoming / today / overdue / paid")
-            BillCard(name: "Internet", symbol: "wifi", amount: 199_000, currency: "VND", due: day(3)) {}
-            BillCard(name: "Tiền điện", symbol: "bolt", amount: 650_000, currency: "VND", due: day(0), estimate: true) {}
-            BillCard(name: "Thẻ tín dụng", symbol: "creditcard", amount: 2_500_000, currency: "VND", due: day(-2)) {}
-            BillCard(name: "Tiền nhà", symbol: "house", amount: 5_000_000, currency: "VND", due: day(-5), paid: true)
+            VStack(spacing: 0) {
+                BillCard(name: "Internet", symbol: "wifi", amount: 199_000, currency: "VND", due: day(3)) {}
+                Divider().padding(.leading, 58)
+                BillCard(name: "Tiền điện", symbol: "bolt", amount: 650_000, currency: "VND", due: day(0), estimate: true) {}
+                Divider().padding(.leading, 58)
+                BillCard(name: "Thẻ tín dụng", symbol: "creditcard", amount: 2_500_000, currency: "VND", due: day(-2)) {}
+                Divider().padding(.leading, 58)
+                BillCard(name: "Tiền nhà", symbol: "house", amount: 5_000_000, currency: "VND", due: day(-5), paid: true)
+            }
+            .card(padding: 0)
         }
     }
 
