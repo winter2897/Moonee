@@ -136,6 +136,18 @@
     "Another day": {
       "extractionState": "manual",
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ມື້ອື່ນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "วันอื่น"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1005,6 +1017,18 @@
     "Salary": {
       "extractionState": "manual",
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເງິນເດືອນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เงินเดือน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1412,6 +1436,18 @@
     "Which day of the month does it usually come in? On that day Moonee asks you to confirm it and splits it into your jars.": {
       "extractionState": "manual",
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປົກກະຕິເງິນເຂົ້າວັນທີເທົ່າໃດຂອງເດືອນ? ມື້ນັ້ນ Moonee ຈະຖາມໃຫ້ເຈົ້າຢືນຢັນ ແລ້ວແບ່ງໃສ່ກະປຸກໃຫ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปกติเงินเข้าวันที่เท่าไหร่ของเดือน? วันนั้น Moonee จะถามให้คุณยืนยัน แล้วแบ่งลงกระปุกให้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",

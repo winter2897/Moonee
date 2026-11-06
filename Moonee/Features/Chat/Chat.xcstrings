@@ -2667,6 +2667,18 @@
     "This month you have **%@** left to spend of **%@** (spent **%@**).": {
       "extractionState": "manual",
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເດືອນນີ້ເຈົ້າຍັງໃຊ້ໄດ້ອີກ **%1$@** ຈາກທັງໝົດ **%2$@** (ໃຊ້ໄປແລ້ວ **%3$@**)"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เดือนนี้คุณยังใช้ได้อีก **%1$@** จากทั้งหมด **%2$@** (ใช้ไปแล้ว **%3$@**)"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -2678,6 +2690,18 @@
     "After the bills still due: **%@**.": {
       "extractionState": "manual",
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຫັກໃບບິນທີ່ຍັງຕ້ອງຈ່າຍແລ້ວ ເຫຼືອ **%@**"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "หักบิลที่ยังต้องจ่ายแล้ว เหลือ **%@**"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -2689,6 +2713,18 @@
     "Next income: **%@** (%@) on %@.": {
       "extractionState": "manual",
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຮັບຖັດໄປ: **%1$@** (%2$@) ວັນທີ %3$@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายรับถัดไป: **%1$@** (%2$@) วันที่ %3$@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
