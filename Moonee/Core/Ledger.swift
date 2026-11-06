@@ -7,7 +7,9 @@ import Foundation
 /// - expense: wallet −, jar − (a credit-card swipe is an expense on the card wallet: its balance goes negative = card debt).
 /// - income: wallet +, jars + by its stored splits only (no splits = unallocated). Splits and the expense jar are
 ///   fixed when the txn is saved (`Txn.allocate`), so editing percents or remapping a category never rewrites history.
-/// - transfer: wallet → toWallet (paying a card is a transfer into it, not a second expense).
+/// - transfer: wallet → toWallet (paying a card is a transfer into it, not a second expense). Either side may be
+///   missing: money bought an asset (no toWallet) or an asset was sold (no wallet). With a jar, that jar paid for
+///   money leaving the budget (an asset, a deposit into an off-budget wallet).
 /// - jarTransfer: jar → toJar, no wallet moves. With splits and no source jar it is a split of unallocated money
 ///   (wallet money no jar holds yet, `unallocated`) into the jars.
 /// - lend/borrow/repay: wallet and debt book only, never jars.
@@ -49,10 +51,14 @@ struct Ledger<ID: Hashable> {
     /// What is still owed on each debt (positive), by its direction.
     private(set) var debtRemaining: [ID: Int] = [:]
     let debtDirections: [ID: DebtDirection]
+    /// Wallets with "Count in budget" off (savings, investment accounts): net worth only.
+    let offBudget: Set<ID>
     private let jarOpening: [ID: Int]
 
-    init(entries: [Entry], walletOpening: [ID: Int] = [:], jarOpening: [ID: Int] = [:], debtDirections: [ID: DebtDirection] = [:]) {
+    init(entries: [Entry], walletOpening: [ID: Int] = [:], offBudget: Set<ID> = [], jarOpening: [ID: Int] = [:],
+         debtDirections: [ID: DebtDirection] = [:]) {
         self.entries = entries
+        self.offBudget = offBudget
         self.debtDirections = debtDirections
         self.jarOpening = jarOpening
         walletBalances = walletOpening
@@ -92,9 +98,13 @@ struct Ledger<ID: Hashable> {
         return walletBalances.values.reduce(0, +) + assets + debts
     }
 
-    /// Money in wallets (plus lent out, minus borrowed) that no jar holds yet: "Unallocated" on the Budget tab.
-    /// Positive = to split into jars; negative = the jars promise more than there is. Spec §4.1, decision 06/11.
-    var unallocated: Int { netWorth() - jarBalances.values.reduce(0, +) }
+    /// Σ wallets that count in the budget (credit cards negative). Always = Σ jars + `unallocated`.
+    var budgetBalance: Int { walletBalances.reduce(0) { offBudget.contains($1.key) ? $0 : $0 + $1.value } }
+
+    /// Budget-wallet money no jar holds yet: "Unallocated" on the Budget tab. Positive = to split into jars;
+    /// negative = the jars promise more than the wallets hold. Money lent, off-budget wallets and assets are net worth
+    /// only, never here. Spec §4.1 (decision 06/11, rule A.1).
+    var unallocated: Int { budgetBalance - jarBalances.values.reduce(0, +) }
 
     /// What the given jars hold for the month: Σ start + added, Σ spent. "Total budget" / "Spent" / "Left" on the Budget tab.
     func monthTotals(_ jars: [ID], in month: DateInterval) -> JarMonth {
@@ -138,7 +148,8 @@ struct Ledger<ID: Hashable> {
         case .income: e.splits.map { ($0.key, $0.value) }
         case .jarTransfer: [(e.jar, -e.amount), (e.toJar, e.amount)].compactMap { id, d in id.map { ($0, d) } }
             + e.splits.map { ($0.key, $0.value) }
-        case .transfer, .lend, .borrow, .repay: []
+        case .transfer: e.jar.map { [($0, -e.amount)] } ?? []
+        case .lend, .borrow, .repay: []
         }
     }
 }

@@ -30,7 +30,8 @@ enum TxSource: String, Codable, CaseIterable {
 }
 
 enum WalletType: String, Codable, CaseIterable {
-    case cash, bank, ewallet, credit
+    /// savings / investment: money set aside (a term deposit, a brokerage account), off budget by default.
+    case cash, bank, ewallet, credit, savings, investment
 
     var title: String {
         switch self {
@@ -38,6 +39,8 @@ enum WalletType: String, Codable, CaseIterable {
         case .bank: String(localized: "Bank account")
         case .ewallet: String(localized: "E-wallet")
         case .credit: String(localized: "Credit card")
+        case .savings: String(localized: "Savings account")
+        case .investment: String(localized: "Investment account")
         }
     }
 
@@ -47,6 +50,8 @@ enum WalletType: String, Codable, CaseIterable {
         case .bank: "building.columns.fill"
         case .ewallet: "iphone.gen3"
         case .credit: "creditcard.fill"
+        case .savings: "lock.fill"
+        case .investment: "chart.line.uptrend.xyaxis"
         }
     }
 
@@ -56,8 +61,13 @@ enum WalletType: String, Codable, CaseIterable {
         case .bank: Color(hex: 0x3B82F6)
         case .ewallet: Color(hex: 0xEC4899)
         case .credit: Color(hex: 0xF59E0B)
+        case .savings: Color(hex: 0x60A5FA)
+        case .investment: Color(hex: 0x0D9488)
         }
     }
+
+    /// Spending money counts in the budget (its money is in jars or Unallocated); money set aside does not.
+    var countsInBudgetByDefault: Bool { self != .savings && self != .investment }
 }
 
 enum DebtDirection: String, Codable, CaseIterable {
@@ -110,6 +120,7 @@ private func displayName(key: String?, customName: String?) -> String {
     /// transfer only (a credit-card payment is a transfer into the card).
     var toWallet: Wallet?
     /// Expense jar, pinned at save by `allocate` (nil = no jar). jarTransfer: the source jar.
+    /// transfer: the jar paying for money leaving the budget (buying an asset, a savings deposit).
     var jar: Jar?
     /// jarTransfer only.
     var toJar: Jar?
@@ -222,6 +233,8 @@ private func displayName(key: String?, customName: String?) -> String {
     var statementDay: Int?
     var dueDay: Int?
     var order: Int = 0
+    /// "Count in budget": its money is in the jars or Unallocated. Off = net worth only (savings, investments). Spec §4.2.
+    var inBudget: Bool = true
     @Relationship(deleteRule: .cascade, inverse: \Txn.wallet) var txns: [Txn]? = []
     @Relationship(deleteRule: .nullify, inverse: \Txn.toWallet) var incoming: [Txn]? = []
     @Relationship(deleteRule: .nullify, inverse: \Recurring.wallet) var recurrings: [Recurring]? = []
@@ -234,6 +247,7 @@ private func displayName(key: String?, customName: String?) -> String {
         self.initialBalance = initialBalance
         self.creditLimit = creditLimit
         self.order = order
+        self.inBudget = type.countsInBudgetByDefault
     }
 
     var type: WalletType {
@@ -451,6 +465,7 @@ extension Ledger where ID == PersistentIdentifier {
         }
         self.init(entries: entries,
                   walletOpening: Dictionary(uniqueKeysWithValues: wallets.map { ($0.persistentModelID, $0.initialBalance) }),
+                  offBudget: Set(wallets.filter { !$0.inBudget }.map(\.persistentModelID)),
                   jarOpening: Dictionary(uniqueKeysWithValues: jars.map { ($0.persistentModelID, $0.initialBalance) }),
                   debtDirections: Dictionary(txns.compactMap { $0.debt.map { ($0.persistentModelID, $0.direction) } }, uniquingKeysWith: { a, _ in a }))
     }

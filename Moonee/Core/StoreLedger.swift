@@ -62,6 +62,9 @@ struct BudgetFacts: Sendable, Equatable {
     var expectedIncome: [Due]
     /// Unpaid bills due before the month ends, overdue ones included.
     var bills: [Due]
+    /// Moonee's advice now (spec §4.6), the same the Budget card and chat show.
+    var advisor: BudgetAdvisor
+    var advice: [BudgetAdvisor.Advice] { month.contains(advisor.input.now) ? advisor.advice : [] }
 
     /// "Total budget": what the jars have for the month (start of month + added).
     var budget: Int { jars.reduce(0) { $0 + $1.budget } }
@@ -71,8 +74,11 @@ struct BudgetFacts: Sendable, Equatable {
     var billsTotal: Int { bills.reduce(0) { $0 + $1.amount } }
 
     @MainActor init(txns: [Txn], wallets: [Wallet], jars: [Jar], recurrings: [Recurring], month: DateInterval? = nil,
-                    now: Date = .now, calendar: Calendar = .current) {
+                    now: Date = .now, calendar: Calendar = .current, level: AdvisorLevel = .current,
+                    muted: Set<BudgetAdvisor.Kind> = AdvisorMemory.muted) {
         let ledger = Ledger(txns: txns, wallets: wallets, jars: jars)
+        advisor = BudgetAdvisor(.init(txns: txns, wallets: wallets, jars: jars, recurrings: recurrings, ledger: ledger, now: now,
+                                      calendar: calendar, level: level, muted: muted))
         let month = month ?? calendar.dateInterval(of: .month, for: now)!
         self.month = month
         self.jars = jars.sorted { $0.order < $1.order }.map { j in
@@ -88,6 +94,15 @@ struct BudgetFacts: Sendable, Equatable {
         }.sorted { $0.date < $1.date }
         bills = recurrings.filter { !$0.isIncome && $0.nextDue < month.end }.sorted { $0.nextDue < $1.nextDue }
             .map { Due(name: $0.name, amount: $0.amount, date: $0.nextDue, isEstimate: $0.isEstimate) }
+    }
+}
+
+extension BudgetFacts {
+    /// This month's facts and advice from the store.
+    @MainActor init(_ context: ModelContext, now: Date = .now, calendar: Calendar = .current, level: AdvisorLevel = .current) {
+        self.init(txns: (try? context.fetch(FetchDescriptor<Txn>())) ?? [], wallets: (try? context.fetch(FetchDescriptor<Wallet>())) ?? [],
+                  jars: (try? context.fetch(FetchDescriptor<Jar>())) ?? [], recurrings: (try? context.fetch(FetchDescriptor<Recurring>())) ?? [],
+                  now: now, calendar: calendar, level: level)
     }
 }
 

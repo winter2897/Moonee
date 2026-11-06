@@ -38,7 +38,9 @@ import Testing
         let salary = try #require(OnboardingBook.saveSalary(15_000_000, payday: 25, regular: true, now: at(11, 6), calendar: cal, in: context))
         OnboardingBook.saveWallets([.init(type: .bank, name: "ACB", amount: 38_000_000)], in: context)
         let jars = try jars(context)
-        OnboardingBook.applyJars(jars.map(\.percent), to: jars, now: at(11, 6), in: context)
+        OnboardingBook.applyJars(jars.map(\.percent), to: jars, in: context)
+        // Opening money waits in Unallocated; here the user picks "Split by %" on Budget.
+        BudgetActions.splitUnallocated(BudgetActions.unallocated(in: context), jars: jars, date: at(11, 6), in: context)
         return (context, salary)
     }
 
@@ -113,13 +115,17 @@ import Testing
         #expect(!BudgetActions.isReceived(salary, txns: txns, calendar: cal))
     }
 
-    @Test func debtsAndTransfersDoNotChangeUnallocated() {
+    /// Rule A.1: budget wallets = jars + unallocated. Money lent is net worth only, so lending lowers Unallocated
+    /// (and borrowing raises it); a transfer between budget wallets changes nothing.
+    @Test func budgetWalletsEqualJarsPlusUnallocated() {
         let l = Ledger<String>(entries: [
             .init(kind: .lend, amount: 1_000, date: .now, wallet: "cash", debt: "nam"),
             .init(kind: .borrow, amount: 5_000, date: .now, wallet: "cash", debt: "mom"),
             .init(kind: .transfer, amount: 300, date: .now, wallet: "cash", toWallet: "bank"),
         ], walletOpening: ["cash": 10_000], jarOpening: ["a": 10_000], debtDirections: ["nam": .lent, "mom": .borrowed])
-        #expect(l.unallocated == 0)
+        #expect(l.unallocated == 4_000)
+        #expect(l.budgetBalance == l.jarBalances.values.reduce(0, +) + l.unallocated)
+        #expect(l.netWorth() == 10_000) // 14tr in wallets + 1tr lent − 5tr borrowed
     }
 
     @Test func assistantReadsTheBudgetTabNumbers() async throws {
