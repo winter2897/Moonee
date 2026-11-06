@@ -157,7 +157,7 @@ struct SecuritySettings: View {
                     Label { Text("Hide content in App Switcher", tableName: "Account") } icon: { SettingsIcon(symbol: "rectangle.on.rectangle.slash", color: .blue) }
                 }
             } footer: {
-                Text("Hidden amounts show as •••••.", tableName: "Account")
+                Text("Hidden amounts show as *****.", tableName: "Account")
             }
         }
     }

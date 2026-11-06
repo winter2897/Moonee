@@ -56,18 +56,21 @@ struct JarSettingsView: View {
         List {
             Section {
                 ForEach($drafts) { $d in
-                    HStack(spacing: 12) {
-                        Button { editing = drafts.firstIndex { $0.id == d.id } } label: {
+                    Stepper(value: $d.percent, in: 0...100) {
+                        Button { edit(d.id) } label: {
                             HStack(spacing: 12) {
-                                IconBadge(symbol: d.icon, color: Color(hex: d.colorHex), size: 34)
-                                Text(d.name).lineLimit(1)
+                                Image(systemName: d.icon).foregroundStyle(Color(hex: d.colorHex)).frame(minWidth: 28)
+                                Text(d.name).foregroundStyle(Color.ink)
+                                Spacer(minLength: 4)
+                                Text(verbatim: "\(d.percent)%").monospacedDigit().foregroundStyle(Color.inkSecondary)
                             }
+                            .contentShape(.rect)
                         }
                         .buttonStyle(.plain)
-                        Spacer()
-                        Stepper("\(d.percent)%", value: $d.percent, in: 0...100)
-                            .fixedSize()
-                            .monospacedDigit()
+                    }
+                    .contextMenu {
+                        Button(loc("Edit"), systemImage: "pencil") { edit(d.id) }
+                        Button(loc("Delete"), systemImage: "trash", role: .destructive) { drafts.removeAll { $0.id == d.id } }
                     }
                 }
                 .onDelete { drafts.remove(atOffsets: $0) }
@@ -84,14 +87,14 @@ struct JarSettingsView: View {
                 Text(Seed.defaultJars.map { "\($0.percent)% \($0.name)" }.joined(separator: " · "))
             }
         }
+        .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
         .background(MooneeBackground())
-        .foregroundStyle(Color.mooneeInk)
         .navigationTitle("Customize jars")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) { EditButton() }
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("Save") { save() }.fontWeight(.semibold).disabled(!canSave)
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Save") { save() }.disabled(!canSave)
             }
         }
         .sheet(isPresented: Binding(get: { editing != nil }, set: { if !$0 { editing = nil } })) {
@@ -109,7 +112,7 @@ struct JarSettingsView: View {
     private var remainderHeader: some View {
         HStack {
             Text("Total \(100 - remainder)%")
-            Spacer()
+            Spacer(minLength: 8)
             if remainder == 0 {
                 Label("Adds up to 100%", systemImage: "checkmark.circle.fill").foregroundStyle(Color.mooneeDark)
             } else {
@@ -117,9 +120,10 @@ struct JarSettingsView: View {
                     .foregroundStyle(.orange)
             }
         }
-        .font(.subheadline.weight(.semibold))
         .textCase(nil)
     }
+
+    private func edit(_ id: UUID) { editing = drafts.firstIndex { $0.id == id } }
 
     /// New jars take the first palette colour no jar uses yet.
     private func addJar() {
@@ -173,9 +177,13 @@ private struct JarEditor: View {
                 Section("Icon") {
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 6), spacing: 12) {
                         ForEach(Self.icons, id: \.self) { icon in
-                            IconBadge(symbol: icon, color: Color(hex: draft.colorHex), size: 40)
-                                .overlay { if icon == draft.icon { Circle().stroke(Color(hex: draft.colorHex), lineWidth: 2) } }
-                                .onTapGesture { draft.icon = icon }
+                            Button { draft.icon = icon } label: {
+                                IconBadge(symbol: icon, color: Color(hex: draft.colorHex), size: 40)
+                                    .overlay { if icon == draft.icon { Circle().stroke(Color(hex: draft.colorHex), lineWidth: 2) } }
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityLabel(Text(verbatim: icon))
+                            .accessibilityAddTraits(icon == draft.icon ? .isSelected : [])
                         }
                     }
                     .padding(.vertical, 4)
@@ -183,9 +191,12 @@ private struct JarEditor: View {
                 Section("Color") {
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 6), spacing: 12) {
                         ForEach(Self.colors, id: \.self) { hex in
-                            Circle().fill(Color(hex: hex)).frame(width: 34, height: 34)
-                                .overlay { if hex == draft.colorHex { Image(systemName: "checkmark").font(.caption.bold()).foregroundStyle(.white) } }
-                                .onTapGesture { draft.colorHex = hex }
+                            Button { draft.colorHex = hex } label: {
+                                Circle().fill(Color(hex: hex)).frame(width: 34, height: 34)
+                                    .overlay { if hex == draft.colorHex { Image(systemName: "checkmark").font(.caption.bold()).foregroundStyle(.white) } }
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityAddTraits(hex == draft.colorHex ? .isSelected : [])
                         }
                     }
                     .padding(.vertical, 4)
@@ -193,7 +204,7 @@ private struct JarEditor: View {
             }
             .navigationTitle(draft.name.isEmpty ? String(localized: "Jar") : draft.name)
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar { Button("Done") { dismiss() }.fontWeight(.semibold) }
+            .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
         }
         .presentationDetents([.large])
     }

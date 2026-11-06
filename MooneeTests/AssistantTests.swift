@@ -21,7 +21,7 @@ struct AssistantTests {
         let a = ObjectIdentifier(apple), c = ObjectIdentifier(cloud)
         #expect(ids(.onDevice, .advice) == [a])
         #expect(ids(.byok, .parse) == [c])
-        #expect(ids(.local, .parse) == [])                // no local model yet → rules only
+        #expect(ids(.local, .parse) == [a])               // no local model yet → Apple stands in (still on the phone)
         #expect(ids(.hybrid, .parse) == [a])              // typed transactions stay on the phone
         #expect(ids(.hybrid, .quickAnswer) == [a, c])
         #expect(ids(.hybrid, .advice) == [c, a])
@@ -135,7 +135,7 @@ struct AssistantTests {
         var a = assistant(.onDevice, onDevice: broken)
         a.router.local = cloud
         a.router.mode = .hybrid
-        let r = await a.parse("phở 45k", context: ctx)
+        let r = await a.parse("xyz 45k", context: ctx) // no category cue: the small models are asked
         #expect(r.usedModel)
         #expect(broken.requests.count == 1)
     }
@@ -183,8 +183,8 @@ struct AssistantTests {
         _ = await assistant(.onDevice, onDevice: apple).handle("Tháng này mình ăn uống hết bao nhiêu?", context: ctx)
         let req = apple.requests.first
         #expect(req?.tools.isEmpty == true)
-        #expect(req?.system.contains("FACTS") == true)
-        #expect(req?.system.contains(#""spent":"₫2,500,000""#) == true) // pre-computed for food this month
+        #expect(req?.messages.last?.text.contains("FACTS") == true)
+        #expect(req?.messages.last?.text.contains(#""spent":"₫2,500,000""#) == true) // pre-computed for food this month
         #expect(req?.system.contains(Skill.spendingCoach.instructions(language: "vi", short: true)) == true)
     }
 

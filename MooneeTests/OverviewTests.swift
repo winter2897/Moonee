@@ -21,7 +21,7 @@ import Testing
         return t
     }
 
-    @Test func spendingBudgetAndNetWorth() throws {
+    @Test func dashboardComparesPeriods() throws {
         let needs = Jar(key: "jar.essentials", icon: "house", colorHex: 0, percent: 50, order: 0)
         let savings = Jar(key: "jar.savings", icon: "banknote", colorHex: 0, percent: 50, order: 1)
         let food = Category(key: "category.food", icon: "fork.knife", colorHex: 0, jar: needs)
@@ -29,35 +29,57 @@ import Testing
         [needs, savings].forEach(context.insert); context.insert(food); context.insert(wallet)
         let jars = [needs, savings]
 
-        txn(2_000, .income, day(10, 5), wallet: wallet, jars: jars)          // last month: +1000 needs, +1000 savings
+        txn(2_000, .income, day(10, 5), wallet: wallet, jars: jars)                    // last month
         txn(400, .expense, day(10, 20), category: food, wallet: wallet, jars: jars)
-        txn(4_000, .income, day(11, 1), wallet: wallet, jars: jars)          // this month: +2000 each
-        txn(300, .expense, day(11, 9), category: food, wallet: wallet, jars: jars)  // yesterday
-        txn(150, .expense, day(11, 10, 8), category: food, wallet: wallet, jars: jars) // today
-        txn(999, .expense, day(11, 10, 23), wallet: wallet)                  // today, no jar
+        txn(4_000, .income, day(11, 1), wallet: wallet, jars: jars)                    // this month
+        txn(300, .expense, day(11, 9), category: food, wallet: wallet, jars: jars)
+        txn(150, .expense, day(11, 10, 8), category: food, wallet: wallet, jars: jars)
+        txn(999, .expense, day(11, 10, 23), wallet: wallet)                            // no category → "Other"
         context.insert(Asset(symbol: "SJC", kind: .gold, quantity: 2, unitPrice: 500))
+        let all = try context.fetch(FetchDescriptor<Txn>()), assets = try context.fetch(FetchDescriptor<Asset>())
+        func stats(_ p: Period) -> DashboardStats {
+            DashboardStats(txns: all, wallets: [wallet], jars: jars, assets: assets, period: p, now: day(11, 10, 23), calendar: cal)
+        }
 
-        let s = OverviewStats(txns: try context.fetch(FetchDescriptor<Txn>()), wallets: [wallet], jars: jars,
-                              assets: try context.fetch(FetchDescriptor<Asset>()), now: day(11, 10, 23), calendar: cal)
-        #expect(s.spentToday == 1_149)
-        #expect(s.spentYesterday == 300)
-        #expect(s.todayChange == 283)
-        #expect(s.spentMonth == 1_449)
-        // only `needs` has a category: start 1000 − 400 = 600, + 2000 this month
-        #expect(s.monthBudget == 2_600)
-        #expect(s.jars.map(\.month.balance) == [2_150, 3_000])
-        // wallet 1000 + 2000 − 400 + 4000 − 1449 = 5151, + assets 1000
-        #expect(s.netWorth == 6_151)
-        #expect(s.netWorthTrend.count == 6)
-        #expect(s.netWorthTrend[4] == 1_000 + 2_000 - 400 + 1_000) // end of October
-        #expect(s.netWorthChange == 71) // 3600 → 6151
+        let m = stats(.month)
+        #expect((m.income, m.expense, m.previousIncome, m.previousExpense) == (4_000, 1_449, 2_000, 400))
+        #expect(DashboardStats.change(m.net, from: m.previousNet) == 59) // 1600 → 2551
+        #expect(m.walletTotal == 5_151)
+        #expect(m.netWorth == 6_151)
+        #expect(m.jars.map(\.month.balance) == [2_150, 3_000])
+        // Cumulative by day: 31 points (October is longer); this month stops today (day 10).
+        #expect(m.cumulative.count == 31)
+        #expect(m.cumulative[8].current == 300)
+        #expect(m.cumulative[9].current == 1_449)
+        #expect(m.cumulative[10].current == nil)
+        #expect(m.cumulative[19].previous == 400)
+        #expect(m.cumulative[30].previous == 400 && m.cumulative[30].current == nil)
+        #expect(m.categories.map(\.id) == ["category.food", "other"])
+        #expect(m.categories.map(\.amount) == [450, 999])
+
+        let y = stats(.year)
+        #expect(y.cumulative.count == 12)
+        #expect(y.cumulative[9].current == 400 && y.cumulative[10].current == 1_849 && y.cumulative[11].current == nil)
+        #expect(y.cumulative[11].previous == 0)
+
+        let w = stats(.week) // Sun 8 – Sat 14 Nov
+        #expect(w.expense == 1_449 && w.previousExpense == 0 && w.cumulative.count == 7)
+    }
+
+    @Test func categoriesAreTopFiveThenOther() {
+        let cats = (0..<7).map { Category(key: "c\($0)", icon: "tag", colorHex: 0) }
+        cats.forEach(context.insert)
+        let txns = cats.enumerated().map { i, c in txn(70 - i * 10, .expense, day(11, 3), category: c) }
+        let s = DashboardStats(txns: txns, wallets: [], jars: [], assets: [], period: .month, now: day(11, 10), calendar: cal)
+        #expect(s.categories.map(\.id) == ["c0", "c1", "c2", "c3", "c4", "other"])
+        #expect(s.categories.last?.amount == 30)
     }
 
     @Test func billsDueWithinAWeekIncludeOverdue() {
         let now = day(11, 10, 9)
         let bills = [Recurring(name: "late", amount: 1, nextDue: day(11, 8)), Recurring(name: "edge", amount: 1, nextDue: day(11, 17, 22)),
                      Recurring(name: "far", amount: 1, nextDue: day(11, 18, 1)), Recurring(name: "soon", amount: 1, nextDue: day(11, 11))]
-        #expect(OverviewStats.billsDue(bills, now: now, calendar: cal).map(\.name) == ["late", "soon", "edge"])
+        #expect(DashboardStats.billsDue(bills, now: now, calendar: cal).map(\.name) == ["late", "soon", "edge"])
     }
 
     @Test func noteFollowsUrgencyAndReminderLevel() {
@@ -73,10 +95,10 @@ import Testing
         #expect(note(.low, [ok, over, red]).text.contains("Red"))
         #expect(note(.low, [ok, over]).text.contains("Fun"))
         #expect(note(.low, [hot], bills: [("Internet", day(11, 10, 8))]).text.contains("Internet"))
-        #expect(note(.low, [hot]).mood == .happy)           // ≥80% is medium+
+        #expect(note(.low, [hot]).symbol == "sparkles")    // ≥80% is medium+
         #expect(note(.medium, [hot]).text.contains("85%"))
-        #expect(note(.medium, [ok], spent: 0).mood == .happy)
-        #expect(note(.high, [ok], spent: 0).mood == .sleepy) // evening nudge only on "high"
+        #expect(note(.medium, [ok], spent: 0).symbol == "sparkles")
+        #expect(note(.high, [ok], spent: 0).symbol == "moon.zzz.fill") // evening nudge only on "high"
     }
 
     @Test func filterByWalletJarCategoryDateAndText() {
@@ -89,12 +111,15 @@ import Testing
         let move = txn(200, .transfer, day(11, 5), wallet: bank)
         move.toWallet = cash
         let all = [lunch, salary, move]
-        func run(_ f: TxnFilter) -> [Txn] { all.filter { f.matches($0, calendar: cal) } }
+        func run(_ f: TxnFilter, now: Date = .now) -> [Txn] { all.filter { f.matches($0, now: now, calendar: cal) } }
 
         #expect(run(TxnFilter(wallet: cash)) == [lunch, move])
         #expect(run(TxnFilter(jar: needs)) == [lunch, salary]) // expense jar + income split
         #expect(run(TxnFilter(category: food)) == [lunch])
-        #expect(run(TxnFilter(from: day(11, 3, 23), to: day(11, 5, 1))) == [lunch, move])
+        #expect(run(TxnFilter(range: .thisMonth), now: day(11, 20)) == [lunch, salary, move])
+        #expect(run(TxnFilter(range: .lastMonth), now: day(12, 2)) == [lunch, salary, move])
+        #expect(run(TxnFilter(range: .thisWeek), now: day(11, 4)).isEmpty == false) // Sun 1 – Sat 7 Nov
+        #expect(run(TxnFilter(range: .thisWeek), now: day(11, 10)).isEmpty)
         #expect(run(TxnFilter(text: "pho")) == [lunch])        // diacritic-insensitive
         #expect(run(TxnFilter(text: "bank")) == [salary, move])
         #expect(!TxnFilter(text: "x").isActive)

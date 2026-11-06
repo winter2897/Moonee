@@ -58,7 +58,7 @@ extension MooneeHeader where Leading == EmptyView, Trailing == EmptyView {
     }
 }
 
-/// Label for a header button: 36 pt white circle inside a 44 pt touch target.
+/// Label for a header button: a 36 pt Liquid Glass circle (like a toolbar button) inside a 44 pt touch target.
 /// Use as the label of a `Button`, `Menu` or `NavigationLink`, and give that an `accessibilityLabel`.
 struct HeaderCircle: View {
     let symbol: String
@@ -66,11 +66,12 @@ struct HeaderCircle: View {
 
     var body: some View {
         Image(systemName: symbol)
-            .font(.system(size: 15, weight: .semibold))
+            .font(.body.weight(.semibold))
+            .imageScale(.small)
+            .dynamicTypeSize(...DynamicTypeSize.xLarge) // the circle is fixed; the Large Content Viewer covers bigger sizes
             .foregroundStyle(Color.ink)
             .frame(width: 36, height: 36)
-            .background(Color.surface, in: .circle)
-            .shadow(color: .brandDeep.opacity(0.08), radius: 6, y: 2)
+            .glassEffect(.regular.interactive(), in: .circle)
             .frame(width: 44, height: 44)
             .contentShape(.circle)
     }

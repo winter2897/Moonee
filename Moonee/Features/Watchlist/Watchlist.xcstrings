@@ -2,6 +2,26 @@
   "sourceLanguage": "en",
   "version": "1.0",
   "strings": {
+    "1Y": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1N"
+          }
+        }
+      }
+    },
+    "6M": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "6T"
+          }
+        }
+      }
+    },
     "Add asset": {
       "localizations": {
         "vi": {
@@ -22,12 +42,22 @@
         }
       }
     },
-    "Assets · Investing · Watch": {
+    "Add your first asset": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tài sản · Đầu tư · Theo dõi"
+            "value": "Thêm tài sản đầu tiên"
+          }
+        }
+      }
+    },
+    "All": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tất cả"
           }
         }
       }
@@ -42,12 +72,22 @@
         }
       }
     },
-    "Cash & equivalents": {
+    "Card debt and loans come from your wallets and the debt book.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tiền & tương đương"
+            "value": "Nợ thẻ và khoản vay lấy từ ví và sổ nợ của bạn."
+          }
+        }
+      }
+    },
+    "Cash": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiền & tài khoản"
           }
         }
       }
@@ -82,12 +122,12 @@
         }
       }
     },
-    "Debts (−)": {
+    "Debts": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nợ (−)"
+            "value": "Nợ"
           }
         }
       }
@@ -98,26 +138,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Xoá"
-          }
-        }
-      }
-    },
-    "Delete %@?": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Xoá %@?"
-          }
-        }
-      }
-    },
-    "Delete asset": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Xoá tài sản"
           }
         }
       }
@@ -152,22 +172,22 @@
         }
       }
     },
-    "Investments": {
+    "Gold, stocks, crypto or foreign currency, at the price you know.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Đầu tư"
+            "value": "Vàng, cổ phiếu, crypto hay ngoại tệ, theo giá bạn biết."
           }
         }
       }
     },
-    "Moonee has no live prices yet: type the price you know, e.g. 2 taels of gold at today's price per tael.": {
+    "Money lent": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Moonee chưa có giá trực tiếp: hãy nhập giá bạn biết, ví dụ 2 lượng vàng với giá một lượng hôm nay."
+            "value": "Tiền cho vay"
           }
         }
       }
@@ -212,6 +232,16 @@
         }
       }
     },
+    "No live prices yet: type the price you know, e.g. 2 taels of gold at today's price per tael.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa có giá trực tiếp: hãy nhập giá bạn biết, ví dụ 2 lượng vàng với giá một lượng hôm nay."
+          }
+        }
+      }
+    },
     "Not in net worth: priced in %@": {
       "localizations": {
         "vi": {
@@ -232,12 +262,32 @@
         }
       }
     },
-    "Other assets": {
+    "Owned": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tài sản khác"
+            "value": "Đang có"
+          }
+        }
+      }
+    },
+    "Period": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kỳ"
+          }
+        }
+      }
+    },
+    "Price date": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngày của giá"
           }
         }
       }
@@ -248,26 +298,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Giá mỗi đơn vị"
-          }
-        }
-      }
-    },
-    "Price updated": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ngày cập nhật giá"
-          }
-        }
-      }
-    },
-    "Price updated %@": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cập nhật giá %@"
           }
         }
       }
@@ -302,7 +332,7 @@
         }
       }
     },
-    "Stock": {
+    "Stocks": {
       "localizations": {
         "vi": {
           "stringUnit": {
@@ -322,26 +352,6 @@
         }
       }
     },
-    "Type today's price for each asset. Only changed prices get today's date.": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nhập giá hôm nay cho từng tài sản. Chỉ giá đã đổi mới được ghi ngày hôm nay."
-          }
-        }
-      }
-    },
-    "Update assets": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cập nhật tài sản"
-          }
-        }
-      }
-    },
     "Value": {
       "localizations": {
         "vi": {
@@ -352,52 +362,42 @@
         }
       }
     },
-    "Your assets": {
+    "Wallets are managed in Budget.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tài sản đang giữ"
+            "value": "Ví được quản lý ở tab Ngân sách."
           }
         }
       }
     },
-    "billion %@": {
+    "Watchlist": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "tỷ %@"
+            "value": "Quan tâm"
           }
         }
       }
     },
-    "million %@": {
+    "since %@": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "triệu %@"
+            "value": "kể từ %@"
           }
         }
       }
     },
-    "thousand %@": {
+    "updated %@": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "nghìn %@"
-          }
-        }
-      }
-    },
-    "vs last month": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "so với tháng trước"
+            "value": "cập nhật %@"
           }
         }
       }

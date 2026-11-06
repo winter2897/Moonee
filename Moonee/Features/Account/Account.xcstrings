@@ -454,12 +454,12 @@
         }
       }
     },
-    "Hidden amounts show as •••••.": {
+    "Hidden amounts show as *****.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Số tiền bị ẩn hiện thành •••••."
+            "value": "Số tiền bị ẩn hiện thành *****."
           }
         }
       }

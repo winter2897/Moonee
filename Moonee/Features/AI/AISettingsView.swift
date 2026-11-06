@@ -95,7 +95,10 @@ struct AISettingsView: View {
             } header: {
                 Text("AI mode", tableName: "Account")
             } footer: {
-                if mode == .onDevice || mode == .hybrid { Text(LLMSettings.appleStatus) }
+                if mode == .onDevice || mode == .hybrid {
+                    let apple = AppleStatus.current()
+                    Label(apple.text, systemImage: apple.canRun ? "checkmark.circle" : "exclamationmark.circle")
+                }
             }
 
             if mode == .local || mode == .hybrid {
@@ -205,7 +208,9 @@ struct AISettingsView: View {
             } header: {
                 Text("Web search", tableName: "AI")
             } footer: {
-                Text("For questions about gold, exchange rates, crypto and news. OpenRouter, OpenAI, Anthropic and Gemini search on their own; with other providers or on-device, add a Tavily or Brave key.", tableName: "AI")
+                // Redrawn by the toggle, the key picker and the key field (they are all state here).
+                let _ = (webSearchOn, searchProvider, searchKey, mode, provider)
+                Text(SearchSettings.route)
             }
 
             Section {

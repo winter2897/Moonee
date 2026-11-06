@@ -80,8 +80,12 @@ enum Books {
             .init(date: d(11, 19), amount: 300_000, kind: .jarTransfer, jarKey: "jar.savings", toJarKey: "jar.play"),
         ])
 
+    /// Offline: no search backend, market prices fail (tests stub them where they need them).
     static var tools: MooneeTools {
-        MooneeTools(ledger: ledger, now: { now }, calendar: cal, locale: Locale(identifier: "en_US"))
+        var t = MooneeTools(ledger: ledger, now: { now }, calendar: cal, locale: Locale(identifier: "en_US"))
+        t.search = WebSearch(backend: nil, now: { now })
+        t.prices = MarketPrices(send: { _ in throw URLError(.notConnectedToInternet) }, cache: QuoteCache())
+        return t
     }
 
     static var context: ParserContext {
