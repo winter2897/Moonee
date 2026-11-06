@@ -2,6 +2,16 @@
   "sourceLanguage": "en",
   "version": "1.0",
   "strings": {
+    "%@ closed under budget!": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ khép lại trong ngân sách!"
+          }
+        }
+      }
+    },
     "%@ has used 80%% of this month's budget. Go easy for a bit!": {
       "extractionState": "manual",
       "localizations": {
@@ -1446,6 +1456,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ví (%lld)"
+          }
+        }
+      }
+    },
+    "You kept %@ in your jars.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn còn giữ được %@ trong các lọ."
           }
         }
       }
