@@ -1111,6 +1111,96 @@
           }
         }
       }
+    },
+    "Allow access to Photos": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cho phép truy cập Ảnh"
+          }
+        }
+      }
+    },
+    "Choose photos": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chọn ảnh"
+          }
+        }
+      }
+    },
+    "Choose which photos Moonee can see": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chọn ảnh Moonee được xem"
+          }
+        }
+      }
+    },
+    "Describe it (optional)": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mô tả thêm (không bắt buộc)"
+          }
+        }
+      }
+    },
+    "Manage": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quản lý"
+          }
+        }
+      }
+    },
+    "No photos yet": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa có ảnh nào"
+          }
+        }
+      }
+    },
+    "Photo": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ảnh"
+          }
+        }
+      }
+    },
+    "Remove attachment": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gỡ tệp đính kèm"
+          }
+        }
+      }
+    },
+    "Turn on Photos for Moonee in Settings to pick receipts here.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bật quyền Ảnh cho Moonee trong Cài đặt để chọn hoá đơn ở đây."
+          }
+        }
+      }
     }
   }
 }

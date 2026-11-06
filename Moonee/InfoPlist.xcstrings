@@ -40,10 +40,16 @@
     "NSPhotoLibraryUsageDescription": {
       "extractionState": "extracted_with_value",
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee shows your recent photos so you can attach receipts to the chat and read their amounts."
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Moonee đọc ảnh hoá đơn bạn chọn để điền số tiền."
+            "value": "Moonee hiện các ảnh gần đây để bạn đính kèm hoá đơn vào cuộc trò chuyện và đọc số tiền."
           }
         }
       }
