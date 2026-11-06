@@ -40,7 +40,7 @@ enum AmountFormat {
     }
 
     private static var digitsCache: [String: Int] = [:]
-    private static func fractionDigits(_ code: String) -> Int {
+    static func fractionDigits(_ code: String) -> Int {
         if let d = digitsCache[code] { return d }
         let f = NumberFormatter()
         f.numberStyle = .currency

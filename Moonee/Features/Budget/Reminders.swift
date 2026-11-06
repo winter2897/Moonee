@@ -52,11 +52,11 @@ extension Prefs {
 struct Reminder: Equatable {
     /// Raw order = priority when the daily cap drops some.
     enum Kind: Int, CaseIterable, Comparable {
-        case jarOver, bill, jarWarning, debt, monthlyReport, weeklyReport, dailyLog
+        case jarOver, payday, bill, jarWarning, debt, monthlyReport, weeklyReport, dailyLog
 
         var minLevel: ReminderLevel {
             switch self {
-            case .jarOver, .bill: .low
+            case .jarOver, .payday, .bill: .low
             case .jarWarning, .debt, .monthlyReport, .weeklyReport: .medium
             case .dailyLog: .high
             }
@@ -71,13 +71,18 @@ struct Reminder: Equatable {
     var items: [String] = []
     /// Once-only keys (jar alerts) to remember after scheduling.
     var keys: [String] = []
+    /// Moonee's advice as the body (payday plan, how to fix a jar), instead of the kind's template.
+    var title: String?
+    var body: String?
 }
 
 /// Pure planning: what to notify and when. No UserNotifications, so it is unit-tested.
 enum ReminderPlanner {
     struct Bill { var name: String; var due: Date; var remindDaysBefore: Int }
-    struct JarState { var id: String; var name: String; var level: BudgetLevel }
+    struct JarState { var id: String; var name: String; var level: BudgetLevel; var advice: String? = nil }
     struct DebtDue { var person: String; var due: Date }
+    /// "Salary 40tr in yet?" on payday morning with Moonee's split (spec §4.6 moment 2).
+    struct Payday { var name: String; var due: Date; var title: String; var body: String }
 
     struct Settings {
         var level: ReminderLevel = .medium
@@ -91,7 +96,7 @@ enum ReminderPlanner {
         var horizonDays = 14
     }
 
-    static func plan(bills: [Bill] = [], jars: [JarState] = [], debts: [DebtDue] = [], settings: Settings = .init(),
+    static func plan(bills: [Bill] = [], jars: [JarState] = [], debts: [DebtDue] = [], paydays: [Payday] = [], settings: Settings = .init(),
                      now: Date, sent: Set<String> = [], deliveredToday: Int = 0, calendar: Calendar = .current) -> [Reminder] {
         let today = calendar.startOfDay(for: now)
         let end = calendar.date(byAdding: .day, value: settings.horizonDays, to: today)!
@@ -117,8 +122,9 @@ enum ReminderPlanner {
             let key = "\(kind == .jarOver ? "jar.over" : "jar.warn").\(j.id).\(monthTag)"
             // An over alert also covers the 80% one.
             if sent.contains(key) || (kind == .jarWarning && sent.contains("jar.over.\(j.id).\(monthTag)")) { continue }
-            raw.append(Reminder(kind: kind, date: now, items: [j.name], keys: [key]))
+            raw.append(Reminder(kind: kind, date: now, items: [j.name], keys: [key], body: kind == .jarOver ? j.advice : nil))
         }
+        for p in paydays { raw.append(Reminder(kind: .payday, date: at(p.due, settings.morning), items: [p.name], title: p.title, body: p.body)) }
         for d in debts { raw.append(Reminder(kind: .debt, date: at(d.due, settings.morning), items: [d.person])) }
         // Reports and the evening nudge, every day in the horizon.
         var day = today
@@ -143,6 +149,7 @@ enum ReminderPlanner {
                 g.date = min(g.date, r.date)
                 g.items += r.items.filter { !g.items.contains($0) }
                 g.keys += r.keys
+                if g.items.count > 1 { g.body = nil } // grouped: the plain template names them all
                 groups[k] = g
             } else {
                 groups[k] = r
@@ -216,10 +223,28 @@ enum ReminderPlanner {
             return .init(person: d.person, due: due)
         }
 
+        // Moonee's advice (spec §4.6): how to fix a jar, and the payday plan.
+        let facts = BudgetFacts(context, now: now, calendar: cal)
+        let fix = facts.advice.first { $0.kind == .noMoney || $0.kind == .negativeJar }
+        let advisedJars = jarStates.map { j in var j = j; j.advice = fix.map { "\($0.title). \($0.text)" }; return j }
+        let level = AdvisorLevel.current
+        let paydays = ((try? context.fetch(FetchDescriptor<Recurring>())) ?? [])
+            .filter { $0.isIncome && !BudgetActions.isReceived($0, txns: txns, calendar: cal) }
+            .map { r -> ReminderPlanner.Payday in
+                let title = String(localized: "\(r.name) \(AmountFormat.string(r.amount, r.currencyCode, short: true)) in yet?", table: "Budget")
+                let plan = BudgetFacts(context, now: r.nextDue, calendar: cal).advice.first { $0.kind == .payday }?.text
+                let body = switch level {
+                case .automatic: loc("Payday! Open Moonee and it records your salary and splits it by its plan.")
+                case .suggest: plan.map { "\($0) " + loc("Tap Received in Budget once it's in.") } ?? loc("Tap Received in Budget once it's in.")
+                case .manual: loc("Tap Received in Budget once it's in.")
+                }
+                return .init(name: r.name, due: r.nextDue, title: title, body: body)
+            }
+
         var sent = Set(defaults.stringArray(forKey: Prefs.remindersSent) ?? [])
         let delivered = await center.deliveredNotifications()
             .filter { $0.request.identifier.hasPrefix(prefix) && cal.isDate($0.date, inSameDayAs: now) }.count
-        let plan = ReminderPlanner.plan(bills: bills, jars: jarStates, debts: debts, settings: settings, now: now,
+        let plan = ReminderPlanner.plan(bills: bills, jars: advisedJars, debts: debts, paydays: paydays, settings: settings, now: now,
                                         sent: sent, deliveredToday: delivered, calendar: cal)
 
         let pending = await center.pendingNotificationRequests().map(\.identifier).filter { $0.hasPrefix(prefix) && !$0.hasPrefix(jarPrefix) }
@@ -227,6 +252,8 @@ enum ReminderPlanner {
         for r in plan {
             let content = UNMutableNotificationContent()
             (content.title, content.body) = text(r)
+            if let title = r.title { content.title = title }
+            if let body = r.body { content.body = body }
             content.sound = .default
             content.threadIdentifier = "\(prefix)\(r.kind)"
             let trigger: UNNotificationTrigger = r.date.timeIntervalSince(now) < 60
@@ -244,6 +271,7 @@ enum ReminderPlanner {
     static func text(_ r: Reminder) -> (String, String) {
         let names = r.items.formatted(.list(type: .and))
         return switch r.kind {
+        case .payday: (loc("Payday"), String(localized: "\(names): tap Received in Budget once it's in.", table: "Budget"))
         case .jarOver: (loc("A jar went over"), String(localized: "\(names) went past this month's budget. Moonee can help you move money from another jar.", table: "Budget"))
         case .jarWarning: (loc("Heads up: 80% used"), String(localized: "\(names) has used 80% of this month's budget. Go easy for a bit!", table: "Budget"))
         case .bill: (loc("Bill reminder"), String(localized: "\(names) is due soon. Tap Mark paid in Budget once it's done.", table: "Budget"))
@@ -276,6 +304,7 @@ private struct ReminderScheduling: ViewModifier {
             .task(id: tick) {
                 try? await Task.sleep(for: .seconds(2)) // debounce bursts of saves
                 guard !Task.isCancelled else { return }
+                Autopilot.run(context) // "Automatic": payday and Moonee's plans (spec §4.6)
                 await Reminders.refresh(context)
             }
     }

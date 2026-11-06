@@ -35,7 +35,7 @@ func loc(_ key: String.LocalizationValue) -> String { String(localized: key, tab
         return t
     }
 
-    /// Wallet money no jar holds yet (`Ledger.unallocated`), from the store.
+    /// Budget-wallet money no jar holds yet (`Ledger.unallocated`), from the store.
     static func unallocated(in context: ModelContext) -> Int {
         Ledger(txns: (try? context.fetch(FetchDescriptor<Txn>())) ?? [], wallets: (try? context.fetch(FetchDescriptor<Wallet>())) ?? [],
                jars: (try? context.fetch(FetchDescriptor<Jar>())) ?? []).unallocated
@@ -52,21 +52,30 @@ func loc(_ key: String.LocalizationValue) -> String { String(localized: key, tab
         return t
     }
 
-    /// Where a bill is paid from / an income lands when it names no wallet: the first wallet that is not a credit card
-    /// (a salary goes to the first bank account).
+    /// Where a bill is paid from / an income lands when it names no wallet: the first budget wallet that is not a credit
+    /// card (a salary goes to the first bank account).
     static func defaultWallet(income: Bool = false, in context: ModelContext) -> Wallet? {
-        let wallets = (try? context.fetch(FetchDescriptor<Wallet>(sortBy: [SortDescriptor(\.order)]))) ?? []
+        let all = (try? context.fetch(FetchDescriptor<Wallet>(sortBy: [SortDescriptor(\.order)]))) ?? []
+        let wallets = all.filter(\.inBudget).isEmpty ? all : all.filter(\.inBudget)
         return (income ? wallets.first { $0.type == .bank } : nil) ?? wallets.first { $0.type != .credit } ?? wallets.first
     }
 
     /// Spec §4.3 "Paid": records the expense (pinned to its category's jar) and moves the bill one period on.
-    /// An income recurring (salary) is "Received" the same way: an income split into the jars by `allocate`.
+    /// An income recurring (salary) is "Received" the same way: an income split into the jars by `splits`
+    /// (Moonee's plan, see `receive`) or else by percent (`allocate`). Received early, the next payday still moves on.
     @discardableResult
-    static func markPaid(_ bill: Recurring, amount: Int? = nil, date: Date = .now, jars: [Jar], in context: ModelContext,
-                         calendar: Calendar = .current) -> Txn {
+    static func markPaid(_ bill: Recurring, amount: Int? = nil, date: Date = .now, jars: [Jar], splits: [Jar: Int]? = nil,
+                         in context: ModelContext, calendar: Calendar = .current) -> Txn {
         let t = Txn(amount: amount ?? bill.amount, kind: bill.isIncome ? .income : .expense, currencyCode: bill.currencyCode,
                     date: date, note: bill.name, category: bill.category, wallet: bill.wallet ?? defaultWallet(income: bill.isIncome, in: context))
         context.insert(t)
+        if bill.isIncome, let splits, splits.values.reduce(0, +) == t.amount {
+            for (jar, share) in splits where share > 0 {
+                let s = IncomeSplit(amount: share, jar: jar)
+                context.insert(s)
+                s.txn = t
+            }
+        }
         t.allocate(jars: jars, in: context)
         bill.lastPaid = date
         let anchor = bill.dueDay ?? calendar.component(.day, from: bill.nextDue)

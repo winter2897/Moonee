@@ -8,6 +8,7 @@ struct AccountView: View {
     @AppStorage(Prefs.profileAvatar) private var avatar = ""
     @AppStorage(LLMSettings.modeKey) private var aiMode = LLMSettings.mode
     @AppStorage(Prefs.reminderLevel) private var reminderLevel = ReminderLevel.medium.rawValue
+    @AppStorage(Prefs.advisorLevel) private var advisorLevel = AdvisorLevel.suggest.rawValue
     @AppStorage(Money.currencyKey) private var currency: String?
     @Environment(\.requestReview) private var requestReview
 
@@ -41,6 +42,11 @@ struct AccountView: View {
                 }
 
                 Section {
+                    NavigationLink { AdvisorSettingsView() } label: {
+                        LabeledContent { Text(AdvisorLevel(rawValue: advisorLevel)?.title ?? "") } label: {
+                            SettingsLabel("Moonee's help", symbol: "lightbulb.fill", color: .mint)
+                        }
+                    }
                     NavigationLink { ReminderSettingsView() } label: {
                         LabeledContent { Text(ReminderLevel(rawValue: reminderLevel)?.title ?? "") } label: {
                             SettingsLabel("Reminders", symbol: "bell.badge.fill", color: .red)

@@ -1522,6 +1522,29 @@
         }
       }
     },
+    "Moonee's help": {
+      "extractionState": "manual",
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລະດັບການຊ່ວຍເຫຼືອຂອງ Moonee"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ระดับความช่วยเหลือของ Moonee"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mức hỗ trợ của Moonee"
+          }
+        }
+      }
+    },
     "Moonee: a friendly money assistant": {
       "localizations": {
         "lo": {

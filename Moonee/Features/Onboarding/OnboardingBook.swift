@@ -167,14 +167,13 @@ extension Prefs {
         return p
     }
 
-    /// Writes the accepted percents (must total 100) and splits all the money no jar holds yet (the wallets just
-    /// entered, credit-card debt counted against it) into the jars by those percents (`BudgetActions.splitUnallocated`),
-    /// so the envelopes start with what the user actually has. A wallet added later shows as "Unallocated" on Budget.
-    static func applyJars(_ percents: [Int], to jars: [Jar], now: Date = .now, in context: ModelContext) {
+    /// Writes the accepted percents (must total 100). The wallets just entered stay Unallocated: existing money is
+    /// split once on the Budget tab, by Moonee's plan, by percent or into one jar (spec §4.1 rule A.4; Automatic
+    /// applies the plan by itself).
+    static func applyJars(_ percents: [Int], to jars: [Jar], in context: ModelContext) {
         let sorted = jars.sorted { $0.order < $1.order }
         guard BudgetActions.percentsValid(percents), percents.count == sorted.count else { return }
         for (jar, p) in zip(sorted, percents) { jar.percent = p }
-        BudgetActions.splitUnallocated(BudgetActions.unallocated(in: context), jars: sorted, date: now, in: context)
     }
 
     // MARK: AI mode

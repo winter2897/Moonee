@@ -92,7 +92,7 @@ import Testing
         #expect(heavy.allSatisfy { $0 >= 5 })
     }
 
-    @Test func applyJarsWritesPercentsAndSplitsOpeningMoney() throws {
+    @Test func applyJarsWritesPercentsAndLeavesOpeningMoneyUnallocated() throws {
         let context = try seeded()
         OnboardingBook.saveWallets([.init(type: .cash, name: "", amount: 12_000_000),
                                     .init(type: .credit, name: "", amount: 2_000_000)], in: context)
@@ -100,8 +100,9 @@ import Testing
         OnboardingBook.applyJars([60, 10, 10, 10, 5, 5], to: jars, in: context)
         #expect(jars.map(\.percent) == [60, 10, 10, 10, 5, 5])
         let ledger = Ledger(txns: try context.fetch(FetchDescriptor<Txn>()), wallets: try context.fetch(FetchDescriptor<Wallet>()), jars: jars)
-        #expect(jars.map { ledger.jarBalance($0.persistentModelID) } == [6_000_000, 1_000_000, 1_000_000, 1_000_000, 500_000, 500_000]) // 12tr − 2tr card debt
-        #expect(ledger.unallocated == 0)
+        // Existing money is split once on the Budget tab (rule A.4), not here.
+        #expect(jars.allSatisfy { ledger.jarBalance($0.persistentModelID) == 0 })
+        #expect(ledger.unallocated == 10_000_000) // 12tr − 2tr card debt
 
         OnboardingBook.applyJars([50, 10], to: jars, in: context) // invalid: nothing changes
         #expect(jars[0].percent == 60)

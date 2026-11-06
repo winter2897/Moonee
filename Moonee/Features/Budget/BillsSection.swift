@@ -48,7 +48,9 @@ struct BillsSection: View {
 
     /// Estimated bills ask for the real amount first.
     private func pay(_ b: Recurring) {
-        if b.isEstimate { sheet = .payBill(b) } else { withAnimation { _ = BudgetActions.markPaid(b, jars: jars, in: context) } }
+        if b.isEstimate { sheet = .payBill(b) }
+        else if b.isIncome { withAnimation { _ = BudgetActions.receive(b, in: context) } }
+        else { withAnimation { _ = BudgetActions.markPaid(b, jars: jars, in: context) } }
     }
 }
 
@@ -105,7 +107,8 @@ struct PayBillSheet: View {
                 ToolbarItem(placement: .cancellationAction) { Button(loc("Cancel")) { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) {
                     Button(bill.isIncome ? loc("Mark received") : loc("Mark paid")) {
-                        BudgetActions.markPaid(bill, amount: amount, jars: jars, in: context)
+                        if bill.isIncome { BudgetActions.receive(bill, amount: amount, in: context) } // Moonee's plan or percents
+                        else { BudgetActions.markPaid(bill, amount: amount, jars: jars, in: context) }
                         dismiss()
                     }
                     .disabled(amount <= 0)

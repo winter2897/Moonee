@@ -464,6 +464,29 @@
         }
       }
     },
+    "How much should Moonee help with your money? You can change it any time in Account.": {
+      "extractionState": "manual",
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຢາກໃຫ້ Moonee ຊ່ວຍເລື່ອງເງິນຫຼາຍປານໃດ? ປ່ຽນໄດ້ຕະຫຼອດໃນບັນຊີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อยากให้ Moonee ช่วยเรื่องเงินแค่ไหน เปลี่ยนได้ตลอดในบัญชี"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn muốn Moonee hỗ trợ việc tiền nong tới mức nào? Có thể đổi bất cứ lúc nào trong Tài khoản."
+          }
+        }
+      }
+    },
     "How often should Moonee nudge you?": {
       "localizations": {
         "lo": {

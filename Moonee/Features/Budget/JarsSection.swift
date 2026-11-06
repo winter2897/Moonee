@@ -34,7 +34,7 @@ struct JarsSection: View {
             LabeledContent(loc("Income")) { AmountText(facts.income, currency: currency).foregroundStyle(Color.ink) }
             if isNow { unallocatedRows(facts.unallocated) }
             if isNow {
-                ForEach(BudgetActions.dueIncome(recurrings, txns: txns)) { incomeDueRow($0) }
+                ForEach(recurrings.filter(\.isIncome)) { incomeRow($0) }
             }
             // Mascot: a past month that closed within its budget, with no jar in the red, gets a small cheer.
             if month.end <= .now, facts.budget > 0, facts.left >= 0, !facts.jars.contains(where: { $0.balance < 0 }) {
@@ -48,18 +48,6 @@ struct JarsSection: View {
         }
 
         Section {
-            if let fix = suggestedFix(months) {
-                Button { sheet = .transfer(fix) } label: {
-                    Label {
-                        Text(String(localized: "\(fix.to?.name ?? "") is below zero", table: "Budget")).foregroundStyle(Color.ink)
-                        if let from = fix.from {
-                            Text(String(localized: "Tap to move money from \(from.name).", table: "Budget")).font(.subheadline).foregroundStyle(Color.inkSecondary)
-                        }
-                    } icon: {
-                        Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(Color.danger)
-                    }
-                }
-            }
             ForEach(months, id: \.0.persistentModelID) { jar, m in
                 NavigationLink(value: BudgetRoute.jar(jar.persistentModelID, month: month.start)) { BudgetJarRow(jar: jar, month: m) }
                     .swipeActions(edge: .leading) {
@@ -89,23 +77,43 @@ struct JarsSection: View {
                 AmountText(amount, currency: currency).foregroundStyle(amount > 0 ? Color.ink : Color.danger)
             }
             if amount > 0 {
-                Button(loc("Split into jars"), systemImage: "square.stack.3d.up.fill") {
-                    withAnimation { _ = BudgetActions.splitUnallocated(amount, jars: jars, in: context) }
+                // Rule A.4: existing money is split once, the way the user picks.
+                Menu {
+                    if let plan = BudgetFacts(txns: txns, wallets: wallets, jars: jars, recurrings: recurrings).advice.first(where: { $0.kind == .unallocated }) {
+                        Button(loc("Moonee's plan"), systemImage: "lightbulb") {
+                            withAnimation { _ = BudgetActions.apply(plan, in: context); AdvisorMemory.handle(plan) }
+                        }
+                    }
+                    Button(loc("Split by percent"), systemImage: "percent") {
+                        withAnimation { _ = BudgetActions.splitUnallocated(amount, jars: jars, in: context) }
+                    }
+                    Menu(loc("All into one jar")) {
+                        ForEach(jars) { j in
+                            Button(j.name) { withAnimation { _ = BudgetActions.allocate([j: amount], note: loc("Split into jars"), in: context) } }
+                        }
+                    }
+                } label: {
+                    Label(loc("Split into jars"), systemImage: "square.stack.3d.up.fill")
                 }
                 .foregroundStyle(Color.brandDeep)
             }
         }
     }
 
-    /// Payday: "Salary · due 25/11", confirm when it is in (an estimate asks for the real amount first).
-    private func incomeDueRow(_ r: Recurring) -> some View {
-        BudgetRow(title: r.name, symbol: "arrow.down.circle.fill", tint: .income) {
-            Text(String(localized: "Expected \(r.nextDue.formatted(.dateTime.day().month()))", table: "Budget"))
+    /// The salary row (rule A.6): "Expected 10/11" with "Received" any time, not only on payday. Received early, it is
+    /// recorded and split now and the next payday moves on. An estimate asks for the real amount first.
+    private func incomeRow(_ r: Recurring) -> some View {
+        let received = BudgetActions.isReceived(r, txns: txns)
+        let date = received ? BudgetActions.nextDue(after: r.nextDue, r.frequency, day: r.dueDay) : r.nextDue
+        return BudgetRow(title: r.name, symbol: "arrow.down.circle.fill", tint: .income) {
+            Text(String(localized: "Expected \(date.formatted(.dateTime.day().month()))", table: "Budget"))
                 .foregroundStyle(Color.inkSecondary)
-            Button(loc("Mark received")) {
-                if r.isEstimate { sheet = .payBill(r) } else { withAnimation { _ = BudgetActions.markPaid(r, jars: jars, in: context) } }
+            if !received {
+                Button(loc("Mark received")) {
+                    if r.isEstimate { sheet = .payBill(r) } else { withAnimation { _ = BudgetActions.receive(r, in: context) } }
+                }
+                .buttonStyle(.bordered).controlSize(.small).tint(Color.brandDeep).fontWeight(.semibold)
             }
-            .buttonStyle(.borderless).foregroundStyle(Color.brandDeep).fontWeight(.semibold)
         } value: {
             AmountText(r.amount, currency: r.currencyCode, plus: true).foregroundStyle(Color.income)
         }
@@ -125,12 +133,6 @@ struct JarsSection: View {
         m.endBalance > 0 ? JarTransferDraft(from: jar) : JarTransferDraft(to: jar)
     }
 
-    /// Spec §4.1: a negative jar gets a warning and a suggested transfer from the jar with the most money.
-    private func suggestedFix(_ months: [(Jar, Ledger<PersistentIdentifier>.JarMonth)]) -> JarTransferDraft? {
-        guard let (neg, m) = months.min(by: { $0.1.endBalance < $1.1.endBalance }), m.endBalance < 0 else { return nil }
-        let source = months.filter { $0.1.endBalance > 0 }.max { $0.1.endBalance < $1.1.endBalance }
-        return JarTransferDraft(from: source?.0, to: neg, amount: min(-m.endBalance, source?.1.endBalance ?? -m.endBalance))
-    }
 }
 
 /// Jar row: icon, name, "% spent" and balance, with a bar.

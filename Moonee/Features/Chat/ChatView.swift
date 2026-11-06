@@ -310,6 +310,7 @@ struct ChatView: View {
             m.txns = saved
             mood = .happy
             savedCount += 1
+            if let note = ChatBook.adviceAfter(saved, in: context) { reply(note, mood: .thinking) }
         }
         let book = ChatBook.Lookup(context)
         if let ask = parsed.first(where: { book.unresolved($0) != nil }), let field = book.unresolved(ask) {

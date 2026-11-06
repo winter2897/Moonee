@@ -10,12 +10,12 @@ struct OnboardingChat: View {
     var onFinish: () -> Void
 
     enum Question {
-        case income, regular, payday, wallets, bills, jars, aiMode, reminders, security, done
+        case income, regular, payday, wallets, bills, jars, advisor, aiMode, reminders, security, done
         /// The progress bar: step 2 money, 3 budget, 4 assistant.
         var step: Int {
             switch self {
             case .income, .regular, .payday, .wallets: 2
-            case .bills, .jars: 3
+            case .bills, .jars, .advisor: 3
             case .aiMode, .reminders, .security, .done: 4
             }
         }
@@ -132,6 +132,7 @@ struct OnboardingChat: View {
             }
             return ([L("Here's how Moonee would split every income into jars.")] + why
                     + [L("Keep it or tweak it: it has to add up to 100%.")]).joined(separator: " ")
+        case .advisor: return L("How much should Moonee help with your money? You can change it any time in Account.")
         case .aiMode:
             return L("Which brain should Moonee use? For this iPhone Moonee suggests **\(suggestedMode.title)**. You can change it any time in Account.")
         case .reminders: return L("How often should Moonee nudge you?")
@@ -174,6 +175,7 @@ struct OnboardingChat: View {
         case .wallets: walletsPanel
         case .bills: billsPanel
         case .jars: jarsPanel
+        case .advisor: advisorPanel
         case .aiMode: aiModePanel
         case .reminders: remindersPanel
         case .security: securityPanel
@@ -397,7 +399,7 @@ struct OnboardingChat: View {
                 .disabled(!BudgetActions.percentsValid(percents))
             skipButton(L("Keep the defaults")) {
                 OnboardingBook.applyJars(jars.map(\.percent), to: jars, in: context)
-                answer(L("Keep the defaults"), next: .aiMode)
+                answer(L("Keep the defaults"), next: .advisor)
             }
         }
     }
@@ -415,7 +417,20 @@ struct OnboardingChat: View {
 
     private func saveJars() {
         OnboardingBook.applyJars(percents, to: jars, in: context)
-        answer(zip(jars, percents).map { "\($0.name) \($1)%" }.joined(separator: " · "), next: .aiMode)
+        answer(zip(jars, percents).map { "\($0.name) \($1)%" }.joined(separator: " · "), next: .advisor)
+    }
+
+    /// Spec §7 step 3: Moonee's help level (spec §4.6), Suggest by default.
+    private var advisorPanel: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            ForEach([AdvisorLevel.suggest, .automatic, .manual]) { level in
+                optionRow(title: level.title, detail: level.summary, badge: level == .suggest ? L("Default") : nil) {
+                    UserDefaults.standard.set(level.rawValue, forKey: Prefs.advisorLevel)
+                    answer(level.title, next: .aiMode)
+                }
+            }
+            skipButton { skip(to: .aiMode) }
+        }
     }
 
     private var aiModePanel: some View {

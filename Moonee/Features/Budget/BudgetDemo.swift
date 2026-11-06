@@ -3,9 +3,15 @@ import Foundation
 import SwiftData
 
 /// Debug only: launch with `-budgetDemo` on an empty store to get the Budget mockup's data (screenshots, review).
+/// `-ownerDemo <bank balance>`: the owner's build-3 phone (cash −113k after lunch, salary 40tr on the 10th, bills 5.14tr).
 enum BudgetDemo {
     @MainActor static func seedIfRequested(_ context: ModelContext) {
-        guard ProcessInfo.processInfo.arguments.contains("-budgetDemo"),
+        let args = ProcessInfo.processInfo.arguments
+        if let i = args.firstIndex(of: "-ownerDemo"), (try? context.fetchCount(FetchDescriptor<Txn>())) == 0 {
+            owner(bank: args.indices.contains(i + 1) ? Int(args[i + 1]) ?? 0 : 0, in: context)
+            return
+        }
+        guard args.contains("-budgetDemo"),
               (try? context.fetchCount(FetchDescriptor<Txn>())) == 0 else { return }
         let jars = (try? context.fetch(FetchDescriptor<Jar>(sortBy: [SortDescriptor(\.order)]))) ?? []
         let cats = (try? context.fetch(FetchDescriptor<Category>())) ?? []
@@ -44,6 +50,23 @@ enum BudgetDemo {
             context.insert(r)
             r.category = cat(c)
             r.wallet = bank
+        }
+    }
+
+    @MainActor private static func owner(bank: Int, in context: ModelContext) {
+        let jars = (try? context.fetch(FetchDescriptor<Jar>(sortBy: [SortDescriptor(\.order)]))) ?? []
+        let food = ((try? context.fetch(FetchDescriptor<Category>())) ?? []).first { $0.key == "category.food" }
+        let housing = ((try? context.fetch(FetchDescriptor<Category>())) ?? []).first { $0.key == "category.housing" }
+        OnboardingBook.saveSalary(40_000_000, payday: 10, regular: true, in: context)
+        let wallets = OnboardingBook.saveWallets([.init(type: .cash, name: "", amount: 0), .init(type: .bank, name: "Ngân hàng", amount: bank)], in: context)
+        let lunch = Txn(amount: 113_000, kind: .expense, note: "Ăn trưa", category: food, wallet: wallets.first)
+        context.insert(lunch)
+        lunch.allocate(jars: jars, in: context)
+        let cal = Calendar.current
+        for (name, amount, day) in [("Tiền nhà", 4_000_000, 15), ("Điện nước", 1_140_000, 20)] {
+            let bill = Recurring(name: name, amount: amount, nextDue: BudgetActions.nextDate(day: day, calendar: cal))
+            context.insert(bill)
+            bill.category = housing
         }
     }
 }

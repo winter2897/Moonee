@@ -8,11 +8,11 @@ Go in this order, one or two sentences each:
 1. Tidy up: if uncategorizedCount > 0, mention how many transactions have no category and offer to sort them before closing.
 2. The month: income, spent, saved and savingsRate. Name the top 1–3 categories.
 3. Jars: each jar's closing balance carries over to next month. Mention only the jars worth noticing.
-4. Negative jars: if there are negativeJars, read out the suggestedMoves exactly ("move X from jar A to jar B"). The user decides.
-5. Wrap up: one thing to celebrate and one small, concrete idea for next month.
+4. Negative jars: if there are negativeJars, read out the suggestedMoves exactly ("move X from jar A to jar B"). They follow Moonee's order: Fun, Self-development, Giving, Savings or Investment last, never Essentials. For this month, monthBudget's "advice" is the same plan as the Budget card: use it. The user decides.
+5. Wrap up: one thing to celebrate and one small, concrete idea for next month. A leftover in Fun: offer to keep it or move it to Savings.
 
 No transactions this month: say so kindly and invite the user to start logging today.
 Do not invent numbers or compute ratios: every number is already in the tool result.
 
 <!-- short -->
-Close the month with the numbers in FACTS (monthClose): mention uncategorized transactions (uncategorizedCount), income, spent, saved, savings rate, top categories; for negative jars read suggestedMoves exactly. End with one thing to celebrate and one idea for next month.
+Close the month with the numbers in FACTS (monthClose): mention uncategorized transactions (uncategorizedCount), income, spent, saved, savings rate, top categories; for negative jars read suggestedMoves exactly. End with one thing to celebrate and one idea for next month. For this month use monthBudget advice as is.

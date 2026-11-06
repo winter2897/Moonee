@@ -87,7 +87,8 @@ struct JarFlows {
                 if let j = t.jarKey { outflow[j, default: 0] += t.amount }
                 if let j = t.toJarKey { inflow[j, default: 0] += t.amount }
                 for (jar, v) in t.splits { inflow[jar, default: 0] += v } // unallocated money split into jars
-            case .transfer, .lend, .borrow, .repay: break // spec §4.5: debts and wallet moves never touch jars
+            case .transfer: if let j = t.jarKey { outflow[j, default: 0] += t.amount } // a jar paid for an asset / deposit
+            case .lend, .borrow, .repay: break // spec §4.5: debts never touch jars
             }
         }
     }

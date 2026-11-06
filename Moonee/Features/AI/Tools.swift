@@ -28,7 +28,7 @@ struct MooneeTools: Sendable {
 
     var monthBudget: AITool {
         AITool(name: "monthBudget",
-               description: "This month's budget exactly as the Budget tab shows it: total budget the jars hold, spent, left to spend, left after the bills still due, money in wallets not split into jars yet, income received, the expected salary and payday, unpaid bills due this month, and each jar's budget, spent and left.",
+               description: "This month's budget exactly as the Budget tab shows it: total budget the jars hold, spent, left to spend, left after the bills still due, money in wallets not split into jars yet, income received, the expected salary and payday, unpaid bills due this month, each jar's budget, spent and left, and Moonee's advice now (the plan with its numbers and why, the same as the Budget card). Explain the advice; never change its numbers.",
                parameters: .object([])) { (_: ToolArgs) -> BudgetReply in
             guard let b = try await ledger.budget() else { throw LLMError("budget unavailable") }
             let due = { (d: BudgetFacts.Due) in BudgetReply.Due(name: d.name, amount: money(d.amount), date: day(d.date), estimate: d.isEstimate ? true : nil) }
@@ -38,7 +38,8 @@ struct MooneeTools: Sendable {
                 billsStillDue: money(b.billsTotal), leftAfterBills: money(b.left - b.billsTotal),
                 unallocated: money(b.unallocated), incomeReceived: money(b.income),
                 expectedIncome: b.expectedIncome.map(due), billsDueThisMonth: b.bills.map(due),
-                jars: b.jars.map { .init(name: $0.name, budget: money($0.budget), spent: money($0.spent), left: money($0.balance)) })
+                jars: b.jars.map { .init(name: $0.name, budget: money($0.budget), spent: money($0.spent), left: money($0.balance)) },
+                advice: b.advice.map { .init(kind: $0.kind.rawValue, title: $0.title, text: $0.text, why: $0.why) })
         }
     }
 
@@ -161,10 +162,23 @@ struct MooneeTools: Sendable {
                 let closing = j.balance - after.net(j.key)
                 return (j, closing - flows.net(j.key), closing)
             }
-            // Cover each negative jar from the jar with the most money left (spec §4.1).
+            // Cover each negative jar in Moonee's order (spec §4.6, `BudgetAdvisor.cover`): Play → Growth → Giving →
+            // own jars → Savings / Investing last; Essentials is never the source.
+            let rank: (LedgerJar) -> Int? = { j in
+                switch BudgetAdvisor.Role(key: j.key) {
+                case .play: 0
+                case .growth: 1
+                case .giving: 2
+                case .other: 3
+                case .savings: 4
+                case .investing: 5
+                case .essentials: nil
+                }
+            }
             var rows = start, moves: [Close.Move] = []
             for i in rows.indices {
-                while rows[i].closing < 0, let d = rows.indices.filter({ rows[$0].closing > 0 }).max(by: { rows[$0].closing < rows[$1].closing }) {
+                while rows[i].closing < 0, let d = rows.indices.filter({ rows[$0].closing > 0 && rank(rows[$0].jar) != nil })
+                    .min(by: { rank(rows[$0].jar)! < rank(rows[$1].jar)! }) {
                     let amount = min(-rows[i].closing, rows[d].closing)
                     rows[d].closing -= amount
                     rows[i].closing += amount
@@ -264,10 +278,13 @@ struct ToolArgs: Codable, Sendable {
 struct BudgetReply: Encodable {
     struct Due: Encodable { var name, amount, date: String; var estimate: Bool? }
     struct Jar: Encodable { var name, budget, spent, left: String }
+    /// `BudgetAdvisor` output: numbers already in the text.
+    struct Advice: Encodable { var kind, title, text: String; var why: String? }
     var month, today, totalBudget, spent, left, billsStillDue, leftAfterBills, unallocated, incomeReceived: String
     var expectedIncome: [Due]
     var billsDueThisMonth: [Due]
     var jars: [Jar]
+    var advice: [Advice]
 }
 
 struct Summary: Encodable {
