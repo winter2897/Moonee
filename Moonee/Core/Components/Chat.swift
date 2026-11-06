@@ -65,7 +65,7 @@ struct ChatTransactionCard: View {
         let title: String
         let symbol: String
         let color: Color
-        /// "Category · Jar", e.g. "Sách · Phát triển bản thân" (spec §E). `when` is prepended if set.
+        /// "Category · Jar", e.g. "Sách · Phát triển bản thân" (spec §E). `when` is appended if set.
         let category: String
         let jar: String?
         var when: String? = nil
@@ -79,6 +79,8 @@ struct ChatTransactionCard: View {
     let items: [Item]
     var state: State = .saved
     var onUndo: () -> Void = {}
+    /// The card's Edit button: the chat opens the editor (one line) or the edit mode (several).
+    var onStartEditing: () -> Void = {}
     var onEdit: (Item.ID) -> Void = { _ in }
     var onDoneEditing: () -> Void = {}
     @Environment(\.dynamicTypeSize) private var typeSize
@@ -100,7 +102,7 @@ struct ChatTransactionCard: View {
     }
 
     private func row(_ item: Item) -> some View {
-        let line = [item.when, item.category, item.jar].compactMap { $0 }.joined(separator: " · ")
+        let line = [item.category, item.jar, item.when].compactMap { $0 }.joined(separator: " · ")
         let content = HStack(spacing: 10) {
             IconBadge(symbol: item.symbol, color: item.color)
             VStack(alignment: .leading, spacing: 2) {
@@ -137,9 +139,14 @@ struct ChatTransactionCard: View {
     @ViewBuilder private var footer: some View {
         switch state {
         case .saved:
-            banner(symbol: "checkmark.circle.fill", tint: .brandPrimary, text: Text("Saved to your ledger", tableName: "Components")) {
-                Button(action: onUndo) {
-                    Label { Text("Undo", tableName: "Components") } icon: { Image(systemName: "arrow.uturn.backward") }
+            banner(symbol: "checkmark.circle.fill", tint: .brandPrimary, text: Text("Saved", tableName: "Components")) {
+                HStack(spacing: 6) {
+                    Button(action: onStartEditing) {
+                        Label { Text("Edit", tableName: "Components") } icon: { Image(systemName: "pencil") }
+                    }
+                    Button(action: onUndo) {
+                        Label { Text("Undo", tableName: "Components") } icon: { Image(systemName: "arrow.uturn.backward") }
+                    }
                 }
                 .buttonStyle(OutlinePillStyle())
             }
