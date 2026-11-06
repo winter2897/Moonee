@@ -94,16 +94,6 @@
         }
       }
     },
-    "About": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Về Moonee"
-          }
-        }
-      }
-    },
     "About Moonee": {
       "localizations": {
         "vi": {
@@ -114,12 +104,12 @@
         }
       }
     },
-    "Account & Settings": {
+    "Account": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tài khoản & Cài đặt"
+            "value": "Tài khoản"
           }
         }
       }
@@ -150,16 +140,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Model mở (Gemma, Qwen…) tải về máy. Riêng tư, offline, miễn phí."
-          }
-        }
-      }
-    },
-    "App settings": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cài đặt ứng dụng"
           }
         }
       }
@@ -404,16 +384,6 @@
         }
       }
     },
-    "Edit profile": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sửa hồ sơ"
-          }
-        }
-      }
-    },
     "Export CSV": {
       "localizations": {
         "vi": {
@@ -430,16 +400,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hãy xuất CSV trước nếu sau này bạn có thể cần dữ liệu."
-          }
-        }
-      }
-    },
-    "Face ID, hide balances, delete data": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID, ẩn số dư, xoá dữ liệu"
           }
         }
       }
@@ -470,6 +430,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Theo vùng của máy"
+          }
+        }
+      }
+    },
+    "General": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chung"
           }
         }
       }
@@ -574,22 +544,12 @@
         }
       }
     },
-    "Language & currency": {
+    "Language opens Moonee in the Settings app, where iOS lets you pick the app's language.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ngôn ngữ & Tiền tệ"
-          }
-        }
-      }
-    },
-    "Level, times, kinds": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mức nhắc, giờ, loại"
+            "value": "Ngôn ngữ mở trang Moonee trong app Cài đặt, nơi iOS cho chọn ngôn ngữ của app."
           }
         }
       }
@@ -670,16 +630,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vừa"
-          }
-        }
-      }
-    },
-    "Mode, model and skills": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chế độ, model & kỹ năng"
           }
         }
       }
@@ -854,16 +804,6 @@
         }
       }
     },
-    "Opens Moonee in the Settings app, where iOS lets you pick the app's language.": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mở Moonee trong app Cài đặt, nơi iOS cho bạn chọn ngôn ngữ của app."
-          }
-        }
-      }
-    },
     "Passcode": {
       "localizations": {
         "vi": {
@@ -984,12 +924,12 @@
         }
       }
     },
-    "Security & privacy": {
+    "Security": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bảo mật & Quyền riêng tư"
+            "value": "Bảo mật"
           }
         }
       }
@@ -1010,16 +950,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hãy đặt mật mã cho iPhone này trước."
-          }
-        }
-      }
-    },
-    "Set up your budget": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Thiết lập ngân sách"
           }
         }
       }
@@ -1089,7 +1019,7 @@
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chỉ lưu trên máy"
+            "value": "Chỉ lưu trên máy này"
           }
         }
       }
@@ -1100,6 +1030,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chỉ lưu trên máy · Không cần tài khoản"
+          }
+        }
+      }
+    },
+    "Support & about": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hỗ trợ & giới thiệu"
           }
         }
       }
@@ -1380,26 +1320,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Đồng bộ iCloud"
-          }
-        }
-      }
-    },
-    "iCloud, CSV export, delete all": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud, xuất CSV, xoá toàn bộ"
-          }
-        }
-      }
-    },
-    "iOS Settings": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cài đặt iOS"
           }
         }
       }

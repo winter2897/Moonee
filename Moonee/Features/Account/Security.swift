@@ -118,8 +118,8 @@ private struct LockScreen: View {
     }
 }
 
-/// Account → Security & privacy (spec §6.4).
-struct SecurityView: View {
+/// Account → Security (spec §6.4): sections for the Account form, every setting in its row.
+struct SecuritySettings: View {
     @AppStorage(Prefs.appLock) private var lockEnabled = false
     @AppStorage(Prefs.lockAfterMinutes) private var lockAfter = 0
     @AppStorage(Prefs.hideBalances) private var hideBalances = false
@@ -127,10 +127,10 @@ struct SecurityView: View {
     @State private var error: String?
 
     var body: some View {
-        Form {
+        Group {
             Section {
                 Toggle(isOn: Binding(get: { lockEnabled }, set: setLock)) {
-                    Label { Text("Lock with \(AppLock.biometryName)", tableName: "Account") } icon: { Image(systemName: "faceid") }
+                    Label { Text("Lock with \(AppLock.biometryName)", tableName: "Account") } icon: { SettingsIcon(symbol: "faceid", color: .green) }
                 }
                 if lockEnabled {
                     Picker(selection: $lockAfter) {
@@ -139,9 +139,11 @@ struct SecurityView: View {
                             Text(Duration.seconds(m * 60).formatted(.units(allowed: [.hours, .minutes], width: .wide))).tag(m)
                         }
                     } label: {
-                        Label { Text("Lock after", tableName: "Account") } icon: { Image(systemName: "timer") }
+                        Label { Text("Lock after", tableName: "Account") } icon: { SettingsIcon(symbol: "timer", color: .gray) }
                     }
                 }
+            } header: {
+                Text("Security", tableName: "Account")
             } footer: {
                 if let error { Text(error).foregroundStyle(Color.danger) }
                 else { Text("Asks when Moonee opens and when you come back after this long.", tableName: "Account") }
@@ -149,26 +151,15 @@ struct SecurityView: View {
 
             Section {
                 Toggle(isOn: $hideBalances) {
-                    Label { Text("Hide balances", tableName: "Account") } icon: { Image(systemName: "eye.slash") }
+                    Label { Text("Hide balances", tableName: "Account") } icon: { SettingsIcon(symbol: "eye.slash.fill", color: .indigo) }
                 }
                 Toggle(isOn: $cover) {
-                    Label { Text("Hide content in App Switcher", tableName: "Account") } icon: { Image(systemName: "rectangle.on.rectangle.slash") }
+                    Label { Text("Hide content in App Switcher", tableName: "Account") } icon: { SettingsIcon(symbol: "rectangle.on.rectangle.slash", color: .blue) }
                 }
             } footer: {
                 Text("Hidden amounts show as *****.", tableName: "Account")
             }
-
-            Section {
-                NavigationLink {
-                    DataView()
-                } label: {
-                    Label { Text("Delete all data", tableName: "Account") } icon: { Image(systemName: "trash").foregroundStyle(Color.danger) }
-                }
-            }
         }
-        .scrollContentBackground(.hidden)
-        .background(MooneeBackground())
-        .navigationTitle(Text("Security & privacy", tableName: "Account"))
     }
 
     /// Turning the lock on asks once, so nobody locks themselves out on a phone without a passcode.

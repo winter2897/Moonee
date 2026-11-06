@@ -61,8 +61,8 @@ enum DataReset {
     }
 }
 
-/// Account → Data (spec §6.3).
-struct DataView: View {
+/// Account → Data (spec §6.3): sections for the Account form.
+struct DataSettings: View {
     @Environment(\.modelContext) private var context
     @Query private var txns: [Txn]
     @State private var exportURL: URL?
@@ -71,47 +71,45 @@ struct DataView: View {
     @State private var cloud = CloudSync.Status.off
 
     var body: some View {
-        Form {
-            Section {
-                LabeledContent {
-                    Text(cloud == .on ? "On" : "Off", tableName: "Account")
-                } label: {
-                    Label { Text("iCloud sync", tableName: "Account") } icon: { Image(systemName: cloud == .on ? "checkmark.icloud" : "icloud.slash") }
-                }
-            } footer: {
-                switch cloud {
-                case .on: Text("Your data syncs to your own private iCloud, so a new iPhone or a reinstall gets it back. Nobody else, Moonee included, can read it.", tableName: "Account")
-                case .noAccount: Text("Sign in to iCloud (or turn on iCloud for Moonee) in the Settings app to sync. Until then your data stays on this iPhone.", tableName: "Account")
-                case .unavailable: Text("iCloud is not available right now. Your data is safe on this iPhone and syncs when iCloud is back.", tableName: "Account")
-                case .off: Text("Your data is stored on this iPhone only.", tableName: "Account")
-                }
+        Section {
+            LabeledContent {
+                Text(cloud == .on ? "On" : "Off", tableName: "Account")
+            } label: {
+                Label { Text("iCloud sync", tableName: "Account") } icon: { SettingsIcon(symbol: cloud == .on ? "checkmark.icloud.fill" : "icloud.slash.fill", color: .blue) }
             }
-
-            Section {
-                if let exportURL {
-                    ShareLink(item: exportURL) {
-                        Label { Text("Export CSV", tableName: "Account") } icon: { Image(systemName: "square.and.arrow.up") }
-                    }
-                }
-            } footer: {
-                Text("\(txns.count) transactions. Column names stay in English so the file imports back in any language.", tableName: "Account")
-            }
-
-            Section {
-                Button(role: .destructive) { confirmStep = 1 } label: {
-                    Label { Text("Delete all data", tableName: "Account") } icon: { Image(systemName: "trash").foregroundStyle(Color.danger) }
-                }
-            } footer: {
-                if let error { Text(error).foregroundStyle(Color.danger) }
-                else { Text("Removes every transaction, wallet, jar, goal and setting from this iPhone. This cannot be undone.", tableName: "Account") }
+        } header: {
+            Text("Data", tableName: "Account")
+        } footer: {
+            switch cloud {
+            case .on: Text("Your data syncs to your own private iCloud, so a new iPhone or a reinstall gets it back. Nobody else, Moonee included, can read it.", tableName: "Account")
+            case .noAccount: Text("Sign in to iCloud (or turn on iCloud for Moonee) in the Settings app to sync. Until then your data stays on this iPhone.", tableName: "Account")
+            case .unavailable: Text("iCloud is not available right now. Your data is safe on this iPhone and syncs when iCloud is back.", tableName: "Account")
+            case .off: Text("Your data is stored on this iPhone only.", tableName: "Account")
             }
         }
-        .scrollContentBackground(.hidden)
-        .background(MooneeBackground())
-        .navigationTitle(Text("Data", tableName: "Account"))
-        .task(id: txns.count) { exportURL = try? CSVExport.file(txns) }
         .task { cloud = await CloudSync.status() }
         .onReceive(NotificationCenter.default.publisher(for: .CKAccountChanged)) { _ in Task { cloud = await CloudSync.status() } }
+
+        Section {
+            if let exportURL {
+                ShareLink(item: exportURL) {
+                    Label { Text("Export CSV", tableName: "Account") } icon: { SettingsIcon(symbol: "square.and.arrow.up", color: .green) }
+                }
+            }
+        } footer: {
+            Text("\(txns.count) transactions. Column names stay in English so the file imports back in any language.", tableName: "Account")
+        }
+        .task(id: txns.count) { exportURL = try? CSVExport.file(txns) }
+
+        Section {
+            Button(role: .destructive) { confirmStep = 1 } label: {
+                Label { Text("Delete all data", tableName: "Account") } icon: { SettingsIcon(symbol: "trash.fill", color: .red) }
+            }
+        } footer: {
+            if let error { Text(error).foregroundStyle(Color.danger) }
+            else { Text("Removes every transaction, wallet, jar, goal and setting from this iPhone. This cannot be undone.", tableName: "Account") }
+        }
+        // Two steps (spec §6.3): an action sheet, then a final alert.
         .confirmationDialog(Text("Delete all data?", tableName: "Account"), isPresented: Binding(get: { confirmStep == 1 }, set: { if !$0 && confirmStep == 1 { confirmStep = 0 } }), titleVisibility: .visible) {
             Button(String(localized: "Continue", table: "Account"), role: .destructive) { confirmStep = 2 }
         } message: {
