@@ -418,6 +418,18 @@
     "An income: when it comes in, it is split into your jars by their percents.": {
       "extractionState": "manual",
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ນີ້ແມ່ນລາຍຮັບ: ເມື່ອເງິນເຂົ້າ ຈະແບ່ງໃສ່ກະປຸກຕາມ % ຂອງແຕ່ລະກະປຸກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "นี่คือรายรับ: พอเงินเข้า จะแบ่งลงกระปุกตาม % ของแต่ละกระปุก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1395,6 +1407,18 @@
     "Expected %@": {
       "extractionState": "manual",
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄາດວ່າ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คาดว่า %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1521,6 +1545,18 @@
     "Income": {
       "extractionState": "manual",
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຮັບ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายรับ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1716,6 +1752,18 @@
     "Mark received": {
       "extractionState": "manual",
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໄດ້ຮັບແລ້ວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ได้รับแล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1819,6 +1867,18 @@
     "More than your wallets hold.": {
       "extractionState": "manual",
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກະປຸກມີຫຼາຍກວ່າເງິນໃນກະເປົາເງິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กระปุกมีมากกว่าเงินในกระเป๋าเงิน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -2060,6 +2120,18 @@
     "Not in a jar yet.": {
       "extractionState": "manual",
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍັງບໍ່ໄດ້ຢູ່ໃນກະປຸກໃດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยังไม่ได้อยู่ในกระปุกไหน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -2186,6 +2258,18 @@
     "Paid into": {
       "extractionState": "manual",
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຂົ້າກະເປົາເງິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เข้ากระเป๋าเงิน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -2698,6 +2782,18 @@
     "Split into jars": {
       "extractionState": "manual",
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແບ່ງໃສ່ກະປຸກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แบ่งลงกระปุก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -2824,6 +2920,18 @@
     "This income varies. Enter what you actually received.": {
       "extractionState": "manual",
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຮັບນີ້ບໍ່ແນ່ນອນ ໃສ່ຍອດທີ່ໄດ້ຮັບແທ້ເດີ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายรับนี้ไม่แน่นอน ใส่ยอดที่ได้รับจริงนะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -3042,6 +3150,18 @@
     "Unallocated": {
       "extractionState": "manual",
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍັງບໍ່ໄດ້ແບ່ງໃສ່ກະປຸກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยังไม่แบ่งลงกระปุก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
