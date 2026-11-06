@@ -19,50 +19,8 @@ extension Money {
     }
 }
 
-/// Account → Language & currency (spec §6.1, §10.2). Language is iOS's per-app setting; currency is ours.
-struct LanguageCurrencyView: View {
-    @Environment(\.openURL) private var openURL
-    @AppStorage(Money.currencyKey) private var currency: String?
-
-    var body: some View {
-        Form {
-            Section {
-                Button {
-                    openURL(URL(string: UIApplication.openSettingsURLString)!)
-                } label: {
-                    LabeledContent {
-                        HStack { Text(AppLanguage.current); Image(systemName: "arrow.up.forward.app") }
-                    } label: {
-                        Label { Text("Language", tableName: "Account") } icon: { Image(systemName: "globe") }
-                    }
-                }
-                .foregroundStyle(Color.ink)
-            } footer: {
-                Text("Opens Moonee in the Settings app, where iOS lets you pick the app's language.", tableName: "Account")
-            }
-
-            Section {
-                NavigationLink {
-                    CurrencyPicker(selection: $currency)
-                } label: {
-                    LabeledContent {
-                        Text(Money.label(Money.defaultCurrency))
-                    } label: {
-                        Label { Text("Currency", tableName: "Account") } icon: { Image(systemName: "dollarsign.circle") }
-                    }
-                }
-            } footer: {
-                Text("Used for new transactions and for amounts like “45k”. Amounts already saved keep their currency.", tableName: "Account")
-            }
-        }
-        .scrollContentBackground(.hidden)
-        .background(MooneeBackground())
-        .navigationTitle(Text("Language & currency", tableName: "Account"))
-    }
-}
-
-/// nil = follow the device region.
-private struct CurrencyPicker: View {
+/// Account → Currency (spec §10.2). nil = follow the device region.
+struct CurrencyPicker: View {
     @Binding var selection: String?
     @Environment(\.dismiss) private var dismiss
     @State private var search = ""
@@ -76,15 +34,22 @@ private struct CurrencyPicker: View {
     var body: some View {
         List {
             if search.isEmpty {
-                row(nil, title: String(localized: "Automatic (\(Locale.current.currency?.identifier ?? "USD"))", table: "Account"),
-                    subtitle: String(localized: "From your region", table: "Account"))
+                Section {
+                    row(nil, title: String(localized: "Automatic (\(Locale.current.currency?.identifier ?? "USD"))", table: "Account"),
+                        subtitle: String(localized: "From your region", table: "Account"))
+                } footer: {
+                    Text("Used for new transactions and for amounts like “45k”. Amounts already saved keep their currency.", tableName: "Account")
+                }
             }
-            ForEach(codes, id: \.self) { code in
-                row(code, title: Money.label(code), subtitle: Locale.current.localizedString(forCurrencyCode: code))
+            Section {
+                ForEach(codes, id: \.self) { code in
+                    row(code, title: Money.label(code), subtitle: Locale.current.localizedString(forCurrencyCode: code))
+                }
             }
         }
         .searchable(text: $search)
         .navigationTitle(Text("Currency", tableName: "Account"))
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     private func row(_ code: String?, title: String, subtitle: String?) -> some View {
@@ -95,13 +60,14 @@ private struct CurrencyPicker: View {
             HStack {
                 VStack(alignment: .leading) {
                     Text(title)
-                    if let subtitle { Text(subtitle).font(.caption).foregroundStyle(Color.inkSecondary) }
+                    if let subtitle { Text(subtitle).font(.footnote).foregroundStyle(.secondary) }
                 }
                 Spacer()
-                if selection == code { Image(systemName: "checkmark").foregroundStyle(Color.brandDeep) }
+                if selection == code { Image(systemName: "checkmark").fontWeight(.semibold).foregroundStyle(.tint) }
             }
             .contentShape(.rect)
         }
-        .foregroundStyle(Color.ink)
+        .foregroundStyle(.primary)
+        .accessibilityAddTraits(selection == code ? .isSelected : [])
     }
 }
