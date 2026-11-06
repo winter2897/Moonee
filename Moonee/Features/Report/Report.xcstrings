@@ -595,24 +595,24 @@
         }
       }
     },
-    "You spent %@, %lld%% less than the month before. Nice work! 🎉": {
+    "You spent %@, %lld%% less than the month before. Nice work!": {
       "localizations": {
         "lo": {
           "stringUnit": {
             "state": "translated",
-            "value": "ເຈົ້າໃຊ້ໄປ %@ ໜ້ອຍກວ່າເດືອນກ່ອນໜ້າ %lld%% ເກັ່ງຫຼາຍ! 🎉"
+            "value": "ເຈົ້າໃຊ້ໄປ %@ ໜ້ອຍກວ່າເດືອນກ່ອນໜ້າ %lld%% ເກັ່ງຫຼາຍ!"
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "คุณใช้ไป %@ น้อยกว่าเดือนก่อนหน้า %lld%% เก่งมาก! 🎉"
+            "value": "คุณใช้ไป %@ น้อยกว่าเดือนก่อนหน้า %lld%% เก่งมาก!"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bạn đã chi %1$@, ít hơn tháng trước đó %2$lld%%. Giỏi lắm! 🎉"
+            "value": "Bạn đã chi %1$@, ít hơn tháng trước đó %2$lld%%. Giỏi lắm!"
           }
         }
       }

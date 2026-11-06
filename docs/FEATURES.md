@@ -12,7 +12,7 @@
 | Người dùng | Cả hai: mặc định cho người phổ thông, có mục **Nâng cao** cho power user |
 | Nền tảng | Chỉ iOS (SwiftUI + SwiftData + CloudKit) |
 | Kiếm tiền | **Mua đứt một lần**: trả tiền khi tải trên App Store, không IAP |
-| AI chạy ở đâu | User chọn trong Cài đặt: on-device (Apple Foundation Models hoặc model mở như Gemma, Qwen... chạy trên máy) hoặc BYOK. Moonee **không** trả phí LLM thay user |
+| AI chạy ở đâu | User chọn trong Cài đặt: model local (model mở như Gemma, Qwen... tải về và chạy trên máy) hoặc BYOK. Moonee **không** trả phí LLM thay user |
 | Skill của trợ lý | Dựa trên bộ skill Finance của Anthropic, custom lại cho tài chính cá nhân (mục 9.4) |
 | Lưu giao dịch | Lưu ngay, kèm thẻ sửa/hoàn tác |
 | Kênh nhập ngoài chat | Widget + Lock Screen |
@@ -79,10 +79,11 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 ### 3.3 Hỏi đáp và tư vấn
 - **Tìm web** khi user hỏi thông tin bên ngoài (giá vàng, Bitcoin...). Trả lời luôn kèm nguồn và thời điểm; Moonee chỉ đọc số từ tool, không đoán. Thứ tự (quyết định 06/11):
   1. **Search có sẵn của provider**, khi model trả lời là của provider đó: OpenRouter (web plugin), OpenAI (tool `web_search`), Anthropic (server tool web search), Gemini (grounding `google_search`). Ở chế độ Lai, câu hỏi thị trường đi BYOK trước để dùng search này.
-  2. **Key Tavily/Brave của user**, chỉ khi model không có search sẵn: Apple on-device, model local, DeepSeek, Custom.
+  2. **Key Tavily/Brave của user**, chỉ khi model không có search sẵn: model local, DeepSeek, Custom.
   3. **Nguồn công khai không cần key**, luôn có ở mọi chế độ (tool `marketPrice`), cho câu hay hỏi nhất: giá vàng SJC và nhẫn PNJ 999.9 (feed giá công khai của PNJ, đổi sang giá mỗi lượng trong Swift; sjc.com.vn chặn bot nên không dùng), tỷ giá ra VND (bảng tỷ giá công khai của Vietcombank), crypto (CoinGecko). Timeout 8 giây, cache 5 phút (Vietcombank yêu cầu tối đa 1 lần mỗi 5 phút). Chỉ gửi tên thứ được hỏi, không gửi dữ liệu của user. Có giá từ nguồn này thì không cần tìm web.
+  - **Không nêu tên nhà cung cấp giá** (quyết định 06/11): mọi chữ user thấy (câu trả lời, số liệu, mục "Dữ liệu nào rời khỏi iPhone", Tìm kiếm web) chỉ nói "giá tham khảo trên internet"; sản phẩm vàng gọi chung (vàng miếng 999.9, nhẫn trơn 999.9); chip nguồn ghi "Internet". Bài viết từ tìm web vẫn giữ link và tên trang.
   - Câu khác (chứng khoán, lãi suất, tin tức) mà không có 1 hoặc 2 thì Moonee nói thật và chỉ cách bật. Mục "Tìm kiếm web" trong Cài đặt AI ghi rõ đang dùng đường nào.
-- **Apple Intelligence** (quyết định 06/11): Cài đặt AI hiện trạng thái rõ (máy không hỗ trợ, chưa bật, đang tải model, chưa hỗ trợ tiếng Việt thì trả lời bằng tiếng Anh). Model nhỏ (Apple, local) nhận **prompt rút gọn** (persona + skill bản ngắn + FACTS cắt gọn + 4 lượt chat gần nhất), vì context của Apple chỉ 4096 token trên iOS 26; tràn context thì thử lại không kèm lịch sử. Lỗi (guardrail, ngôn ngữ, tràn context) thì tự chuyển sang model on-device còn lại, rồi đến bộ parse quy tắc và số liệu của app, kèm một câu báo thân thiện trong chat. Không tự chuyển sang cloud khi user chọn on-device.
+- **Model nhỏ** (model local) nhận **prompt rút gọn** (persona + skill bản ngắn + FACTS cắt gọn + 4 lượt chat gần nhất); tràn context thì thử lại không kèm lịch sử. Lỗi thì chuyển sang bộ parse quy tắc và số liệu của app (chế độ Lai: sang model cloud cho câu hỏi), kèm một câu báo thân thiện trong chat. Không tự chuyển sang cloud khi user chọn Model local.
 - **Giọng Moonee**: nói như bạn thân nhắn tin, tự nhiên, ấm, 1–3 câu, không emoji, ở mọi câu trả lời và câu hỏi lại. Ghi giao dịch xong thì tóm tắt một câu ("Moonee ghi lại 40.000 ₫ ăn sáng ở GS25 hôm nay rồi nhé").
 - "Tháng này mình ăn uống hết bao nhiêu?", "Còn bao nhiêu để hưởng thụ?"
 - Gợi ý cân đối lọ cuối tháng dựa trên thu nhập và thói quen chi.
@@ -167,7 +168,8 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 - Mức nhắc nhở, giờ "không làm phiền"
 
 ### 6.2 Trợ lý Moonee
-- **Chế độ AI:** Apple on-device / Model local / BYOK / Lai (xem mục 9.1)
+- **Chế độ AI:** Model local / BYOK / Lai (xem mục 9.1). Mặc định cho user mới: Model local; chưa tải model thì Cài đặt ghi rõ "Chưa tải model, Moonee dùng bộ đọc cơ bản" kèm nút Quản lý model.
+- **Kết quả kiểm tra** (Kiểm tra key, Kiểm tra kết nối): cùng một kiểu dòng, biểu tượng SF Symbol ở cột icon (đang kiểm tra: vòng xoay; được: dấu tích xanh; lỗi: dấu X đỏ) rồi câu thân thiện ("Kết nối được."). Không emoji trong giao diện.
 - **Model local:** danh sách model, tải về, xoá (xem mục 9.2)
 - **BYOK:** chọn nhà cung cấp, nhập API key (lưu trong Keychain), chọn model
 - **Skill:** bật/tắt từng skill tài chính của trợ lý (xem mục 9.4)
@@ -216,11 +218,12 @@ Moonee không có server AI và không trả phí LLM thay user.
 
 | Chế độ | Chạy ở đâu | Ghi chú |
 |---|---|---|
-| **Apple on-device** | Apple Foundation Models, có sẵn trong iOS | Không cần tải. Chỉ máy có Apple Intelligence (iPhone 15 Pro trở lên, iOS 26+; tiếng Việt từ iOS 26.1). Context 4096 token: dùng prompt rút gọn (§3.3) |
-| **Model local** | Model mở (Gemma, Qwen, Bonsai...) tải về và chạy trên máy, giống app Locally | Riêng tư, offline, miễn phí. Chạy qua MLX Swift (hoặc llama.cpp với file GGUF) |
+| **Model local** (mặc định) | Model mở (Gemma, Qwen, Bonsai...) tải về và chạy trên máy, giống app Locally | Riêng tư, offline, miễn phí. Chạy qua MLX Swift. Chưa tải model thì dùng bộ parse quy tắc (vẫn chạy offline) |
 | **BYOK** | Cloud, bằng API key của user (OpenAI / Anthropic / Gemini...) | Thông minh nhất, cần mạng |
-| **Lai** | Parse bằng on-device/local, tư vấn và báo cáo bằng BYOK | Cân bằng giữa riêng tư và chất lượng |
+| **Lai** | Giao dịch đọc trên iPhone bằng model local (chưa có thì bằng quy tắc), tư vấn và báo cáo bằng BYOK | Cân bằng giữa riêng tư và chất lượng |
 | *Fallback* | Bộ parse quy tắc (regex + từ điển) | Khi không có model nào dùng được. Vẫn nhập được giao dịch; báo cáo chỉ gồm số liệu và biểu đồ |
+
+Apple Foundation Models không dùng (quyết định 06/11: không chạy ổn trên máy owner, model local là đủ). Cài đặt cũ chọn Apple được chuyển sang Model local.
 
 ### 9.2 Quản lý model local
 - **Danh mục model** có sẵn trong app (do Moonee chọn lọc và kiểm tra trước). Mỗi model ghi: dung lượng tải, RAM cần, tốc độ ước tính, mức hỗ trợ tiếng Việt, có đọc được ảnh không.
@@ -232,10 +235,10 @@ Moonee không có server AI và không trả phí LLM thay user.
   - **Pin và nhiệt:** chỉ nạp model khi cần, giải phóng khi app vào nền.
   - **Output có cấu trúc:** parse giao dịch cần JSON đúng schema. Dùng sinh có ràng buộc (JSON schema / grammar) và kiểm tra lại; nếu sai thì chuyển sang bộ parse quy tắc.
   - **License:** kiểm tra license từng model trước khi đưa vào danh mục (Gemma có điều khoản sử dụng riêng).
-  - **Tiếng Việt:** Gemma và Qwen thường xử lý tiếng Việt tốt hơn model nhỏ của Apple, nên đây cũng là phương án cho user tiếng Việt.
+  - **Tiếng Việt:** chọn model trong danh mục theo mức hỗ trợ tiếng Việt (Gemma, Qwen xử lý tốt).
 
 ### 9.3 Phân vai giữa các model
-| Việc | Model nhỏ (Apple / local) | BYOK |
+| Việc | Model nhỏ (local) | BYOK |
 |---|---|---|
 | Parse giao dịch từ text/voice | ✓ | ✓ |
 | Đọc ảnh hoá đơn | OCR bằng Vision framework, đưa chữ cho model (hoặc model có vision) | ✓ (đọc ảnh trực tiếp) |
@@ -270,7 +273,7 @@ Bộ Finance (repo `anthropics/knowledge-work-plugins`, thư mục `finance`) c�
 - Skill gốc viết cho môi trường của Claude (đọc file, chạy script). Trong Moonee, mỗi skill gồm: **một file hướng dẫn** (markdown, có bản cho từng ngôn ngữ) và **danh sách tool Swift** mà skill được gọi, ví dụ `getTransactions(range)`, `jarBalances()`, `budgetVsActual(period)`.
 - Script Python trong skill gốc không chạy được trên iOS, nên phần tính toán được viết lại bằng Swift dưới dạng tool.
 - **Nạp skill theo nhu cầu:** Moonee nhận diện ý định (hỏi báo cáo, chốt tháng...) rồi mới nạp hướng dẫn của skill đó vào prompt. Cách này tiết kiệm context, rất quan trọng với model local.
-- Skill chạy được với mọi model (Apple / local / BYOK), không phụ thuộc Claude. Model nhỏ dùng bản hướng dẫn rút gọn.
+- Skill chạy được với mọi model (local / BYOK), không phụ thuộc Claude. Model nhỏ dùng bản hướng dẫn rút gọn.
 - ⚠️ Kiểm tra license của repo `knowledge-work-plugins` trước khi đưa nội dung vào app bán thương mại, và ghi credit nếu license yêu cầu.
 
 ## 10. Ngôn ngữ
@@ -306,7 +309,7 @@ Ngôn ngữ khác thêm theo checklist ở mục 10.6. Tiếng Thái và tiếng
 - **Nhập** bằng ngôn ngữ nào cũng được, không phụ thuộc ngôn ngữ giao diện. Ví dụ đang để giao diện English vẫn gõ "phở 45k" được.
 - **Moonee trả lời** theo ngôn ngữ giao diện (có thể thêm tuỳ chọn trả lời theo ngôn ngữ user vừa gõ).
 - Voice: chọn locale cho Speech theo ngôn ngữ giao diện, có tuỳ chọn đổi riêng.
-- Mỗi model hỗ trợ ngôn ngữ ở mức khác nhau, nên danh mục model local cần ghi rõ mức hỗ trợ tiếng Việt (mục 9.2). Nếu Apple Foundation Models chưa tốt với tiếng Việt thì gợi ý user tiếng Việt dùng Gemma/Qwen hoặc BYOK.
+- Mỗi model hỗ trợ ngôn ngữ ở mức khác nhau, nên danh mục model local cần ghi rõ mức hỗ trợ tiếng Việt (mục 9.2).
 
 ### 10.5 Import / Export
 - File CSV export dùng **tên cột tiếng Anh cố định** (`date, amount, category, ...`) để import lại được bất kể ngôn ngữ.
@@ -347,7 +350,7 @@ MerchantRule  (pattern, categoryId)                    // học từ các lần 
 **MVP**
 - Đa ngôn ngữ: English + Tiếng Việt, String Catalog ngay từ dòng code đầu tiên
 - Chat nhập text/voice/ảnh, thẻ sửa/hoàn tác, học từ lần sửa
-- AI: Apple on-device + 1–2 model local đã kiểm tra tiếng Việt + BYOK + fallback parse theo quy tắc
+- AI: 1–2 model local đã kiểm tra tiếng Việt + BYOK + fallback parse theo quy tắc
 - Skill: `transaction-parser`, `jar-budgeting`, `close-management` (chốt sổ và báo cáo tháng), `spending-coach`
 - Tổng quan + sổ giao dịch
 - Ví (kể cả thẻ tín dụng), lọ envelope, chia thu nhập theo từng khoản

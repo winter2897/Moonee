@@ -1,17 +1,14 @@
 import Foundation
-import FoundationModels
 import Security
 
-/// A chat model Moonee can use: Apple on-device, a local open model (later) or a BYOK cloud model.
+/// A chat model Moonee can use: a local open model (`LocalLLM`) or a BYOK cloud model.
 /// Models never compute money (spec §9.3): they call `AITool`s (Swift) for numbers, then explain.
 protocol LLM: Sendable {
     /// Small on-device models get the short skill text and pre-computed tool results instead of tool calls.
     var isSmall: Bool { get }
-    /// The language this model answers in when it can't use the app's (Apple without Vietnamese → "en"); nil = the app's.
-    var replyLanguage: String? { get }
     /// Runs the tool loop (the model may call `request.tools` several times) and returns the final text.
     func respond(_ request: LLMRequest) async throws -> String
-    /// Structured read of a chat message. Default: JSON through `respond`; Foundation Models uses `@Generable`.
+    /// Structured read of a chat message. Default: JSON through `respond`; `LocalLLM` constrains it to a JSON schema.
     func extractTransactions(instructions: String, text: String) async throws -> [AIParsedTxn]
     /// Can see `LLMMessage.images` (cloud vision models). Others get a photo's OCR rows with their layout.
     var acceptsImages: Bool { get }
@@ -50,7 +47,6 @@ struct LLMError: LocalizedError, Equatable {
 
 extension LLM {
     var isSmall: Bool { false }
-    var replyLanguage: String? { nil }
     var acceptsImages: Bool { false }
 
     func readDocument(instructions: String, text: String, image: Data?) async throws -> AIDocRead {
@@ -72,7 +68,7 @@ extension LLM {
 
 // MARK: - Tools
 
-/// A tiny JSON Schema subset. Becomes JSON Schema for cloud models and `DynamicGenerationSchema` for Foundation Models.
+/// A tiny JSON Schema subset, sent to cloud models as JSON Schema.
 indirect enum ToolSchema: Sendable {
     case string(String? = nil, oneOf: [String]? = nil)
     case integer(String? = nil)
@@ -111,21 +107,6 @@ indirect enum ToolSchema: Sendable {
         }
         if let summary { out["description"] = summary }
         return out
-    }
-
-    func dynamic(name: String) -> DynamicGenerationSchema {
-        switch self {
-        case .string(_, let oneOf?): .init(name: name, description: summary, anyOf: oneOf)
-        case .string: .init(type: String.self)
-        case .integer: .init(type: Int.self)
-        case .number: .init(type: Double.self)
-        case .boolean: .init(type: Bool.self)
-        case .array(let item, _): .init(arrayOf: item.dynamic(name: name + "Item"))
-        case .object(let props, let d):
-            .init(name: name, description: d, properties: props.map {
-                .init(name: $0.name, description: $0.schema.summary, schema: $0.schema.dynamic(name: name + "_" + $0.name), isOptional: !$0.required)
-            })
-        }
     }
 }
 
@@ -202,14 +183,9 @@ enum HTTP {
 
 // MARK: - Settings
 
-/// The first settings screen's two-way switch; only read now to pick the default `AIMode`.
-enum LLMProvider: String, CaseIterable {
-    case remote, apple
-}
-
 /// AI mode of spec §9.1.
 enum AIMode: String, CaseIterable, Sendable {
-    case onDevice, local, byok, hybrid
+    case local, byok, hybrid
 }
 
 /// BYOK providers (spec §6.2). Each has its own Keychain account, stored model and base URL;
@@ -247,7 +223,6 @@ enum CloudProvider: String, CaseIterable, Sendable {
 
 /// Provider choice + remote config. Model/base URL in AppStorage, API keys in Keychain.
 enum LLMSettings {
-    static let providerKey = "ai.provider"
     static let modelKey = "ai.model"
     static let baseURLKey = "ai.baseURL"
     static let modeKey = "ai.mode"
@@ -257,13 +232,10 @@ enum LLMSettings {
     static let defaultModel = "google/gemini-3.5-flash-lite"
     static let defaultBaseURL = "https://openrouter.ai/api/v1"
 
-    static var provider: LLMProvider {
-        LLMProvider(rawValue: UserDefaults.standard.string(forKey: providerKey) ?? "") ?? .remote
-    }
-
-    /// Stored mode; until the user picks one it follows the older provider switch.
+    /// Stored mode. Until the user picks one: BYOK when a key is already there, else Local (the rules until a model
+    /// is downloaded, spec §9.1).
     static var mode: AIMode {
-        AIMode(rawValue: UserDefaults.standard.string(forKey: modeKey) ?? "") ?? (provider == .apple ? .onDevice : .byok)
+        AIMode(rawValue: UserDefaults.standard.string(forKey: modeKey) ?? "") ?? (cloud(cloudProvider) != nil ? .byok : .local)
     }
 
     static var cloudProvider: CloudProvider {
@@ -280,7 +252,9 @@ enum LLMSettings {
 
     /// Before DeepSeek & co. there was one `openAICompatible` provider: with OpenRouter's URL (or none) it is
     /// OpenRouter; with another URL it becomes Custom, taking the key (Keychain) and model along. Runs once at launch.
+    /// Also: the removed Apple on-device mode becomes Local.
     static func migrate(_ d: UserDefaults = .standard, moveKey: (_ from: String, _ to: String) -> Void = Keychain.move) {
+        if d.string(forKey: modeKey) == "onDevice" { d.set(AIMode.local.rawValue, forKey: modeKey) }
         guard d.string(forKey: cloudKey) == "openAICompatible" else { return }
         let url = (d.string(forKey: baseURLKey) ?? "").trimmingCharacters(in: .whitespaces)
         guard !url.isEmpty, url.trimmingCharacters(in: .init(charactersIn: "/")) != defaultBaseURL else {
@@ -297,9 +271,7 @@ enum LLMSettings {
 
     /// The models the current settings allow, for `Assistant`.
     static func router() -> AIRouter {
-        let apple = AppleStatus.current()
-        return AIRouter(mode: mode, onDevice: apple.canRun ? AppleLLM(replyLanguage: apple == .languageUnsupported ? "en" : nil) : nil,
-                        local: LocalLLM.current, cloud: cloud(cloudProvider), appleStatus: apple)
+        AIRouter(mode: mode, local: LocalLLM.current, cloud: cloud(cloudProvider))
     }
 
     /// A configured BYOK model, or nil when it has no key.
@@ -322,8 +294,6 @@ enum LLMSettings {
     static var customPrompt: String {
         (UserDefaults.standard.string(forKey: customPromptKey) ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
     }
-
-    static var appleStatus: String { AppleStatus.current().text }
 
     /// OpenRouter key (filled from `.env` by DevSecrets).
     static var apiKey: String? {

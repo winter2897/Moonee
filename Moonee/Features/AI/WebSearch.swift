@@ -100,12 +100,12 @@ struct WebSource: Equatable, Hashable, Sendable {
 /// Collects the hits `webSearch` returned while one answer was made.
 final class SourceLog: @unchecked Sendable {
     private let lock = NSLock()
-    private var hits: [SearchHit] = []
+    private var hits: [WebSource] = []
 
     var sources: [WebSource] {
         lock.withLock {
-            var seen = Set<String>()
-            return hits.filter { seen.insert($0.url).inserted }.compactMap(WebSource.init)
+            var seen = Set<URL>()
+            return hits.filter { seen.insert($0.url).inserted }
         }
     }
 
@@ -114,11 +114,12 @@ final class SourceLog: @unchecked Sendable {
         guard tool.name == "webSearch" || tool.name == "marketPrice" else { return tool }
         return AITool(name: tool.name, description: tool.description, parameters: tool.parameters) { [self] data in
             let out = try await tool.run(data)
-            let found: [SearchHit]
+            let found: [WebSource]
             if let r = try? JSONDecoder().decode(SearchResult.self, from: Data(out.utf8)) {
-                found = r.results
-            } else if let q = try? JSONDecoder().decode(MarketPrices.Quote.self, from: Data(out.utf8)), let url = q.url {
-                found = [SearchHit(title: q.name ?? q.source, url: url, text: "", date: q.updatedAt)]
+                found = r.results.compactMap(WebSource.init)
+            } else if let q = try? JSONDecoder().decode(MarketPrices.Quote.self, from: Data(out.utf8)), let url = q.url.flatMap(URL.init) {
+                // A price feed is not an article: the chip says "Internet", not the provider (no brand names in the UI).
+                found = [WebSource(title: q.name ?? q.source, url: url, site: "Internet", date: q.updatedAt.flatMap(WebSource.date(from:)))]
             } else {
                 found = []
             }
@@ -163,14 +164,14 @@ enum SearchSettings {
     /// Who sees search queries, for "What leaves this iPhone".
     static var note: String {
         guard let b = backend() else {
-            return String(localized: "Gold prices, exchange rates and crypto come from PNJ, Vietcombank and CoinGecko; only the item you ask about is sent, never your data.", table: "AI")
+            return String(localized: "Gold prices, exchange rates and crypto prices are looked up on the internet. Moonee only sends what you ask about, never your data.", table: "AI")
         }
         return String(localized: "When you ask about prices, rates or news, your search query is sent to \(b.sourceName).", table: "AI")
     }
 
     /// Which way web questions go right now, for the Web search section of AI settings.
     static var route: String {
-        let base = String(localized: "Gold, exchange rates and crypto always come from PNJ, Vietcombank and CoinGecko, no key needed.", table: "AI")
+        let base = String(localized: "Gold prices, exchange rates and crypto prices are always looked up on the internet, no key needed.", table: "AI")
         guard LLMSettings.webSearch else { return String(localized: "Web search is off.", table: "AI") + " " + base }
         guard let b = backend() else {
             return base + " " + String(localized: "For other questions (stocks, interest rates, news), add a Tavily or Brave key, or use OpenRouter, OpenAI, Anthropic or Gemini.", table: "AI")

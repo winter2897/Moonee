@@ -312,50 +312,6 @@
         }
       }
     },
-    "Apple Intelligence on this iPhone. Private, offline, free.": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Intelligence ໃນ iPhone ເຄື່ອງນີ້. ເປັນສ່ວນຕົວ, ໃຊ້ອອບລາຍໄດ້, ຟຣີ."
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Intelligence บน iPhone เครื่องนี้ เป็นส่วนตัว ใช้ออฟไลน์ได้ ฟรี"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Intelligence trên iPhone này. Riêng tư, offline, miễn phí."
-          }
-        }
-      }
-    },
-    "Apple on-device": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple ໃນເຄື່ອງ"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple ในเครื่อง"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple trên máy"
-          }
-        }
-      }
-    },
     "Asks when Moonee opens and when you come back after this long.": {
       "localizations": {
         "lo": {
@@ -554,6 +510,28 @@
         }
       }
     },
+    "Checking…": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກຳລັງກວດສອບ…"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กำลังตรวจสอบ…"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang kiểm tra…"
+          }
+        }
+      }
+    },
     "Choose avatar": {
       "localizations": {
         "lo": {
@@ -598,24 +576,24 @@
         }
       }
     },
-    "Connected: %@": {
+    "Connected.": {
       "localizations": {
         "lo": {
           "stringUnit": {
             "state": "translated",
-            "value": "ເຊື່ອມຕໍ່ແລ້ວ: %@"
+            "value": "ເຊື່ອມຕໍ່ໄດ້ແລ້ວ."
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "เชื่อมต่อแล้ว: %@"
+            "value": "เชื่อมต่อได้แล้ว"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kết nối được: %@"
+            "value": "Kết nối được."
           }
         }
       }
@@ -1280,28 +1258,6 @@
         }
       }
     },
-    "Local models": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ໂມເດວໃນເຄື່ອງ"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "โมเดลในเครื่อง"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Model local"
-          }
-        }
-      }
-    },
     "Lock after": {
       "localizations": {
         "lo": {
@@ -1364,6 +1320,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ít"
+          }
+        }
+      }
+    },
+    "Manage models": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຈັດການໂມເດວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "จัดการโมเดล"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quản lý model"
           }
         }
       }
@@ -1610,6 +1588,28 @@
         }
       }
     },
+    "No model downloaded yet. Moonee uses the basic reader; download a model to make it smarter.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍັງບໍ່ໄດ້ດາວໂຫຼດໂມເດວ. Moonee ໃຊ້ຕົວອ່ານພື້ນຖານຢູ່; ດາວໂຫຼດໂມເດວເພື່ອໃຫ້ສະຫຼາດຂຶ້ນ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยังไม่ได้ดาวน์โหลดโมเดล Moonee ใช้ตัวอ่านพื้นฐานอยู่ ดาวน์โหลดโมเดลเพื่อให้ฉลาดขึ้น"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa tải model. Moonee đang dùng bộ đọc cơ bản; tải model để Moonee thông minh hơn."
+          }
+        }
+      }
+    },
     "No model is set up for this mode yet.": {
       "localizations": {
         "lo": {
@@ -1738,28 +1738,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bật"
-          }
-        }
-      }
-    },
-    "On-device": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ໃນເຄື່ອງ"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ในเครื่อง"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "On-device"
           }
         }
       }
@@ -1914,28 +1892,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Đọc giao dịch"
-          }
-        }
-      }
-    },
-    "Ready (Apple Intelligence, managed by iOS)": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ພ້ອມໃຊ້ (Apple Intelligence, ຈັດການໂດຍ iOS)"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "พร้อมใช้ (Apple Intelligence ดูแลโดย iOS)"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sẵn sàng (Apple Intelligence, do iOS quản lý)"
           }
         }
       }
@@ -2402,28 +2358,6 @@
         }
       }
     },
-    "The on-device model is not ready": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ໂມເດວໃນເຄື່ອງຍັງບໍ່ພ້ອມ"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "โมเดลในเครื่องยังไม่พร้อม"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Model trên máy chưa sẵn sàng"
-          }
-        }
-      }
-    },
     "The provider rejected this key. Check it and try again.": {
       "localizations": {
         "lo": {
@@ -2442,28 +2376,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nhà cung cấp từ chối key này. Kiểm tra lại rồi thử lần nữa."
-          }
-        }
-      }
-    },
-    "This iPhone does not support Apple Intelligence": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iPhone ເຄື່ອງນີ້ບໍ່ຮອງຮັບ Apple Intelligence"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iPhone เครื่องนี้ไม่รองรับ Apple Intelligence"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iPhone này không hỗ trợ Apple Intelligence"
           }
         }
       }
@@ -2508,50 +2420,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Công cụ"
-          }
-        }
-      }
-    },
-    "Transactions are read on this iPhone; advice and reports use your cloud key.": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ລາຍການຈະຖືກອ່ານໃນ iPhone ເຄື່ອງນີ້; ຄຳແນະນຳ ແລະ ລາຍງານໃຊ້ຄີຄລາວຂອງເຈົ້າ."
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "รายการจะถูกอ่านบน iPhone เครื่องนี้ ส่วนคำแนะนำและรายงานใช้คีย์คลาวด์ของคุณ"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Giao dịch được đọc trên iPhone này; tư vấn và báo cáo dùng key cloud của bạn."
-          }
-        }
-      }
-    },
-    "Turn on Apple Intelligence in Settings": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ເປີດ Apple Intelligence ໃນການຕັ້ງຄ່າ"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "เปิด Apple Intelligence ในการตั้งค่า"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hãy bật Apple Intelligence trong Cài đặt"
           }
         }
       }
@@ -2864,6 +2732,28 @@
         }
       }
     },
+    "Your local model (or the basic reader) reads transactions on this iPhone; advice and reports use your cloud key.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂມເດວໃນເຄື່ອງ (ຫຼື ຕົວອ່ານພື້ນຖານ) ອ່ານລາຍການໃນ iPhone ນີ້; ຄຳແນະນຳ ແລະ ລາຍງານໃຊ້ຄີຄລາວຂອງທ່ານ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โมเดลในเครื่อง (หรือตัวอ่านพื้นฐาน) อ่านรายการบน iPhone นี้ ส่วนคำแนะนำและรายงานใช้คีย์คลาวด์ของคุณ"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Model local (hoặc bộ đọc cơ bản) đọc giao dịch ngay trên iPhone; tư vấn và báo cáo dùng key cloud của bạn."
+          }
+        }
+      }
+    },
     "Your name": {
       "localizations": {
         "lo": {
@@ -2926,28 +2816,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Đồng bộ iCloud"
-          }
-        }
-      }
-    },
-    "iOS is still downloading the model, try again later": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iOS ຍັງດາວໂຫຼດໂມເດວຢູ່, ລອງໃໝ່ພາຍຫຼັງເດີ"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iOS ยังดาวน์โหลดโมเดลอยู่ ลองใหม่ทีหลังนะ"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iOS đang tải model, thử lại sau"
           }
         }
       }

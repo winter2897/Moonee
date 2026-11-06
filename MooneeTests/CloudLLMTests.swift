@@ -1,5 +1,4 @@
 import Foundation
-import FoundationModels
 import Testing
 @testable import Moonee
 
@@ -112,15 +111,13 @@ struct CloudLLMTests {
         #expect(json["required"] as? [String] == ["n"])
         #expect(json["description"] as? String == "args")
         #expect(((json["properties"] as? [String: Any])?["tags"] as? [String: Any])?["type"] as? String == "array")
-        _ = try GenerationSchema(root: s.dynamic(name: "args"), dependencies: [])
     }
 
-    @Test func cloudJSONShapeMatchesGenerableSchema() throws {
-        // The @Generable type (Foundation Models) and the JSON example (cloud models) must name the same fields.
-        let schema = try JSONSerialization.jsonObject(with: JSONEncoder().encode(AIParsedTxnList.generationSchema)) as? [String: Any]
-        let defs = schema?["$defs"] as? [String: Any]
-        let txn = defs?.values.compactMap { $0 as? [String: Any] }.first { ($0["properties"] as? [String: Any])?["amountText"] != nil }
-        let generable = Set(((txn?["properties"]) as? [String: Any])?.keys.map { $0 } ?? [])
+    @Test func cloudJSONShapeMatchesAIParsedTxn() throws {
+        // The JSON example cloud models get must name the same fields as `AIParsedTxn`.
+        let sample = AIParsedTxn(amountText: "45k", kind: "expense", category: "x", wallet: "x", toWallet: "x",
+                                 jar: "x", toJar: "x", person: "x", dateText: "x", note: "x")
+        let generable = Set(try #require(try JSONSerialization.jsonObject(with: JSONEncoder().encode(sample)) as? [String: Any]).keys)
         let example = AIParsedTxn.jsonInstructions.split(separator: "\n").last.map(String.init) ?? ""
         let list = try JSONSerialization.jsonObject(with: Data(example.utf8)) as? [String: Any]
         let shown = Set(((list?["transactions"] as? [[String: Any]])?.first ?? [:]).keys)

@@ -97,7 +97,7 @@ struct WebSearchTests {
             ["choices": [["message": ["content": "Theo sjc.com.vn, 152 triệu."]]]],
         ])
         let cloud = OpenAICompatibleLLM(baseURL: "https://x/v1", apiKey: "k", model: "m", send: stub.send)
-        let a = Assistant(router: AIRouter(mode: .byok, onDevice: nil, local: nil, cloud: cloud), tools: tools, language: "vi")
+        let a = Assistant(router: AIRouter(mode: .byok, local: nil, cloud: cloud), tools: tools, language: "vi")
         guard case .answer(_, "market-lookup", let sources) = await a.handle("giá vàng SJC hôm nay?", context: Books.context) else {
             Issue.record("expected an answer")
             return
@@ -134,9 +134,9 @@ struct WebSearchTests {
         // (b) the user's key: provider has no search (DeepSeek) or answers stay on the phone
         #expect(SearchSettings.backend(mode: .byok, provider: .deepSeek, cloud: OpenAICompatibleLLM(baseURL: "x", apiKey: "k", model: "m", provider: .deepSeek),
                                        keyProvider: .brave, key: keys)?.sourceName == "Brave Search")
-        #expect(SearchSettings.backend(mode: .onDevice, provider: .anthropic, cloud: anthropic, keyProvider: .tavily, key: keys)?.sourceName == "Tavily")
+        #expect(SearchSettings.backend(mode: .local, provider: .anthropic, cloud: anthropic, keyProvider: .tavily, key: keys)?.sourceName == "Tavily")
         // (c) nothing
-        #expect(SearchSettings.backend(mode: .onDevice, provider: .anthropic, cloud: anthropic, keyProvider: nil, key: keys) == nil)
+        #expect(SearchSettings.backend(mode: .local, provider: .anthropic, cloud: anthropic, keyProvider: nil, key: keys) == nil)
         #expect(SearchSettings.backend(mode: .local, provider: .openAI, cloud: nil, keyProvider: .tavily, key: { _ in nil }) == nil)
     }
 
@@ -149,7 +149,7 @@ struct WebSearchTests {
         let quote = try #require(await tools.json("marketPrice", #"{"symbol":"btc"}"#) as? [String: Any])
         #expect(quote["coin"] as? String == "bitcoin")
         #expect((quote["prices"] as? [[String: String]]) == [["currency": "USD", "price": "$68,000.50"], ["currency": "VND", "price": "₫1,790,000,000"]])
-        #expect(quote["source"] as? String == "CoinGecko")
+        #expect(quote["source"] as? String == MarketPrices.sourceName)
         #expect(coingecko.requests[0].url?.query()?.contains("vs_currencies=usd,vnd") == true)
 
         let stock = try #require(await tools.json("marketPrice", #"{"symbol":"VNM"}"#) as? [String: Any])
@@ -181,13 +181,13 @@ struct WebSearchTests {
         tools.search = WebSearch(backend: TavilySearch(apiKey: "k", send: StubTransport([["results": [
             ["title": "SJC", "url": "https://sjc.vn", "content": "Bán 152.000.000"],
         ]]]).send))
-        let apple = ScriptedLLM(small: true, replies: ["Theo SJC, giá bán 152 triệu."])
-        let a = Assistant(router: AIRouter(mode: .onDevice, onDevice: apple, local: nil, cloud: nil), tools: tools, language: "vi")
+        let local = ScriptedLLM(small: true, replies: ["Theo SJC, giá bán 152 triệu."])
+        let a = Assistant(router: AIRouter(mode: .local, local: local, cloud: nil), tools: tools, language: "vi")
         let out = await a.handle("giá vàng SJC hôm nay bao nhiêu?", context: Books.context)
         #expect(out == .answer("Theo SJC, giá bán 152 triệu.", skill: "market-lookup",
                                sources: [WebSource(title: "SJC", url: URL(string: "https://sjc.vn")!, site: "sjc.vn")]))
-        let system = try #require(apple.requests.first?.system)
-        #expect(apple.requests.first?.messages.last?.text.contains("https://sjc.vn") == true) // facts ride in the user turn
+        let system = try #require(local.requests.first?.system)
+        #expect(local.requests.first?.messages.last?.text.contains("https://sjc.vn") == true) // facts ride in the user turn
         #expect(system.contains(Skill.marketLookup.instructions(language: "vi", short: true)))
     }
 }

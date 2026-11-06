@@ -2,7 +2,7 @@ import Foundation
 import MLXLMCommon
 
 // Vietnamese parse eval (spec §9.2): the spec's examples + everyday phrases, run through
-// QuickParser (rules), Assistant.parse with Apple on-device, and Assistant.parse with each local model.
+// QuickParser (rules) and Assistant.parse with each local model.
 // A phrase passes when every expected transaction comes out with the right amount, kind, category
 // (any of the accepted keys) and wallet / jar / person when given, and nothing extra.
 
@@ -133,13 +133,6 @@ precondition(!Skill.transactionParser.instructions(language: "vi", short: true).
 var rows: [EvalRow] = []
 rows.append(await run("QuickParser (rules)") { (QuickParser.parse($0, context: context), false) })
 
-if AppleLLM.isAvailable {
-    let a = assistant(AIRouter(mode: .onDevice, onDevice: Recording(inner: AppleLLM()), local: nil, cloud: nil))
-    rows.append(await run("Apple on-device") { let r = await a.parse($0, context: context); return (r.txns, r.usedModel) })
-} else {
-    print("Apple on-device: unavailable (\(LLMSettings.appleStatus))")
-}
-
 let store = LocalModelStore(root: URL(fileURLWithPath: CommandLine.arguments.dropFirst().first ?? ".build/models"))
 let downloads = LocalModelDownloads(store: store)
 /// `ParseEval <models> speed`: speed only (no parse eval), for every catalog model.
@@ -187,7 +180,7 @@ for m in LocalModel.catalog {
     print("⏱", m.name, String(format: "load %.1fs, first token %.2fs (warm %.2fs), %.0f tok/s, prompt %d (warm reused %d)", load, cold.firstTokenSeconds, warm.firstTokenSeconds, cold.tokensPerSecond, cold.promptTokens, warm.reusedPromptTokens))
     print("   answer:", a1.prefix(160).replacingOccurrences(of: "\n", with: " "))
     if !speedOnly {
-        let a = assistant(AIRouter(mode: .local, onDevice: nil, local: Recording(inner: local), cloud: nil))
+        let a = assistant(AIRouter(mode: .local, local: Recording(inner: local), cloud: nil))
         rows.append(await run(m.name) { let r = await a.parse($0, context: context); return (r.txns, r.usedModel) })
     }
     await LocalRuntime.shared.unload()

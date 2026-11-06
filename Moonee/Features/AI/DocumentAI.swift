@@ -1,5 +1,4 @@
 import Foundation
-import FoundationModels
 
 // Photos and screenshots of money documents read by a model (skill `receipt-reader`, spec §9.3): cloud vision models
 // see the image and the OCR rows, on-device models the OCR rows with their layout. Every amount the model gives must
@@ -108,7 +107,7 @@ extension Assistant {
         let rules = DocumentReader.read(lines, context: context)
         guard !lines.isEmpty, !skillsOff.contains(Skill.receiptReader.id) else { return (rules, false) }
         for model in router.candidates(for: .parse) {
-            let instructions = documentInstructions(short: model.isSmall, context: context, language: model.replyLanguage ?? language)
+            let instructions = documentInstructions(short: model.isSmall, context: context, language: language)
             let text = DocumentReader.layoutText(lines, limit: model.isSmall ? 60 : 150)
             for picture in (model.acceptsImages && image != nil ? [image, nil] : [nil]) {
                 guard let ai = try? await model.readDocument(instructions: instructions, text: text, image: picture) else { continue }
@@ -128,52 +127,5 @@ extension Assistant {
             The user's wallets: \(context.wallets.joined(separator: ", "))
             Today: \(context.now.formatted(.iso8601.year().month().day()))
             """
-    }
-}
-
-// MARK: - Apple Foundation Models
-
-/// Apple's model leaves optional fields null (see `AppleParsedTxn`): required strings, empty = none.
-@Generable(description: "A photographed money document and the transactions on it")
-struct AppleDocRead {
-    @Guide(description: "receipt, payment (bank or e-wallet confirmation), bill, statement (several transactions) or other (not money)",
-           .anyOf(DocType.allCases.map(\.rawValue)))
-    var docType: String
-    var transactions: [AppleDocTxn]
-}
-
-@Generable(description: "One transaction on the document")
-struct AppleDocTxn {
-    @Guide(description: "The amount copied exactly from the text, e.g. \"32.000 đ\". Never compute.")
-    var amountText: String
-    @Guide(description: "expense, income, sent (to a person), received (from a person), lend, borrow or repay",
-           .anyOf(DocRead.Kind.allCases.map(\.rawValue)))
-    var kind: String
-    @Guide(description: "The shop or the other person, copied from the text. Empty if none.")
-    var counterparty: String
-    @Guide(description: "The date and time copied from the text, e.g. \"19:38 - 05/11/2026\". Empty if none.")
-    var dateText: String
-    @Guide(description: "The app or bank it was paid with, e.g. MoMo. Empty if none.")
-    var wallet: String
-    @Guide(description: "The transaction or invoice id copied from the text. Empty if none.")
-    var reference: String
-    @Guide(description: "A category key from the list, only for expense or income. Empty if unsure.")
-    var category: String
-
-    var parsed: AIDocRead.Txn {
-        func value(_ s: String) -> String? { s.trimmingCharacters(in: .whitespaces).nilIfEmpty }
-        return .init(amountText: value(amountText), kind: kind, counterparty: value(counterparty), dateText: value(dateText),
-                     wallet: value(wallet), reference: value(reference), category: value(category))
-    }
-}
-
-extension AppleLLM {
-    func readDocument(instructions: String, text: String, image: Data?) async throws -> AIDocRead {
-        do {
-            let read = try await LanguageModelSession(instructions: instructions).respond(to: text, generating: AppleDocRead.self).content
-            return AIDocRead(docType: read.docType, transactions: read.transactions.map(\.parsed))
-        } catch {
-            throw AINotice(error)
-        }
     }
 }

@@ -316,7 +316,7 @@ import Testing
         let q = MarketPrices.Quote(symbol: "btc", coin: "bitcoin", prices: [.init(currency: "VND", price: "2.500.000.000 ₫"), .init(currency: "USD", price: "$98,000")])
         let text = ChatBook.factsText([.init(tool: "marketPrice", json: String(decoding: try JSONEncoder().encode(q), as: UTF8.self))])
         #expect(text?.hasPrefix("**Bitcoin (BTC)**: 2.500.000.000 ₫ · $98,000") == true)
-        #expect(text?.contains("CoinGecko") == true)
+        #expect(text?.contains(MarketPrices.sourceName) == true && text?.contains("CoinGecko") == false)
     }
 
     @Test func messagesKeepTheirSources() {
@@ -334,7 +334,6 @@ import Testing
     @Test func chipNamesTheEngineThatReallyAnswers() {
         let model = ScriptedLLM(replies: [])
         #expect(ChatEngine.current(AIRouter(mode: .byok), provider: .openRouter) == .needsKey(.openRouter)) // BYOK, no key
-        #expect(ChatEngine.current(AIRouter(mode: .onDevice), provider: .openRouter) == .offline) // no Apple Intelligence
         #expect(ChatEngine.current(AIRouter(mode: .local), provider: .openRouter) == .offline) // nothing downloaded
         #expect(ChatEngine.current(AIRouter(mode: .byok, cloud: model), provider: .deepSeek, model: "deepseek-chat")
                 == .cloud(.deepSeek, model: "deepseek-chat"))
@@ -344,7 +343,6 @@ import Testing
     @Test func chipLabelsAreShort() {
         #expect(ChatEngine.cloud(.openRouter, model: "google/gemini-3.5-flash-lite").label(effort: nil) == "gemini-3.5-flash-lite")
         #expect(ChatEngine.cloud(.custom, model: "llama-4").label(effort: nil) == "llama-4")
-        #expect(ChatEngine.apple.label(effort: nil) == "Apple Intelligence")
         #expect(ChatEngine.local("Qwen3 1.7B").label(effort: nil) == "Qwen3 1.7B")
         #expect(ChatEngine.cloud(.anthropic, model: "claude-sonnet-5-5").label(effort: .high)
                 == "claude-sonnet-5-5 · " + ModelChip.title(.high))

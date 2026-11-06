@@ -146,6 +146,16 @@ struct CloudModelsTests {
         #expect(CloudProvider.openRouter.keychainAccount == "openrouter")
     }
 
+    @Test func appleModeBecomesLocal() {
+        let d = defaults()
+        d.set("onDevice", forKey: LLMSettings.modeKey)
+        LLMSettings.migrate(d) { _, _ in }
+        #expect(d.string(forKey: LLMSettings.modeKey) == AIMode.local.rawValue)
+        d.set("hybrid", forKey: LLMSettings.modeKey)
+        LLMSettings.migrate(d) { _, _ in }
+        #expect(d.string(forKey: LLMSettings.modeKey) == "hybrid")
+    }
+
     // MARK: - Cache
 
     @Test func cacheIsPerProviderAndPerBaseURL() throws {
@@ -170,7 +180,7 @@ struct CloudModelsTests {
     // MARK: - DeepSeek through the parse and tool paths
 
     private func assistant(_ cloud: any LLM) -> Assistant {
-        Assistant(router: AIRouter(mode: .byok, onDevice: nil, local: nil, cloud: cloud), tools: Books.tools, language: "vi")
+        Assistant(router: AIRouter(mode: .byok, local: nil, cloud: cloud), tools: Books.tools, language: "vi")
     }
 
     @Test func deepSeekParsesWithJSONMode() async {

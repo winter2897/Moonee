@@ -88,7 +88,7 @@ struct CustomSkillsTests {
         try SkillStore.importFile(Self.taxFile, into: context)
         try SkillStore.override(.transactionParser, text: SkillText(full: "PARSER OVERRIDE"), language: "vi", in: context)
         let model = ScriptedLLM(replies: ["Thuế nè.", #"{"transactions":[{"amountText":"45k","kind":"expense","note":"Phở"}]}"#])
-        var a = Assistant(router: AIRouter(mode: .byok, onDevice: nil, local: nil, cloud: model), tools: Books.tools, language: "vi")
+        var a = Assistant(router: AIRouter(mode: .byok, local: nil, cloud: model), tools: Books.tools, language: "vi")
         a.catalog = SkillCatalog(context, language: "vi")
 
         #expect(await a.handle("thuế năm nay thế nào?", context: Books.context) == .answer("Thuế nè.", skill: "user.thue-thu-nhap"))

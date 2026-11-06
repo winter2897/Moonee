@@ -7,7 +7,7 @@
 
 | Chủ đề | Quyết định |
 |---|---|
-| iOS tối thiểu | **iOS 26** (Foundation Models dùng thẳng, không `#available`) |
+| iOS tối thiểu | **iOS 26** |
 | Thẻ lọ | Số lớn = **số dư hiện tại** của lọ (envelope, cộng dồn). Thanh % = đã chi tháng này / (dư đầu tháng + tiền chia vào tháng này). Giữ layout mockup |
 | Quan tâm trong MVP | **Tài sản nhập tay** (user tự nhập số lượng + giá) → net worth = ví + tài sản − nợ. Giá live, watchlist, cảnh báo giá để Bản 2 |
 | Apple Developer | Đã có → CloudKit + TestFlight làm được trong MVP |
@@ -58,7 +58,7 @@ Mọi thứ khác xây trên nó.
 
 ### S3 — AI engine: parser + tool + skill
 - `QuickParser` đa ngôn ngữ (từ điển theo thư mục ngôn ngữ, spec §10.3), biết tiền tệ hiện tại, nhiều giao dịch/câu, đủ 7 loại, ngày tương đối. Output là struct thuần, không phụ thuộc SwiftData.
-- Lớp LLM: Foundation Models (`@Generable` + tool calling), BYOK (OpenAI / Anthropic / Gemini), output JSON có schema, sai thì về fallback parser.
+- Lớp LLM: model local (MLX), BYOK (OpenAI / Anthropic / Gemini), output JSON có schema, sai thì về fallback parser.
 - Runtime skill: file hướng dẫn markdown theo ngôn ngữ + danh sách tool Swift, nạp theo ý định. Viết `transaction-parser`, `jar-budgeting`, `close-management`, `spending-coach` (bản đầy đủ + rút gọn).
 - Kiểm tra license `anthropics/knowledge-work-plugins` trước khi lấy nội dung.
 

@@ -838,28 +838,6 @@
         }
       }
     },
-    "Source: %@": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ແຫຼ່ງທີ່ມາ: %@"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "แหล่งที่มา: %@"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nguồn: %@"
-          }
-        }
-      }
-    },
     "Sources": {
       "localizations": {
         "lo": {

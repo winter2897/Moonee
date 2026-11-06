@@ -6,26 +6,20 @@ enum AIJob: Sendable { case parse, quickAnswer, advice }
 /// Which models to try, in order, for a job.
 struct AIRouter: Sendable {
     var mode: AIMode
-    /// Apple Foundation Models, when the device has Apple Intelligence.
-    var onDevice: (any LLM)?
     /// Downloaded open model run with MLX (`LocalLLM`).
     var local: (any LLM)?
     /// BYOK cloud model with a key.
     var cloud: (any LLM)?
-    /// Why `onDevice` is nil (Apple Intelligence off, not supported…), for the chat notice in on-device mode.
-    var appleStatus: AppleStatus?
 
     /// Empty = no model: rule parser and plain numbers only (spec §9.1 fallback).
     func candidates(for job: AIJob) -> [any LLM] {
         let list: [(any LLM)?] = switch mode {
-        // Either on-device model stands in for the other: nothing leaves the phone.
-        case .onDevice: [onDevice, local]
-        case .local: [local, onDevice]
+        case .local: [local] // nothing leaves the phone; no model downloaded = the rules
         case .byok: [cloud]
         case .hybrid: switch job {
-            case .parse: [onDevice, local] // hybrid keeps typed transactions on the phone
-            case .quickAnswer: [onDevice, local, cloud]
-            case .advice: [cloud, onDevice, local]
+            case .parse: [local] // hybrid keeps typed transactions on the phone
+            case .quickAnswer: [local, cloud]
+            case .advice: [cloud, local]
             }
         }
         return list.compactMap { $0 }
@@ -103,17 +97,8 @@ struct Assistant: Sendable {
         return await answerReply(text, skill: skill, history: history, context: context)
     }
 
-    /// On-device mode without Apple Intelligence: say why, whatever answers instead.
-    private var unavailableNotice: AINotice? {
-        guard router.mode == .onDevice, router.onDevice == nil, let s = router.appleStatus, !s.canRun else { return nil }
-        return .appleUnavailable(s)
-    }
-
-    /// Apple answers in English when it can't speak the app's language.
-    private func replyLanguage(_ model: any LLM) -> String { model.replyLanguage ?? language }
-
     /// Rules read every amount and label: a small model can't add anything (rule cues win in `TransactionExtractor`),
-    /// so it is skipped. Saves Apple / local models a second of work per message.
+    /// so it is skipped. Saves the local model a second of work per message.
     static func rulesComplete(_ rules: [ParsedTxn]) -> Bool {
         !rules.isEmpty && rules.allSatisfy {
             $0.amount != nil && $0.missing.isEmpty && (($0.kind != .expense && $0.kind != .income) || $0.categoryKey != nil)
@@ -123,10 +108,10 @@ struct Assistant: Sendable {
     /// Reads transactions with the first model that gives valid output, else the rule parser.
     func parse(_ text: String, context: ParserContext) async -> (txns: [ParsedTxn], usedModel: Bool, notice: AINotice?) {
         let rules = QuickParser.parse(text, context: context)
-        var notice = unavailableNotice
+        var notice: AINotice?
         for model in skillsOff.contains(Skill.transactionParser.id) ? [] : router.candidates(for: .parse) {
             if model.isSmall, Self.rulesComplete(rules) { continue }
-            let instructions = parseInstructions(short: model.isSmall, context: context, language: replyLanguage(model))
+            let instructions = parseInstructions(short: model.isSmall, context: context, language: language)
             do {
                 let items = try await model.extractTransactions(instructions: instructions, text: text)
                 if let txns = TransactionExtractor.validate(items, text: text, rules: rules, context: context) { return (txns, true, notice) }
@@ -153,21 +138,19 @@ struct Assistant: Sendable {
             facts = r
             return r
         }
-        var notice = unavailableNotice
+        var notice: AINotice?
         for model in skillsOff.contains(skill.id) ? [] : router.candidates(for: skill.job) {
             if model.isSmall {
-                let lang = replyLanguage(model)
                 let facts = skillTools.isEmpty ? nil : await prefetched()
                 for tight in [false, true] {
                     var request = CompactPrompt.request(
-                        persona: Skill.persona(language: lang, short: true), skill: skill.instructions(language: lang, short: true),
+                        persona: Skill.persona(language: language, short: true), skill: skill.instructions(language: language, short: true),
                         facts: facts, customPrompt: customPrompt, history: history, text: text, tight: tight)
                     request.onPartial = onPartial
                     do {
                         let reply = try await model.respond(request)
                         if !reply.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                            return Reply(output: .answer(reply, skill: skill.id, sources: log.sources),
-                                         notice: notice ?? (lang != language ? .answeredInEnglish : nil))
+                            return Reply(output: .answer(reply, skill: skill.id, sources: log.sources), notice: notice)
                         }
                         break
                     } catch {

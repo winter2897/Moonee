@@ -126,7 +126,7 @@ struct DocumentReaderTests {
     // MARK: A model's reading is checked against the page
 
     func assistant(_ model: any LLM) -> Assistant {
-        Assistant(router: AIRouter(mode: .byok, onDevice: nil, local: nil, cloud: model), tools: Books.tools, language: "vi", skillsOff: [])
+        Assistant(router: AIRouter(mode: .byok, local: nil, cloud: model), tools: Books.tools, language: "vi", skillsOff: [])
     }
 
     static func reply(_ type: String, _ txns: String) -> String { #"{"docType":"\#(type)","transactions":[\#(txns)]}"# }
