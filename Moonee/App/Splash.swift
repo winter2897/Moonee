@@ -27,13 +27,16 @@ private struct SplashModifier: ViewModifier {
 }
 
 /// The first frame is the launch screen (`UILaunchScreen`: LaunchBackground + the `moonee.greeting` image at its own size,
-/// centred), so the hand-off from iOS is seamless. Motion follows the Animos styles used in the dashboards.
+/// centred), so the hand-off from iOS is seamless. Moonee starts to pop on that very first frame and turns into the waving
+/// animation at the top of the pop, so it never stands still once the app is up. Motion follows the Animos styles.
 struct SplashView: View {
     var finish: () -> Void
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     /// 0 launch frame · 1 Moonee pops up · 2 name springs in · 3 shimmer + tagline.
     @State private var stage = 0
     @State private var finished = false
+    /// Moonee's in-place pop that starts on the first frame.
+    @State private var pop = false
 
     private let letters = Array("Moonee")
 
@@ -50,7 +53,7 @@ struct SplashView: View {
                 .opacity(stage >= 1 ? 1 : 0)
                 .offset(y: lift)
             moonee
-                .scaleEffect(stage == 1 && !reduceMotion ? 1.1 : 1)
+                .scaleEffect(pop ? 1.12 : 1)
                 .offset(y: stage >= 1 ? lift : 0)
             VStack(spacing: 4) {
                 title
@@ -75,9 +78,8 @@ struct SplashView: View {
         .task { await play() }
     }
 
-    /// The launch image at its own point size until the pop, then the animated (waving) pose.
+    /// The launch image, then (at the top of the pop, where the change is hidden) the waving animation.
     @ViewBuilder private var moonee: some View {
-        // A hard swap (no cross-fade), hidden by the pop.
         if stage == 0 {
             Image("moonee.greeting").transition(.identity)
         } else {
@@ -128,10 +130,15 @@ struct SplashView: View {
             end()
             return
         }
-        // Wait out iOS's own launch-screen fade, or its snapshot ghosts under the pop.
-        try? await Task.sleep(for: .milliseconds(380))
-        withAnimation(.spring(duration: 0.5, bounce: 0.5)) { stage = 1 }   // pop up
-        try? await Task.sleep(for: .milliseconds(300))
+        _ = MooneeAnimation.load(.greeting)                                 // decode the wave now (~10 ms): the swap is instant
+        withAnimation(.spring(duration: 0.45, bounce: 0.4)) { pop = true }  // moves from the app's very first frame
+        // In place until iOS has faded its launch picture out (≈0.25 s); lifting earlier leaves a ghost under Moonee.
+        try? await Task.sleep(for: .milliseconds(280))
+        withAnimation(.spring(duration: 0.55, bounce: 0.35)) {             // waves, lifts with its glow, settles
+            pop = false
+            stage = 1
+        }
+        try? await Task.sleep(for: .milliseconds(330))
         withAnimation(.spring(duration: 0.5, bounce: 0.3)) { stage = 2 }   // settle; name springs in
         try? await Task.sleep(for: .milliseconds(520))
         withAnimation(.easeOut(duration: 0.6)) { stage = 3 }               // shimmer + tagline
