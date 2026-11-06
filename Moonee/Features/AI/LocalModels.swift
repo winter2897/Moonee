@@ -1,73 +1,6 @@
 import Foundation
 import Observation
 
-/// An open model Moonee can download and run on the phone (spec §9.2). Weights come from Hugging Face on demand,
-/// never bundled. Each entry pins the exact commit we evaluated (see the PR's eval table).
-struct LocalModel: Identifiable, Sendable, Hashable {
-    enum Vietnamese: Sendable { case basic, good }
-
-    let id: String
-    let name: String
-    /// MLX 4-bit conversion on Hugging Face.
-    let repo: String
-    let revision: String
-    /// What we fetch: weights, config, tokenizer, chat template. Vision/processor files are skipped (text-only load).
-    let files: [String]
-    let downloadBytes: Int64
-    /// Memory while answering (weights + a short context).
-    let ramBytes: Int64
-    /// Smallest phone RAM (GB, as sold) we offer it on: iOS lets one app use roughly half.
-    let minDeviceRAMGB: Int
-    /// Rough decode speed on an A17 Pro / A18 iPhone; the PR has measured Mac numbers.
-    let tokensPerSecond: Int
-    let vietnamese: Vietnamese
-    /// ponytail: all three see images, but Moonee loads them text-only (MLXLLM) and OCRs receipts first (spec §9.3).
-    /// Switch to MLXVLM when photos should go straight to the model.
-    var readsImages: Bool { false }
-    let licence: String
-    let licenceURL: URL
-
-    static let qwen08 = LocalModel(
-        id: "qwen3.5-0.8b", name: "Qwen3.5 0.8B", repo: "mlx-community/Qwen3.5-0.8B-4bit",
-        revision: "da28692b5f139cb0ec58a356b437486b7dac7462", files: baseFiles, downloadBytes: 645_302_309,
-        ramBytes: 1_000_000_000, minDeviceRAMGB: 6, tokensPerSecond: 60, vietnamese: .basic,
-        licence: "Apache-2.0", licenceURL: URL(string: "https://huggingface.co/Qwen/Qwen3.5-0.8B/blob/main/LICENSE")!)
-
-    static let qwen2 = LocalModel(
-        id: "qwen3.5-2b", name: "Qwen3.5 2B", repo: "mlx-community/Qwen3.5-2B-4bit",
-        revision: "674aaa7240b91e8012fcad5d791b7dfe5ba90207", files: baseFiles, downloadBytes: 1_742_354_857,
-        ramBytes: 2_200_000_000, minDeviceRAMGB: 8, tokensPerSecond: 30, vietnamese: .good,
-        licence: "Apache-2.0", licenceURL: URL(string: "https://huggingface.co/Qwen/Qwen3.5-2B/blob/main/LICENSE")!)
-
-    static let gemmaE2B = LocalModel(
-        id: "gemma4-e2b", name: "Gemma 4 E2B", repo: "mlx-community/gemma-4-e2b-it-4bit",
-        revision: "238767527555cb75a05732a84dff5d6ba0dd6809", files: baseFiles + ["generation_config.json"],
-        downloadBytes: 3_583_085_182, ramBytes: 4_000_000_000, minDeviceRAMGB: 12, tokensPerSecond: 20, vietnamese: .good,
-        licence: "Apache-2.0", licenceURL: URL(string: "https://ai.google.dev/gemma/docs/gemma_4_license")!)
-
-    private static let baseFiles = ["config.json", "model.safetensors.index.json", "model.safetensors",
-                                    "tokenizer.json", "tokenizer_config.json", "chat_template.jinja"]
-
-    /// Best first (see the eval in the PR): the recommendation is the first one the phone can hold.
-    static let catalog = [gemmaE2B, qwen2, qwen08]
-
-    func fits(physicalMemory: UInt64) -> Bool {
-        // Phones report a little less than the RAM they are sold with (an 8 GB iPhone says ~7.5 GiB).
-        Double(physicalMemory) >= Double(minDeviceRAMGB) * 0.9 * 1_073_741_824
-    }
-
-    /// nil = too little RAM for any local model: suggest Apple on-device or BYOK instead.
-    static func recommended(physicalMemory: UInt64 = ProcessInfo.processInfo.physicalMemory) -> LocalModel? {
-        catalog.first { $0.fits(physicalMemory: physicalMemory) }
-    }
-
-    static func find(_ id: String?) -> LocalModel? { catalog.first { $0.id == id } }
-
-    func url(_ file: String) -> URL {
-        URL(string: "https://huggingface.co/\(repo)/resolve/\(revision)/\(file)")!
-    }
-}
-
 /// Where downloads live: `Application Support/Models/<id>/` (not backed up). A `.complete` marker means ready to load;
 /// a half-fetched file keeps its URLSession resume data next to it as `<file>.resume`.
 struct LocalModelStore: Sendable {
@@ -146,8 +79,16 @@ final class LocalModelDownloads {
     /// The downloaded model `AIRouter` uses in local/hybrid mode.
     static let selectedKey = "ai.local.model"
 
+    enum Speed: Equatable, Sendable {
+        case running
+        case done(LocalRuntime.Metrics)
+        case failed(String)
+    }
+
     let store: LocalModelStore
     private(set) var states: [String: State] = [:]
+    /// "Test speed" results on this phone, while the app runs.
+    private(set) var speeds: [String: Speed] = [:]
     private var tasks: [String: Task<Void, Never>] = [:]
 
     init(store: LocalModelStore = .shared) {
@@ -195,6 +136,15 @@ final class LocalModelDownloads {
     }
 
     func pause(_ m: LocalModel) { tasks[m.id]?.cancel() }
+
+    func testSpeed(_ m: LocalModel) {
+        guard speeds[m.id] != .running, state(m) == .downloaded else { return }
+        speeds[m.id] = .running
+        let llm = LocalLLM(model: m, folder: store.folder(m))
+        Task {
+            do { speeds[m.id] = .done(try await llm.benchmark()) } catch { speeds[m.id] = .failed(error.localizedDescription) }
+        }
+    }
 
     func delete(_ m: LocalModel) {
         tasks[m.id]?.cancel()

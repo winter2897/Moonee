@@ -6,4 +6,4 @@ cd "$(dirname "$0")"
 xcodebuild build -scheme ParseEval -configuration Release -destination 'platform=macOS' -derivedDataPath .build/xcode -quiet
 bin=.build/xcode/Build/Products/Release
 ln -sf "$PWD"/../../Moonee/Resources/Locales/*/*.md "$bin"/
-"$bin"/ParseEval "${1:-$PWD/.build/models}"
+"$bin"/ParseEval "${1:-$PWD/.build/models}" ${2:+"$2"}

@@ -135,14 +135,26 @@ rows.append(await run("QuickParser (rules)") { (QuickParser.parse($0, context: c
 
 if AppleLLM.isAvailable {
     let a = assistant(AIRouter(mode: .onDevice, onDevice: Recording(inner: AppleLLM()), local: nil, cloud: nil))
-    rows.append(await run("Apple on-device") { await a.parse($0, context: context) })
+    rows.append(await run("Apple on-device") { let r = await a.parse($0, context: context); return (r.txns, r.usedModel) })
 } else {
     print("Apple on-device: unavailable (\(LLMSettings.appleStatus))")
 }
 
 let store = LocalModelStore(root: URL(fileURLWithPath: CommandLine.arguments.dropFirst().first ?? ".build/models"))
 let downloads = LocalModelDownloads(store: store)
-var speeds: [String: (load: Double, tps: Double)] = [:]
+/// `ParseEval <models> speed`: speed only (no parse eval), for every catalog model.
+let speedOnly = CommandLine.arguments.contains("speed")
+
+struct Speed { var load: Double; var cold: LocalRuntime.Metrics; var warm: LocalRuntime.Metrics; var answer: String }
+var speeds: [String: Speed] = [:]
+var loadFailures: [String: String] = [:]
+
+// A real small-model chat prompt: persona + short skill + facts, as `Assistant.answer` builds it.
+let benchSystem = Skill.persona(language: "vi") + "\n\n" + Skill.jarBudgeting.instructions(language: "vi", short: true)
+    + "\n\nFACTS (computed by the app; use only these numbers):\njarBalances: {\"essentials\":4200000,\"play\":350000,\"savings\":12000000}"
+
+func seconds(_ d: Duration) -> Double { Double(d.components.seconds) + Double(d.components.attoseconds) / 1e18 }
+
 for m in LocalModel.catalog {
     if downloads.state(m) != .downloaded {
         print("Downloading \(m.name) (\(m.downloadBytes.formatted(.byteCount(style: .file))))…")
@@ -158,18 +170,26 @@ for m in LocalModel.catalog {
     }
     let local = LocalLLM(model: m, folder: store.folder(m))
     let t0 = ContinuousClock.now
-    let container = try await LocalRuntime.shared.container(local.folder)
-    let load = ContinuousClock.now - t0
-    // Decode speed on a short Vietnamese answer.
-    var tps = 0.0
-    let session = ChatSession(container, generateParameters: GenerateParameters(maxTokens: 120, temperature: 0),
-                              additionalContext: ["enable_thinking": false])
-    for try await g in session.streamDetails(to: "Giải thích ngắn gọn cách chia thu nhập vào 6 lọ.", images: [], videos: []) {
-        if case .info(let info) = g { tps = info.tokensPerSecond }
+    do { _ = try await LocalRuntime.shared.loaded(local.folder) } catch {
+        loadFailures[m.name] = String(describing: error).prefix(200).description
+        print("✗ load", m.name, error)
+        continue
     }
-    speeds[m.name] = (Double(load.components.seconds) + Double(load.components.attoseconds) / 1e18, tps)
-    let a = assistant(AIRouter(mode: .local, onDevice: nil, local: Recording(inner: local), cloud: nil))
-    rows.append(await run(m.name) { await a.parse($0, context: context) })
+    let load = seconds(ContinuousClock.now - t0)
+    await LocalRuntime.shared.prewarm(local.folder) // what the app does when the chat opens
+    // Cold: a fresh conversation. Warm: the next turn of it, where the kept KV cache covers system + turn 1.
+    let q1 = LLMMessage(role: .user, text: "Lọ hưởng thụ còn bao nhiêu?")
+    let a1 = try await local.respond(LLMRequest(system: benchSystem, messages: [q1]))
+    let cold = await LocalRuntime.shared.lastMetrics!
+    _ = try await local.respond(LLMRequest(system: benchSystem, messages: [q1, .init(role: .assistant, text: a1), .init(role: .user, text: "Còn lọ thiết yếu?")]))
+    let warm = await LocalRuntime.shared.lastMetrics!
+    speeds[m.name] = Speed(load: load, cold: cold, warm: warm, answer: a1)
+    print("⏱", m.name, String(format: "load %.1fs, first token %.2fs (warm %.2fs), %.0f tok/s, prompt %d (warm reused %d)", load, cold.firstTokenSeconds, warm.firstTokenSeconds, cold.tokensPerSecond, cold.promptTokens, warm.reusedPromptTokens))
+    print("   answer:", a1.prefix(160).replacingOccurrences(of: "\n", with: " "))
+    if !speedOnly {
+        let a = assistant(AIRouter(mode: .local, onDevice: nil, local: Recording(inner: local), cloud: nil))
+        rows.append(await run(m.name) { let r = await a.parse($0, context: context); return (r.txns, r.usedModel) })
+    }
     await LocalRuntime.shared.unload()
 }
 
@@ -180,8 +200,14 @@ for r in rows {
     let modelPass = r.engine.hasPrefix("QuickParser") ? "–" : "\(r.modelPass)/\(r.modelOutputs)"
     print("| \(r.engine) | \(r.pass) (\(r.pass * 100 / phrases.count)%) | \(model) | \(modelPass) | \(Int(median(r.ms))) ms |")
 }
-print("\n| Model | Load (warm disk) | Decode tokens/s |")
-print("|---|---|---|")
-for m in LocalModel.catalog { if let s = speeds[m.name] { print("| \(m.name) | \(String(format: "%.1f", s.load)) s | \(Int(s.tps)) |") } }
+print("\n| Model | Download | Load | First token (new chat) | First token (next turn) | Prompt tokens (reused next turn) | Decode tok/s |")
+print("|---|---|---|---|---|---|---|")
+for m in LocalModel.catalog {
+    if let s = speeds[m.name] {
+        print("| \(m.name) | \(m.downloadBytes.formatted(.byteCount(style: .file))) | \(String(format: "%.1f", s.load)) s | \(String(format: "%.2f", s.cold.firstTokenSeconds)) s | \(String(format: "%.2f", s.warm.firstTokenSeconds)) s | \(s.cold.promptTokens) (\(s.warm.reusedPromptTokens)) | \(Int(s.cold.tokensPerSecond)) |")
+    } else if let e = loadFailures[m.name] {
+        print("| \(m.name) | failed to load: \(e) |")
+    }
+}
 print("\nFailures:")
 for r in rows { for f in r.failures { print("- \(r.engine): \(f)") } }

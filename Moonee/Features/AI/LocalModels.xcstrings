@@ -2,12 +2,128 @@
   "sourceLanguage": "en",
   "version": "1.0",
   "strings": {
-    "%@ download · needs %@ RAM · about %lld words/s": {
+    "%@ · needs %@ of memory": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tải %@ · cần %@ RAM · khoảng %lld từ/giây"
+            "value": "%@ · cần %@ bộ nhớ"
+          }
+        }
+      }
+    },
+    "%lld models": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld model"
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld model"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld models"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld models for this iPhone": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld model cho iPhone này"
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld model for this iPhone"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld models for this iPhone"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "4B quality in a 1 GB download.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chất lượng 4B trong gói tải 1 GB."
+          }
+        }
+      }
+    },
+    "8B quality in a 2.3 GB download.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chất lượng 8B trong gói tải 2,3 GB."
+          }
+        }
+      }
+    },
+    "All-rounders with hybrid thinking and wide language support, Vietnamese included.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Model toàn diện, có chế độ suy luận, hỗ trợ nhiều ngôn ngữ, gồm cả tiếng Việt."
+          }
+        }
+      }
+    },
+    "Best Vietnamese parsing in our tests.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đọc giao dịch tiếng Việt tốt nhất trong thử nghiệm của chúng tôi."
+          }
+        }
+      }
+    },
+    "Compact and quick.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gọn và nhanh."
+          }
+        }
+      }
+    },
+    "Compact, efficient models. Chinese and English first: Vietnamese is basic.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Model gọn và tiết kiệm. Ưu tiên tiếng Trung và tiếng Anh: tiếng Việt ở mức cơ bản."
           }
         }
       }
@@ -62,12 +178,52 @@
         }
       }
     },
+    "Downloaded": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã tải"
+          }
+        }
+      }
+    },
     "Downloading %@": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Đang tải %@"
+          }
+        }
+      }
+    },
+    "Fast general chat.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trò chuyện chung, nhanh."
+          }
+        }
+      }
+    },
+    "Featured": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nổi bật"
+          }
+        }
+      }
+    },
+    "First word in %@ s · %lld tokens/s": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chữ đầu sau %@ giây · %lld token/giây"
           }
         }
       }
@@ -82,22 +238,62 @@
         }
       }
     },
+    "Google's open models made for phones. The best Vietnamese here, but heavier.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Model mở của Google làm cho điện thoại. Tiếng Việt tốt nhất ở đây, nhưng nặng hơn."
+          }
+        }
+      }
+    },
+    "High CPU usage": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tốn CPU"
+          }
+        }
+      }
+    },
+    "In use": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang dùng"
+          }
+        }
+      }
+    },
+    "Larger Gemma for phones with plenty of memory.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gemma lớn hơn, cho máy nhiều bộ nhớ."
+          }
+        }
+      }
+    },
+    "Larger LFM with better answers.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LFM lớn hơn, trả lời tốt hơn."
+          }
+        }
+      }
+    },
     "Licence: %@": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Giấy phép: %@"
-          }
-        }
-      }
-    },
-    "Local models": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Model local"
           }
         }
       }
@@ -112,6 +308,26 @@
         }
       }
     },
+    "Manage models": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quản lý model"
+          }
+        }
+      }
+    },
+    "Mixture of experts: big-model answers at small-model speed.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kiến trúc nhiều chuyên gia: trả lời như model lớn với tốc độ model nhỏ."
+          }
+        }
+      }
+    },
     "Models run fully on this iPhone: private, offline and free. They are downloaded from Hugging Face, never bundled with the app.": {
       "localizations": {
         "vi": {
@@ -122,12 +338,12 @@
         }
       }
     },
-    "Needs an iPhone with %lld GB of RAM or more.": {
+    "New": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cần iPhone có từ %lld GB RAM trở lên."
+            "value": "Mới"
           }
         }
       }
@@ -152,12 +368,22 @@
         }
       }
     },
-    "Reads photos": {
+    "Paused at %@": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Đọc được ảnh"
+            "value": "Tạm dừng ở %@"
+          }
+        }
+      }
+    },
+    "Reasons step by step before it answers.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suy luận từng bước trước khi trả lời."
           }
         }
       }
@@ -167,37 +393,117 @@
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gợi ý"
+            "value": "Đề xuất"
           }
         }
       }
     },
-    "Resume (%@ done)": {
+    "Resume": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tải tiếp (đã xong %@)"
+            "value": "Tải tiếp"
           }
         }
       }
     },
-    "Text only": {
+    "Smallest Bonsai, very light on memory.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chỉ văn bản"
+            "value": "Bonsai nhỏ nhất, rất nhẹ bộ nhớ."
           }
         }
       }
     },
-    "This iPhone has %@ of RAM.": {
+    "Smallest Qwen: quick replies, simple expense logging.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "iPhone này có %@ RAM."
+            "value": "Qwen nhỏ nhất: trả lời nhanh, ghi chi tiêu đơn giản."
+          }
+        }
+      }
+    },
+    "Smarter answers, but slower and warmer.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trả lời thông minh hơn, nhưng chậm hơn và làm máy ấm hơn."
+          }
+        }
+      }
+    },
+    "Stronger reasoning in a small size.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suy luận tốt hơn trong kích thước nhỏ."
+          }
+        }
+      }
+    },
+    "Ternary (2-bit) models: big-model answers in a small download. Vietnamese is basic.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Model ba trạng thái (2-bit): câu trả lời như model lớn mà dung lượng nhỏ. Tiếng Việt ở mức cơ bản."
+          }
+        }
+      }
+    },
+    "Test speed": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đo tốc độ"
+          }
+        }
+      }
+    },
+    "Testing speed…": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang đo tốc độ…"
+          }
+        }
+      }
+    },
+    "The balanced pick: good Vietnamese at a quick pace.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lựa chọn cân bằng: tiếng Việt tốt mà vẫn nhanh."
+          }
+        }
+      }
+    },
+    "Thinking": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suy luận"
+          }
+        }
+      }
+    },
+    "This iPhone has %@ of RAM; Moonee can use about %@ for a model. Models that need more are hidden.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPhone này có %@ RAM; Moonee dùng được khoảng %@ cho model. Model cần nhiều hơn sẽ được ẩn."
           }
         }
       }
@@ -212,12 +518,42 @@
         }
       }
     },
+    "Tiny and instant. English only in practice.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rất nhỏ, trả lời tức thì. Thực tế chỉ dùng tốt tiếng Anh."
+          }
+        }
+      }
+    },
+    "Tiny and very fast, for short English answers.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rất nhỏ và rất nhanh, cho câu trả lời tiếng Anh ngắn."
+          }
+        }
+      }
+    },
     "Try again": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Thử lại"
+          }
+        }
+      }
+    },
+    "Use": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dùng"
           }
         }
       }
@@ -232,22 +568,12 @@
         }
       }
     },
-    "Vietnamese: basic": {
+    "Very fast hybrid models built for phones. English first: Vietnamese is basic.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tiếng Việt: cơ bản"
-          }
-        }
-      }
-    },
-    "Vietnamese: good": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tiếng Việt: tốt"
+            "value": "Model lai rất nhanh, làm cho điện thoại. Ưu tiên tiếng Anh: tiếng Việt ở mức cơ bản."
           }
         }
       }

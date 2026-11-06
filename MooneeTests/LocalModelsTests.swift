@@ -10,29 +10,54 @@ struct LocalModelsTests {
     @Test func catalogEntriesArePinnedAndComplete() {
         #expect(Set(LocalModel.catalog.map(\.id)).count == LocalModel.catalog.count)
         for m in LocalModel.catalog {
-            #expect(m.revision.count == 40 && m.revision.allSatisfy(\.isHexDigit), "pin the evaluated commit")
+            #expect(m.revision.count == 40 && m.revision.allSatisfy(\.isHexDigit), "pin a checked commit")
             #expect(["config.json", "model.safetensors", "tokenizer.json", "chat_template.jinja"].allSatisfy(m.files.contains))
-            #expect(m.downloadBytes > 0 && m.ramBytes > 0 && m.tokensPerSecond > 0)
-            #expect(!m.licence.isEmpty)
+            #expect(m.files.last == "model.safetensors", "weights last: the small files fail fast")
+            #expect(m.downloadBytes > 0 && m.ramBytes > m.downloadBytes)
             #expect(m.url("config.json").absoluteString == "https://huggingface.co/\(m.repo)/resolve/\(m.revision)/config.json")
         }
+        // Every family is listed and every model belongs to one.
+        #expect(Set(LocalModel.catalog.map(\.family)) == Set(LocalModelFamily.all))
+        #expect(LocalModelFamily.qwen.models.map(\.variant) == ["0.8B", "2B", "4B"])
+        #expect(LocalModelFamily.all.allSatisfy { !$0.licence.isEmpty })
     }
 
-    /// Phones report a bit less RAM than they are sold with.
+    /// The ids downloads and the chosen model are stored under: renaming one would orphan a download.
+    @Test func earlierIdsKeepWorking() {
+        #expect(LocalModel.find("qwen3.5-0.8b") == .qwen08)
+        #expect(LocalModel.find("qwen3.5-2b") == .qwen2)
+        #expect(LocalModel.find("gemma4-e2b") == .gemmaE2B)
+    }
+
+    static func phone(limitGB: Double) -> DeviceMemory {
+        DeviceMemory(physical: Int64(limitGB * 2e9), appLimit: Int64(limitGB * 1e9))
+    }
+
+    /// Recommended = best of the evaluated models that is not heavy for the phone (speed counts).
     @Test(arguments: [
-        (UInt64(3_700_000_000), nil),               // 4 GB iPhone: no local model
-        (UInt64(5_900_000_000), "qwen3.5-0.8b"),    // 6 GB (iPhone 15)
-        (UInt64(7_900_000_000), "qwen3.5-2b"),      // 8 GB (iPhone 15 Pro / 16 / 17)
-        (UInt64(11_900_000_000), "gemma4-e2b"),     // 12 GB (iPhone 17 Pro)
-    ] as [(UInt64, String?)])
-    func recommendsByRAM(ram: UInt64, expected: String?) {
-        #expect(LocalModel.recommended(physicalMemory: ram)?.id == expected)
+        (1.5, nil),                // nothing runs comfortably
+        (3.0, "qwen3.5-0.8b"),
+        (5.0, "qwen3.5-2b"),
+        (9.0, "gemma4-e2b"),
+    ] as [(Double, String?)])
+    func recommendsByAppMemoryLimit(limitGB: Double, expected: String?) {
+        #expect(LocalModel.recommended(on: Self.phone(limitGB: limitGB))?.id == expected)
     }
 
-    @Test func bigModelsAreHiddenOnSmallPhones() {
-        #expect(!LocalModel.gemmaE2B.fits(physicalMemory: 8 * Self.gib))
-        #expect(LocalModel.gemmaE2B.fits(physicalMemory: 11 * Self.gib))
-        #expect(LocalModel.qwen08.fits(physicalMemory: 6 * Self.gib))
+    @Test func modelsThePhoneCannotHoldAreHidden() {
+        let small = Self.phone(limitGB: 3)
+        let runnable = LocalModel.runnable(on: small)
+        #expect(runnable.contains(.qwen08) && runnable.contains(.lfm350m))
+        #expect(!runnable.contains(.gemmaE2B) && !runnable.contains(.lfm8bA1B))
+        #expect(runnable.allSatisfy { $0.ramBytes <= small.usable })
+        #expect(LocalModel.runnable(on: DeviceMemory(physical: 16_000_000_000, appLimit: 12_000_000_000, gpuSupported: false)).isEmpty,
+                "chips MLX cannot use get nothing")
+    }
+
+    @Test func heavyModelsAreFlagged() {
+        let phone = Self.phone(limitGB: 6)
+        #expect(LocalModel.qwen4.runs(on: phone) && LocalModel.qwen4.isHeavy(on: phone))
+        #expect(!LocalModel.qwen2.isHeavy(on: phone))
     }
 
     // MARK: Download state on disk
