@@ -28,7 +28,7 @@
 | Visual | Trẻ trung, năng động, gradient, animation. Xanh lá/mint + vàng trên nền mint nhạt. Nhân vật: chiếc ví xanh cầm đồng xu vàng |
 | Giao diện | **Chỉ light mode**, chưa làm dark mode |
 | Xưng hô | "Moonee – Bạn" |
-| Ngôn ngữ | English (mặc định) + Tiếng Việt. Kiến trúc sẵn sàng để thêm ngôn ngữ khác dễ dàng |
+| Ngôn ngữ | English (mặc định), Tiếng Việt, ภาษาไทย, ພາສາລາວ. Kiến trúc sẵn sàng để thêm ngôn ngữ khác dễ dàng |
 | Tiền tệ | Tách khỏi ngôn ngữ. Tự nhận theo vùng của máy, user đổi được |
 
 Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
@@ -270,12 +270,14 @@ Bộ Finance (repo `anthropics/knowledge-work-plugins`, thư mục `finance`) c�
 |---|---|---|
 | English | `en` | **Mặc định**, cũng là ngôn ngữ dự phòng khi thiếu bản dịch |
 | Tiếng Việt | `vi` | |
+| ภาษาไทย (Thai) | `th` | Tiền mặc định THB khi vùng là Thái Lan |
+| ພາສາລາວ (Lao) | `lo` | iOS không có tiếng Lào làm ngôn ngữ hệ thống; Speech chưa có tiếng Lào nên giọng nói dùng tiếng Thái và Moonee báo cho user |
 
-Tạm thời chỉ 2 ngôn ngữ. Các ngôn ngữ khác thêm sau theo checklist ở mục 10.6.
+Ngôn ngữ khác thêm theo checklist ở mục 10.6. Tiếng Thái và tiếng Lào không có dấu cách giữa các từ: bộ parse tách từ bằng từ điển hệ thống (ICU) cho cả câu nhập lẫn từ khoá.
 
 ### 10.2 Cách chọn ngôn ngữ
 - Mặc định theo ngôn ngữ hệ thống iOS. Nếu hệ thống dùng ngôn ngữ chưa hỗ trợ thì về English.
-- User đổi được trong **Tài khoản → Ngôn ngữ**. Mục này mở trang ngôn ngữ riêng của app trong Cài đặt iOS (per-app language), không cần tự viết cơ chế đổi ngôn ngữ.
+- User đổi được trong **Tài khoản → Ngôn ngữ**: danh sách trong app (Giống iPhone / English / Tiếng Việt / ไทย / ລາວ), ghi `AppleLanguages` của riêng app, mở lại app là đổi. Không dùng trang per-app của Cài đặt iOS vì trang đó chỉ hiện ngôn ngữ đã thêm vào iPhone, còn tiếng Lào không phải ngôn ngữ hệ thống của iPhone.
 - **Ngôn ngữ giao diện tách khỏi tiền tệ và định dạng.** Ví dụ: giao diện English nhưng tiền vẫn là VND.
 - **Tiền tệ** tự nhận theo vùng của máy (`Locale.current.currency`), user đổi được trong Cài đặt.
 - Cách hiểu tiếng lóng tiền phụ thuộc tiền tệ: "45k" với VND là 45.000 ₫, với USD là $45,000. Bộ parse phải biết tiền tệ hiện tại.

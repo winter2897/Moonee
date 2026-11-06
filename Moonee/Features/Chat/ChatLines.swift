@@ -125,6 +125,12 @@ enum ChatLines {
         }
     }
 
+    /// Said once when dictation runs in another language (Lao → Thai: Speech has no Lao).
+    static func voiceFallback(_ locale: Locale) -> String {
+        let name = Locale.current.localizedString(forLanguageCode: locale.language.languageCode?.identifier ?? "") ?? locale.identifier
+        return String(localized: "Voice input doesn't support your language yet, so Moonee listens in \(name). You can always type instead.", table: "Chat")
+    }
+
     static func heardNothing(variant: Int? = nil) -> String {
         pick([String(localized: "Moonee didn't hear anything. Hold the mic while you talk, then let go.", table: "Chat"),
               String(localized: "That was quiet! Tap the mic, say it, then tap again to send.", table: "Chat")], variant)

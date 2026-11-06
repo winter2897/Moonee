@@ -4,6 +4,18 @@
   "strings": {
     "1Y": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 ປີ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 ปี"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -14,6 +26,18 @@
     },
     "6M": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "6 ເດືອນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "6 เดือน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -24,6 +48,18 @@
     },
     "Add asset": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເພີ່ມຊັບສິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เพิ่มสินทรัพย์"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -34,6 +70,18 @@
     },
     "Add gold, stocks, crypto or foreign currency with the price you know. Moonee adds them to your net worth.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເພີ່ມຄຳ, ຮຸ້ນ, ຄຣິບໂຕ ຫຼື ເງິນຕາຕ່າງປະເທດ ດ້ວຍລາຄາທີ່ເຈົ້າຮູ້ Moonee ຈະລວມເຂົ້າໃນຊັບສິນສຸດທິໃຫ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เพิ่มทอง หุ้น คริปโต หรือเงินตราต่างประเทศ ด้วยราคาที่คุณรู้ Moonee จะรวมเข้าในความมั่งคั่งสุทธิให้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -44,6 +92,18 @@
     },
     "Add your first asset": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເພີ່ມຊັບສິນທຳອິດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เพิ่มสินทรัพย์แรก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -54,6 +114,18 @@
     },
     "All": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທັງໝົດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ทั้งหมด"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -64,6 +136,18 @@
     },
     "Cancel": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍົກເລີກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยกเลิก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -74,6 +158,18 @@
     },
     "Card debt and loans come from your wallets and the debt book.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໜີ້ບັດ ແລະ ເງິນກູ້ດຶງມາຈາກກະເປົາເງິນ ແລະ ປຶ້ມໜີ້ຂອງເຈົ້າ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "หนี้บัตรและเงินกู้ดึงมาจากกระเป๋าเงินและสมุดหนี้ของคุณ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -84,6 +180,18 @@
     },
     "Cash": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເງິນສົດ ແລະ ບັນຊີ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เงินสดและบัญชี"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -94,6 +202,18 @@
     },
     "Composition": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສັດສ່ວນຊັບສິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สัดส่วนสินทรัพย์"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -104,6 +224,18 @@
     },
     "Crypto": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄຣິບໂຕ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คริปโต"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -114,6 +246,18 @@
     },
     "Currency": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສະກຸນເງິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สกุลเงิน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -124,6 +268,18 @@
     },
     "Debts": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໜີ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "หนี้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -134,6 +290,18 @@
     },
     "Delete": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລຶບ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ลบ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -144,6 +312,18 @@
     },
     "Edit asset": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແກ້ໄຂຊັບສິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แก้ไขสินทรัพย์"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -154,6 +334,18 @@
     },
     "Foreign currency": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເງິນຕາຕ່າງປະເທດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เงินตราต่างประเทศ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -164,6 +356,18 @@
     },
     "Gold": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄຳ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ทองคำ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -174,6 +378,18 @@
     },
     "Gold, stocks, crypto or foreign currency, at the price you know.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄຳ, ຮຸ້ນ, ຄຣິບໂຕ ຫຼື ເງິນຕາຕ່າງປະເທດ ຕາມລາຄາທີ່ເຈົ້າຮູ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ทอง หุ้น คริปโต หรือเงินตราต่างประเทศ ตามราคาที่คุณรู้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -184,6 +400,18 @@
     },
     "Money lent": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເງິນທີ່ໃຫ້ຢືມ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เงินที่ให้ยืม"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -194,6 +422,18 @@
     },
     "Name, e.g. SJC gold, FPT, USD, BTC": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊື່ ເຊັ່ນ ຄຳແທ່ງ, BCEL, USD, BTC"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ชื่อ เช่น ทองคำแท่ง, PTT, USD, BTC"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -204,6 +444,18 @@
     },
     "Net worth": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊັບສິນສຸດທິ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ความมั่งคั่งสุทธิ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -214,6 +466,18 @@
     },
     "Net worth by month": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊັບສິນສຸດທິລາຍເດືອນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ความมั่งคั่งสุทธิรายเดือน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -224,6 +488,18 @@
     },
     "No assets yet": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍັງບໍ່ມີຊັບສິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยังไม่มีสินทรัพย์"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -234,6 +510,18 @@
     },
     "No live prices yet: type the price you know, e.g. 2 taels of gold at today's price per tael.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍັງບໍ່ມີລາຄາສົດ: ໃສ່ລາຄາທີ່ເຈົ້າຮູ້ ເຊັ່ນ ຄຳ 2 ບາດ ຕາມລາຄາຕໍ່ບາດຂອງມື້ນີ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยังไม่มีราคาสด: ใส่ราคาที่คุณรู้ เช่น ทอง 2 บาท ตามราคาต่อบาทของวันนี้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -244,6 +532,18 @@
     },
     "Not in net worth: priced in %@": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ລວມໃນຊັບສິນສຸດທິ: ລາຄາເປັນ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่รวมในความมั่งคั่งสุทธิ: ราคาเป็น %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -254,6 +554,18 @@
     },
     "Other": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ອື່ນໆ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อื่นๆ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -264,6 +576,18 @@
     },
     "Owned": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທີ່ມີຢູ່"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ที่มีอยู่"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -274,6 +598,18 @@
     },
     "Period": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໄລຍະເວລາ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ช่วงเวลา"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -284,6 +620,18 @@
     },
     "Price date": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ວັນທີຂອງລາຄາ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "วันที่ของราคา"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -294,6 +642,18 @@
     },
     "Price per unit": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຄາຕໍ່ໜ່ວຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ราคาต่อหน่วย"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -304,6 +664,18 @@
     },
     "Quantity": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຈຳນວນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "จำนวน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -314,6 +686,18 @@
     },
     "Save": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບັນທຶກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บันทึก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -324,6 +708,18 @@
     },
     "Silver": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແຮ່ເງິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แร่เงิน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -334,6 +730,18 @@
     },
     "Stocks": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຮຸ້ນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "หุ้น"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -344,6 +752,18 @@
     },
     "Type": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປະເພດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ประเภท"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -354,6 +774,18 @@
     },
     "Value": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ມູນຄ່າ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "มูลค่า"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -364,6 +796,18 @@
     },
     "Wallets are managed in Budget.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຈັດການກະເປົາເງິນໄດ້ທີ່ແຖບງົບປະມານ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "จัดการกระเป๋าเงินได้ที่แท็บงบ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -374,6 +818,18 @@
     },
     "Watchlist": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕິດຕາມ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ติดตาม"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -384,6 +840,18 @@
     },
     "since %@": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕັ້ງແຕ່ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตั้งแต่ %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -394,6 +862,18 @@
     },
     "updated %@": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ອັບເດດ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อัปเดต %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",

@@ -91,6 +91,7 @@ struct ChatView: View {
             inputSource = .voice
         }
         .onChange(of: speech.failure) { _, f in if let f { reply(ChatLines.voice(f), mood: .confused) } }
+        .onChange(of: speech.fallbackLocale) { _, l in if let l { reply(ChatLines.voiceFallback(l), mood: .listening) } }
         .sheet(isPresented: $showAdd) {
             AddToChatSheet(onImage: { image in Task { await scan(image) } },
                            onPDF: { pdf, name in Task { await scan(pdf, name: name) } },

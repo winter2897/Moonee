@@ -4,6 +4,18 @@
   "strings": {
     "Add key": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເພີ່ມຄີ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เพิ่มคีย์"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -14,6 +26,18 @@
     },
     "Add to chat": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເພີ່ມໃສ່ແຊັດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เพิ่มในแชท"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -24,6 +48,18 @@
     },
     "Back": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກັບຄືນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กลับ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -34,6 +70,18 @@
     },
     "Camera": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກ້ອງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กล้อง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -44,6 +92,18 @@
     },
     "Change model…": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປ່ຽນໂມເດວ…"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เปลี่ยนโมเดล…"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -54,6 +114,18 @@
     },
     "Chat history": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປະຫວັດແຊັດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ประวัติแชท"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -64,6 +136,18 @@
     },
     "Close": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປິດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปิด"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -74,6 +158,18 @@
     },
     "Delete": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລຶບ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ลบ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -84,6 +180,18 @@
     },
     "Delete this chat? Transactions it saved stay in your ledger.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລຶບແຊັດນີ້ບໍ່? ລາຍການທີ່ບັນທຶກໄວ້ຍັງຢູ່ໃນປຶ້ມບັນຊີຂອງເຈົ້າ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ลบแชทนี้ไหม? รายการที่บันทึกไว้ยังอยู่ในสมุดบัญชีของคุณ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -94,6 +202,18 @@
     },
     "Done": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແລ້ວໆ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เสร็จ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -104,6 +224,18 @@
     },
     "Edit": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແກ້ໄຂ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แก้ไข"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -114,6 +246,18 @@
     },
     "Effort": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລະດັບການຄິດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ระดับการคิด"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -124,6 +268,18 @@
     },
     "Here's how **%@** splits into your jars:": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**%@** ແບ່ງເຂົ້າກະປຸກແບບນີ້:"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**%@** แบ่งเข้ากระปุกแบบนี้:"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -134,6 +290,18 @@
     },
     "Here's what Moonee found on the web:": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ນີ້ແມ່ນສິ່ງທີ່ Moonee ພົບໃນເວັບ:"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "นี่คือสิ่งที่ Moonee เจอบนเว็บ:"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -144,6 +312,18 @@
     },
     "Here's what's in your jars right now:": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕອນນີ້ໃນກະປຸກຂອງເຈົ້າມີ:"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตอนนี้ในกระปุกของคุณมี:"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -154,6 +334,18 @@
     },
     "High": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສູງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สูง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -164,6 +356,18 @@
     },
     "Higher": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສູງຂຶ້ນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สูงขึ้น"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -174,6 +378,18 @@
     },
     "How much is left in my Play jar?": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກະປຸກຄວາມສຸກເຫຼືອເທົ່າໃດ?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กระปุกความสุขเหลือเท่าไหร่?"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -184,6 +400,18 @@
     },
     "Low": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕ່ຳ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ต่ำ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -194,6 +422,18 @@
     },
     "Max": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສູງສຸດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สูงสุด"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -204,6 +444,18 @@
     },
     "Medium": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປານກາງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปานกลาง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -214,6 +466,18 @@
     },
     "Model: %@": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂມເດວ: %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โมเดล: %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -224,6 +488,18 @@
     },
     "Month-end saving tips": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຄັດລັບປະຢັດທ້າຍເດືອນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เคล็ดลับประหยัดช่วงปลายเดือน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -234,6 +510,18 @@
     },
     "Moonee searched the web but found nothing useful.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ຊອກໃນເວັບແລ້ວ ແຕ່ຍັງບໍ່ພົບຫຍັງທີ່ເປັນປະໂຫຍດ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ค้นบนเว็บแล้ว แต่ยังไม่เจออะไรที่มีประโยชน์เลย"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -244,6 +532,18 @@
     },
     "New chat": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແຊັດໃໝ່"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แชทใหม่"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -254,6 +554,18 @@
     },
     "No chats yet": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍັງບໍ່ມີແຊັດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยังไม่มีแชท"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -264,6 +576,18 @@
     },
     "Offline": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ອອບລາຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ออฟไลน์"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -274,6 +598,18 @@
     },
     "Opens AI settings": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເປີດການຕັ້ງຄ່າ AI"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เปิดการตั้งค่า AI"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -284,6 +620,18 @@
     },
     "Pin": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປັກໝຸດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปักหมุด"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -294,6 +642,18 @@
     },
     "Pinned": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປັກໝຸດແລ້ວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปักหมุดแล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -304,6 +664,18 @@
     },
     "Put aside **%@** a week (**%@** a month) to reach %@ by %@.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເກັບອາທິດລະ **%@** (ເດືອນລະ **%@**) ກໍຈະຮອດ %@ ພາຍໃນ %@ ເດີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เก็บสัปดาห์ละ **%@** (เดือนละ **%@**) ก็จะถึง %@ ภายใน %@ นะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -314,6 +686,18 @@
     },
     "Say a spend": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເວົ້າລາຍຈ່າຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "พูดรายจ่าย"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -324,6 +708,18 @@
     },
     "Scan a receipt": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສະແກນໃບບິນຮັບເງິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สแกนใบเสร็จ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -334,6 +730,18 @@
     },
     "Search chats": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊອກຫາແຊັດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ค้นหาแชท"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -344,6 +752,18 @@
     },
     "See monthly report": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເບິ່ງລາຍງານປະຈຳເດືອນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ดูรายงานประจำเดือน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -354,6 +774,18 @@
     },
     "Send": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສົ່ງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ส่ง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -364,6 +796,18 @@
     },
     "Set up web search": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕັ້ງຄ່າການຊອກຫາໃນເວັບ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตั้งค่าการค้นเว็บ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -374,6 +818,18 @@
     },
     "Skills": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທັກສະ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ทักษะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -384,6 +840,18 @@
     },
     "Source: %@": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແຫຼ່ງທີ່ມາ: %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แหล่งที่มา: %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -394,6 +862,18 @@
     },
     "Sources": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແຫຼ່ງທີ່ມາ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แหล่งที่มา"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -404,6 +884,18 @@
     },
     "That's %@ vs the period before.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທຽບກັບຊ່ວງກ່ອນໜ້າ: %@."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เทียบกับช่วงก่อนหน้า: %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -414,6 +906,18 @@
     },
     "This month: income **%@**, spent **%@**, saved **%@**.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເດືອນນີ້: ລາຍຮັບ **%@**, ໃຊ້ໄປ **%@**, ເກັບໄດ້ **%@**."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เดือนนี้: รายรับ **%@** ใช้ไป **%@** เก็บได้ **%@**"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -424,6 +928,18 @@
     },
     "Today": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ມື້ນີ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "วันนี้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -434,6 +950,18 @@
     },
     "Type it in": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ພິມເອົາ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "พิมพ์เอง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -444,6 +972,18 @@
     },
     "Type or hold to talk": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ພິມ ຫຼື ກົດຄ້າງໄວ້ເພື່ອເວົ້າ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "พิมพ์ หรือกดค้างเพื่อพูด"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -454,6 +994,18 @@
     },
     "Unpin": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຊົາປັກໝຸດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เลิกปักหมุด"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -462,8 +1014,42 @@
         }
       }
     },
+    "Voice input doesn't support your language yet, so Moonee listens in %@. You can always type instead.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕອນນີ້ການປ້ອນດ້ວຍສຽງຍັງບໍ່ຮອງຮັບພາສາລາວ Moonee ເລີຍຟັງເປັນ%@ໄປກ່ອນເດີ ຈະພິມແທນກໍໄດ້ເລີຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตอนนี้การพูดสั่งยังไม่รองรับภาษาของคุณ Moonee เลยฟังเป็น%@ไปก่อนนะ จะพิมพ์แทนก็ได้เลย"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhập giọng nói chưa hỗ trợ ngôn ngữ của bạn, nên Moonee sẽ nghe bằng %@ nhé. Bạn vẫn gõ được như thường."
+          }
+        }
+      }
+    },
     "Web search": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊອກຫາໃນເວັບ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ค้นเว็บ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -474,6 +1060,18 @@
     },
     "Web search isn't set up yet. Add a Tavily or Brave key in Account › AI assistant, or use a provider with built-in search.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍັງບໍ່ໄດ້ຕັ້ງຄ່າການຊອກຫາໃນເວັບເທື່ອ. ເພີ່ມຄີ Tavily ຫຼື Brave ໄດ້ທີ່ ບັນຊີ › ຜູ້ຊ່ວຍ AI, ຫຼື ໃຊ້ຜູ້ໃຫ້ບໍລິການທີ່ຊອກຫາໃນເວັບໄດ້ໃນຕົວກໍໄດ້ເດີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยังไม่ได้ตั้งค่าการค้นเว็บเลย เพิ่มคีย์ Tavily หรือ Brave ได้ที่ บัญชี › ผู้ช่วย AI หรือจะใช้ผู้ให้บริการที่ค้นเว็บได้ในตัวก็ได้นะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -484,6 +1082,18 @@
     },
     "Which jar should Moonee take it from?": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃຫ້ Moonee ຫັກຈາກກະປຸກໃດດີ?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ให้ Moonee หักจากกระปุกไหนดี?"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -494,6 +1104,18 @@
     },
     "Which jar should it go into?": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃສ່ເຂົ້າກະປຸກໃດດີ?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใส่เข้ากระปุกไหนดี?"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -504,6 +1126,18 @@
     },
     "Which wallet did the money go to?": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເງິນໂອນເຂົ້າກະເປົາໃດນໍ?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เงินโอนเข้ากระเป๋าไหนเหรอ?"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -514,6 +1148,18 @@
     },
     "Yesterday": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ມື້ວານ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เมื่อวาน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -524,6 +1170,18 @@
     },
     "You only have one wallet so far. Add another in Budget, then tell Moonee again.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕອນນີ້ເຈົ້າມີກະເປົາເງິນແຄ່ອັນດຽວ. ເພີ່ມອີກອັນໃນໜ້າງົບປະມານ ແລ້ວບອກ Moonee ອີກເທື່ອເດີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตอนนี้คุณมีกระเป๋าเงินแค่ใบเดียว เพิ่มอีกใบในหน้างบ แล้วบอก Moonee อีกครั้งนะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -534,6 +1192,18 @@
     },
     "You spent **%@** %@.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຈົ້າໃຊ້ໄປ **%@** %@."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คุณใช้ไป **%@** %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -544,6 +1214,18 @@
     },
     "Your conversations with Moonee show up here, one per day.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແຊັດກັບ Moonee ຈະສະແດງຢູ່ນີ້, ມື້ລະແຊັດ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แชทกับ Moonee จะแสดงที่นี่ วันละหนึ่งแชท"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -554,6 +1236,18 @@
     },
     "Your finance assistant": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຜູ້ຊ່ວຍການເງິນຂອງເຈົ້າ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ผู้ช่วยการเงินของคุณ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -564,6 +1258,18 @@
     },
     "last month": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເດືອນແລ້ວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เดือนที่แล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -574,6 +1280,18 @@
     },
     "last week": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ອາທິດແລ້ວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สัปดาห์ที่แล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -584,6 +1302,18 @@
     },
     "last year": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປີກາຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปีที่แล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -594,6 +1324,18 @@
     },
     "this month": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເດືອນນີ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เดือนนี้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -604,6 +1346,18 @@
     },
     "this week": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ອາທິດນີ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สัปดาห์นี้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -614,6 +1368,18 @@
     },
     "this year": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປີນີ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปีนี้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -624,6 +1390,18 @@
     },
     "today": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ມື້ນີ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "วันนี้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -634,6 +1412,18 @@
     },
     "**Hi there!**\nWhat can Moonee do for you today? Log a spend, ask about your money, or snap a receipt.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**ສະບາຍດີ!**\nມື້ນີ້ໃຫ້ Moonee ຊ່ວຍຫຍັງດີ? ຈົດລາຍຈ່າຍ, ຖາມເລື່ອງເງິນ ຫຼື ຖ່າຍຮູບໃບບິນຮັບເງິນມາກໍໄດ້ເດີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**สวัสดี!**\nวันนี้ให้ Moonee ช่วยอะไรดี? จดรายจ่าย ถามเรื่องเงิน หรือถ่ายรูปใบเสร็จมาก็ได้นะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -644,6 +1434,18 @@
     },
     "Moonee logged all %lld for you.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ຈົດໃຫ້ຄົບທັງ %lld ລາຍການແລ້ວເດີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee จดให้ครบทั้ง %lld รายการแล้วนะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -654,6 +1456,18 @@
     },
     "Done, %lld transactions are in your books.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຮຽບຮ້ອຍ, %lld ລາຍການເຂົ້າບັນຊີແລ້ວ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เรียบร้อย %lld รายการเข้าบัญชีแล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -664,6 +1478,18 @@
     },
     "Moonee logged %lld transactions, **%@** in total.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ຈົດໄປ %lld ລາຍການ, ລວມທັງໝົດ **%@**."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee จดไป %lld รายการ รวมทั้งหมด **%@**"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -674,6 +1500,18 @@
     },
     "All %lld are in: **%@** altogether.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄົບທັງ %lld ລາຍການ: ລວມເປັນ **%@** ເນາະ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ครบทั้ง %lld รายการ รวมเป็น **%@** จ้า"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -684,6 +1522,18 @@
     },
     "Moonee noted **%@** for %@ %@.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ຈົດໃຫ້ແລ້ວ **%@** ໃຊ້ໄປກັບ%@ %@."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee จดให้แล้ว **%@** ใช้ไปกับ%@ %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -694,6 +1544,18 @@
     },
     "Got it, **%@** on %@ %@ is in your books.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໄດ້ເລີຍ, **%@** ສຳລັບ%@ %@ ລົງບັນຊີແລ້ວ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ได้เลย **%@** สำหรับ%@ %@ ลงบัญชีแล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -704,6 +1566,18 @@
     },
     "Done! **%@** for %@ %@, all saved.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຮຽບຮ້ອຍ! **%@** ຄ່າ%@ %@, ບັນທຶກໄວ້ແລ້ວ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เรียบร้อย! **%@** ค่า%@ %@ บันทึกไว้แล้วจ้า"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -714,6 +1588,18 @@
     },
     "Nice, **%@** came in from %@ %@.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ດີຫຼາຍ, ມີ **%@** ເຂົ້າມາຈາກ%@ %@."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เยี่ยม! มี **%@** เข้ามาจาก%@ %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -724,6 +1610,18 @@
     },
     "Money in! **%@** from %@ %@, split into your jars.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເງິນເຂົ້າ! **%@** ຈາກ%@ %@, ແບ່ງເຂົ້າກະປຸກໃຫ້ແລ້ວ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เงินเข้า! **%@** จาก%@ %@ แบ่งเข้ากระปุกให้แล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -734,6 +1632,18 @@
     },
     "Moved **%@** from %@ to %@.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍ້າຍ **%@** ຈາກ %@ ໄປ %@ ແລ້ວ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ย้าย **%@** จาก %@ ไป %@ แล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -744,6 +1654,18 @@
     },
     "Moved **%@** from the %@ jar to %@.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍ້າຍ **%@** ຈາກກະປຸກ %@ ໄປກະປຸກ %@ ແລ້ວເດີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ย้าย **%@** จากกระปุก %@ ไปกระปุก %@ แล้วนะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -754,6 +1676,18 @@
     },
     "Noted, you lent out **%@**.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຈົດໄວ້ແລ້ວ, ເຈົ້າໃຫ້ຢືມໄປ **%@**."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "จดไว้แล้ว คุณให้ยืมไป **%@**"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -764,6 +1698,18 @@
     },
     "Noted, you lent %@ **%@**.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຈົດໄວ້ແລ້ວ, ເຈົ້າໃຫ້ %@ ຢືມ **%@**."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "จดไว้แล้ว คุณให้ %@ ยืม **%@**"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -774,6 +1720,18 @@
     },
     "Noted, you borrowed **%@**.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຈົດໄວ້ແລ້ວ, ເຈົ້າຢືມມາ **%@**."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "จดไว้แล้ว คุณยืมมา **%@**"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -784,6 +1742,18 @@
     },
     "Noted, you borrowed **%@** from %@.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຈົດໄວ້ແລ້ວ, ເຈົ້າຢືມ **%@** ຈາກ %@."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "จดไว้แล้ว คุณยืม **%@** จาก %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -794,6 +1764,18 @@
     },
     "Noted a repayment of **%@**.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຈົດການສົ່ງຄືນ **%@** ໄວ້ແລ້ວ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "จดการคืนเงิน **%@** ไว้แล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -804,6 +1786,18 @@
     },
     "Noted, **%@** repaid with %@.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຈົດໄວ້ແລ້ວ, ສົ່ງຄືນ **%@** ກັບ %@ ແລ້ວ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "จดไว้แล้ว เคลียร์ **%@** กับ %@ เรียบร้อย"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -814,6 +1808,18 @@
     },
     "yesterday": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ມື້ວານ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เมื่อวาน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -824,6 +1830,18 @@
     },
     "on %@": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ວັນທີ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "วันที่ %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -834,6 +1852,18 @@
     },
     "Where did it go? Pick a wallet below.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເງິນໄປໃສນໍ? ເລືອກກະເປົາເງິນຂ້າງລຸ່ມເລີຍ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เงินไปไหนเหรอ? เลือกกระเป๋าเงินด้านล่างเลย"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -844,6 +1874,18 @@
     },
     "Take it out of which jar?": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເອົາອອກຈາກກະປຸກໃດນໍ?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เอาออกจากกระปุกไหนเหรอ?"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -854,6 +1896,18 @@
     },
     "And which jar does it land in?": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແລ້ວໃຫ້ໄປລົງກະປຸກໃດ?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แล้วจะให้ไปลงกระปุกไหน?"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -864,6 +1918,18 @@
     },
     "How much was it? Just the number is fine, like 45k.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ອັນນີ້ເທົ່າໃດ? ພິມແຕ່ຕົວເລກກໍໄດ້, ເຊັ່ນ 25ພັນ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อันนี้เท่าไหร่? พิมพ์แค่ตัวเลขก็ได้ เช่น 120"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -874,6 +1940,18 @@
     },
     "What was the amount? Something like 45k works.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍອດເທົ່າໃດນໍ? ພິມແບບ 25ພັນ ກໍເຂົ້າໃຈແລ້ວ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยอดเท่าไหร่เอ่ย? พิมพ์แบบ 120 ก็เข้าใจแล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -884,6 +1962,18 @@
     },
     "How much was **%@**? Just the number is fine, like 45k.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**%@** ເທົ່າໃດ? ພິມແຕ່ຕົວເລກກໍໄດ້, ເຊັ່ນ 25ພັນ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**%@** เท่าไหร่? พิมพ์แค่ตัวเลขก็ได้ เช่น 120"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -894,6 +1984,18 @@
     },
     "How much did **%@** cost? Something like 45k works.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**%@** ຈ່າຍໄປເທົ່າໃດ? ພິມແບບ 25ພັນ ກໍໄດ້ເດີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**%@** จ่ายไปเท่าไหร่? พิมพ์แบบ 120 ก็ได้นะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -904,6 +2006,18 @@
     },
     "Hmm, Moonee didn't quite get that. Try something like “phở 45k” or “how much did I spend this month?”": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ອືມ, Moonee ຍັງບໍ່ຄ່ອຍເຂົ້າໃຈ. ລອງພິມແບບ “ເຝີ 30ພັນ” ຫຼື “ເດືອນນີ້ໃຊ້ໄປເທົ່າໃດ?” ເບິ່ງເດີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อืม Moonee ยังไม่ค่อยเข้าใจ ลองพิมพ์แบบ “ข้าวผัด 60” หรือ “เดือนนี้ใช้ไปเท่าไหร่?” ดูนะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -914,6 +2028,18 @@
     },
     "Sorry, that one slipped past Moonee. Something like “coffee 30k” or “what's left in my jars?” works.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຂໍໂທດເດີ, ອັນນີ້ Moonee ຕາມບໍ່ທັນ. ລອງແບບ “ກາເຟ 25ພັນ” ຫຼື “ກະປຸກເຫຼືອເທົ່າໃດ?” ໄດ້ເລີຍ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ขอโทษนะ อันนี้ Moonee ตามไม่ทัน ลองแบบ “กาแฟ 45บาท” หรือ “กระปุกเหลือเท่าไหร่?” ได้เลย"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -924,6 +2050,18 @@
     },
     "Moonee couldn't read that receipt. Try again with the whole receipt in good light.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ອ່ານໃບບິນຮັບເງິນນີ້ບໍ່ອອກ. ລອງຖ່າຍໃໝ່ໃຫ້ເຫັນທັງໃບ ໃນບ່ອນທີ່ແຈ້ງໆ ເດີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee อ่านใบเสร็จนี้ไม่ออก ลองถ่ายใหม่ให้เห็นทั้งใบในที่สว่างๆ นะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -934,6 +2072,18 @@
     },
     "Moonee couldn't open that file. Try a photo or a PDF of the receipt.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ເປີດໄຟລ໌ນີ້ບໍ່ໄດ້. ລອງສົ່ງຮູບ ຫຼື PDF ຂອງໃບບິນຮັບເງິນແທນເດີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee เปิดไฟล์นี้ไม่ได้ ลองส่งรูปหรือ PDF ของใบเสร็จแทนนะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -944,6 +2094,18 @@
     },
     "Moonee needs the microphone and speech recognition to hear you. Turn them on in Settings › Moonee.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ຕ້ອງໃຊ້ໄມໂຄຣໂຟນ ແລະ ການຮັບຮູ້ສຽງເວົ້າ ຈຶ່ງຈະໄດ້ຍິນເຈົ້າ. ເປີດໄດ້ທີ່ ການຕັ້ງຄ່າ › Moonee."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ต้องใช้ไมโครโฟนและการรู้จำคำพูดถึงจะได้ยินคุณ เปิดได้ที่ การตั้งค่า › Moonee"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -954,6 +2116,18 @@
     },
     "Voice input isn't available on this iPhone right now. Check that Siri & Dictation is on, or type it instead.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕອນນີ້ iPhone ເຄື່ອງນີ້ຍັງໃຊ້ການປ້ອນດ້ວຍສຽງບໍ່ໄດ້. ລອງກວດເບິ່ງວ່າເປີດ Siri ແລະ ການພິມດ້ວຍສຽງແລ້ວບໍ່, ຫຼື ພິມແທນກໍໄດ້ເດີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตอนนี้ iPhone เครื่องนี้ยังใช้การป้อนด้วยเสียงไม่ได้ ลองเช็กว่าเปิด Siri และการป้อนตามคำบอกแล้วหรือยัง หรือพิมพ์แทนก็ได้นะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -964,6 +2138,18 @@
     },
     "Moonee can't find a microphone. Check that no other app is using it.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ຫາໄມໂຄຣໂຟນບໍ່ເຫັນ. ລອງກວດເບິ່ງວ່າບໍ່ມີແອັບອື່ນກຳລັງໃຊ້ຢູ່ເດີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee หาไมโครโฟนไม่เจอ ลองเช็กว่าไม่มีแอปอื่นใช้อยู่นะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -974,6 +2160,18 @@
     },
     "Moonee couldn't catch that. Hold the mic and try again?": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ຟັງບໍ່ທັນ. ກົດໄມຄ້າງໄວ້ແລ້ວເວົ້າໃໝ່ອີກເທື່ອໄດ້ບໍ່?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ฟังไม่ทัน กดไมค์ค้างไว้แล้วพูดใหม่อีกทีได้ไหม?"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -984,6 +2182,18 @@
     },
     "Moonee didn't hear anything. Hold the mic while you talk, then let go.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ບໍ່ໄດ້ຍິນຫຍັງເລີຍ. ກົດໄມຄ້າງໄວ້ຕອນເວົ້າ, ເວົ້າແລ້ວຈຶ່ງປ່ອຍເດີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ไม่ได้ยินอะไรเลย กดไมค์ค้างไว้ตอนพูด พูดจบแล้วค่อยปล่อยนะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -994,6 +2204,18 @@
     },
     "That was quiet! Tap the mic, say it, then tap again to send.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ງຽບກິບເລີຍ! ແຕະໄມ, ເວົ້າ, ແລ້ວແຕະອີກເທື່ອເພື່ອສົ່ງເດີ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เงียบกริบเลย! แตะไมค์ พูด แล้วแตะอีกครั้งเพื่อส่งนะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1004,6 +2226,18 @@
     },
     "(running low)": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(ໃກ້ໝົດ)"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(ใกล้หมด)"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1014,6 +2248,18 @@
     },
     "(over budget)": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(ເກີນງົບ)"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(เกินงบ)"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1024,6 +2270,18 @@
     },
     "Transactions %@": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍການ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายการ %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1034,6 +2292,18 @@
     },
     "Listening… tap to send": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກຳລັງຟັງ… ແຕະເພື່ອສົ່ງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กำลังฟัง… แตะเพื่อส่ง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1044,6 +2314,18 @@
     },
     "Listening… let go to send": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກຳລັງຟັງ… ປ່ອຍເພື່ອສົ່ງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กำลังฟัง… ปล่อยเพื่อส่ง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1054,6 +2336,18 @@
     },
     "Send voice message": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສົ່ງຂໍ້ຄວາມສຽງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ส่งข้อความเสียง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1064,6 +2358,18 @@
     },
     "Voice message": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຂໍ້ຄວາມສຽງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ข้อความเสียง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1074,6 +2380,18 @@
     },
     "Hold to talk, or tap to start and tap again to send.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກົດຄ້າງເພື່ອເວົ້າ, ຫຼື ແຕະເພື່ອເລີ່ມ ແລ້ວແຕະອີກເທື່ອເພື່ອສົ່ງ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กดค้างเพื่อพูด หรือแตะเพื่อเริ่มแล้วแตะอีกครั้งเพื่อส่ง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1084,6 +2402,18 @@
     },
     "Take a photo of a receipt": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຖ່າຍຮູບໃບບິນຮັບເງິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ถ่ายรูปใบเสร็จ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1094,6 +2424,18 @@
     },
     "Add file": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເພີ່ມໄຟລ໌"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เพิ่มไฟล์"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -1104,6 +2446,18 @@
     },
     "Receipt photo": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຮູບໃບບິນຮັບເງິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รูปใบเสร็จ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",

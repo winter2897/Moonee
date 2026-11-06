@@ -36,10 +36,14 @@ struct MarketPrices: Sendable {
 
     /// What a message asks the price of: a coin id ("bitcoin"), "SJC" / "PNJ" / "GOLD", or a currency code ("USD").
     /// "giá vàng sjc" → "SJC", "tỷ giá" → "USD", "giá bitcoin" → "bitcoin".
+    static let coinWords = ["bitcoin": ["บิตคอยน์", "บิทคอยน์", "ບິດຄອຍ", "ບິດຄອຍນ໌"], "ethereum": ["อีเธอเรียม", "ອີເທີຣຽມ"]]
+
     static func symbol(in text: String) -> String? {
         let tokens = Token.split(text)
         // Tickers are typed without diacritics: "tốn" is not TON.
         if let coin = tokens.lazy.compactMap({ $0.hasDiacritics ? nil : coinID($0.folded) }).first { return coin }
+        // Thai / Lao spellings. ponytail: gold and FX here are Vietnamese (SJC, VND rates); Thai/Lao ones go to web search.
+        if let coin = coinWords.first(where: { [Phrase](phrases: $0.value).contained(in: tokens) })?.key { return coin }
         for code in ["SJC", "PNJ"] where tokens.contains(where: { $0.folded == code.lowercased() }) { return code }
         if tokens.contains(where: { $0.matches("vàng") || $0.folded == "gold" }) { return "GOLD" }
         if let code = tokens.lazy.map({ $0.folded.uppercased() }).first(where: fx.contains) { return code }

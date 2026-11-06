@@ -155,15 +155,16 @@ struct AssistantTests {
         #expect(Skill.route(text, context: ctx).id == skill)
     }
 
-    @Test func skillFilesExistInBothLanguages() {
+    @Test func skillFilesExistInEveryLanguage() {
         for skill in Skill.all {
-            for lang in ["vi", "en"] {
+            for lang in Lexicon.all.map(\.language) {
                 let full = skill.instructions(language: lang, short: false), short = skill.instructions(language: lang, short: true)
                 #expect(full.contains(skill.id), "\(skill.id).\(lang)")
                 #expect(!short.isEmpty && short.count < full.count / 2, "\(skill.id).\(lang) short")
             }
         }
         #expect(Skill.persona(language: "vi").contains("Moonee"))
+        for lang in ["th", "lo"] { #expect(Skill.persona(language: lang) != Skill.persona(language: "en"), "persona \(lang)") }
         #expect(Skill.persona(language: "fr") == Skill.persona(language: "en")) // missing language → English
     }
 

@@ -4,6 +4,18 @@
   "strings": {
     "%@ · needs %@ of memory": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · ຕ້ອງໃຊ້ໜ່ວຍຄວາມຈຳ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · ต้องใช้หน่วยความจำ %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -14,12 +26,6 @@
     },
     "%lld models": {
       "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld model"
-          }
-        },
         "en": {
           "variations": {
             "plural": {
@@ -37,17 +43,29 @@
               }
             }
           }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ໂມເດວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld โมเดล"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld model"
+          }
         }
       }
     },
     "%lld models for this iPhone": {
       "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld model cho iPhone này"
-          }
-        },
         "en": {
           "variations": {
             "plural": {
@@ -65,11 +83,41 @@
               }
             }
           }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ໂມເດວສຳລັບ iPhone ເຄື່ອງນີ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld โมเดลสำหรับ iPhone เครื่องนี้"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld model cho iPhone này"
+          }
         }
       }
     },
     "4B quality in a 1 GB download.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄຸນນະພາບລະດັບ 4B ດາວໂຫຼດພຽງ 1 GB"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คุณภาพระดับ 4B ดาวน์โหลดแค่ 1 GB"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -80,6 +128,18 @@
     },
     "8B quality in a 2.3 GB download.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄຸນນະພາບລະດັບ 8B ດາວໂຫຼດພຽງ 2.3 GB"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คุณภาพระดับ 8B ดาวน์โหลดแค่ 2.3 GB"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -90,6 +150,18 @@
     },
     "All-rounders with hybrid thinking and wide language support, Vietnamese included.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເກັ່ງຮອບດ້ານ ມີໂໝດຄິດແບບໄຮບຣິດ ຮອງຮັບຫຼາຍພາສາ ລວມທັງພາສາຫວຽດນາມ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เก่งรอบด้าน มีโหมดคิดแบบไฮบริด รองรับหลายภาษา รวมถึงภาษาเวียดนาม"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -100,6 +172,18 @@
     },
     "Best Vietnamese parsing in our tests.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ອ່ານລາຍການພາສາຫວຽດນາມໄດ້ດີທີ່ສຸດໃນການທົດສອບຂອງພວກເຮົາ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อ่านรายการภาษาเวียดนามได้ดีที่สุดในการทดสอบของเรา"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -110,6 +194,18 @@
     },
     "Compact and quick.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ນ້ອຍ ແລະ ໄວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เล็กและเร็ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -120,6 +216,18 @@
     },
     "Compact, efficient models. Chinese and English first: Vietnamese is basic.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂມເດວນ້ອຍ ແລະ ປະຫຍັດ ເນັ້ນພາສາຈີນ ແລະ ອັງກິດ: ພາສາຫວຽດນາມແມ່ນພື້ນຖານ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โมเดลเล็กและประหยัด เน้นภาษาจีนและอังกฤษ: ภาษาเวียดนามแค่พื้นฐาน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -130,6 +238,18 @@
     },
     "Delete": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລຶບ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ลบ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -140,6 +260,18 @@
     },
     "Delete %@": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລຶບ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ลบ %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -150,6 +282,18 @@
     },
     "Delete this model?": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລຶບໂມເດວນີ້ບໍ?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ลบโมเดลนี้?"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -160,6 +304,18 @@
     },
     "Download": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ດາວໂຫຼດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ดาวน์โหลด"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -170,6 +326,18 @@
     },
     "Download over Wi-Fi only": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ດາວໂຫຼດຜ່ານ Wi-Fi ເທົ່ານັ້ນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ดาวน์โหลดผ่าน Wi-Fi เท่านั้น"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -180,6 +348,18 @@
     },
     "Downloaded": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ດາວໂຫຼດແລ້ວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ดาวน์โหลดแล้ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -190,6 +370,18 @@
     },
     "Downloading %@": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກຳລັງດາວໂຫຼດ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กำลังดาวน์โหลด %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -200,6 +392,18 @@
     },
     "Fast general chat.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແຊັດທົ່ວໄປໄດ້ໄວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แชตทั่วไปได้รวดเร็ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -210,6 +414,18 @@
     },
     "Featured": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄັດສັນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คัดสรร"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -220,6 +436,18 @@
     },
     "First word in %@ s · %lld tokens/s": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄຳທຳອິດໃນ %@ ວິ · %lld ໂທເຄັນ/ວິ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คำแรกใน %@ วิ · %lld โทเค็น/วิ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -230,6 +458,18 @@
     },
     "Frees %@. You can download it again later.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄືນພື້ນທີ່ %@ ດາວໂຫຼດໃໝ່ໄດ້ພາຍຫຼັງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คืนพื้นที่ %@ ดาวน์โหลดใหม่ได้ภายหลัง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -240,6 +480,18 @@
     },
     "Google's open models made for phones. The best Vietnamese here, but heavier.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂມເດວແບບເປີດຂອງ Google ທີ່ສ້າງມາເພື່ອມືຖື ພາສາຫວຽດນາມດີທີ່ສຸດໃນນີ້ ແຕ່ໜັກກວ່າ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โมเดลแบบเปิดของ Google ที่ทำมาเพื่อมือถือ ภาษาเวียดนามดีที่สุดในนี้ แต่หนักกว่า"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -250,6 +502,18 @@
     },
     "High CPU usage": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃຊ້ CPU ສູງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใช้ CPU สูง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -260,6 +524,18 @@
     },
     "In use": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກຳລັງໃຊ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กำลังใช้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -270,6 +546,18 @@
     },
     "Larger Gemma for phones with plenty of memory.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gemma ລຸ້ນໃຫຍ່ ສຳລັບເຄື່ອງທີ່ມີໜ່ວຍຄວາມຈຳຫຼາຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gemma รุ่นใหญ่ สำหรับเครื่องที่มีหน่วยความจำเยอะ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -280,6 +568,18 @@
     },
     "Larger LFM with better answers.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LFM ລຸ້ນໃຫຍ່ ຕອບໄດ້ດີກວ່າ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LFM รุ่นใหญ่ ตอบได้ดีกว่า"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -290,6 +590,18 @@
     },
     "Licence: %@": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃບອະນຸຍາດ: %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สัญญาอนุญาต: %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -300,6 +612,18 @@
     },
     "Local models need a real iPhone: the Simulator has no GPU for them.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂມເດວໃນເຄື່ອງຕ້ອງໃຊ້ iPhone ແທ້: Simulator ບໍ່ມີ GPU ໃຫ້ໃຊ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โมเดลในเครื่องต้องใช้ iPhone จริง: Simulator ไม่มี GPU ให้ใช้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -310,6 +634,18 @@
     },
     "Manage models": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຈັດການໂມເດວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "จัดการโมเดล"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -320,6 +656,18 @@
     },
     "Mixture of experts: big-model answers at small-model speed.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mixture of Experts: ຕອບໄດ້ແບບໂມເດວໃຫຍ່ ດ້ວຍຄວາມໄວແບບໂມເດວນ້ອຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mixture of Experts: ตอบได้แบบโมเดลใหญ่ ด้วยความเร็วแบบโมเดลเล็ก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -330,6 +678,18 @@
     },
     "Models run fully on this iPhone: private, offline and free. They are downloaded from Hugging Face, never bundled with the app.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂມເດວເຮັດວຽກໃນ iPhone ເຄື່ອງນີ້ທັງໝົດ: ເປັນສ່ວນຕົວ, ໃຊ້ອອບລາຍໄດ້ ແລະ ຟຣີ ດາວໂຫຼດຈາກ Hugging Face ບໍ່ໄດ້ຕິດມາກັບແອັບ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โมเดลทำงานบน iPhone เครื่องนี้ทั้งหมด: เป็นส่วนตัว ใช้ออฟไลน์ได้ และฟรี ดาวน์โหลดจาก Hugging Face ไม่ได้ติดมากับแอป"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -340,6 +700,18 @@
     },
     "New": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃໝ່"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใหม่"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -350,6 +722,18 @@
     },
     "Not enough free space on this iPhone.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ພື້ນທີ່ຫວ່າງໃນ iPhone ບໍ່ພໍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "พื้นที่ว่างใน iPhone ไม่พอ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -360,6 +744,18 @@
     },
     "Pause": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຢຸດຊົ່ວຄາວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "หยุดชั่วคราว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -370,6 +766,18 @@
     },
     "Paused at %@": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຢຸດໄວ້ທີ່ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "หยุดไว้ที่ %@"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -380,6 +788,18 @@
     },
     "Reasons step by step before it answers.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄິດເທື່ອລະຂັ້ນກ່ອນຕອບ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คิดทีละขั้นก่อนตอบ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -390,6 +810,18 @@
     },
     "Recommended": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແນະນຳ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แนะนำ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -400,6 +832,18 @@
     },
     "Resume": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ດາວໂຫຼດຕໍ່"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ดาวน์โหลดต่อ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -410,6 +854,18 @@
     },
     "Smallest Bonsai, very light on memory.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bonsai ລຸ້ນນ້ອຍສຸດ ໃຊ້ໜ່ວຍຄວາມຈຳໜ້ອຍຫຼາຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bonsai รุ่นเล็กสุด ใช้หน่วยความจำน้อยมาก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -420,6 +876,18 @@
     },
     "Smallest Qwen: quick replies, simple expense logging.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qwen ລຸ້ນນ້ອຍສຸດ: ຕອບໄວ ບັນທຶກລາຍຈ່າຍງ່າຍໆ ໄດ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qwen รุ่นเล็กสุด: ตอบไว จดรายจ่ายง่ายๆ ได้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -430,6 +898,18 @@
     },
     "Smarter answers, but slower and warmer.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕອບສະຫຼາດກວ່າ ແຕ່ຊ້າກວ່າ ແລະ ເຄື່ອງອຸ່ນກວ່າ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตอบฉลาดกว่า แต่ช้ากว่าและเครื่องอุ่นกว่า"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -440,6 +920,18 @@
     },
     "Stronger reasoning in a small size.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄິດວິເຄາະເກັ່ງຂຶ້ນໃນຂະໜາດນ້ອຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คิดวิเคราะห์เก่งขึ้นในขนาดเล็ก"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -450,6 +942,18 @@
     },
     "Ternary (2-bit) models: big-model answers in a small download. Vietnamese is basic.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂມເດວແບບ ternary (2-bit): ຕອບໄດ້ແບບໂມເດວໃຫຍ່ ໃນໄຟລ໌ດາວໂຫຼດຂະໜາດນ້ອຍ ພາສາຫວຽດນາມແມ່ນພື້ນຖານ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โมเดลแบบ ternary (2-bit): ตอบได้แบบโมเดลใหญ่ ในไฟล์ดาวน์โหลดขนาดเล็ก ภาษาเวียดนามแค่พื้นฐาน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -460,6 +964,18 @@
     },
     "Test speed": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທົດສອບຄວາມໄວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ทดสอบความเร็ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -470,6 +986,18 @@
     },
     "Testing speed…": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກຳລັງທົດສອບຄວາມໄວ…"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กำลังทดสอบความเร็ว…"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -480,6 +1008,18 @@
     },
     "The balanced pick: good Vietnamese at a quick pace.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທາງເລືອກທີ່ສົມດຸນ: ພາສາຫວຽດນາມດີ ແຖມຍັງໄວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตัวเลือกที่สมดุล: ภาษาเวียดนามดี แถมยังเร็ว"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -490,6 +1030,18 @@
     },
     "Thinking": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄິດວິເຄາະ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คิดวิเคราะห์"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -500,6 +1052,18 @@
     },
     "This iPhone has %@ of RAM; Moonee can use about %@ for a model. Models that need more are hidden.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPhone ເຄື່ອງນີ້ມີ RAM %@; Moonee ໃຊ້ກັບໂມເດວໄດ້ປະມານ %@ ໂມເດວທີ່ຕ້ອງໃຊ້ຫຼາຍກວ່ານີ້ຈະຖືກເຊື່ອງໄວ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPhone เครื่องนี้มี RAM %@ Moonee ใช้กับโมเดลได้ประมาณ %@ โมเดลที่ต้องใช้มากกว่านี้จะถูกซ่อนไว้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -510,6 +1074,18 @@
     },
     "This iPhone has too little memory for a local model. Use Apple Intelligence or your own API key instead.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPhone ເຄື່ອງນີ້ມີໜ່ວຍຄວາມຈຳບໍ່ພໍສຳລັບໂມເດວໃນເຄື່ອງ ໃຊ້ Apple Intelligence ຫຼື API key ຂອງເຈົ້າແທນໄດ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPhone เครื่องนี้มีหน่วยความจำไม่พอสำหรับโมเดลในเครื่อง ใช้ Apple Intelligence หรือ API key ของคุณแทนได้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -520,6 +1096,18 @@
     },
     "Tiny and instant. English only in practice.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ນ້ອຍຈິ໋ວ ແລະ ຕອບທັນທີ ໃຊ້ໄດ້ດີແຕ່ພາສາອັງກິດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เล็กจิ๋วและตอบทันที ใช้ได้ดีแค่ภาษาอังกฤษ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -530,6 +1118,18 @@
     },
     "Tiny and very fast, for short English answers.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ນ້ອຍຈິ໋ວ ແລະ ໄວຫຼາຍ ສຳລັບຄຳຕອບພາສາອັງກິດສັ້ນໆ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เล็กจิ๋วและเร็วมาก สำหรับคำตอบภาษาอังกฤษสั้นๆ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -540,6 +1140,18 @@
     },
     "Try again": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລອງໃໝ່"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ลองอีกครั้ง"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -550,6 +1162,18 @@
     },
     "Use": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃຊ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใช้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -560,6 +1184,18 @@
     },
     "Use this model": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃຊ້ໂມເດວນີ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใช้โมเดลนี้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -570,6 +1206,18 @@
     },
     "Very fast hybrid models built for phones. English first: Vietnamese is basic.": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂມເດວໄຮບຣິດທີ່ໄວຫຼາຍ ສ້າງມາເພື່ອມືຖື ເນັ້ນພາສາອັງກິດ: ພາສາຫວຽດນາມແມ່ນພື້ນຖານ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โมเดลไฮบริดที่เร็วมาก ทำมาเพื่อมือถือ เน้นภาษาอังกฤษ: ภาษาเวียดนามแค่พื้นฐาน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -580,6 +1228,18 @@
     },
     "Waiting for Wi-Fi…": {
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກຳລັງລໍຖ້າ Wi-Fi…"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กำลังรอ Wi-Fi…"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",

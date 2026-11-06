@@ -95,7 +95,7 @@ PRIVATE BY DESIGN
 PAY ONCE, KEEP IT
 No subscription and no in-app purchases. Every feature is included.
 
-In English and Vietnamese.
+In English, Vietnamese, Thai and Lao.
 ```
 
 **What's New** (1.0.0): `Hello! This is the first Moonee.`
@@ -147,12 +147,67 @@ RIÊNG TƯ TỪ THIẾT KẾ
 MUA MỘT LẦN, DÙNG MÃI
 Không gói đăng ký, không mua trong ứng dụng. Có đủ mọi tính năng.
 
-Có tiếng Việt và tiếng Anh.
+Có tiếng Việt, tiếng Anh, tiếng Thái và tiếng Lào.
 ```
 
 **Có gì mới** (1.0.0): `Xin chào! Đây là phiên bản Moonee đầu tiên.`
 
-### URLs (both languages) — **Owner**
+### Thai (th)
+
+**ชื่อ** (≤30): `Moonee: บันทึกรายรับรายจ่าย`
+
+**คำบรรยายย่อ** (≤30): `จดรายจ่ายแค่พิมพ์ประโยคเดียว`
+
+**ข้อความโปรโมท** (≤170):
+> พูด พิมพ์ หรือถ่ายรูปใบเสร็จก็จบ Moonee จดให้ จัดหมวดหมู่ให้ และแบ่งรายรับลงกระปุกให้เอง จ่ายครั้งเดียว ไม่ต้องสมัครบัญชี ไม่มีโฆษณา ข้อมูลเป็นของคุณ
+
+**คำค้น** (≤100):
+`รายรับรายจ่าย,บัญชีรายจ่าย,งบประมาณ,ออมเงิน,6 กระปุก,จัดการเงิน,ใบเสร็จ,กระเป๋าเงิน,การเงิน,AI`
+
+**คำอธิบาย**:
+```
+Moonee คือเพื่อนคู่ใจเรื่องเงินที่อยู่ในกระเป๋าคุณ เล่าเรื่องการใช้เงินเหมือนเล่าให้เพื่อนฟัง ที่เหลือ Moonee จัดการให้
+
+จดแค่ประโยคเดียว
+• พิมพ์ "กาแฟ 65บาท ข้าวมันไก่ 50" หรือพูดเลยก็ได้ Moonee บันทึกทั้งสองรายการ เลือกหมวดหมู่และกระเป๋าเงินให้เอง
+• ถ่ายรูปใบเสร็จ Moonee อ่านยอดเงินให้
+• ทุกรายการบันทึกทันที พร้อมการ์ดให้แก้ไขหรือเลิกทำ และ Moonee จำจากที่คุณแก้
+• รายรับ โอนระหว่างกระเป๋า บัตรเครดิต ให้ยืมและยืม: ครบทั้งเจ็ดแบบ
+
+กระปุกช่วยคุมแผน
+• รายรับแบ่งลงกระปุกตาม % ให้อัตโนมัติ (จำเป็น ลงทุน เงินออม พัฒนาตัวเอง ความสุข แบ่งปัน) เปลี่ยนชื่อ เพิ่มกระปุก หรือเปลี่ยนสีได้ตามใจ
+• ยอดในกระปุกยกยอดข้ามเดือนเหมือนซองเงินจริง
+• ดูปุ๊บรู้ปั๊บว่าแต่ละกระปุกเหลือเท่าไหร่ และเดือนนี้ใช้ไปเท่าไหร่
+
+บิลและการแจ้งเตือน
+• ค่าเช่า ค่าเน็ต ค่าสมาชิกต่างๆ: Moonee เตือนก่อนครบกำหนด มากหรือน้อยแล้วแต่คุณ
+• บัตรเครดิตมีวันสรุปยอด วันครบกำหนด และปุ่ม "จ่ายบัตร"
+
+เห็นภาพรวมทั้งหมด
+• วันนี้ สัปดาห์นี้ เดือนนี้ ใช้ไปเท่าไหร่
+• ความมั่งคั่งสุทธิจากกระเป๋าเงินและสินทรัพย์ที่คุณติดตาม
+• รายงานประจำเดือนพร้อมกราฟ
+• ถาม Moonee ได้เลย: "เดือนนี้ค่ากินไปเท่าไหร่?" ตัวเลขทุกตัวคำนวณบน iPhone AI ไม่เดา
+
+ความเป็นส่วนตัวตั้งแต่การออกแบบ
+• ไม่ต้องมีบัญชี ไม่มีเซิร์ฟเวอร์ ไม่มีโฆษณา ไม่มีการติดตาม
+• ข้อมูลอยู่บน iPhone และซิงค์ผ่าน iCloud ส่วนตัวของคุณ
+• ล็อกด้วย Face ID ซ่อนยอดเงิน และปิดหน้าจอตอนสลับแอป
+• AI ทำงานบน iPhone (Apple Intelligence หรือโมเดลเปิดที่คุณดาวน์โหลด) อยากใช้โมเดลบนคลาวด์? ใช้ API key ของคุณเอง Moonee แสดงให้เห็นชัดว่าส่งอะไรออกไปบ้าง
+• ส่งออกทั้งหมดเป็น CSV หรือลบทิ้งได้ทุกเมื่อ
+
+จ่ายครั้งเดียว ใช้ได้ตลอด
+ไม่มีค่าสมาชิก ไม่มีการซื้อในแอป ได้ทุกฟีเจอร์ครบ
+
+มีภาษาไทย ลาว อังกฤษ และเวียดนาม
+```
+
+**มีอะไรใหม่** (1.0.0): `สวัสดี! นี่คือ Moonee เวอร์ชันแรก`
+
+### Lao (lo)
+App Store Connect has no Lao store localization, so the Lao storefront shows the English (or Thai) page. The app itself ships `lo`; mention it in the English description ("In English, Vietnamese, Thai and Lao").
+
+### URLs (every language) — **Owner**
 - **Privacy Policy URL** (required). One page is enough, e.g. "Moonee collects no data. Your records stay on your device and in your private iCloud. If you add your own AI provider key, the text you send to Moonee's assistant goes from your device to that provider under your own account with them."
 - **Support URL** (required): a page with a contact email.
 - Marketing URL: optional.
@@ -181,7 +236,7 @@ Required-reason APIs in `PrivacyInfo.xcprivacy`: UserDefaults `CA92.1`, file tim
 
 ## 6. Screenshots
 
-Required: **6.9"** (1320 × 2868; iPhone 17 Pro Max). Recommended: **6.3"** (1206 × 2622; iPhone 17 Pro) — if missing, App Store Connect scales the 6.9" set down. Portrait, up to 10 per size per language. Make an English and a Vietnamese set.
+Required: **6.9"** (1320 × 2868; iPhone 17 Pro Max). Recommended: **6.3"** (1206 × 2622; iPhone 17 Pro) — if missing, App Store Connect scales the 6.9" set down. Portrait, up to 10 per size per language. Make an English, a Vietnamese and a Thai set (launch with `-AppleLanguages "(th)" -AppleLocale th_TH -money.currency THB`).
 
 | # | Screen | Shows |
 |---|---|---|
@@ -254,12 +309,13 @@ Repeat with an "iPhone 17 Pro" simulator for 6.3".
   - [ ] AI: Apple Intelligence device; a local model download over Wi-Fi and a parse; BYOK with a test key.
   - [ ] CSV export opens in Numbers; Delete all data resets to a fresh install.
   - [ ] iPhone language Vietnamese: every tab and every permission prompt.
+  - [ ] Thai and Lao (Account → Language): every tab, the chat, and a Thai/Lao message such as "กาแฟ 65บาท" / "ເຝີ 35ພັນ".
 - [ ] TestFlight → Crashes empty after a week of use.
 
 ## 8. Owner-only steps (no session does these)
 
 1. **Agreements**: App Store Connect → Business → accept the **Paid Apps Agreement**, add tax forms and a bank account. A paid app cannot go on sale without it.
-2. **App record**: App Store Connect → Apps → **+** → New App → iOS, name `Moonee: Money & Budget Jars`, primary language English (U.S.), bundle ID `com.haiquan.moonee`, SKU `moonee-ios`, full access. Then add the Vietnamese localization.
+2. **App record**: App Store Connect → Apps → **+** → New App → iOS, name `Moonee: Money & Budget Jars`, primary language English (U.S.), bundle ID `com.haiquan.moonee`, SKU `moonee-ios`, full access. Then add the Vietnamese and Thai localizations (there is no Lao one).
 3. **Upload**: Xcode → Window → Organizer → the archive → Distribute App → App Store Connect → Upload; or drag `build/export/Moonee.ipa` into the Transporter app.
 4. **Price**: Pricing and Availability → Price Schedule → base country + price **[PRICE — owner decides]**; Apple fills other storefronts. Availability: all countries or a list. No in-app purchases.
 5. **Metadata**: section 3 in both localizations, screenshots from section 6, App Privacy from section 4, age rating from section 5, category Finance / Productivity, copyright `2026 Quan Tran`, support and privacy policy URLs.

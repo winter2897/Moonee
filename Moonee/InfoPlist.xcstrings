@@ -7,6 +7,18 @@
     "NSCameraUsageDescription": {
       "extractionState": "extracted_with_value",
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ໃຊ້ກ້ອງເພື່ອຖ່າຍຮູບໃບບິນຮັບເງິນ ແລະ ອ່ານຈຳນວນເງິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ใช้กล้องเพื่อถ่ายรูปใบเสร็จและอ่านยอดเงิน"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -18,6 +30,18 @@
     "NSFaceIDUsageDescription": {
       "extractionState": "extracted_with_value",
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ໃຊ້ Face ID ເພື່ອປົດລັອກແອັບ ເມື່ອເຈົ້າເປີດການລັອກແອັບໄວ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ใช้ Face ID เพื่อปลดล็อกแอปเมื่อคุณเปิดการล็อกแอปไว้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -29,6 +53,18 @@
     "NSMicrophoneUsageDescription": {
       "extractionState": "extracted_with_value",
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ໃຊ້ໄມໂຄຣໂຟນ ເພື່ອໃຫ້ເຈົ້າເວົ້າບັນທຶກລາຍການແທນການພິມ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ใช้ไมโครโฟนเพื่อให้คุณพูดบันทึกรายการแทนการพิมพ์"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -40,6 +76,18 @@
     "NSPhotoLibraryUsageDescription": {
       "extractionState": "extracted_with_value",
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ອ່ານຮູບໃບບິນຮັບເງິນທີ່ເຈົ້າເລືອກ ເພື່ອປ້ອນຈຳນວນເງິນໃຫ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee อ่านรูปใบเสร็จที่คุณเลือกเพื่อกรอกยอดเงินให้"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",
@@ -51,6 +99,18 @@
     "NSSpeechRecognitionUsageDescription": {
       "extractionState": "extracted_with_value",
       "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ປ່ຽນສຽງເວົ້າເປັນຂໍ້ຄວາມ ເພື່ອບັນທຶກລາຍການ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee แปลงเสียงพูดเป็นข้อความเพื่อบันทึกรายการ"
+          }
+        },
         "vi": {
           "stringUnit": {
             "state": "translated",

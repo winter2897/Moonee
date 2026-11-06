@@ -14,13 +14,17 @@ extension Prefs {
 @MainActor enum OnboardingBook {
     // MARK: Income
 
-    /// Monthly income chips: VND in millions, every other currency in thousands. Mid = the amount stored for the chip.
-    // ponytail: two scales (VND / the rest); add per-currency ranges when a market needs different ones.
+    /// Monthly income chips, sized to what people earn in that currency (major units). Mid = the amount stored for the chip.
+    nonisolated static let incomeScales: [String: (bounds: [Decimal], mids: [Decimal])] = [
+        "VND": ([10_000_000, 20_000_000, 40_000_000], [7_000_000, 15_000_000, 30_000_000, 50_000_000]),
+        "THB": ([15_000, 30_000, 60_000], [10_000, 22_000, 45_000, 80_000]),
+        "LAK": ([3_000_000, 6_000_000, 12_000_000], [2_000_000, 4_500_000, 9_000_000, 15_000_000]),
+    ]
+
+    // ponytail: unlisted currencies share one thousands scale; add a row when a market needs its own.
     nonisolated static func incomeRanges(currency: String) -> [(label: String, mid: Int)] {
-        let vnd = currency == "VND"
-        let (bounds, mids): ([Decimal], [Decimal]) = vnd ? ([10, 20, 40], [7, 15, 30, 50]) : ([2, 4, 8], [1.5, 3, 6, 10])
-        let unit: Decimal = vnd ? 1_000_000 : 1_000
-        let minor = { (d: Decimal) in Money(major: d * unit, currency).minor }
+        let (bounds, mids) = incomeScales[currency] ?? ([2_000, 4_000, 8_000], [1_500, 3_000, 6_000, 10_000])
+        let minor = { (d: Decimal) in Money(major: d, currency).minor }
         let short = { (d: Decimal) in AmountFormat.string(minor(d), currency, short: true) }
         return [
             (String(localized: "Under \(short(bounds[0]))", table: "Onboarding"), minor(mids[0])),
@@ -155,9 +159,10 @@ extension Prefs {
     // MARK: AI mode
 
     /// Spec §7 step 6: suggest a mode from the device. Apple Intelligence when it is on (a local model instead for
-    /// Vietnamese if one fits, spec §10.4), else a local model if one fits the RAM, else BYOK.
+    /// Vietnamese, Thai and Lao if one fits, spec §10.4: Apple is weak or missing there), else a local model if one fits
+    /// the RAM, else BYOK.
     nonisolated static func suggestedMode(appleAvailable: Bool, localFits: Bool, language: String) -> AIMode {
-        if appleAvailable && (language != "vi" || !localFits) { return .onDevice }
+        if appleAvailable && (!["vi", "th", "lo"].contains(language) || !localFits) { return .onDevice }
         return localFits ? .local : .byok
     }
 }
