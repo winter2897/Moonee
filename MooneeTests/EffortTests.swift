@@ -97,7 +97,7 @@ struct EffortTests {
 
     @Test func answersThinkParsingDoesNot() async {
         let model = ScriptedLLM(replies: [#"{"transactions":[{"amountText":"45k","kind":"expense","note":"Phở"}]}"#, "Chào bạn!"])
-        var a = Assistant(router: AIRouter(mode: .byok, onDevice: nil, local: nil, cloud: model), tools: Books.tools, language: "vi")
+        var a = Assistant(router: AIRouter(mode: .byok, local: nil, cloud: model), tools: Books.tools, language: "vi")
         a.effort = .high
         _ = await a.handle("phở 45k", context: Books.context)
         _ = await a.handle("cảm ơn Moonee", context: Books.context)

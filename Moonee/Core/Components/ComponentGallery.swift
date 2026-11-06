@@ -229,7 +229,7 @@ struct ComponentGallery: View {
 
     private var chat: some View {
         VStack(alignment: .leading, spacing: 12) {
-            ChatBubble(.moonee, "**Chào bạn!** 👋\nHôm nay mình có thể giúp gì cho bạn?")
+            ChatBubble(.moonee, "**Chào bạn!**\nHôm nay mình có thể giúp gì cho bạn?")
             HStack(spacing: 8) {
                 QuickReplyChip(title: "Nói chi tiêu", symbol: "mic") {}
                 QuickReplyChip(title: "Chụp hóa đơn", symbol: "camera") {}
@@ -244,7 +244,7 @@ struct ComponentGallery: View {
             ChatTransactionCard(items: [Self.lunch, Self.book], state: .editing)
             title("Undone")
             ChatTransactionCard(items: [Self.lunch], state: .undone)
-            ChatBubble(.moonee, "Tháng này bạn đã chi **6.450.000 ₫**, đạt 76% ngân sách tháng. Lọ Hưởng thụ còn 200k, bạn cân nhắc chút nha 💪")
+            ChatBubble(.moonee, "Tháng này bạn đã chi **6.450.000 ₫**, đạt 76% ngân sách tháng. Lọ Hưởng thụ còn 200k, bạn cân nhắc chút nha")
             ChatBubble(.moonee, "Bạn muốn xem gì tiếp?", showsAvatar: false)
             HStack(spacing: 8) {
                 QuickReplyChip(title: "Xem báo cáo tháng", symbol: "chart.bar", style: .tile) {}

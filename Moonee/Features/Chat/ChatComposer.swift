@@ -153,7 +153,6 @@ struct ChatComposer: View {
 
 /// The engine that actually answers in the chat right now, as the router will pick it (not just the chosen mode).
 enum ChatEngine: Equatable {
-    case apple
     case local(String)
     case cloud(CloudProvider, model: String)
     /// BYOK chosen but no key yet: the rule parser answers until one is added.
@@ -164,17 +163,15 @@ enum ChatEngine: Equatable {
     static func current(_ router: AIRouter = LLMSettings.router(), provider: CloudProvider = LLMSettings.cloudProvider,
                         model: String? = nil) -> ChatEngine {
         if let first = router.candidates(for: .quickAnswer).first {
-            if first is AppleLLM { return .apple }
             if let l = first as? LocalLLM { return .local(l.model.name) }
             return .cloud(provider, model: model ?? LLMSettings.model(provider))
         }
         return router.mode == .byok || router.mode == .hybrid ? .needsKey(provider) : .offline
     }
 
-    /// "gemini-3.5-flash-lite", "Apple Intelligence", "Offline"; the effort is appended when the model has one.
+    /// "gemini-3.5-flash-lite", "Gemma 3 1B", "Offline"; the effort is appended when the model has one.
     func label(effort: ReasoningEffort?) -> String {
         let name: String = switch self {
-        case .apple: "Apple Intelligence"
         case .local(let model): model
         // The short model name already says whose it is (gemini-…, claude-…, deepseek-…); the provider is in settings.
         case .cloud(let p, let model):

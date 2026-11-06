@@ -68,7 +68,7 @@ struct ProfileSetupView: View {
                     .padding(.horizontal, 12)
 
                 MooneeHero(mood: .greeting, compact: true) // compact so the whole step fits one screen, like the mockup
-                SpeechBubble(Text("Hi! Before we start, let's set up your profile 👋", tableName: "Onboarding"))
+                SpeechBubble(Text("Hi! Before we start, let's set up your profile", tableName: "Onboarding"))
                     .frame(maxWidth: 300)
 
                 ProfileForm(name: $name, avatar: $avatar)

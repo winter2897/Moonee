@@ -10,7 +10,7 @@ import UIKit
 #endif
 
 /// A downloaded open model run with MLX Swift (spec §9.1 "Model local", §9.2). Small: gets short skills and
-/// pre-computed facts, like `AppleLLM`. Transaction parsing is grammar-constrained to the `AIParsedTxnList` JSON
+/// pre-computed facts. Transaction parsing is grammar-constrained to the `AIParsedTxnList` JSON
 /// schema, then `TransactionExtractor` validates it as for every other model.
 struct LocalLLM: LLM {
     let model: LocalModel
@@ -89,7 +89,7 @@ struct LocalLLM: LLM {
 }
 
 extension AIParsedTxn {
-    /// The `@Generable` shape as JSON Schema, for grammar-constrained decoding. Every key is required (nullable)
+    /// The `AIParsedTxn` shape as JSON Schema, for grammar-constrained decoding. Every key is required (nullable)
     /// so the grammar fast-forwards the keys and the model only writes values.
     static let jsonSchema: String = {
         // Short caps keep small models from rambling inside a string until the token budget runs out.

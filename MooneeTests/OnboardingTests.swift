@@ -108,11 +108,8 @@ import Testing
     }
 
     @Test func suggestedMode() {
-        #expect(OnboardingBook.suggestedMode(appleAvailable: true, localFits: true, language: "en") == .onDevice)
-        #expect(OnboardingBook.suggestedMode(appleAvailable: true, localFits: true, language: "vi") == .local)
-        #expect(OnboardingBook.suggestedMode(appleAvailable: true, localFits: true, language: "th") == .local)
-        #expect(OnboardingBook.suggestedMode(appleAvailable: true, localFits: false, language: "vi") == .onDevice)
-        #expect(OnboardingBook.suggestedMode(appleAvailable: false, localFits: true, language: "en") == .local)
-        #expect(OnboardingBook.suggestedMode(appleAvailable: false, localFits: false, language: "en") == .byok)
+        #expect(OnboardingBook.suggestedMode(localFits: true) == .local)
+        #expect(OnboardingBook.suggestedMode(localFits: false) == .byok)
+        #expect(!AIMode.allCases.map(\.rawValue).contains("onDevice")) // the Apple mode is gone
     }
 }

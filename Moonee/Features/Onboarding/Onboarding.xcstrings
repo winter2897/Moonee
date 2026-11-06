@@ -45,46 +45,46 @@
         }
       }
     },
-    "All set! 🎉 Tap + and tell Moonee your first spend, like “lunch 45k”.": {
+    "All set! Tap + and tell Moonee your first spend, like “lunch 45k”.": {
       "localizations": {
         "lo": {
           "stringUnit": {
             "state": "translated",
-            "value": "ຮຽບຮ້ອຍ! 🎉 ແຕະ + ແລ້ວບອກ Moonee ລາຍຈ່າຍທຳອິດຂອງເຈົ້າ ເຊັ່ນ “ເຝີ 30ພັນ”"
+            "value": "ຮຽບຮ້ອຍ! ແຕະ + ແລ້ວບອກ Moonee ລາຍຈ່າຍທຳອິດຂອງເຈົ້າ ເຊັ່ນ “ເຝີ 30ພັນ”"
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "เรียบร้อย! 🎉 แตะ + แล้วบอก Moonee รายจ่ายแรกของคุณ เช่น “ข้าวผัด 60”"
+            "value": "เรียบร้อย! แตะ + แล้วบอก Moonee รายจ่ายแรกของคุณ เช่น “ข้าวผัด 60”"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Xong rồi! 🎉 Chạm + và kể Moonee khoản chi đầu tiên, ví dụ “ăn trưa 45k”."
+            "value": "Xong rồi! Chạm + và kể Moonee khoản chi đầu tiên, ví dụ “ăn trưa 45k”."
           }
         }
       }
     },
-    "All set, %@! 🎉 Tap + and tell Moonee your first spend, like “lunch 45k”.": {
+    "All set, %@! Tap + and tell Moonee your first spend, like “lunch 45k”.": {
       "localizations": {
         "lo": {
           "stringUnit": {
             "state": "translated",
-            "value": "ຮຽບຮ້ອຍ %@! 🎉 ແຕະ + ແລ້ວບອກ Moonee ລາຍຈ່າຍທຳອິດຂອງເຈົ້າ ເຊັ່ນ “ເຝີ 30ພັນ”"
+            "value": "ຮຽບຮ້ອຍ %@! ແຕະ + ແລ້ວບອກ Moonee ລາຍຈ່າຍທຳອິດຂອງເຈົ້າ ເຊັ່ນ “ເຝີ 30ພັນ”"
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "เรียบร้อย %@! 🎉 แตะ + แล้วบอก Moonee รายจ่ายแรกของคุณ เช่น “ข้าวผัด 60”"
+            "value": "เรียบร้อย %@! แตะ + แล้วบอก Moonee รายจ่ายแรกของคุณ เช่น “ข้าวผัด 60”"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Xong rồi, %@! 🎉 Chạm + và kể Moonee khoản chi đầu tiên, ví dụ “ăn trưa 45k”."
+            "value": "Xong rồi, %@! Chạm + và kể Moonee khoản chi đầu tiên, ví dụ “ăn trưa 45k”."
           }
         }
       }
@@ -420,46 +420,46 @@
         }
       }
     },
-    "Hi there! I'm **Moonee**, your money buddy 👋": {
+    "Hi there! I'm **Moonee**, your money buddy": {
       "localizations": {
         "lo": {
           "stringUnit": {
             "state": "translated",
-            "value": "ສະບາຍດີ! ເຮົາແມ່ນ **Moonee** ໝູ່ຄູ່ໃຈເລື່ອງເງິນຂອງເຈົ້າ 👋"
+            "value": "ສະບາຍດີ! ເຮົາແມ່ນ **Moonee** ໝູ່ຄູ່ໃຈເລື່ອງເງິນຂອງເຈົ້າ"
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "สวัสดี! เราคือ **Moonee** เพื่อนคู่ใจเรื่องเงินของคุณ 👋"
+            "value": "สวัสดี! เราคือ **Moonee** เพื่อนคู่ใจเรื่องเงินของคุณ"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chào bạn! Mình là **Moonee**, bạn đồng hành tài chính của bạn 👋"
+            "value": "Chào bạn! Mình là **Moonee**, bạn đồng hành tài chính của bạn"
           }
         }
       }
     },
-    "Hi! Before we start, let's set up your profile 👋": {
+    "Hi! Before we start, let's set up your profile": {
       "localizations": {
         "lo": {
           "stringUnit": {
             "state": "translated",
-            "value": "ສະບາຍດີ! ກ່ອນເລີ່ມ ມາຕັ້ງຄ່າໂປຣໄຟລ໌ກັນກ່ອນເດີ 👋"
+            "value": "ສະບາຍດີ! ກ່ອນເລີ່ມ ມາຕັ້ງຄ່າໂປຣໄຟລ໌ກັນກ່ອນເດີ"
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "สวัสดี! ก่อนเริ่ม มาตั้งค่าโปรไฟล์กันก่อนนะ 👋"
+            "value": "สวัสดี! ก่อนเริ่ม มาตั้งค่าโปรไฟล์กันก่อนนะ"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chào bạn! Trước khi bắt đầu, mình cùng tạo hồ sơ nhé 👋"
+            "value": "Chào bạn! Trước khi bắt đầu, mình cùng tạo hồ sơ nhé"
           }
         }
       }
@@ -728,24 +728,24 @@
         }
       }
     },
-    "Nice to meet you, **%@**! I'm **Moonee**, your money buddy 👋": {
+    "Nice to meet you, **%@**! I'm **Moonee**, your money buddy": {
       "localizations": {
         "lo": {
           "stringUnit": {
             "state": "translated",
-            "value": "ຍິນດີທີ່ໄດ້ຮູ້ຈັກເດີ **%@**! ເຮົາແມ່ນ **Moonee** ໝູ່ຄູ່ໃຈເລື່ອງເງິນຂອງເຈົ້າ 👋"
+            "value": "ຍິນດີທີ່ໄດ້ຮູ້ຈັກເດີ **%@**! ເຮົາແມ່ນ **Moonee** ໝູ່ຄູ່ໃຈເລື່ອງເງິນຂອງເຈົ້າ"
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "ยินดีที่ได้รู้จักนะ **%@**! เราคือ **Moonee** เพื่อนคู่ใจเรื่องเงินของคุณ 👋"
+            "value": "ยินดีที่ได้รู้จักนะ **%@**! เราคือ **Moonee** เพื่อนคู่ใจเรื่องเงินของคุณ"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Rất vui được gặp **%@**! Mình là **Moonee**, bạn đồng hành tài chính của bạn 👋"
+            "value": "Rất vui được gặp **%@**! Mình là **Moonee**, bạn đồng hành tài chính của bạn"
           }
         }
       }

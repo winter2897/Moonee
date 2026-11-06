@@ -1,5 +1,4 @@
 import Foundation
-import FoundationModels
 import Testing
 @testable import Moonee
 
@@ -20,8 +19,8 @@ final class FlakyLLM: LLM, @unchecked Sendable {
     }
 }
 
-/// Apple Intelligence on the owner's iPhone (feedback 3): status, compact prompt, notices, fallbacks,
-/// and keyless gold / exchange-rate prices. No network.
+/// Small on-device (local) models: compact prompt, notices, fallbacks, and keyless gold / exchange-rate prices.
+/// No network.
 struct SmallModelTests {
     let ctx = Books.context
 
@@ -34,84 +33,61 @@ struct SmallModelTests {
         ["currencyCode": "DKK", "cash": "-", "transfer": "3776.16", "sell": "3920.71"],
     ]]
 
-    // MARK: Apple status
-
-    @Test func appleStatusFromTheSystem() {
-        #expect(AppleStatus(.available, supportsLanguage: true) == .ready)
-        #expect(AppleStatus(.available, supportsLanguage: false) == .languageUnsupported)
-        #expect(AppleStatus(.unavailable(.deviceNotEligible), supportsLanguage: true) == .notEligible)
-        #expect(AppleStatus(.unavailable(.appleIntelligenceNotEnabled), supportsLanguage: true) == .notEnabled)
-        #expect(AppleStatus(.unavailable(.modelNotReady), supportsLanguage: true) == .downloading)
-        #expect(AppleStatus.languageUnsupported.canRun && !AppleStatus.notEnabled.canRun)
+    @Test func noticeFromErrors() {
         #expect(AINotice(LLMError("x")) == .failed)
         #expect(AINotice(AINotice.tooLong) == .tooLong)
     }
 
-    @Test func onDeviceWithoutAppleSaysWhyAndStillWorks() async {
-        let a = Assistant(router: AIRouter(mode: .onDevice, appleStatus: .notEnabled), tools: Books.tools, language: "vi")
+    @Test func localModeWithoutAModelUsesTheRulesQuietly() async {
+        let a = Assistant(router: AIRouter(mode: .local), tools: Books.tools, language: "vi")
         let parsed = await a.reply("phở 45k", context: ctx)
         #expect(parsed.output == .transactions(QuickParser.parse("phở 45k", context: ctx), usedModel: false))
-        #expect(parsed.notice == .appleUnavailable(.notEnabled))
-        #expect(parsed.noticeText?.contains(AppleStatus.notEnabled.text) == true)
-
-        let answered = await a.reply("tháng này mình tiêu bao nhiêu?", context: ctx)
-        guard case .facts = answered.output else { Issue.record("expected facts"); return }
-        #expect(answered.notice == .appleUnavailable(.notEnabled))
-        // Apple is there, or the user picked another mode: nothing to say.
-        #expect(await Assistant(router: AIRouter(mode: .byok, appleStatus: .notEnabled), tools: Books.tools).reply("phở 45k", context: ctx).notice == nil)
+        #expect(parsed.notice == nil)
+        guard case .facts = await a.reply("tháng này mình tiêu bao nhiêu?", context: ctx).output else { Issue.record("expected facts"); return }
     }
 
-    @Test func theOtherOnDeviceModelStandsIn() async {
-        let local = ScriptedLLM(small: true, replies: ["Tháng này bạn tiêu 3.400.000 ₫ nè."])
-        let a = Assistant(router: AIRouter(mode: .onDevice, local: local, appleStatus: .notEligible), tools: Books.tools, language: "vi")
-        let r = await a.reply("tháng này mình tiêu bao nhiêu?", context: ctx)
+    @Test func hybridCloudStandsInForABrokenLocalModel() async {
+        let local = FlakyLLM(errors: [LLMError("boom")])
+        let cloud = ScriptedLLM(replies: ["Tháng này bạn tiêu 3.400.000 ₫ nè."])
+        let r = await Assistant(router: AIRouter(mode: .hybrid, local: local, cloud: cloud), tools: Books.tools, language: "vi")
+            .reply("tháng này mình tiêu bao nhiêu?", context: ctx)
         #expect(r.output == .answer("Tháng này bạn tiêu 3.400.000 ₫ nè.", skill: "spending-coach"))
-        #expect(r.noticeText?.hasSuffix(String(localized: "Moonee asked your other on-device model instead.", table: "AI")) == true)
-        #expect(AIRouter(mode: .local, onDevice: local).candidates(for: .quickAnswer).count == 1)
+        #expect(r.noticeText == AINotice.failed.text(answeredByModel: true))
     }
 
     @Test func overflowRetriesTightThenFallsBack() async {
         let history = (1...8).map { LLMMessage(role: $0 % 2 == 0 ? .assistant : .user, text: String(repeating: "chi tiêu ", count: 80)) }
-        let apple = FlakyLLM(errors: [AINotice.tooLong], replies: ["Tháng này bạn tiêu 3.400.000 ₫."])
-        let a = Assistant(router: AIRouter(mode: .onDevice, onDevice: apple), tools: Books.tools, language: "vi")
+        let local = FlakyLLM(errors: [AINotice.tooLong], replies: ["Tháng này bạn tiêu 3.400.000 ₫."])
+        let a = Assistant(router: AIRouter(mode: .local, local: local), tools: Books.tools, language: "vi")
         let r = await a.reply("tháng này mình tiêu bao nhiêu?", history: history, context: ctx)
         #expect(r.output == .answer("Tháng này bạn tiêu 3.400.000 ₫.", skill: "spending-coach"))
         #expect(r.notice == .tooLong)
-        #expect(apple.requests.map(\.messages.count) == [5, 1]) // 4 clipped turns + the question, then the question alone
-        #expect(apple.requests[0].messages.dropLast().allSatisfy { $0.text.count <= CompactPrompt.turnChars + 1 })
+        #expect(local.requests.map(\.messages.count) == [5, 1]) // 4 clipped turns + the question, then the question alone
+        #expect(local.requests[0].messages.dropLast().allSatisfy { $0.text.count <= CompactPrompt.turnChars + 1 })
 
-        // Guardrails: no retry, the numbers answer, and the chat is told.
-        let blocked = FlakyLLM(errors: [AINotice.blocked])
-        let b = await Assistant(router: AIRouter(mode: .onDevice, onDevice: blocked), tools: Books.tools, language: "vi")
+        // Any other failure: no retry, the numbers answer, and the chat is told.
+        let broken = FlakyLLM(errors: [LLMError("boom")])
+        let b = await Assistant(router: AIRouter(mode: .local, local: broken), tools: Books.tools, language: "vi")
             .reply("tháng này mình tiêu bao nhiêu?", context: ctx)
         guard case .facts = b.output else { Issue.record("expected facts"); return }
-        #expect(blocked.requests.count == 1)
-        #expect(b.noticeText == AINotice.blocked.text(answeredByModel: false))
-    }
-
-    @Test func englishWhenAppleCantSpeakVietnamese() async {
-        let apple = ScriptedLLM(small: true, replies: ["You spent ₫3,400,000 this month."])
-        var a = Assistant(router: AIRouter(mode: .onDevice, onDevice: apple), tools: Books.tools, language: "vi")
-        a.router.onDevice = AppleStandIn(apple, replyLanguage: "en")
-        let r = await a.reply("tháng này mình tiêu bao nhiêu?", context: ctx)
-        #expect(r.notice == .answeredInEnglish)
-        #expect(apple.requests[0].system.hasPrefix(Skill.persona(language: "en", short: true)))
+        #expect(broken.requests.count == 1)
+        #expect(b.noticeText == AINotice.failed.text(answeredByModel: false))
     }
 
     // MARK: Compact prompt
 
     @Test func compactPromptStaysSmall() async {
-        let apple = ScriptedLLM(small: true, replies: ["ok"])
-        let a = Assistant(router: AIRouter(mode: .onDevice, onDevice: apple), tools: Books.tools, language: "vi")
+        let local = ScriptedLLM(small: true, replies: ["ok"])
+        let a = Assistant(router: AIRouter(mode: .local, local: local), tools: Books.tools, language: "vi")
         _ = await a.handle("tháng này mình tiêu bao nhiêu?", history: [.init(role: .user, text: "chào")], context: ctx)
-        let r = apple.requests[0]
+        let r = local.requests[0]
         #expect(r.tools.isEmpty)
         #expect(r.system.hasPrefix(Skill.persona(language: "vi", short: true)))
         #expect(r.system.contains(Skill.spendingCoach.instructions(language: "vi", short: true)))
         #expect(!r.system.contains("spendingSummary: {")) // stable system prompt: the facts ride in the user turn
         #expect(r.messages.last?.text.hasPrefix("FACTS") == true)
         #expect(r.messages.last?.text.hasSuffix("tháng này mình tiêu bao nhiêu?") == true)
-        // ~3 characters a Vietnamese token: well inside Apple's 4096-token window with room for the answer.
+        // ~3 characters a Vietnamese token: well inside a small model's 4096-token window with room for the answer.
         #expect(r.system.count + r.messages.map(\.text.count).reduce(0, +) < 3_600)
         #expect(Skill.persona(language: "vi", short: true).count < 400)
         #expect(!Skill.persona(language: "vi").contains("<!-- short -->"))
@@ -134,30 +110,23 @@ struct SmallModelTests {
     }
 
     @Test func rulesThatReadEverythingSkipTheSmallModel() async {
-        let apple = ScriptedLLM(small: true, replies: [])
-        let a = Assistant(router: AIRouter(mode: .onDevice, onDevice: apple), tools: Books.tools, language: "vi")
+        let local = ScriptedLLM(small: true, replies: [])
+        let a = Assistant(router: AIRouter(mode: .local, local: local), tools: Books.tools, language: "vi")
         let r = await a.parse("phở 45k", context: ctx)
-        #expect(!r.usedModel && r.txns.first?.amount == 45_000 && apple.requests.isEmpty)
+        #expect(!r.usedModel && r.txns.first?.amount == 45_000 && local.requests.isEmpty)
         #expect(!Assistant.rulesComplete(QuickParser.parse("ăn trưa với team", context: ctx)))
-    }
-
-    @Test func appleReadingIsMappedAndPrefixed() {
-        let item = AppleParsedTxn(amountText: "59k", kind: "expense", category: "food", wallet: nil, toWallet: nil, jar: nil,
-                                  toJar: nil, person: nil, dateText: "", note: "Highlands").parsed
-        #expect(item.amountText == "59k" && item.dateText == nil && item.category == "food")
-        let txns = TransactionExtractor.validate([item], text: "highlands 59k", rules: QuickParser.parse("highlands 59k", context: ctx), context: ctx)
-        #expect(txns?.first?.categoryKey == "category.food")
     }
 
     // MARK: Keyless prices
 
-    @Test func goldFromPNJ() async throws {
+    @Test func goldPricesNameNoBrand() async throws {
         let stub = StubTransport([Self.pnj])
         let prices = MarketPrices(send: stub.send, cache: QuoteCache(), now: { Books.now })
         let q = try await prices.quote("SJC", currency: "VND", locale: Locale(identifier: "en_US"))
-        #expect(q.source == "PNJ" && q.url?.contains("pnj.com.vn") == true)
+        #expect(q.source == MarketPrices.sourceName && q.url?.contains("pnj.com.vn") == true)
         #expect(q.prices.map(\.price) == ["₫138,000,000", "₫141,000,000"]) // thousands per chỉ × 10 chỉ per lượng
-        #expect(q.prices[1].label?.contains("Vàng miếng SJC 999.9") == true)
+        #expect(q.prices[1].label == String(localized: "\(String(localized: "Gold bars 999.9", table: "AI")), \(String(localized: "sell", table: "AI")), 1 tael", table: "AI"))
+        #expect(!q.prices.contains { $0.label?.contains("SJC") == true || $0.label?.contains("PNJ") == true })
         #expect(q.updatedAt == "2026-11-06T01:39:51Z")
         #expect(stub.requests[0].timeoutInterval == MarketPrices.timeout)
 
@@ -169,7 +138,7 @@ struct SmallModelTests {
         let stub = StubTransport([Self.vcb])
         let prices = MarketPrices(send: stub.send, cache: QuoteCache(), now: { Books.now })
         let usd = try await prices.quote("usd", currency: "VND", locale: Locale(identifier: "en_US"))
-        #expect(usd.source == "Vietcombank")
+        #expect(usd.source == MarketPrices.sourceName)
         #expect(usd.prices.map(\.price) == ["₫25,400", "₫25,430", "₫25,810"])
         #expect(stub.requests[0].url?.query() == "date=2026-11-20")
         let dkk = try await prices.quote("DKK", currency: "VND", locale: Locale(identifier: "en_US")) // same URL: from the cache
@@ -185,16 +154,16 @@ struct SmallModelTests {
         #expect(MarketPrices.symbol(in: text) == symbol)
     }
 
-    /// The owner's example: Apple (or a local model), no search key, still gets the real price, with its source.
+    /// The owner's example: a local model, no search key, still gets the real price; no provider name in the UI.
     @Test func goldQuestionOnDeviceWithoutKey() async throws {
         var tools = Books.tools
         tools.prices = MarketPrices(send: StubTransport([Self.pnj]).send, cache: QuoteCache())
-        let apple = ScriptedLLM(small: true, replies: ["Theo PNJ lúc 8:39 sáng nay, vàng miếng SJC bán ra ₫141,000,000 một lượng nè."])
-        let a = Assistant(router: AIRouter(mode: .onDevice, onDevice: apple), tools: tools, language: "vi")
+        let local = ScriptedLLM(small: true, replies: ["Giá tham khảo trên internet lúc 8:39 sáng nay: vàng miếng bán ra ₫141,000,000 một lượng nè."])
+        let a = Assistant(router: AIRouter(mode: .local, local: local), tools: tools, language: "vi")
         let r = await a.reply("Giá vàng sjc nay là bao nhiêu thế", context: ctx)
         guard case .answer(_, "market-lookup", let sources) = r.output else { Issue.record("expected an answer"); return }
-        #expect(sources.map(\.site) == ["pnj.com.vn"])
-        let question = try #require(apple.requests.first?.messages.last?.text)
+        #expect(sources.map(\.site) == ["Internet"])
+        let question = try #require(local.requests.first?.messages.last?.text)
         #expect(question.contains("₫141,000,000"))
         #expect(!question.contains("webSearch:")) // the price answered it: no search
         #expect(r.notice == nil)
@@ -202,9 +171,11 @@ struct SmallModelTests {
         // No model at all: the plain numbers, labelled.
         var none = tools
         none.prices = MarketPrices(send: StubTransport([Self.pnj]).send, cache: QuoteCache())
-        let facts = await Assistant(router: AIRouter(mode: .onDevice), tools: none, language: "vi").handle("giá vàng sjc", context: ctx)
+        let facts = await Assistant(router: AIRouter(mode: .local), tools: none, language: "vi").handle("giá vàng sjc", context: ctx)
         guard case .facts(let f, _) = facts else { Issue.record("expected facts"); return }
-        #expect(ChatBook.factsText(f)?.contains("**₫141,000,000**") == true)
+        let text = try #require(ChatBook.factsText(f))
+        #expect(text.contains("**₫141,000,000**") && text.contains(MarketPrices.sourceName))
+        #expect(!["PNJ", "SJC", "Vietcombank", "CoinGecko"].contains { text.contains($0) })
     }
 
     @Test func searchRouteFollowsTheModel() {
@@ -216,13 +187,4 @@ struct SmallModelTests {
         #expect(Skill.marketLookup.job == .advice) // hybrid: the cloud model with search answers first
         #expect(Skill.marketLookup.tools.first == "marketPrice")
     }
-}
-
-/// Wraps a scripted model as Apple would be set up for an unsupported language.
-struct AppleStandIn: LLM {
-    let inner: ScriptedLLM
-    let replyLanguage: String?
-    var isSmall: Bool { true }
-    init(_ inner: ScriptedLLM, replyLanguage: String) { (self.inner, self.replyLanguage) = (inner, replyLanguage) }
-    func respond(_ r: LLMRequest) async throws -> String { try await inner.respond(r) }
 }

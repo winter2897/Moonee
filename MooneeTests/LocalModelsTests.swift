@@ -123,7 +123,7 @@ struct LocalModelsTests {
 
     // MARK: Constrained JSON
 
-    @Test func jsonSchemaMatchesTheGenerableShape() throws {
+    @Test func jsonSchemaMatchesAIParsedTxn() throws {
         let schema = try #require(try JSONSerialization.jsonObject(with: Data(AIParsedTxn.jsonSchema.utf8)) as? [String: Any])
         let items = try #require(((schema["properties"] as? [String: Any])?["transactions"] as? [String: Any])?["items"] as? [String: Any])
         let props = try #require(items["properties"] as? [String: Any])

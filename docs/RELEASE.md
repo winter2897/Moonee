@@ -89,7 +89,7 @@ PRIVATE BY DESIGN
 • No account, no server, no ads, no tracking.
 • Your books live on your iPhone and sync through your own private iCloud.
 • Face ID lock, hidden balances, and a privacy cover in the app switcher.
-• AI runs on your iPhone (Apple Intelligence or an open model you download). Prefer a cloud model? Bring your own key; Moonee shows exactly what is sent.
+• AI runs on your iPhone (an open model you download). Prefer a cloud model? Bring your own key; Moonee shows exactly what is sent.
 • Export everything to CSV, or delete it all, any time.
 
 PAY ONCE, KEEP IT
@@ -139,7 +139,7 @@ RIÊNG TƯ TỪ THIẾT KẾ
 • Không tài khoản, không máy chủ, không quảng cáo, không theo dõi.
 • Sổ sách nằm trên iPhone và đồng bộ qua iCloud riêng của bạn.
 • Khoá bằng Face ID, ẩn số dư, che màn hình khi chuyển ứng dụng.
-• AI chạy ngay trên iPhone (Apple Intelligence hoặc model mở bạn tải về). Muốn dùng model trên mây? Dùng khoá API của chính bạn, Moonee cho xem rõ những gì được gửi đi.
+• AI chạy ngay trên iPhone (model mở bạn tải về). Muốn dùng model trên mây? Dùng khoá API của chính bạn, Moonee cho xem rõ những gì được gửi đi.
 • Xuất toàn bộ ra CSV hoặc xoá sạch bất cứ lúc nào.
 
 MUA MỘT LẦN, DÙNG MÃI
@@ -189,7 +189,7 @@ Moonee คือเพื่อนคู่ใจเรื่องเงิน�
 • ไม่ต้องมีบัญชี ไม่มีเซิร์ฟเวอร์ ไม่มีโฆษณา ไม่มีการติดตาม
 • ข้อมูลอยู่บน iPhone และซิงค์ผ่าน iCloud ส่วนตัวของคุณ
 • ล็อกด้วย Face ID ซ่อนยอดเงิน และปิดหน้าจอตอนสลับแอป
-• AI ทำงานบน iPhone (Apple Intelligence หรือโมเดลเปิดที่คุณดาวน์โหลด) อยากใช้โมเดลบนคลาวด์? ใช้ API key ของคุณเอง Moonee แสดงให้เห็นชัดว่าส่งอะไรออกไปบ้าง
+• AI ทำงานบน iPhone (โมเดลเปิดที่คุณดาวน์โหลด) อยากใช้โมเดลบนคลาวด์? ใช้ API key ของคุณเอง Moonee แสดงให้เห็นชัดว่าส่งอะไรออกไปบ้าง
 • ส่งออกทั้งหมดเป็น CSV หรือลบทิ้งได้ทุกเมื่อ
 
 จ่ายครั้งเดียว ใช้ได้ตลอด
@@ -302,7 +302,7 @@ Repeat with an "iPhone 17 Pro" simulator for 6.3".
   - [ ] Reminders: notification prompt; a bill reminder arrives.
   - [ ] iCloud: Account → Data shows **On**. Delete and reinstall (or a second iPhone on the same Apple ID): data comes back within a minute, no duplicate jars or categories.
   - [ ] Signed out of iCloud (or iCloud off for Moonee): Data shows the sign-in hint; everything else works.
-  - [ ] AI: Apple Intelligence device; a local model download over Wi-Fi and a parse; BYOK with a test key.
+  - [ ] AI: a local model download over Wi-Fi and a parse; BYOK with a test key.
   - [ ] CSV export opens in Numbers; Delete all data resets to a fresh install.
   - [ ] iPhone language Vietnamese: every tab and every permission prompt.
   - [ ] Thai and Lao (Account → Language): every tab, the chat, and a Thai/Lao message such as "กาแฟ 65บาท" / "ເຝີ 35ພັນ".

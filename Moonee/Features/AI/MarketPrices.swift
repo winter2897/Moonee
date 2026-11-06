@@ -1,13 +1,15 @@
 import Foundation
 
 /// The `marketPrice` tool's keyless sources, for the questions people ask most (spec §3.3), so every AI mode
-/// (Apple, local, no search key) gets real numbers:
+/// (local, no search key) gets real numbers:
 /// - crypto: CoinGecko public `simple/price`;
 /// - gold: PNJ's public price feed (SJC bars and PNJ 999.9 rings, as PNJ sells and buys them; sjc.com.vn sits behind a
 ///   bot check);
 /// - exchange rates: Vietcombank's public rate table (VND per unit).
 /// Every reply is cached 5 minutes (Vietcombank asks for no more than one request per 5 minutes) with an 8 s timeout.
 /// Anything else (stocks, interest rates, fuel, news) goes through `webSearch`.
+/// What the user sees never names these providers (owner's call): quotes say "reference prices on the internet"
+/// (`Quote.source`) and the gold products get generic names (`goldNames`).
 struct MarketPrices: Sendable {
     var send: HTTPTransport = HTTP.live
     var cache = QuoteCache.shared
@@ -23,7 +25,15 @@ struct MarketPrices: Sendable {
     ]
 
     /// Gold symbol → PNJ product codes.
-    static let gold: [String: [String]] = ["SJC": ["SJC"], "PNJ": ["N24K", "PNJ"], "GOLD": ["SJC", "N24K"]]
+    static let gold: [String: [String]] = ["SJC": ["SJC"], "PNJ": ["N24K"], "GOLD": ["SJC", "N24K"]]
+
+    /// PNJ product code → a name without a brand.
+    static var goldNames: [String: String] {
+        ["SJC": String(localized: "Gold bars 999.9", table: "AI"), "N24K": String(localized: "Plain gold rings 999.9", table: "AI")]
+    }
+
+    /// Where every quote says it comes from.
+    static var sourceName: String { String(localized: "Reference prices on the internet", table: "AI") }
 
     /// Currencies in Vietcombank's table.
     static let fx: Set<String> = ["USD", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "CNY", "DKK", "HKD", "INR", "KRW", "KWD",
@@ -55,7 +65,7 @@ struct MarketPrices: Sendable {
         struct Price: Codable, Equatable {
             var currency: String
             var price: String
-            /// What the price is ("Vàng miếng SJC 999.9, sell, 1 tael"); nil for a plain crypto price.
+            /// What the price is ("Gold bars 999.9, sell, 1 tael"); nil for a plain crypto price.
             var label: String?
         }
         var symbol: String
@@ -65,7 +75,7 @@ struct MarketPrices: Sendable {
         var name: String?
         var prices: [Price]
         var updatedAt: String?
-        var source = "CoinGecko"
+        var source = MarketPrices.sourceName
         /// The page the numbers come from, for the source chip.
         var url: String?
     }
@@ -109,17 +119,17 @@ struct MarketPrices: Sendable {
         let rows = json["data"] as? [[String: Any]] ?? []
         var prices: [Quote.Price] = []
         for code in products {
-            guard let row = rows.first(where: { $0["masp"] as? String == code }), let name = row["tensp"] as? String else { continue }
+            guard let row = rows.first(where: { $0["masp"] as? String == code }), let name = Self.goldNames[code] else { continue }
             for (key, side) in [("giamua", String(localized: "buy", table: "AI")), ("giaban", String(localized: "sell", table: "AI"))] {
                 guard let thousandsPerChi = (row[key] as? NSNumber)?.intValue, thousandsPerChi > 0 else { continue }
                 prices.append(.init(currency: "VND", price: Money(major: Decimal(thousandsPerChi) * 10_000, "VND").formatted(locale: locale),
                                     label: String(localized: "\(name), \(side), 1 tael", table: "AI")))
             }
         }
-        guard !prices.isEmpty else { throw LLMError("PNJ returned no gold prices") }
+        guard !prices.isEmpty else { throw LLMError("No gold prices right now") }
         return Quote(symbol: symbol, coin: "gold", name: String(localized: "Gold prices", table: "AI"), prices: prices,
                      updatedAt: (json["updateDate"] as? String).flatMap(Self.vietnamDate)?.formatted(.iso8601),
-                     source: "PNJ", url: "https://www.pnj.com.vn/site/gia-vang")
+                     url: "https://www.pnj.com.vn/site/gia-vang")
     }
 
     private func fxQuote(_ code: String, locale: Locale) async throws -> Quote {
@@ -127,17 +137,17 @@ struct MarketPrices: Sendable {
         c.queryItems = [.init(name: "date", value: Date.ISO8601FormatStyle(timeZone: Self.vietnam).year().month().day().format(now()))]
         let json = try await get(c.url!)
         guard let row = (json["Data"] as? [[String: Any]] ?? []).first(where: { $0["currencyCode"] as? String == code }) else {
-            throw LLMError("Vietcombank has no rate for \(code)")
+            throw LLMError("No rate for \(code) right now")
         }
         let prices = [("cash", String(localized: "buy, cash", table: "AI")), ("transfer", String(localized: "buy, transfer", table: "AI")),
                       ("sell", String(localized: "sell", table: "AI"))].compactMap { key, label -> Quote.Price? in
             guard let v = (row[key] as? String).flatMap({ Decimal(string: $0) }), v > 0 else { return nil }
             return .init(currency: "VND", price: Money(major: v, "VND").formatted(locale: locale), label: label)
         }
-        guard !prices.isEmpty else { throw LLMError("Vietcombank has no rate for \(code)") }
+        guard !prices.isEmpty else { throw LLMError("No rate for \(code) right now") }
         return Quote(symbol: code, coin: code.lowercased(), name: String(localized: "1 \(code) in VND", table: "AI"), prices: prices,
                      updatedAt: (json["UpdatedDate"] as? String).flatMap { try? Date($0, strategy: .iso8601) }?.formatted(.iso8601),
-                     source: "Vietcombank", url: "https://www.vietcombank.com.vn/vi-VN/KHCN/Cong-cu-Tien-ich/Ty-gia")
+                     url: "https://www.vietcombank.com.vn/vi-VN/KHCN/Cong-cu-Tien-ich/Ty-gia")
     }
 
     private func get(_ url: URL) async throws -> [String: Any] {

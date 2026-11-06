@@ -61,8 +61,7 @@ struct OnboardingChat: View {
 
     private var currency: String { Money.defaultCurrency }
     private var suggestedMode: AIMode {
-        OnboardingBook.suggestedMode(appleAvailable: AppleLLM.isAvailable, localFits: LocalModel.recommended() != nil,
-                                     language: Assistant.uiLanguage)
+        OnboardingBook.suggestedMode(localFits: LocalModel.recommended() != nil)
     }
 
     var body: some View {
@@ -108,7 +107,7 @@ struct OnboardingChat: View {
         .foregroundStyle(Color.ink)
         .onAppear {
             guard lines.isEmpty else { return }
-            let hi = name.isEmpty ? L("Hi there! I'm **Moonee**, your money buddy 👋") : L("Nice to meet you, **\(name)**! I'm **Moonee**, your money buddy 👋")
+            let hi = name.isEmpty ? L("Hi there! I'm **Moonee**, your money buddy") : L("Nice to meet you, **\(name)**! I'm **Moonee**, your money buddy")
             lines = [.init(fromUser: false, text: hi + "\n" + L("A few quick questions and your budget is ready. Skip anything you like.")),
                      .init(fromUser: false, text: prompt(.income))]
         }
@@ -138,8 +137,8 @@ struct OnboardingChat: View {
         case .reminders: return L("How often should Moonee nudge you?")
         case .security: return L("Last one: lock Moonee with Face ID, and allow reminders?")
         case .done:
-            return name.isEmpty ? L("All set! 🎉 Tap + and tell Moonee your first spend, like “lunch 45k”.")
-                                : L("All set, \(name)! 🎉 Tap + and tell Moonee your first spend, like “lunch 45k”.")
+            return name.isEmpty ? L("All set! Tap + and tell Moonee your first spend, like “lunch 45k”.")
+                                : L("All set, \(name)! Tap + and tell Moonee your first spend, like “lunch 45k”.")
         }
     }
 

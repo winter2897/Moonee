@@ -3,7 +3,6 @@ import SwiftUI
 extension AIMode {
     var title: String {
         switch self {
-        case .onDevice: String(localized: "Apple on-device", table: "Account")
         case .local: String(localized: "Local model", table: "Account")
         case .byok: String(localized: "Your API key (BYOK)", table: "Account")
         case .hybrid: String(localized: "Hybrid", table: "Account")
@@ -13,7 +12,6 @@ extension AIMode {
     /// Short badge for the Account row.
     var badge: String {
         switch self {
-        case .onDevice: String(localized: "On-device", table: "Account")
         case .local: String(localized: "Local", table: "Account")
         case .byok: "BYOK"
         case .hybrid: String(localized: "Hybrid", table: "Account")
@@ -22,17 +20,16 @@ extension AIMode {
 
     var summary: String {
         switch self {
-        case .onDevice: String(localized: "Apple Intelligence on this iPhone. Private, offline, free.", table: "Account")
         case .local: String(localized: "An open model (Gemma, Qwen…) you download. Private, offline, free.", table: "Account")
         case .byok: String(localized: "A cloud model with your own key. Smartest, needs internet.", table: "Account")
-        case .hybrid: String(localized: "Transactions are read on this iPhone; advice and reports use your cloud key.", table: "Account")
+        case .hybrid: String(localized: "Your local model (or the basic reader) reads transactions on this iPhone; advice and reports use your cloud key.", table: "Account")
         }
     }
 
     /// What leaves the phone in this mode (spec §6.2), naming the BYOK provider.
     func cloudNote(_ provider: String) -> String {
         switch self {
-        case .onDevice, .local:
+        case .local:
             String(localized: "Nothing is sent to the cloud. Moonee has no server.", table: "Account")
         case .byok:
             String(localized: "Sent to \(provider): what you type to Moonee, the chat so far, and the numbers Moonee looks up to answer (totals, jar balances, matching transactions). Sent with your key, straight from this iPhone; Moonee has no server.", table: "Account")
@@ -66,11 +63,8 @@ struct AISettingsView: View {
     @State private var searchKey = ""
     @State private var apiKey = ""
     @State private var model = ""
-    @State private var testResult: String?
-    @State private var testing = false
-    @State private var keyCheck: KeyCheck = .idle
-
-    enum KeyCheck: Equatable { case idle, checking, ok(Int), failed(String) }
+    @State private var connection: CheckResult = .idle
+    @State private var keyCheck: CheckResult = .idle
 
     private var usesCloud: Bool { mode == .byok || mode == .hybrid }
 
@@ -94,19 +88,22 @@ struct AISettingsView: View {
                 }
             } header: {
                 Text("AI mode", tableName: "Account")
-            } footer: {
-                if mode == .onDevice || mode == .hybrid {
-                    let apple = AppleStatus.current()
-                    Label(apple.text, systemImage: apple.canRun ? "checkmark.circle" : "exclamationmark.circle")
-                }
             }
 
             if mode == .local || mode == .hybrid {
                 Section {
+                    if LocalLLM.current == nil {
+                        Label {
+                            Text("No model downloaded yet. Moonee uses the basic reader; download a model to make it smarter.", tableName: "Account")
+                        } icon: {
+                            Image(systemName: "info.circle.fill").foregroundStyle(Color.brandDeep)
+                        }
+                        .font(.footnote)
+                    }
                     NavigationLink {
                         LocalModelsView()
                     } label: {
-                        Label { Text("Local models", tableName: "Account") } icon: { Image(systemName: "cpu") }
+                        Label { Text("Manage models", tableName: "Account") } icon: { Image(systemName: "cpu") }
                     }
                 }
             }
@@ -132,22 +129,9 @@ struct AISettingsView: View {
                             keyCheck = .idle
                         }
                     if !apiKey.isEmpty {
-                        Button(action: checkKey) {
-                            HStack {
-                                Text("Test key", tableName: "Account")
-                                Spacer()
-                                if keyCheck == .checking { ProgressView() }
-                            }
-                        }
-                        .disabled(keyCheck == .checking || LLMSettings.baseURL(provider).isEmpty)
-                        switch keyCheck {
-                        case .ok(let n):
-                            Label { Text("Key works. \(n) models available.", tableName: "Account") } icon: { Image(systemName: "checkmark.circle.fill") }
-                                .font(.footnote).foregroundStyle(Color.brandDeep)
-                        case .failed(let message):
-                            Label(message, systemImage: "exclamationmark.triangle.fill").font(.footnote).foregroundStyle(Color.danger)
-                        default: EmptyView()
-                        }
+                        Button(action: checkKey) { Text("Test key", tableName: "Account") }
+                            .disabled(keyCheck == .checking || LLMSettings.baseURL(provider).isEmpty)
+                        CheckResultRow(result: keyCheck)
                     }
                     NavigationLink {
                         ModelPickerView(provider: provider, baseURL: LLMSettings.baseURL(provider), apiKey: apiKey.trimmingCharacters(in: .whitespacesAndNewlines),
@@ -172,15 +156,9 @@ struct AISettingsView: View {
                     .font(.footnote)
                 Label { Text(SearchSettings.note) } icon: { Image(systemName: "magnifyingglass") }
                     .font(.footnote)
-                Button(action: test) {
-                    HStack {
-                        Text("Test connection", tableName: "Account")
-                        Spacer()
-                        if testing { ProgressView() }
-                    }
-                }
-                .disabled(testing)
-                if let testResult { Text(testResult).font(.footnote) }
+                Button(action: test) { Text("Test connection", tableName: "Account") }
+                    .disabled(connection == .checking)
+                CheckResultRow(result: connection)
             } header: {
                 Text("What leaves this iPhone", tableName: "Account")
             }
@@ -253,14 +231,14 @@ struct AISettingsView: View {
         .navigationTitle(Text("AI assistant", tableName: "Account"))
         .onAppear(perform: loadProvider)
         .onChange(of: provider) { loadProvider() }
-        .onChange(of: mode) { testResult = nil }
+        .onChange(of: mode) { connection = .idle }
     }
 
     private func loadProvider() {
         searchKey = searchProvider.flatMap(SearchSettings.key) ?? ""
         apiKey = LLMSettings.apiKey(for: provider) ?? ""
         model = UserDefaults.standard.string(forKey: provider.modelKey) ?? ""
-        testResult = nil
+        connection = .idle
         keyCheck = .idle
     }
 
@@ -272,7 +250,7 @@ struct AISettingsView: View {
             do {
                 let list = try await LLMSettings.client(p, key: key, model: "", baseURL: base).listModels()
                 try? ModelCache().save(list, for: p, baseURL: base)
-                keyCheck = .ok(list.count)
+                keyCheck = .ok(String(localized: "Key works. \(list.count) models available.", table: "Account"))
             } catch {
                 keyCheck = .failed(ModelPickerView.message(for: error))
             }
@@ -281,19 +259,40 @@ struct AISettingsView: View {
 
     private func test() {
         guard let llm = LLMSettings.router().candidates(for: .quickAnswer).first else {
-            testResult = "❌ " + String(localized: "No model is set up for this mode yet.", table: "Account")
+            connection = .failed(String(localized: "No model is set up for this mode yet.", table: "Account"))
             return
         }
-        testing = true
-        testResult = nil
+        connection = .checking
         Task {
             do {
-                let reply = try await llm.complete(system: "Reply with exactly one word.", user: "Say OK.")
-                testResult = "✅ " + String(localized: "Connected: \(String(reply.trimmingCharacters(in: .whitespacesAndNewlines).prefix(80)))", table: "Account")
+                _ = try await llm.complete(system: "Reply with exactly one word.", user: "Say OK.")
+                connection = .ok(String(localized: "Connected.", table: "Account"))
             } catch {
-                testResult = "❌ \(error.localizedDescription)"
+                connection = .failed(error.localizedDescription)
             }
-            testing = false
+        }
+    }
+}
+
+/// The outcome of a settings check (key, connection).
+enum CheckResult: Equatable { case idle, checking, ok(String), failed(String) }
+
+/// One row for every check result: an icon (spinner, green check, red cross) in the icon column, then the message.
+struct CheckResultRow: View {
+    let result: CheckResult
+
+    var body: some View {
+        switch result {
+        case .idle: EmptyView()
+        case .checking:
+            Label { Text("Checking…", tableName: "Account") } icon: { ProgressView() }
+                .font(.footnote).foregroundStyle(Color.inkSecondary)
+        case .ok(let message):
+            Label { Text(message) } icon: { Image(systemName: "checkmark.circle.fill") }
+                .font(.footnote).foregroundStyle(Color.brandDeep)
+        case .failed(let message):
+            Label { Text(message) } icon: { Image(systemName: "xmark.circle.fill") }
+                .font(.footnote).foregroundStyle(Color.danger)
         }
     }
 }

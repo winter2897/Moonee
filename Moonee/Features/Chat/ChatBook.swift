@@ -353,7 +353,7 @@ struct ChatCardLine: Codable, Equatable {
                 } else {
                     "**\(s("coin").capitalized) (\(s("symbol").uppercased()))**: " + rows.map { s("price", $0) }.joined(separator: " · ")
                 }
-                if !s("source").isEmpty { text += "\n" + String(localized: "Source: \(s("source"))", table: "Chat") }
+                if !s("source").isEmpty { text += "\n" + s("source") } // "Reference prices on the internet"
                 return text
             case "savingsPlan":
                 return String(localized: "Put aside **\(s("perWeek"))** a week (**\(s("perMonth"))** a month) to reach \(s("target")) by \(s("deadline")).", table: "Chat")

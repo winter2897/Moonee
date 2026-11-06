@@ -93,7 +93,7 @@ struct MonthReport {
         let money = { (v: Int) in AmountFormat.string(v, currency) }
         var out: [String] = []
         switch change {
-        case let c? where c < 0: out.append(L("You spent \(money(spent)), \(-c)% less than the month before. Nice work! 🎉"))
+        case let c? where c < 0: out.append(L("You spent \(money(spent)), \(-c)% less than the month before. Nice work!"))
         case let c? where c > 0: out.append(L("You spent \(money(spent)), \(c)% more than the month before."))
         default: out.append(L("You spent \(money(spent))."))
         }

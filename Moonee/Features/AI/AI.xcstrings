@@ -112,72 +112,6 @@
         }
       }
     },
-    "Apple Intelligence doesn't speak your language on this iPhone yet, so Moonee replied in English.": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Intelligence ໃນ iPhone ເຄື່ອງນີ້ຍັງບໍ່ຮອງຮັບພາສາຂອງເຈົ້າ Moonee ເລີຍຕອບເປັນພາສາອັງກິດເດີ"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Intelligence บน iPhone เครื่องนี้ยังไม่รองรับภาษาของคุณ Moonee เลยตอบเป็นภาษาอังกฤษนะ"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Intelligence trên iPhone này chưa hỗ trợ tiếng Việt, nên Moonee trả lời bằng tiếng Anh nhé."
-          }
-        }
-      }
-    },
-    "Apple Intelligence doesn't support this language yet.": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Intelligence ຍັງບໍ່ຮອງຮັບພາສານີ້"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Intelligence ยังไม่รองรับภาษานี้"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Intelligence chưa hỗ trợ ngôn ngữ này."
-          }
-        }
-      }
-    },
-    "Apple Intelligence wouldn't answer that one.": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Intelligence ບໍ່ຍອມຕອບຄຳຖາມນີ້"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Intelligence ไม่ยอมตอบคำถามนี้"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple Intelligence không chịu trả lời câu này."
-          }
-        }
-      }
-    },
     "Built-in": {
       "localizations": {
         "lo": {
@@ -332,6 +266,28 @@
         }
       }
     },
+    "Gold bars 999.9": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄຳແທ່ງ 999.9"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ทองคำแท่ง 999.9"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vàng miếng 999.9"
+          }
+        }
+      }
+    },
     "Gold prices": {
       "localizations": {
         "lo": {
@@ -354,46 +310,46 @@
         }
       }
     },
-    "Gold prices, exchange rates and crypto come from PNJ, Vietcombank and CoinGecko; only the item you ask about is sent, never your data.": {
+    "Gold prices, exchange rates and crypto prices are always looked up on the internet, no key needed.": {
       "localizations": {
         "lo": {
           "stringUnit": {
             "state": "translated",
-            "value": "ລາຄາຄຳ, ອັດຕາແລກປ່ຽນ ແລະ ຄຣິບໂຕ ມາຈາກ PNJ, Vietcombank ແລະ CoinGecko; ສົ່ງໄປພຽງສິ່ງທີ່ເຈົ້າຖາມ ບໍ່ເຄີຍສົ່ງຂໍ້ມູນຂອງເຈົ້າ"
+            "value": "ລາຄາຄຳ, ອັດຕາແລກປ່ຽນ ແລະ ລາຄາຄຣິບໂຕ ຊອກຫາຈາກອິນເຕີເນັດສະເໝີ, ບໍ່ຕ້ອງໃຊ້ຄີ"
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "ราคาทอง อัตราแลกเปลี่ยน และคริปโต มาจาก PNJ, Vietcombank และ CoinGecko ส่งไปแค่สิ่งที่คุณถาม ไม่เคยส่งข้อมูลของคุณ"
+            "value": "ราคาทอง อัตราแลกเปลี่ยน และราคาคริปโต ค้นจากอินเทอร์เน็ตเสมอ ไม่ต้องใช้คีย์"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Giá vàng, tỷ giá và tiền ảo lấy từ PNJ, Vietcombank và CoinGecko; chỉ gửi đi thứ bạn hỏi, không bao giờ gửi dữ liệu của bạn."
+            "value": "Giá vàng, tỷ giá và giá tiền ảo luôn được tra cứu trên internet, không cần key."
           }
         }
       }
     },
-    "Gold, exchange rates and crypto always come from PNJ, Vietcombank and CoinGecko, no key needed.": {
+    "Gold prices, exchange rates and crypto prices are looked up on the internet. Moonee only sends what you ask about, never your data.": {
       "localizations": {
         "lo": {
           "stringUnit": {
             "state": "translated",
-            "value": "ຄຳ, ອັດຕາແລກປ່ຽນ ແລະ ຄຣິບໂຕ ດຶງຈາກ PNJ, Vietcombank ແລະ CoinGecko ສະເໝີ ບໍ່ຕ້ອງໃຊ້ຄີ"
+            "value": "ລາຄາຄຳ, ອັດຕາແລກປ່ຽນ ແລະ ລາຄາຄຣິບໂຕ ຊອກຫາຈາກອິນເຕີເນັດ. Moonee ສົ່ງໄປພຽງສິ່ງທີ່ທ່ານຖາມ, ບໍ່ເຄີຍສົ່ງຂໍ້ມູນຂອງທ່ານ."
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "ทอง อัตราแลกเปลี่ยน และคริปโต ดึงจาก PNJ, Vietcombank และ CoinGecko เสมอ ไม่ต้องใช้คีย์"
+            "value": "ราคาทอง อัตราแลกเปลี่ยน และราคาคริปโต ค้นจากอินเทอร์เน็ต Moonee ส่งไปแค่สิ่งที่คุณถาม ไม่ส่งข้อมูลของคุณเลย"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Giá vàng, tỷ giá và tiền ảo luôn lấy từ PNJ, Vietcombank và CoinGecko, không cần key."
+            "value": "Giá vàng, tỷ giá và giá tiền ảo được tra cứu trên internet. Moonee chỉ gửi đi điều bạn hỏi, không bao giờ gửi dữ liệu của bạn."
           }
         }
       }
@@ -508,24 +464,24 @@
         }
       }
     },
-    "Moonee asked your other on-device model instead.": {
+    "Moonee asked your cloud model instead.": {
       "localizations": {
         "lo": {
           "stringUnit": {
             "state": "translated",
-            "value": "Moonee ເລີຍຖາມໂມເດວອີກໂຕໃນເຄື່ອງແທນເດີ"
+            "value": "Moonee ເລີຍຖາມໂມເດວຄລາວແທນເດີ"
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "Moonee เลยถามโมเดลอีกตัวในเครื่องแทนนะ"
+            "value": "Moonee เลยถามโมเดลคลาวด์แทนนะ"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Moonee nhờ model còn lại trên máy trả lời thay nhé."
+            "value": "Moonee nhờ model cloud trả lời thay nhé."
           }
         }
       }
@@ -640,6 +596,28 @@
         }
       }
     },
+    "Plain gold rings 999.9": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແຫວນຄຳລຽບ 999.9"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แหวนทองเกลี้ยง 999.9"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhẫn trơn 999.9"
+          }
+        }
+      }
+    },
     "Read photos and receipts": {
       "localizations": {
         "lo": {
@@ -658,28 +636,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Đọc ảnh và hoá đơn"
-          }
-        }
-      }
-    },
-    "Ready, but Apple Intelligence doesn't speak your language yet: Moonee answers in English": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ພ້ອມແລ້ວ ແຕ່ Apple Intelligence ຍັງບໍ່ຮອງຮັບພາສາຂອງເຈົ້າ: Moonee ຈະຕອບເປັນພາສາອັງກິດ"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "พร้อมแล้ว แต่ Apple Intelligence ยังไม่รองรับภาษาของคุณ: Moonee จะตอบเป็นภาษาอังกฤษ"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Đã sẵn sàng, nhưng Apple Intelligence chưa hỗ trợ tiếng Việt: Moonee sẽ trả lời bằng tiếng Anh"
           }
         }
       }
@@ -724,6 +680,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Giao dịch gần đây"
+          }
+        }
+      }
+    },
+    "Reference prices on the internet": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຄາອ້າງອີງໃນອິນເຕີເນັດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ราคาอ้างอิงบนอินเทอร์เน็ต"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giá tham khảo trên internet"
           }
         }
       }

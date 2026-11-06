@@ -91,8 +91,7 @@ struct ToolsTests {
         #expect(badArgs?["error"] != nil)
     }
 
-    @Test func everyToolWorksWithFoundationModels() throws {
-        for tool in tools.all { _ = try FoundationTool(tool) } // schema converts to a GenerationSchema
+    @Test func everySkillToolExists() {
         #expect(Set(Skill.all.flatMap(\.tools)).isSubset(of: Set(tools.all.map(\.name))))
     }
 }

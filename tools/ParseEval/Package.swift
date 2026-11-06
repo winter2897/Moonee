@@ -1,5 +1,5 @@
 // swift-tools-version: 6.2
-// Vietnamese parse eval (spec §9.2): rules vs Apple on-device vs each catalog model, on this Mac.
+// Vietnamese parse eval (spec §9.2): rules vs each catalog model, on this Mac.
 // The app's own parser/AI sources are symlinked into Sources/ParseEval/App, so this measures the shipped code.
 //   cd tools/ParseEval && ./run.sh [models-dir]   (models are downloaded there on first run, ~28 GB; add `speed` to skip the parse eval)
 import PackageDescription

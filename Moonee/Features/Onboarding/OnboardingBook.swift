@@ -179,11 +179,8 @@ extension Prefs {
 
     // MARK: AI mode
 
-    /// Spec §7 step 6: suggest a mode from the device. Apple Intelligence when it is on (a local model instead for
-    /// Vietnamese, Thai and Lao if one fits, spec §10.4: Apple is weak or missing there), else a local model if one fits
-    /// the RAM, else BYOK.
-    nonisolated static func suggestedMode(appleAvailable: Bool, localFits: Bool, language: String) -> AIMode {
-        if appleAvailable && (!["vi", "th", "lo"].contains(language) || !localFits) { return .onDevice }
-        return localFits ? .local : .byok
+    /// Spec §7 step 6: suggest a mode from the device: a local model if one fits the RAM, else BYOK.
+    nonisolated static func suggestedMode(localFits: Bool) -> AIMode {
+        localFits ? .local : .byok
     }
 }

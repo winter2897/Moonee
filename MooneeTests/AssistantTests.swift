@@ -5,8 +5,8 @@ import Testing
 struct AssistantTests {
     let ctx = Books.context
 
-    func assistant(_ mode: AIMode = .byok, onDevice: (any LLM)? = nil, cloud: (any LLM)? = nil, language: String = "vi") -> Assistant {
-        Assistant(router: AIRouter(mode: mode, onDevice: onDevice, local: nil, cloud: cloud), tools: Books.tools, language: language)
+    func assistant(_ mode: AIMode = .byok, local: (any LLM)? = nil, cloud: (any LLM)? = nil, language: String = "vi") -> Assistant {
+        Assistant(router: AIRouter(mode: mode, local: local, cloud: cloud), tools: Books.tools, language: language)
     }
 
     static func json(_ items: String) -> String { #"{"transactions":[\#(items)]}"# }
@@ -14,18 +14,18 @@ struct AssistantTests {
     // MARK: Router (spec §9.1)
 
     @Test func routerFollowsTheMode() {
-        let apple = ScriptedLLM(small: true, replies: []), cloud = ScriptedLLM(replies: [])
+        let local = ScriptedLLM(small: true, replies: []), cloud = ScriptedLLM(replies: [])
         func ids(_ mode: AIMode, _ job: AIJob) -> [ObjectIdentifier] {
-            AIRouter(mode: mode, onDevice: apple, local: nil, cloud: cloud).candidates(for: job).map { ObjectIdentifier($0 as AnyObject) }
+            AIRouter(mode: mode, local: local, cloud: cloud).candidates(for: job).map { ObjectIdentifier($0 as AnyObject) }
         }
-        let a = ObjectIdentifier(apple), c = ObjectIdentifier(cloud)
-        #expect(ids(.onDevice, .advice) == [a])
+        let l = ObjectIdentifier(local), c = ObjectIdentifier(cloud)
+        #expect(ids(.local, .advice) == [l])               // nothing leaves the phone
         #expect(ids(.byok, .parse) == [c])
-        #expect(ids(.local, .parse) == [a])               // no local model yet → Apple stands in (still on the phone)
-        #expect(ids(.hybrid, .parse) == [a])              // typed transactions stay on the phone
-        #expect(ids(.hybrid, .quickAnswer) == [a, c])
-        #expect(ids(.hybrid, .advice) == [c, a])
-        #expect(AIRouter(mode: .hybrid, onDevice: nil, local: nil, cloud: cloud).candidates(for: .parse).isEmpty)
+        #expect(ids(.hybrid, .parse) == [l])              // typed transactions stay on the phone
+        #expect(ids(.hybrid, .quickAnswer) == [l, c])
+        #expect(ids(.hybrid, .advice) == [c, l])
+        #expect(AIRouter(mode: .hybrid, local: nil, cloud: cloud).candidates(for: .parse).isEmpty) // rules
+        #expect(AIRouter(mode: .local, local: nil, cloud: cloud).candidates(for: .advice).isEmpty) // no model yet: rules + numbers
     }
 
     // MARK: Parse path
@@ -128,16 +128,14 @@ struct AssistantTests {
         #expect(r.txns.first?.missing == [.amount])
     }
 
-    @Test func nextModelIsTriedAfterAFailure() async {
+    @Test func brokenLocalModelFallsBackToRules() async {
         let broken = ScriptedLLM(small: true, replies: ["{}"])
-        let cloud = ScriptedLLM(replies: [Self.json(#"{"amountText":"45k","kind":"expense","note":"Phở"}"#)])
-        // hybrid parse only uses on-device models, so use a router with both in the parse list.
-        var a = assistant(.onDevice, onDevice: broken)
-        a.router.local = cloud
-        a.router.mode = .hybrid
-        let r = await a.parse("xyz 45k", context: ctx) // no category cue: the small models are asked
-        #expect(r.usedModel)
+        let cloud = ScriptedLLM(replies: [])
+        let r = await assistant(.hybrid, local: broken, cloud: cloud).parse("xyz 45k", context: ctx) // no category cue: the model is asked
+        #expect(!r.usedModel)
+        #expect(r.txns.map(\.amount) == [45_000])
         #expect(broken.requests.count == 1)
+        #expect(cloud.requests.isEmpty) // hybrid never sends typed transactions to the cloud
     }
 
     // MARK: Skills and answers
@@ -180,9 +178,9 @@ struct AssistantTests {
     }
 
     @Test func smallModelGetsShortSkillAndFacts() async {
-        let apple = ScriptedLLM(small: true, replies: ["Ăn uống tháng này ₫2,500,000 nha."])
-        _ = await assistant(.onDevice, onDevice: apple).handle("Tháng này mình ăn uống hết bao nhiêu?", context: ctx)
-        let req = apple.requests.first
+        let local = ScriptedLLM(small: true, replies: ["Ăn uống tháng này ₫2,500,000 nha."])
+        _ = await assistant(.local, local: local).handle("Tháng này mình ăn uống hết bao nhiêu?", context: ctx)
+        let req = local.requests.first
         #expect(req?.tools.isEmpty == true)
         #expect(req?.messages.last?.text.contains("FACTS") == true)
         #expect(req?.messages.last?.text.contains(#""spent":"₫2,500,000""#) == true) // pre-computed for food this month
@@ -216,6 +214,5 @@ struct AssistantTests {
         let history: [LLMMessage] = [.init(role: .user, text: "hi"), .init(role: .assistant, text: "Chào bạn!")]
         _ = await assistant(cloud: model).handle("cảm ơn Moonee", history: history, context: ctx)
         #expect(model.requests.first?.messages.map(\.text) == ["hi", "Chào bạn!", "cảm ơn Moonee"])
-        #expect(AppleLLM.prompt(history + [.init(role: .user, text: "now")]).contains("Moonee: Chào bạn!"))
     }
 }
