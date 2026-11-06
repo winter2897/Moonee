@@ -50,6 +50,8 @@ struct Assistant: Sendable {
     var catalog = SkillCatalog.builtIn
     /// Thinking effort for answers (the chat chip); clients drop levels the model can't take. Parsing never thinks.
     var effort: ReasoningEffort? = LLMSettings.effort
+    /// Answer text so far, for a chat bubble that fills in while a streaming model writes (answers only, not parsing).
+    var onPartial: (@Sendable (String) -> Void)?
 
     enum Output: Sendable, Equatable {
         /// Save right away and show cards (spec §3.2); ask for `missing` fields first. `usedModel` false = rule parser.
@@ -157,9 +159,10 @@ struct Assistant: Sendable {
                 let lang = replyLanguage(model)
                 let facts = skillTools.isEmpty ? nil : await prefetched()
                 for tight in [false, true] {
-                    let request = CompactPrompt.request(
+                    var request = CompactPrompt.request(
                         persona: Skill.persona(language: lang, short: true), skill: skill.instructions(language: lang, short: true),
                         facts: facts, customPrompt: customPrompt, history: history, text: text, tight: tight)
+                    request.onPartial = onPartial
                     do {
                         let reply = try await model.respond(request)
                         if !reply.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
@@ -181,6 +184,7 @@ struct Assistant: Sendable {
             if !customPrompt.isEmpty { request.system += "\n\nThe user's own instructions:\n" + customPrompt }
             request.effort = effort
             request.tools = skillTools
+            request.onPartial = onPartial
             if let reply = try? await model.respond(request), !reply.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 return Reply(output: .answer(reply, skill: skill.id, sources: log.sources), notice: notice)
             }

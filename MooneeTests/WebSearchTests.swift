@@ -185,7 +185,7 @@ struct WebSearchTests {
         #expect(out == .answer("Theo SJC, giá bán 152 triệu.", skill: "market-lookup",
                                sources: [WebSource(title: "SJC", url: URL(string: "https://sjc.vn")!, site: "sjc.vn")]))
         let system = try #require(apple.requests.first?.system)
-        #expect(system.contains("https://sjc.vn"))
+        #expect(apple.requests.first?.messages.last?.text.contains("https://sjc.vn") == true) // facts ride in the user turn
         #expect(system.contains(Skill.marketLookup.instructions(language: "vi", short: true)))
     }
 }

@@ -183,8 +183,8 @@ struct AssistantTests {
         _ = await assistant(.onDevice, onDevice: apple).handle("Tháng này mình ăn uống hết bao nhiêu?", context: ctx)
         let req = apple.requests.first
         #expect(req?.tools.isEmpty == true)
-        #expect(req?.system.contains("FACTS") == true)
-        #expect(req?.system.contains(#""spent":"₫2,500,000""#) == true) // pre-computed for food this month
+        #expect(req?.messages.last?.text.contains("FACTS") == true)
+        #expect(req?.messages.last?.text.contains(#""spent":"₫2,500,000""#) == true) // pre-computed for food this month
         #expect(req?.system.contains(Skill.spendingCoach.instructions(language: "vi", short: true)) == true)
     }
 

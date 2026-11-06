@@ -78,7 +78,7 @@ struct SmallModelTests {
         #expect(r.output == .answer("Tháng này bạn tiêu 3.400.000 ₫.", skill: "spending-coach"))
         #expect(r.notice == .tooLong)
         #expect(apple.requests.map(\.messages.count) == [5, 1]) // 4 clipped turns + the question, then the question alone
-        #expect(apple.requests[0].messages.allSatisfy { $0.text.count <= CompactPrompt.turnChars + 1 })
+        #expect(apple.requests[0].messages.dropLast().allSatisfy { $0.text.count <= CompactPrompt.turnChars + 1 })
 
         // Guardrails: no retry, the numbers answer, and the chat is told.
         let blocked = FlakyLLM(errors: [AINotice.blocked])
@@ -108,7 +108,9 @@ struct SmallModelTests {
         #expect(r.tools.isEmpty)
         #expect(r.system.hasPrefix(Skill.persona(language: "vi", short: true)))
         #expect(r.system.contains(Skill.spendingCoach.instructions(language: "vi", short: true)))
-        #expect(r.system.contains("FACTS"))
+        #expect(!r.system.contains("spendingSummary: {")) // stable system prompt: the facts ride in the user turn
+        #expect(r.messages.last?.text.hasPrefix("FACTS") == true)
+        #expect(r.messages.last?.text.hasSuffix("tháng này mình tiêu bao nhiêu?") == true)
         // ~3 characters a Vietnamese token: well inside Apple's 4096-token window with room for the answer.
         #expect(r.system.count + r.messages.map(\.text.count).reduce(0, +) < 3_600)
         #expect(Skill.persona(language: "vi", short: true).count < 400)
@@ -119,6 +121,16 @@ struct SmallModelTests {
         let facts = CompactPrompt.facts([.init(tool: "webSearch", json: search)])
         #expect(facts.count < CompactPrompt.factsChars + 20)
         #expect(facts.contains("https://a3.vn") && !facts.contains("https://a4.vn"))
+    }
+
+    @Test func systemPromptIsStableAndPartialsArePassedOn() async {
+        let local = ScriptedLLM(small: true, replies: ["a", "b"])
+        var a = Assistant(router: AIRouter(mode: .local, local: local), tools: Books.tools, language: "vi")
+        a.onPartial = { _ in }
+        _ = await a.handle("tháng này mình tiêu bao nhiêu?", context: ctx)
+        _ = await a.handle("tuần trước mình tiêu bao nhiêu?", context: ctx)
+        #expect(local.requests[0].system == local.requests[1].system) // same prefix: a local model reuses its KV cache
+        #expect(local.requests.allSatisfy { $0.onPartial != nil })
     }
 
     @Test func rulesThatReadEverythingSkipTheSmallModel() async {
@@ -182,9 +194,9 @@ struct SmallModelTests {
         let r = await a.reply("Giá vàng sjc nay là bao nhiêu thế", context: ctx)
         guard case .answer(_, "market-lookup", let sources) = r.output else { Issue.record("expected an answer"); return }
         #expect(sources.map(\.site) == ["pnj.com.vn"])
-        let system = try #require(apple.requests.first?.system)
-        #expect(system.contains("₫141,000,000"))
-        #expect(!system.contains("webSearch:")) // the price answered it: no search
+        let question = try #require(apple.requests.first?.messages.last?.text)
+        #expect(question.contains("₫141,000,000"))
+        #expect(!question.contains("webSearch:")) // the price answered it: no search
         #expect(r.notice == nil)
 
         // No model at all: the plain numbers, labelled.

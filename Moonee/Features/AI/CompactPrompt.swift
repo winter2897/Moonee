@@ -5,6 +5,8 @@ import Foundation
 /// (measured with `SystemLanguageModel.tokenCount`), so the whole request stays under ~1,800 tokens:
 /// short persona + short skill + clipped FACTS, the last few turns clipped, the message clipped.
 /// `tight` (the retry after a context overflow) drops the history and halves the facts.
+/// The system prompt (persona + skill + the user's instructions) stays the same between questions so a local model can
+/// reuse its KV cache; the FACTS, which change with every question, go into the last user message.
 enum CompactPrompt {
     static let factsChars = 1_500
     static let turns = 4
@@ -16,11 +18,13 @@ enum CompactPrompt {
                         history: [LLMMessage], text: String, tight: Bool = false) -> LLMRequest {
         var system = persona + "\n\n" + skill
         if !customPrompt.isEmpty { system += "\n\nThe user's own instructions:\n" + clip(customPrompt, customChars) }
+        var message = clip(text, textChars)
         if let facts {
-            system += "\n\nFACTS (computed by the app; use only these numbers):\n" + self.facts(facts, limit: tight ? factsChars / 2 : factsChars)
+            message = "FACTS (computed by the app; use only these numbers):\n" + self.facts(facts, limit: tight ? factsChars / 2 : factsChars)
+                + "\n\n" + message
         }
         let past = tight ? [] : history.suffix(turns).map { LLMMessage(role: $0.role, text: clip($0.text, turnChars)) }
-        return LLMRequest(system: system, messages: past + [.init(role: .user, text: clip(text, textChars))])
+        return LLMRequest(system: system, messages: past + [.init(role: .user, text: message)])
     }
 
     /// One line per tool. Search results are cut to 3 short hits; other JSON is clipped to its share of `limit`.
