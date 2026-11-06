@@ -155,7 +155,7 @@ struct SecurityView: View {
                     Label { Text("Hide content in App Switcher", tableName: "Account") } icon: { Image(systemName: "rectangle.on.rectangle.slash") }
                 }
             } footer: {
-                Text("Hidden amounts show as •••••.", tableName: "Account")
+                Text("Hidden amounts show as *****.", tableName: "Account")
             }
 
             Section {

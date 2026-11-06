@@ -1,14 +1,14 @@
 import SwiftUI
 
 extension EnvironmentValues {
-    /// "Hide balances" (spec §6). Set once near the root; every `AmountText` below shows `•••••`.
+    /// "Hide balances" (spec §6). Set once near the root; every `AmountText` below shows `*****`.
     @Entry var balanceHidden = false
 }
 
 /// Money from plain values: `minor` units (VND 0 digits, USD 2) + ISO 4217 code.
 /// ponytail: mirrors S1's `Money.formatted()` so components don't depend on model types.
 enum AmountFormat {
-    static let mask = "•••••"
+    static let mask = "*****"
 
     static func major(_ minor: Int, _ code: String) -> Decimal {
         let digits = fractionDigits(code)
@@ -51,7 +51,7 @@ enum AmountFormat {
 }
 
 /// An amount with tabular digits that shrinks instead of truncating at large Dynamic Type sizes,
-/// turns into a fixed-width `•••••` when balances are hidden, and is spoken in words.
+/// turns into a fixed-width `*****` when balances are hidden, and is spoken in words.
 struct AmountText: View {
     let minor: Int
     let currency: String
