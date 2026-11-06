@@ -50,9 +50,9 @@ Fresh installs (a reinstall, a new iPhone without a backup) seed the default jar
 
 ### English (primary, en-US)
 
-**Name** (≤30): `Moonee: Money & Budget Jars`
+**Name** (≤30): `Moonee: Your AI Money Buddy`
 
-**Subtitle** (≤30): `Log spending by chat or voice`
+**Subtitle** (≤30): `Chat Your Way to Savings`
 
 **Promotional text** (≤170):
 > Say it, type it or snap the receipt: Moonee logs it, sorts it and splits your income into jars. Paid once. No account, no ads, no subscription. Your data stays yours.
@@ -102,9 +102,9 @@ In English and Vietnamese.
 
 ### Vietnamese (vi)
 
-**Tên** (≤30): `Moonee: Sổ thu chi & Lọ tiền`
+**Tên** (≤30): `Moonee: Bạn tài chính AI`
 
-**Phụ đề** (≤30): `Ghi chi tiêu chỉ bằng một câu`
+**Phụ đề** (≤30): `Trò chuyện để tiết kiệm hơn`
 
 **Văn bản quảng cáo** (≤170):
 > Nói, gõ hay chụp hoá đơn là xong: Moonee tự ghi, tự phân loại và chia thu nhập vào các lọ. Mua một lần, không tài khoản, không quảng cáo. Dữ liệu là của bạn.
@@ -259,7 +259,7 @@ Repeat with an "iPhone 17 Pro" simulator for 6.3".
 ## 8. Owner-only steps (no session does these)
 
 1. **Agreements**: App Store Connect → Business → accept the **Paid Apps Agreement**, add tax forms and a bank account. A paid app cannot go on sale without it.
-2. **App record**: App Store Connect → Apps → **+** → New App → iOS, name `Moonee: Money & Budget Jars`, primary language English (U.S.), bundle ID `com.haiquan.moonee`, SKU `moonee-ios`, full access. Then add the Vietnamese localization.
+2. **App record**: App Store Connect → Apps → **+** → New App → iOS, name `Moonee: Your AI Money Buddy`, primary language English (U.S.), bundle ID `com.haiquan.moonee`, SKU `moonee-ios`, full access. Then add the Vietnamese localization.
 3. **Upload**: Xcode → Window → Organizer → the archive → Distribute App → App Store Connect → Upload; or drag `build/export/Moonee.ipa` into the Transporter app.
 4. **Price**: Pricing and Availability → Price Schedule → base country + price **[PRICE — owner decides]**; Apple fills other storefronts. Availability: all countries or a list. No in-app purchases.
 5. **Metadata**: section 3 in both localizations, screenshots from section 6, App Privacy from section 4, age rating from section 5, category Finance / Productivity, copyright `2026 Quan Tran`, support and privacy policy URLs.
