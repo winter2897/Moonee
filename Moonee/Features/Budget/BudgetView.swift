@@ -1,101 +1,55 @@
 import SwiftData
 import SwiftUI
 
-/// Budget tab (spec §4.1–4.3): jars, wallets, recurring bills, as in the Budget mockup.
+/// Budget tab (spec §4.1–4.3): one inset-grouped list — jars, wallets (with credit cards), recurring bills.
+/// Adding things lives in the + menu; per-row actions are swipes and context menus.
 struct BudgetView: View {
-    enum Segment: String, Hashable { case jars, wallets, bills }
-
-    #if DEBUG
-    // Screenshots: launch with `-budgetSegment wallets`.
-    @State private var segment = UserDefaults.standard.string(forKey: "budgetSegment").flatMap(Segment.init) ?? .jars
-    #else
-    @State private var segment = Segment.jars
-    #endif
-    @State private var showChart = false
+    @State private var path = NavigationPath()
+    @State private var sheet: BudgetSheet?
+    @State private var month = Calendar.current.dateInterval(of: .month, for: .now)!
     #if DEBUG
     @Environment(\.modelContext) private var context
     #endif
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(spacing: 16) {
-                    header
-                    segments
-                    switch segment {
-                    case .jars: JarsSection()
-                    case .wallets: WalletsSection()
-                    case .bills: BillsSection()
+        NavigationStack(path: $path) {
+            List {
+                JarsSection(month: $month, sheet: $sheet, path: $path)
+                WalletsSection(sheet: $sheet)
+                BillsSection(sheet: $sheet)
+            }
+            .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
+            .background(MooneeBackground())
+            .navigationTitle(loc("Budget"))
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Button(loc("Move between jars"), systemImage: "arrow.left.arrow.right") { sheet = .transfer(JarTransferDraft()) }
+                        Button(loc("Add jar"), systemImage: "square.stack.3d.up") { path.append(BudgetRoute.jarSettings(add: true, edit: nil)) }
+                        Button(loc("Add wallet"), systemImage: "wallet.bifold") { sheet = .wallet(nil) }
+                        Button(loc("Add bill"), systemImage: "calendar.badge.plus") { sheet = .bill(nil) }
+                    } label: {
+                        Label(loc("Add"), systemImage: "plus")
                     }
                 }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 24)
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Button(loc("Spending by jar"), systemImage: "chart.pie") { sheet = .chart }
+                        Button(loc("Edit income split"), systemImage: "percent") { path.append(BudgetRoute.jarSettings(add: false, edit: nil)) }
+                        Button(loc("Assign categories to jars"), systemImage: "arrow.triangle.branch") { path.append(BudgetRoute.mapping) }
+                        Button(loc("Reminders"), systemImage: "bell") { path.append(BudgetRoute.reminders) }
+                    } label: {
+                        Label(loc("More"), systemImage: "ellipsis")
+                    }
+                }
             }
-            .background(MooneeBackground())
-            .foregroundStyle(Color.ink)
-            .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: BudgetRoute.self) { $0.view }
-            .sheet(isPresented: $showChart) { JarSpendingChart() }
+            .sheet(item: $sheet) { $0.view }
         }
         #if DEBUG
         .task { BudgetDemo.seedIfRequested(context) }
         #endif
-    }
-
-    private var header: some View {
-        VStack(spacing: 6) {
-            MooneeHeader(Text(loc("Budget & jars"))) {
-                Button { showChart = true } label: { HeaderCircle("chart.bar") }
-                    .accessibilityLabel(loc("Spending by jar"))
-            } trailing: {
-                Menu {
-                    NavigationLink(value: BudgetRoute.reminders) { Label(loc("Reminders"), systemImage: "bell") }
-                    NavigationLink(value: BudgetRoute.jarSettings(add: false, edit: nil)) { Label(loc("Customize jars"), systemImage: "square.stack.3d.up") }
-                    NavigationLink(value: BudgetRoute.mapping) { Label(loc("Assign categories to jars"), systemImage: "arrow.triangle.branch") }
-                } label: { HeaderCircle("ellipsis") }
-                    .accessibilityLabel(loc("More"))
-            }
-            MooneeHero(mood: .happy, compact: true)
-        }
-        .padding(.top, 8)
-    }
-
-    private var segments: some View {
-        // Long labels (vi: "Định kỳ & Hoá đơn") drop the icons, then shrink, before they get cut.
-        ViewThatFits(in: .horizontal) {
-            pills(icons: true)
-            pills(icons: false)
-            ScrollView(.horizontal, showsIndicators: false) { pills(icons: true) } // large Dynamic Type: scroll, never truncate
-        }
-        .padding(4)
-        .background(Color.surface.opacity(0.7), in: .capsule)
-    }
-
-    private func pills(icons: Bool) -> some View {
-        HStack(spacing: 0) {
-            pill(.jars, loc("Jars"), icons ? "square.stack.3d.up" : nil)
-            Spacer(minLength: 2)
-            pill(.wallets, loc("Wallets / Accounts"), icons ? "wallet.bifold" : nil)
-            Spacer(minLength: 2)
-            pill(.bills, loc("Recurring & Bills"), icons ? "calendar" : nil)
-        }
-        .font(.chip)
-    }
-
-    private func pill(_ value: Segment, _ title: String, _ symbol: String?) -> some View {
-        Button { withAnimation(.snappy) { segment = value } } label: {
-            HStack(spacing: 4) {
-                if let symbol { Image(systemName: symbol).imageScale(.small) }
-                Text(title).lineLimit(1)
-            }
-            .padding(.horizontal, 8).padding(.vertical, 7)
-            .frame(minHeight: 36)
-            .foregroundStyle(segment == value ? .white : Color.ink)
-            .background { if segment == value { Capsule().fill(LinearGradient.brand) } }
-            .contentShape(.capsule)
-        }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(segment == value ? .isSelected : [])
     }
 }
 
@@ -116,37 +70,63 @@ enum BudgetRoute: Hashable {
     }
 }
 
-/// Section title used in each segment ("Jars (6)").
-struct BudgetSectionHeader<Trailing: View>: View {
-    let title: String
-    @ViewBuilder var trailing: Trailing
+/// Every sheet the Budget list opens, presented once at the list (not from rows, which may scroll away).
+enum BudgetSheet: Identifiable {
+    case transfer(JarTransferDraft)
+    case wallet(Wallet?)
+    case payCard(Wallet, debt: Int)
+    case bill(Recurring?)
+    case payBill(Recurring)
+    case chart
 
-    var body: some View {
-        HStack(alignment: .firstTextBaseline) {
-            Text(title).font(.sectionTitle)
-            Spacer(minLength: 8)
-            trailing.font(.secondaryText).foregroundStyle(Color.brandDeep)
+    var id: String {
+        switch self {
+        case .transfer(let d): "transfer.\(d.id)"
+        case .wallet(let w): "wallet.\(w.map { "\($0.persistentModelID)" } ?? "new")"
+        case .payCard(let w, _): "pay.\(w.persistentModelID)"
+        case .bill(let b): "bill.\(b.map { "\($0.persistentModelID)" } ?? "new")"
+        case .payBill(let b): "paid.\(b.persistentModelID)"
+        case .chart: "chart"
         }
-        .padding(.horizontal, 4)
-        .padding(.top, 4)
+    }
+
+    @ViewBuilder var view: some View {
+        switch self {
+        case .transfer(let d): JarTransferSheet(draft: d)
+        case .wallet(let w): WalletForm(wallet: w)
+        case .payCard(let w, let debt): PayCardSheet(card: w, debt: debt)
+        case .bill(let b): RecurringForm(bill: b)
+        case .payBill(let b): PayBillSheet(bill: b)
+        case .chart: JarSpendingChart()
+        }
     }
 }
 
-/// Square action tile under the jar list ("Move between jars", …); wrap in a Button or NavigationLink.
-struct ActionTile: View {
+/// List row: tinted SF Symbol, title, optional second line, trailing value.
+struct BudgetRow<Subtitle: View, Value: View>: View {
     let title: String
     let symbol: String
+    var tint: Color = .brandDeep
+    @ViewBuilder var subtitle: Subtitle
+    @ViewBuilder var value: Value
 
     var body: some View {
-        VStack(spacing: 8) {
-            Image(systemName: symbol).font(.title2).foregroundStyle(Color.brandPrimary)
-            Text(title).font(.chip).multilineTextAlignment(.center).lineLimit(2).minimumScaleFactor(0.8)
+        LabeledContent {
+            value.foregroundStyle(Color.ink).monospacedDigit()
+        } label: {
+            Label {
+                Text(title).foregroundStyle(Color.ink)
+                subtitle.font(.subheadline)
+            } icon: {
+                Image(systemName: symbol).foregroundStyle(tint)
+            }
         }
-        .foregroundStyle(Color.ink)
-        .frame(maxWidth: .infinity, minHeight: 92)
-        .padding(.horizontal, 4)
-        .background(Color.surface.opacity(0.85), in: .rect(cornerRadius: 18))
-        .contentShape(.rect)
+    }
+}
+
+extension BudgetRow where Subtitle == EmptyView {
+    init(title: String, symbol: String, tint: Color = .brandDeep, @ViewBuilder value: () -> Value) {
+        self.init(title: title, symbol: symbol, tint: tint, subtitle: { EmptyView() }, value: value)
     }
 }
 

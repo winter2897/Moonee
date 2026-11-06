@@ -70,6 +70,27 @@ import Testing
         #expect(try context.fetchCount(FetchDescriptor<Txn>()) == 2)
     }
 
+    @Test func billOnThe31stKeepsItsDay() throws {
+        let context = try makeContext()
+        let date = { (y: Int, m: Int, d: Int) in self.cal.date(from: DateComponents(year: y, month: m, day: d, hour: 12))! }
+        let rent = Recurring(name: "Rent", amount: 100, nextDue: date(2027, 1, 31))
+        context.insert(rent)
+        var dues: [Date] = []
+        for _ in 0..<4 {
+            BudgetActions.markPaid(rent, date: rent.nextDue, jars: [], in: context, calendar: cal)
+            dues.append(rent.nextDue)
+        }
+        // Short months use their last day; the 31st comes back as soon as the month has one.
+        #expect(dues == [date(2027, 2, 28), date(2027, 3, 31), date(2027, 4, 30), date(2027, 5, 31)])
+        #expect(rent.dueDay == 31)
+
+        // Yearly on Feb 29: Feb 28 in common years, Feb 29 again in a leap year.
+        #expect(BudgetActions.nextDue(after: date(2027, 2, 28), .yearly, day: 29, calendar: cal) == date(2028, 2, 29))
+        // A bill due on the 30th stays on the 30th after February.
+        #expect(BudgetActions.nextDue(after: date(2027, 2, 28), .monthly, day: 30, calendar: cal) == date(2027, 3, 30))
+        #expect(BudgetActions.nextDue(after: date(2027, 3, 31), .weekly, day: 31, calendar: cal) == date(2027, 4, 7))
+    }
+
     @Test func nextCardDate() {
         #expect(BudgetActions.nextDate(day: 15, from: at(11, 10), calendar: cal) == cal.startOfDay(for: at(11, 15)))
         #expect(BudgetActions.nextDate(day: 5, from: at(11, 10), calendar: cal) == cal.startOfDay(for: at(12, 5)))

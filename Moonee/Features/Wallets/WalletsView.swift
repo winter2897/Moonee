@@ -3,63 +3,70 @@ import SwiftUI
 
 /// Wallets as a standalone screen (Account → Wallets).
 struct WalletsView: View {
+    @State private var sheet: BudgetSheet?
+
     var body: some View {
-        WalletsSection().mooneeScreen(loc("Wallets"))
+        List { WalletsSection(sheet: $sheet) }
+            .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
+            .background(MooneeBackground())
+            .navigationTitle(loc("Wallets"))
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(loc("Add wallet"), systemImage: "plus") { sheet = .wallet(nil) }
+                }
+            }
+            .sheet(item: $sheet) { $0.view }
     }
 }
 
-/// Wallets segment of the Budget tab (spec §4.2): where the money is. Credit cards show debt, limit and days.
+/// Wallets section of the Budget list (spec §4.2): total, each wallet, credit cards with debt, limit and due day.
 struct WalletsSection: View {
+    @Binding var sheet: BudgetSheet?
     @Query(sort: \Wallet.order) private var wallets: [Wallet]
     @Query private var txns: [Txn]
-    @State private var editing: Wallet?
-    @State private var adding = false
-    @State private var paying: Wallet?
 
     var body: some View {
         let ledger = Ledger(txns: txns, wallets: wallets, jars: [])
         let balance = { (w: Wallet) in ledger.walletBalance(w.persistentModelID) }
-        let cards = wallets.filter { $0.type == .credit }
-        let others = wallets.filter { $0.type != .credit }
-        VStack(spacing: 12) {
-            // ponytail: sums every wallet as the default currency; convert when multi-currency wallets ship
-            VStack(alignment: .leading, spacing: 8) {
-                Text(loc("Total in wallets")).font(.rowTitle)
-                AmountText(wallets.reduce(0) { $0 + balance($1) }, currency: Money.defaultCurrency)
-                    .heroAmountFont()
-                let debt = cards.reduce(0) { $0 + max(-balance($1), 0) }
-                if debt > 0 {
-                    HStack(spacing: 4) {
-                        Text(loc("Card debt")).foregroundStyle(Color.inkSecondary)
-                        AmountText(debt, currency: Money.defaultCurrency).fontWeight(.semibold)
-                    }
-                    .font(.secondaryText)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .card(padding: 18)
-
-            BudgetSectionHeader(title: String(localized: "Wallets (\(others.count))", table: "Budget")) {
-                Button(loc("Add"), systemImage: "plus") { adding = true }.fontWeight(.semibold)
-            }
+        let debt = wallets.filter { $0.type == .credit }.reduce(0) { $0 + max(-balance($1), 0) }
+        Section {
             if wallets.isEmpty {
-                EmptyState(title: loc("No wallets yet"), message: loc("Add cash, a bank account, an e-wallet or a credit card."))
-            }
-            VStack(spacing: 8) {
-                ForEach(others) { w in
-                    Button { editing = w } label: { WalletRow(wallet: w, balance: balance(w)) }.buttonStyle(.plain)
+                ContentUnavailableView {
+                    Label(loc("No wallets yet"), systemImage: "wallet.bifold")
+                } description: {
+                    Text(loc("Add cash, a bank account, an e-wallet or a credit card."))
+                } actions: {
+                    Button(loc("Add wallet")) { sheet = .wallet(nil) }
+                }
+            } else {
+                // ponytail: sums every wallet as the default currency; convert when multi-currency wallets ship
+                LabeledContent(loc("Total in wallets")) {
+                    AmountText(wallets.reduce(0) { $0 + balance($1) }, currency: Money.defaultCurrency).foregroundStyle(Color.ink)
+                }
+                if debt > 0 {
+                    LabeledContent(loc("Card debt")) { AmountText(debt, currency: Money.defaultCurrency).foregroundStyle(Color.danger) }
                 }
             }
-            if !cards.isEmpty {
-                BudgetSectionHeader(title: loc("Credit cards")) { EmptyView() }
-                ForEach(cards) { c in
-                    CreditCardRow(card: c, balance: balance(c), onEdit: { editing = c }, onPay: { paying = c })
+            ForEach(wallets) { w in
+                Button { sheet = .wallet(w) } label: {
+                    if w.type == .credit { CreditCardRow(card: w, balance: balance(w)) } else { WalletRow(wallet: w, balance: balance(w)) }
+                }
+                .swipeActions(edge: .leading) {
+                    if w.type == .credit, balance(w) < 0 {
+                        Button(loc("Pay card"), systemImage: "creditcard") { sheet = .payCard(w, debt: -balance(w)) }.tint(Color.brandPrimary)
+                    }
+                }
+                .contextMenu {
+                    if w.type == .credit, balance(w) < 0 {
+                        Button(loc("Pay card"), systemImage: "creditcard") { sheet = .payCard(w, debt: -balance(w)) }
+                    }
+                    Button(loc("Edit"), systemImage: "pencil") { sheet = .wallet(w) }
                 }
             }
+        } header: {
+            Text(loc("Wallets"))
         }
-        .sheet(isPresented: $adding) { WalletForm(wallet: nil, nextOrder: wallets.count) }
-        .sheet(item: $editing) { WalletForm(wallet: $0, nextOrder: wallets.count) }
-        .sheet(item: $paying) { PayCardSheet(card: $0, debt: max(-balance($0), 0)) }
     }
 }
 
@@ -68,89 +75,51 @@ private struct WalletRow: View {
     let balance: Int
 
     var body: some View {
-        HStack(spacing: 12) {
-            IconBadge(symbol: wallet.type.symbol, color: wallet.type.color)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(wallet.name).font(.rowTitle)
-                Text(wallet.type.title).font(.secondaryText).foregroundStyle(Color.inkSecondary)
-            }
-            Spacer()
-            AmountText(balance, currency: wallet.currencyCode)
-                .font(.rowTitle)
-                .foregroundStyle(balance < 0 ? Color.danger : Color.ink)
-            Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(Color.inkSecondary)
+        BudgetRow(title: wallet.name, symbol: wallet.type.symbol, tint: wallet.type.color) {
+            Text(wallet.type.title).foregroundStyle(Color.inkSecondary)
+        } value: {
+            AmountText(balance, currency: wallet.currencyCode).foregroundStyle(balance < 0 ? Color.danger : Color.ink)
         }
-        .padding(.vertical, 10).padding(.horizontal, 14)
-        .background(Color.surface.opacity(0.85), in: .rect(cornerRadius: 20))
-        .contentShape(.rect)
     }
 }
 
-/// Card debt (a card's balance goes negative as you swipe), limit used, statement/due days and "Pay card".
+/// A card's balance goes negative as you swipe: the row shows that debt, the next due date and the limit used.
 private struct CreditCardRow: View {
     let card: Wallet
     let balance: Int
-    let onEdit: () -> Void
-    let onPay: () -> Void
 
     var body: some View {
         let debt = max(-balance, 0)
         let limit = card.creditLimit ?? 0
-        VStack(alignment: .leading, spacing: 10) {
-            Button(action: onEdit) {
-                HStack(spacing: 12) {
-                    IconBadge(symbol: card.type.symbol, color: card.type.color)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(card.name).font(.rowTitle)
-                        Text(loc("Current debt")).font(.secondaryText).foregroundStyle(Color.inkSecondary)
-                    }
-                    Spacer()
-                    AmountText(debt, currency: card.currencyCode).font(.rowTitle)
-                    Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(Color.inkSecondary)
-                }
-                .contentShape(.rect)
-            }
-            .buttonStyle(.plain)
-            if limit > 0 {
-                let level = BudgetLevel(progress: Double(debt) / Double(limit))
-                MooneeProgressBar(progress: Double(debt) / Double(limit), tint: level.fill)
-                HStack(spacing: 4) {
-                    Text(loc("Available")).foregroundStyle(Color.inkSecondary)
-                    AmountText(limit - debt, currency: card.currencyCode).fontWeight(.semibold)
-                    Spacer()
-                    Text(loc("Limit")).foregroundStyle(Color.inkSecondary)
-                    AmountText(limit, currency: card.currencyCode, short: true)
-                }
-                .font(.caption)
-            }
-            HStack(spacing: 8) {
-                if let day = card.statementDay { dayChip("doc.text", String(localized: "Statement: day \(day)", table: "Budget")) }
+        VStack(alignment: .leading, spacing: 8) {
+            BudgetRow(title: card.name, symbol: card.type.symbol, tint: card.type.color) {
                 if let day = card.dueDay {
-                    dayChip("calendar.badge.exclamationmark",
-                            String(localized: "Due \(BudgetActions.nextDate(day: day).formatted(.dateTime.day().month()))", table: "Budget"))
+                    Text(String(localized: "Due \(BudgetActions.nextDate(day: day).formatted(.dateTime.day().month()))", table: "Budget"))
+                        .foregroundStyle(Color.inkSecondary)
+                } else {
+                    Text(loc("Current debt")).foregroundStyle(Color.inkSecondary)
                 }
-                Spacer(minLength: 4)
-                if debt > 0 {
-                    Button(loc("Pay card"), action: onPay)
-                        .buttonStyle(OutlinePillStyle(filled: true))
+            } value: {
+                AmountText(debt, currency: card.currencyCode)
+            }
+            if limit > 0 {
+                ProgressView(value: min(Double(debt) / Double(limit), 1)) {
+                    EmptyView()
+                } currentValueLabel: {
+                    HStack(spacing: 4) {
+                        Text(loc("Available"))
+                        AmountText(limit - debt, currency: card.currencyCode)
+                    }
                 }
+                .tint(BudgetLevel(progress: Double(debt) / Double(limit)).fill)
             }
         }
-        .padding(14)
-        .background(Color.surface.opacity(0.85), in: .rect(cornerRadius: 20))
-    }
-
-    private func dayChip(_ symbol: String, _ text: String) -> some View {
-        Label(text, systemImage: symbol)
-            .font(.caption.weight(.medium))
-            .lineLimit(1)
-            .padding(.horizontal, 8).padding(.vertical, 5)
-            .background(Color.brandMintSoft, in: .capsule)
+        .padding(.vertical, 2)
     }
 }
 
 /// Paying a card = a transfer from another wallet into the card (spec §4.2), never a second expense.
-private struct PayCardSheet: View {
+struct PayCardSheet: View {
     let card: Wallet
     let debt: Int
     @Environment(\.modelContext) private var context
@@ -203,9 +172,9 @@ private struct PayCardSheet: View {
     }
 }
 
-private struct WalletForm: View {
+struct WalletForm: View {
     let wallet: Wallet?
-    let nextOrder: Int
+    @Query private var wallets: [Wallet]
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
@@ -216,9 +185,8 @@ private struct WalletForm: View {
     @State private var dueDay: Int?
     @State private var confirmDelete = false
 
-    init(wallet: Wallet?, nextOrder: Int) {
+    init(wallet: Wallet?) {
         self.wallet = wallet
-        self.nextOrder = nextOrder
         guard let wallet else { return }
         _name = State(initialValue: wallet.name)
         _type = State(initialValue: wallet.type)
@@ -249,7 +217,7 @@ private struct WalletForm: View {
                     }
                 }
                 if wallet != nil {
-                    Button(loc("Delete wallet"), role: .destructive) { confirmDelete = true }
+                    Section { Button(loc("Delete wallet"), role: .destructive) { confirmDelete = true } }
                 }
             }
             .navigationTitle(wallet == nil ? loc("Add wallet") : loc("Edit wallet"))
@@ -278,7 +246,7 @@ private struct WalletForm: View {
     }
 
     private func save() {
-        let w = wallet ?? Wallet(name: name, type: type, order: nextOrder)
+        let w = wallet ?? Wallet(name: name, type: type, order: wallets.count)
         if wallet == nil { context.insert(w) }
         w.name = name.trimmingCharacters(in: .whitespaces)
         w.type = type
