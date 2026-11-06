@@ -13,12 +13,18 @@ protocol LLM: Sendable {
     func respond(_ request: LLMRequest) async throws -> String
     /// Structured read of a chat message. Default: JSON through `respond`; Foundation Models uses `@Generable`.
     func extractTransactions(instructions: String, text: String) async throws -> [AIParsedTxn]
+    /// Can see `LLMMessage.images` (cloud vision models). Others get a photo's OCR rows with their layout.
+    var acceptsImages: Bool { get }
+    /// Structured read of a photographed document (`receipt-reader`). Default: JSON through `respond`.
+    func readDocument(instructions: String, text: String, image: Data?) async throws -> AIDocRead
 }
 
 struct LLMMessage: Sendable, Equatable {
     enum Role: String, Sendable { case user, assistant }
     var role: Role
     var text: String
+    /// JPEG photos with a user message, for models that `acceptsImages`.
+    var images: [Data] = []
 }
 
 struct LLMRequest: Sendable {
@@ -45,6 +51,13 @@ struct LLMError: LocalizedError, Equatable {
 extension LLM {
     var isSmall: Bool { false }
     var replyLanguage: String? { nil }
+    var acceptsImages: Bool { false }
+
+    func readDocument(instructions: String, text: String, image: Data?) async throws -> AIDocRead {
+        let reply = try await respond(LLMRequest(system: instructions + "\n\n" + AIDocRead.jsonInstructions,
+                                                 messages: [.init(role: .user, text: text, images: image.map { [$0] } ?? [])], json: true))
+        return try AIDocRead.decode(reply)
+    }
 
     func complete(system: String, user: String) async throws -> String {
         try await respond(LLMRequest(system: system, messages: [.init(role: .user, text: user)]))

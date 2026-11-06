@@ -2732,6 +2732,270 @@
           }
         }
       }
+    },
+    "Income": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຮັບ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายรับ"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thu nhập"
+          }
+        }
+      }
+    },
+    "I borrowed it": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຂ້ອຍຢືມມາ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ฉันยืมมา"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mình đi vay"
+          }
+        }
+      }
+    },
+    "Paid back to me": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຂົາສົ່ງເງິນຄືນຂ້ອຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เขาคืนเงินฉัน"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Được trả nợ"
+          }
+        }
+      }
+    },
+    "Spending": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຈ່າຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายจ่าย"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chi tiêu"
+          }
+        }
+      }
+    },
+    "I lent it": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຂ້ອຍໃຫ້ຢືມ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ฉันให้ยืม"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cho mượn"
+          }
+        }
+      }
+    },
+    "Paying back a debt": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສົ່ງໜີ້ຄືນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คืนหนี้"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trả nợ"
+          }
+        }
+      }
+    },
+    "**%@** came in. Was it income, a loan to you, or someone paying you back?": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໄດ້ຮັບ **%@** — ເປັນລາຍຮັບ, ເງິນທີ່ຢືມມາ ຫຼື ມີຄົນສົ່ງເງິນຄືນເຈົ້າ?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ได้รับ **%@** — เป็นรายรับ เงินที่ยืมมา หรือมีคนคืนเงินคุณ?"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhận **%@** — thu nhập, đi vay hay được trả nợ?"
+          }
+        }
+      }
+    },
+    "Got **%@** from %@. Income, a loan to you, or them paying you back?": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໄດ້ຮັບ **%@** ຈາກ %@ — ເປັນລາຍຮັບ, ເງິນທີ່ຢືມມາ ຫຼື ເຂົາສົ່ງເງິນຄືນເຈົ້າ?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ได้รับ **%@** จาก %@ — เป็นรายรับ เงินที่ยืมมา หรือเขาคืนเงินคุณ?"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhận **%@** từ %@ — thu nhập, đi vay hay được trả nợ?"
+          }
+        }
+      }
+    },
+    "Sent **%@**. Was it spending, a loan, or paying back a debt?": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂອນ **%@** — ເປັນລາຍຈ່າຍ, ໃຫ້ຢືມ ຫຼື ສົ່ງໜີ້ຄືນ?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โอน **%@** — เป็นรายจ่าย ให้ยืม หรือคืนหนี้?"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chuyển **%@** — chi tiêu, cho mượn hay trả nợ?"
+          }
+        }
+      }
+    },
+    "Sent **%@** to %@. Spending, a loan, or paying back a debt?": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂອນ **%@** ໃຫ້ %@ — ເປັນລາຍຈ່າຍ, ໃຫ້ຢືມ ຫຼື ສົ່ງໜີ້ຄືນ?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โอน **%@** ให้ %@ — เป็นรายจ่าย ให้ยืม หรือคืนหนี้?"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chuyển **%@** cho %@ — chi tiêu, cho mượn hay trả nợ?"
+          }
+        }
+      }
+    },
+    "Moonee doesn't see a receipt, transfer or bill in that photo, so nothing was saved.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ບໍ່ເຫັນໃບບິນ, ການໂອນເງິນ ຫຼື ໃບແຈ້ງໜີ້ໃນຮູບນີ້, ເລີຍຍັງບໍ່ໄດ້ບັນທຶກຫຍັງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ไม่เห็นใบเสร็จ การโอนเงิน หรือบิลในรูปนี้ เลยยังไม่ได้บันทึกอะไร"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee không thấy hoá đơn, giao dịch chuyển tiền hay hoá đơn dịch vụ nào trong ảnh này, nên chưa ghi gì nhé."
+          }
+        }
+      }
+    },
+    "Moonee already has that one in your books (same transaction ID), so it wasn't saved again.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ບັນທຶກລາຍການນີ້ໄວ້ແລ້ວ (ລະຫັດທຸລະກຳດຽວກັນ), ເລີຍບໍ່ບັນທຶກຊ້ຳ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee บันทึกรายการนี้ไว้แล้ว (รหัสธุรกรรมเดียวกัน) เลยไม่บันทึกซ้ำ"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giao dịch này Moonee ghi rồi (trùng mã giao dịch), nên không ghi lại nữa nhé."
+          }
+        }
+      }
     }
   }
 }

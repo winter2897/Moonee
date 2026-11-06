@@ -7,7 +7,8 @@ enum EntryKind: String, CaseIterable, Codable, Sendable {
 
 /// One transaction read from chat text. A plain value: no SwiftData.
 struct ParsedTxn: Equatable, Sendable {
-    enum Field: String, Codable, Sendable { case amount, person, toWallet, jar, toJar }
+    /// `kind`: a transfer to / from a person read from a photo: spending, a loan or a repayment? (`DocRead.Kind.sent`).
+    enum Field: String, Codable, Sendable { case amount, person, toWallet, jar, toJar, kind }
 
     /// Minor units of `currency` (VND: đồng, USD: cents). Nil = ask the user (spec §3.2), never guess.
     var amount: Int?
@@ -27,6 +28,8 @@ struct ParsedTxn: Equatable, Sendable {
     var note: String
     /// What Moonee should ask before saving.
     var missing: [Field] = []
+    /// A document's transaction id (photos): the same screenshot is not saved twice (`Txn.externalID`).
+    var reference: String?
 
     static func missing(of t: ParsedTxn) -> [Field] {
         var out: [Field] = []
@@ -103,6 +106,11 @@ enum QuickParser {
     /// The amount in a money phrase ("45k", "1tr2", "$12.50") in minor units, or nil.
     static func amount(in text: String, context: ParserContext = .init()) -> (amount: Int, currency: String)? {
         Scan(Token.split(text), lx: Compiled(context.lexicons), context: context).best.map { ($0.value, $0.currency) }
+    }
+
+    /// Every amount in a line, in order. `strong` = it has a currency, a unit or digit grouping ("32.000 đ", "45k").
+    static func amounts(in text: String, context: ParserContext = .init()) -> [(amount: Int, currency: String, strong: Bool)] {
+        Scan(Token.split(text), lx: Compiled(context.lexicons), context: context).amounts.map { ($0.value, $0.currency, $0.strong) }
     }
 
     /// The date a phrase names ("hôm qua", "last monday"), or nil.
@@ -393,6 +401,11 @@ private struct Scan {
         let parts = s.split(whereSeparator: { $0 == "." || $0 == "," })
         if parts.count > 1, parts.dropFirst().allSatisfy({ $0.count == 3 }) {
             return Decimal(string: parts.joined()).map { ($0, true) }
+        }
+        // "1,500.00" / "1.500,50": grouped thousands with cents (Thai slips), one decimal mark at the end.
+        if parts.count > 2, let mark = s.last(where: { $0 == "." || $0 == "," }), s.filter({ $0 == mark }).count == 1,
+           parts.dropFirst().dropLast().allSatisfy({ $0.count == 3 }), parts.last!.count <= 2 {
+            return Decimal(string: parts.dropLast().joined() + "." + parts.last!).map { ($0, true) }
         }
         if parts.count == 2 { return Decimal(string: "\(parts[0]).\(parts[1])").map { ($0, false) } }
         return parts.count == 1 ? Decimal(string: s).map { ($0, false) } : nil

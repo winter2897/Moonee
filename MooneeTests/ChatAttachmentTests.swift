@@ -20,8 +20,8 @@ import UIKit
         return c
     }
 
-    let highlands = ["HIGHLANDS COFFEE", "Phin sữa đá  29.000", "Bánh mì  29.000", "Tổng cộng  58.000"]
-    let pho = ["PHỞ THÌN", "Phở bò  65.000", "Trà đá  5.000", "Tổng cộng  70.000"]
+    let highlands = OCRLine.plain(["HIGHLANDS COFFEE", "Phin sữa đá  29.000", "Bánh mì  29.000", "Tổng cộng  58.000"])
+    let pho = OCRLine.plain(["PHỞ THÌN", "Phở bò  65.000", "Trà đá  5.000", "Tổng cộng  70.000"])
 
     @Test func noTextKeepsTheReceiptsOwnReading() {
         let c = parser() // one clock for both
@@ -29,7 +29,7 @@ import UIKit
     }
 
     @Test func theUsersWordsNameAndCategoriseTheReceipt() throws {
-        let t = ChatBook.receipt(pho, context: parser(), described: "ăn trưa với team hôm qua")
+        let t = try #require(ChatBook.receipt(pho, context: parser(), described: "ăn trưa với team hôm qua").first)
         #expect(t.amount == 70_000) // the receipt's total
         #expect(t.note.localizedCaseInsensitiveContains("ăn trưa với team"))
         #expect(t.categoryKey == "category.food")
@@ -39,21 +39,20 @@ import UIKit
     }
 
     @Test func aJarTheUserNamesIsWhereTheExpenseGoes() throws {
-        let t = ChatBook.receipt(highlands, context: parser(), described: "cafe với bạn, lọ hưởng thụ")
+        let t = try #require(ChatBook.receipt(highlands, context: parser(), described: "cafe với bạn, lọ hưởng thụ").first)
         #expect(t.jar == "jar.play")
         let saved = try #require(ChatBook.save([t], source: .image, rawInput: "", in: context).first)
         #expect(saved.jar?.key == "jar.play")
         #expect(saved.source == .image)
     }
 
-    @Test func theTextFillsAnAmountTheReceiptLacks() {
-        let t = ChatBook.receipt(["GRAB", "Chuyến đi"], context: parser(), described: "grab về nhà 45k")
-        #expect(t.amount == 45_000)
-        #expect(t.missing.isEmpty)
+    @Test func aPhotoWithNoMoneyGivesNothing() {
+        // The chat then reads the words alone ("grab về nhà 45k"): `ChatView.send(_:with:)`.
+        #expect(ChatBook.receipt(OCRLine.plain(["GRAB", "Chuyến đi"]), context: parser(), described: "grab về nhà 45k").isEmpty)
     }
 
     @Test func severalReceiptsMakeSeveralTransactions() {
-        let parsed = [highlands, pho].map { ChatBook.receipt($0, context: parser(), described: "đi chơi Đà Lạt") }
+        let parsed = [highlands, pho].flatMap { ChatBook.receipt($0, context: parser(), described: "đi chơi Đà Lạt") }
         let saved = ChatBook.save(parsed, source: .image, rawInput: "", in: context)
         #expect(saved.map(\.amount) == [58_000, 70_000])
         #expect(saved.allSatisfy { $0.jar != nil && $0.category != nil })

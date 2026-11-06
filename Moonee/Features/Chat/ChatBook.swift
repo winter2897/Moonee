@@ -1,5 +1,4 @@
 import Foundation
-import PDFKit
 import SwiftData
 import SwiftUI
 
@@ -117,6 +116,7 @@ struct ChatCardLine: Codable, Equatable {
         // ponytail: a lend/borrow without a person still saves (no debt); ask for .person too if that matters.
         func unresolved(_ p: ParsedTxn) -> ParsedTxn.Field? {
             guard let amount = p.amount, amount > 0 else { return .amount }
+            if p.missing.contains(.kind) { return .kind }
             switch p.kind {
             case .transfer:
                 guard let to = wallet(p.toWallet), to != source(p) else { return .toWallet }
@@ -134,6 +134,7 @@ struct ChatCardLine: Codable, Equatable {
             case .toWallet: wallets.filter { $0 != source(p) }.map(\.name)
             case .jar: jars.map(\.name)
             case .toJar: jars.filter { $0 != jar(p.jar) }.map(\.name)
+            case .kind: ChatBook.kindChoices(p).map(\.title)
             case .amount, .person: []
             }
         }
@@ -153,11 +154,27 @@ struct ChatCardLine: Codable, Equatable {
             guard let key = context.jars.first(where: { mentions($0.key) })?.value ?? QuickParser.hints(in: input, context: context).jarKey
             else { return false }
             if field == .jar { p.jar = key } else { p.toJar = key }
+        case .kind:
+            let choices = kindChoices(p)
+            guard let kind = choices.first(where: { mentions($0.title) })?.kind
+                ?? QuickParser.parse(input, context: context).first.map(\.kind).flatMap({ k in choices.first { $0.kind == k }?.kind })
+            else { return false }
+            p.kind = kind
         case .person:
             return false
         }
         p.missing = ParsedTxn.missing(of: p)
         return true
+    }
+
+    /// What a transfer to / from a person can be, for the quick replies: money out is spending, a loan or paying a debt
+    /// back; money in is income, a loan to the user or someone paying them back.
+    nonisolated static func kindChoices(_ p: ParsedTxn) -> [(kind: EntryKind, title: String)] {
+        p.kind == .income || p.kind == .borrow
+            ? [(.income, String(localized: "Income", table: "Chat")), (.borrow, String(localized: "I borrowed it", table: "Chat")),
+               (.repay, String(localized: "Paid back to me", table: "Chat"))]
+            : [(.expense, String(localized: "Spending", table: "Chat")), (.lend, String(localized: "I lent it", table: "Chat")),
+               (.repay, String(localized: "Paying back a debt", table: "Chat"))]
     }
 
     /// Saves every parsed transaction that is complete and allocates it to jars once. The rest are skipped:
@@ -189,10 +206,11 @@ struct ChatCardLine: Codable, Equatable {
         }
 
         var out: [Txn] = []
-        for p in parsed where book.unresolved(p) == nil {
+        for p in fresh(parsed, in: context).fresh where book.unresolved(p) == nil {
             let kind = TxKind(rawValue: p.kind.rawValue) ?? .expense
             let t = Txn(amount: p.amount ?? 0, kind: kind, currencyCode: p.currency, date: p.date, note: p.note, source: source, rawInput: rawInput,
                         category: category(p, kind), wallet: book.source(p))
+            t.externalID = p.reference.map(externalID)
             context.insert(t)
             switch kind {
             case .transfer: t.toWallet = book.wallet(p.toWallet)
@@ -223,56 +241,61 @@ struct ChatCardLine: Codable, Equatable {
         message.undoneLines.flatMap { try? JSONDecoder().decode([ChatCardLine].self, from: $0) } ?? []
     }
 
-    // MARK: Receipts
+    // MARK: Photos and documents
 
-    /// A PDF receipt's lines: its text, or OCR of its first pages when it has none (a scan).
-    static func lines(in pdf: PDFDocument) async -> [String] {
-        let text = (pdf.string ?? "").split(whereSeparator: \.isNewline)
-            .map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
-        if !text.isEmpty { return text }
-        var out: [String] = []
-        for i in 0..<min(pdf.pageCount, 3) {
-            guard let page = pdf.page(at: i) else { continue }
-            let box = page.bounds(for: .mediaBox)
-            let image = page.thumbnail(of: CGSize(width: box.width * 2, height: box.height * 2), for: .mediaBox)
-            out += (try? await ReceiptScanner.lines(in: image)) ?? []
+    nonisolated static func externalID(_ reference: String) -> String { "doc:" + reference }
+
+    /// Splits off transactions whose document was already saved (same reference), also twice in one batch.
+    static func fresh(_ parsed: [ParsedTxn], in context: ModelContext) -> (fresh: [ParsedTxn], duplicates: Int) {
+        var seen = Set<String>()
+        let fresh = parsed.filter { p in
+            guard let ref = p.reference else { return true }
+            let id = externalID(ref)
+            guard seen.insert(id).inserted else { return false }
+            return ((try? context.fetchCount(FetchDescriptor<Txn>(predicate: #Predicate { $0.externalID == id }))) ?? 0) == 0
         }
-        return out
+        return (fresh, parsed.count - fresh.count)
     }
 
-    /// A receipt's OCR lines → one expense: the last "total" line's amount (else the biggest amount), the first text line as merchant.
-    // ponytail: rule-based; hand the lines to a vision/LLM model when one is configured (spec §9.3).
-    nonisolated static func receipt(_ lines: [String], context: ParserContext) -> ParsedTxn {
-        let totalWords = ["tổng", "total", "thanh toán", "cộng", "phải trả", "amount due"]
-        let amounts = lines.compactMap { l in QuickParser.amount(in: l, context: context).map { (line: l.lowercased(), money: $0) } }
-        let total = amounts.last { a in totalWords.contains { a.line.contains($0) } } ?? amounts.max { $0.money.amount < $1.money.amount }
-        let merchant = lines.lazy.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .first { !$0.isEmpty && QuickParser.amount(in: $0, context: context) == nil } ?? ""
-        let lower = merchant.lowercased()
-        var t = ParsedTxn(amount: total?.money.amount, currency: total?.money.currency ?? context.currency, kind: .expense,
-                          categoryKey: context.merchantRules.first { lower.contains($0.key) }?.value
-                              ?? QuickParser.hints(in: merchant, context: context).categoryKey,
-                          date: context.now, note: merchant)
-        t.missing = ParsedTxn.missing(of: t)
-        return t
+    /// A photo's rows read by the rules (`DocumentReader`) → what to save, with the user's words applied.
+    nonisolated static func receipt(_ lines: [OCRLine], context: ParserContext, described text: String = "") -> [ParsedTxn] {
+        transactions(DocumentReader.read(lines, context: context), context: context, described: text)
     }
 
-    /// A receipt sent with the user's words ("ăn trưa với team", "cafe hôm qua, lọ hưởng thụ"): they name it, and
-    /// their category, jar and day win over the receipt's guess. The receipt's amount wins; theirs fills a missing one.
-    nonisolated static func receipt(_ lines: [String], context: ParserContext, described text: String) -> ParsedTxn {
-        var t = receipt(lines, context: context)
+    /// A document's transactions to save. A transfer to / from a person waits for its kind (Moonee asks: spending, a
+    /// loan or a repayment). The user's words sent with the photo ("ăn trưa với team", "cho Thịnh mượn") win for the
+    /// kind, category, jar, note and day; the document's amounts always win. Several items (a statement) keep their own.
+    nonisolated static func transactions(_ doc: DocRead, context: ParserContext, described text: String) -> [ParsedTxn] {
         let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !text.isEmpty else { return t }
-        let said = QuickParser.parse(text, context: context).first
-        let hints = QuickParser.hints(in: text, context: context)
-        let note = said?.note.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        t.note = note.isEmpty ? text : note
-        t.categoryKey = said?.categoryKey ?? hints.categoryKey ?? QuickParser.hints(in: t.note, context: context).categoryKey ?? t.categoryKey
-        t.jar = hints.jarKey ?? t.jar
-        if let day = QuickParser.date(in: text, context: context) { t.date = day }
-        if t.amount == nil, let a = QuickParser.amount(in: text, context: context) { (t.amount, t.currency) = (a.amount, a.currency) }
-        t.missing = ParsedTxn.missing(of: t)
-        return t
+        let single = doc.items.count == 1 && !text.isEmpty
+        let said = single ? QuickParser.parse(text, context: context).first : nil
+        let hints = single ? QuickParser.hints(in: text, context: context) : (period: nil, categoryKey: nil, jarKey: nil)
+        return doc.items.map { item in
+            var t = ParsedTxn(amount: item.amount, currency: item.currency, kind: .expense, categoryKey: item.categoryKey, wallet: item.wallet,
+                              date: item.date ?? context.now, note: item.note ?? item.counterparty ?? "")
+            t.reference = item.reference
+            var ask = false
+            switch item.kind {
+            case .expense: break
+            case .income: t.kind = .income
+            case .lend, .borrow, .repay: (t.kind, t.person) = (EntryKind(rawValue: item.kind.rawValue)!, item.counterparty)
+            case .sent, .received: (t.kind, t.person, ask) = (item.kind == .sent ? .expense : .income, item.counterparty, true)
+            }
+            if single {
+                let saidKind = said.map(\.kind).flatMap { [.income, .lend, .borrow, .repay].contains($0) ? $0 : nil }
+                let category = said?.categoryKey ?? hints.categoryKey
+                if ask, let saidKind { t.kind = saidKind; ask = false }
+                if ask, category != nil { t.kind = .expense; ask = false } // "tiền cơm": it was spending
+                let note = said?.note.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                t.note = note.isEmpty ? text : note
+                t.categoryKey = category ?? QuickParser.hints(in: t.note, context: context).categoryKey ?? t.categoryKey
+                t.jar = hints.jarKey ?? t.jar
+                if let day = QuickParser.date(in: text, context: context) { t.date = day }
+                if [.lend, .borrow, .repay].contains(t.kind) { t.person = said?.person ?? t.person }
+            }
+            t.missing = ParsedTxn.missing(of: t) + (ask ? [.kind] : [])
+            return t
+        }
     }
 
     // MARK: Plain numbers

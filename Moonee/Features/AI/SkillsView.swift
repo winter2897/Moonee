@@ -8,6 +8,7 @@ extension Skill {
         if let title { return title }
         return switch id {
         case Skill.transactionParser.id: String(localized: "Read transactions", table: "Account")
+        case Skill.receiptReader.id: String(localized: "Read photos and receipts", table: "AI")
         case Skill.jarBudgeting.id: String(localized: "Jar budgeting", table: "Account")
         case Skill.closeManagement.id: String(localized: "Month-end close", table: "Account")
         case Skill.marketLookup.id: String(localized: "Market lookup", table: "AI")
@@ -18,6 +19,7 @@ extension Skill {
     var displaySummary: String {
         switch id {
         case Skill.transactionParser.id: String(localized: "Off: only Moonee's built-in rules read what you type.", table: "Account")
+        case Skill.receiptReader.id: String(localized: "Receipts, transfer screenshots, bills and statements. Off: only Moonee's built-in rules read them.", table: "AI")
         case Skill.jarBudgeting.id: String(localized: "Splitting income and balancing jars.", table: "Account")
         case Skill.closeManagement.id: String(localized: "Month-end checklist and report.", table: "Account")
         case Skill.marketLookup.id: String(localized: "Gold, exchange rates, crypto and news, with sources. Uses web search.", table: "AI")

@@ -640,6 +640,28 @@
         }
       }
     },
+    "Read photos and receipts": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ອ່ານຮູບ ແລະ ໃບບິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อ่านรูปและใบเสร็จ"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đọc ảnh và hoá đơn"
+          }
+        }
+      }
+    },
     "Ready, but Apple Intelligence doesn't speak your language yet: Moonee answers in English": {
       "localizations": {
         "lo": {
@@ -658,6 +680,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Đã sẵn sàng, nhưng Apple Intelligence chưa hỗ trợ tiếng Việt: Moonee sẽ trả lời bằng tiếng Anh"
+          }
+        }
+      }
+    },
+    "Receipts, transfer screenshots, bills and statements. Off: only Moonee's built-in rules read them.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃບບິນ, ພາບໜ້າຈໍການໂອນ, ໃບແຈ້ງໜີ້ ແລະ ລາຍການເຄື່ອນໄຫວບັນຊີ. ປິດ: ໃຊ້ສະເພາະກົດໃນຕົວຂອງ Moonee ອ່ານ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใบเสร็จ ภาพหน้าจอการโอน บิล และรายการเดินบัญชี ปิด: ใช้เฉพาะกฎในตัวของ Moonee อ่าน"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoá đơn, ảnh chụp chuyển khoản, hoá đơn dịch vụ và sao kê. Tắt: chỉ dùng quy tắc có sẵn của Moonee để đọc."
           }
         }
       }
