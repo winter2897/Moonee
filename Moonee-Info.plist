@@ -14,6 +14,9 @@
 	<dict>
 		<key>UIColorName</key>
 		<string>LaunchBackground</string>
+		<!-- First frame of the SwiftUI splash (App/Splash.swift): same colour, same Moonee, centred at its own size. -->
+		<key>UIImageName</key>
+		<string>moonee.greeting</string>
 	</dict>
 </dict>
 </plist>

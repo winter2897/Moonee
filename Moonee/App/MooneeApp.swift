@@ -68,6 +68,7 @@ struct RootView: View {
         .tint(.mooneeGreen)
         .onboarding() // first launch only (Features/Onboarding)
         .appLock() // Face ID lock + App Switcher cover (Features/Account/Security.swift)
+        .splash() // animated opening on a cold launch, over everything (App/Splash.swift)
     }
 }
 
