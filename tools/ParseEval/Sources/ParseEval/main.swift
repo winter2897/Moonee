@@ -135,7 +135,7 @@ rows.append(await run("QuickParser (rules)") { (QuickParser.parse($0, context: c
 
 if AppleLLM.isAvailable {
     let a = assistant(AIRouter(mode: .onDevice, onDevice: Recording(inner: AppleLLM()), local: nil, cloud: nil))
-    rows.append(await run("Apple on-device") { await a.parse($0, context: context) })
+    rows.append(await run("Apple on-device") { let r = await a.parse($0, context: context); return (r.txns, r.usedModel) })
 } else {
     print("Apple on-device: unavailable (\(LLMSettings.appleStatus))")
 }
@@ -188,7 +188,7 @@ for m in LocalModel.catalog {
     print("   answer:", a1.prefix(160).replacingOccurrences(of: "\n", with: " "))
     if !speedOnly {
         let a = assistant(AIRouter(mode: .local, onDevice: nil, local: Recording(inner: local), cloud: nil))
-        rows.append(await run(m.name) { await a.parse($0, context: context) })
+        rows.append(await run(m.name) { let r = await a.parse($0, context: context); return (r.txns, r.usedModel) })
     }
     await LocalRuntime.shared.unload()
 }
