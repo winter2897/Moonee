@@ -15,7 +15,7 @@ struct NetWorthTests {
     func day(_ y: Int, _ m: Int, _ d: Int = 15) -> Date { cal.date(from: DateComponents(year: y, month: m, day: d, hour: 12))! }
     func month(_ y: Int, _ m: Int) -> Date { cal.dateInterval(of: .month, for: day(y, m))!.start }
 
-    @Test func breakdownSplitsNetWorthIntoFourSlices() {
+    @Test func partsSplitNetWorthByType() {
         let l = L(entries: [
             .init(kind: .expense, amount: 2_000_000, date: day(2026, 11), wallet: "card"),  // card debt
             .init(kind: .lend, amount: 3_000_000, date: day(2026, 11), wallet: "bank", debt: "nam"),
@@ -23,14 +23,14 @@ struct NetWorthTests {
             .init(kind: .borrow, amount: 5_000_000, date: day(2026, 11), wallet: "bank", debt: "mom"),
             .init(kind: .repay, amount: 1_000_000, date: day(2026, 11), wallet: "bank", debt: "mom"),
         ], walletOpening: ["bank": 10_000_000], debtDirections: ["nam": .lent, "mom": .borrowed])
-        let assets: [(kind: AssetKind, value: Int)] = [(.gold, 80_000_000), (.stock, 5_000_000), (.fx, 25_000_000), (.other, 30_000_000)]
+        let assets: [(kind: AssetKind, value: Int)] = [(.gold, 80_000_000), (.stock, 5_000_000), (.gold, 1_000_000), (.other, 30_000_000)]
 
-        let b = l.breakdown(assets: assets)
+        let p = l.parts(assets: assets)
         // bank: 10M − 3M lent + 0.5M back + 5M borrowed − 1M repaid = 11.5M
-        #expect(b == NetWorthBreakdown(cash: 11_500_000 + 25_000_000, investments: 85_000_000,
-                                       other: 30_000_000 + 2_500_000, debts: 2_000_000 + 4_000_000))
-        #expect(b.total == l.netWorth(assets: assets.map(\.value).reduce(0, +)))
-        #expect(b.gross == b.total + b.debts)
+        #expect(p == NetWorthParts(cash: 11_500_000, assets: [.gold: 81_000_000, .stock: 5_000_000, .other: 30_000_000],
+                                   lent: 2_500_000, cardDebt: 2_000_000, borrowed: 4_000_000))
+        #expect(p.total == l.netWorth(assets: assets.map(\.value).reduce(0, +)))
+        #expect(p.owned == p.total + p.debts)
     }
 
     @Test func assetsInAnotherCurrencyStayOutOfNetWorth() {
@@ -66,20 +66,23 @@ struct NetWorthTests {
         #expect(p(nil, [(month(2026, 9), 1)]) == [9, 10, 11].map { month(2026, $0) })
     }
 
-    @Test func changeIsAgainstLastMonthOnly() throws {
-        let now = day(2026, 11, 5)
-        let p = { (snaps: [(Date, Int)], current: Int) in
-            NetWorthHistory.points(snaps.map { (month: $0.0, total: $0.1) }, current: current, since: nil,
-                                   estimate: { _ in 0 }, now: now, calendar: self.cal)
-        }
-        let up = try #require(NetWorthHistory.change(p([(month(2026, 10), 200)], 250), now: now, calendar: cal))
+    @Test func changeIsOverThePointsShown() throws {
+        let pts = { (totals: [Int]) in totals.enumerated().map { NetWorthHistory.Point(month: self.month(2026, 5 + $0.offset), total: $0.element) } }
+        let up = try #require(NetWorthHistory.change(pts([200, 120, 250])))
         #expect(up.amount == 50)
         #expect(up.percent == 0.25)
-        let fromNegative = try #require(NetWorthHistory.change(p([(month(2026, 10), -200)], -100), now: now, calendar: cal))
-        #expect(fromNegative.percent == 0.5) // less negative = up
-        #expect(NetWorthHistory.change(p([(month(2026, 10), 0)], 100), now: now, calendar: cal)?.percent == nil)
-        #expect(NetWorthHistory.change(p([(month(2026, 9), 200)], 250), now: now, calendar: cal)?.amount == 250) // gap: Oct is estimated (0 here)
-        #expect(NetWorthHistory.change(p([], 250), now: now, calendar: cal) == nil)
+        #expect(NetWorthHistory.change(pts([-200, -100]))?.percent == 0.5) // less negative = up
+        #expect(NetWorthHistory.change(pts([0, 100]))?.percent == nil)
+        #expect(NetWorthHistory.change(pts([250])) == nil) // new user: nothing to compare
+    }
+
+    @Test func selectionPicksTheMonthTouched() {
+        let points = [5, 6, 7].map { NetWorthHistory.Point(month: month(2026, $0), total: $0) }
+        #expect(NetWorthHistory.nearest(points, to: day(2026, 6, 1))?.total == 6)
+        #expect(NetWorthHistory.nearest(points, to: day(2026, 6, 28))?.total == 6) // the whole June bar is June
+        #expect(NetWorthHistory.nearest(points, to: day(2027, 1))?.total == 7)
+        #expect(NetWorthHistory.nearest(points, to: day(2026, 1))?.total == 5)
+        #expect(NetWorthHistory.nearest([], to: day(2026, 6)) == nil)
     }
 
     @Test func recordKeepsOneSnapshotPerMonth() throws {
