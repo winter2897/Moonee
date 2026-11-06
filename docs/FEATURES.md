@@ -114,6 +114,13 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 - **Chi tiêu trừ thẳng vào lọ**, xác định qua danh mục (mỗi danh mục thuộc một lọ).
 - Số dư **cộng dồn** sang tháng sau. Lọ âm thì hiển thị cảnh báo và gợi ý chuyển từ lọ khác.
 - **Chuyển giữa các lọ** bằng thao tác tay hoặc qua chat.
+- **Không có tiền nằm ngoài lọ** (quyết định 06/11, kiểu envelope như YNAB "Ready to assign"):
+  - **Chưa chia vào lọ** = tổng số dư các ví (thẻ tín dụng tính âm) + tiền đang cho mượn − tiền đang vay − tổng số dư các lọ. Cho mượn, đi vay, chuyển ví không làm đổi con số này.
+  - Khác 0 thì tab Ngân sách hiện dòng **Chưa chia vào lọ** ngay đầu mục "Tháng này". Dương thì có nút **Chia vào các lọ**: một chạm chia theo % hiện tại, ghi thành một giao dịch chuyển lọ có ngày (không có lọ nguồn, mỗi lọ một phần chia), nên lịch sử các tháng trước không đổi. Âm nghĩa là các lọ hứa nhiều hơn tiền thật: hiện cảnh báo, không tự sửa.
+  - Tiền vào ví mà không qua thu nhập (ví mới, sửa số dư ban đầu, khoản chi không có lọ) đều hiện ở đây, không tự chia.
+- **Số trên tab Ngân sách** (một struct `BudgetFacts`, trợ lý đọc đúng struct này):
+  - **Thu nhập** = các khoản thu trong tháng (Tổng quan dùng cùng con số).
+  - **Tổng ngân sách** = số dư các lọ đầu tháng + tiền vào lọ trong tháng (chia thu nhập, chia tiền chưa chia, chuyển lọ). **Đã chi** = chi từ các lọ trong tháng. **Còn lại** = Tổng ngân sách − Đã chi = tổng số dư các lọ cuối tháng.
 
 ### 4.2 Ví / nguồn tiền
 - Các loại: tiền mặt, tài khoản ngân hàng, ví điện tử (MoMo, ZaloPay...), **thẻ tín dụng**.
@@ -128,6 +135,9 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 - Lưu chu kỳ, ngày đến hạn, số tiền (cố định hoặc ước tính), ví và lọ.
 - Nhắc trước N ngày. Đến hạn thì có nút "Đã trả" để tạo giao dịch ngay.
 - Tạo nhanh qua chat: "Nhắc mình đóng tiền nhà 5tr ngày 5 hàng tháng".
+- **Khoản thu định kỳ (lương)** (quyết định 06/11): là một khoản định kỳ có danh mục thu (Lương). Đến ngày nhận, tab Ngân sách hiện "Lương · Dự kiến 25/11" với nút **Đã nhận**: tạo khoản thu vào ví (ví của khoản đó, không có thì ví đầu tiên không phải thẻ tín dụng) và chia vào các lọ theo %. Không tự ghi: chỉ ghi khi user xác nhận. Khoản thu không cố định là ước tính, bấm Đã nhận thì nhập số thực nhận.
+  - Đã ghi khoản thu cùng danh mục (ví dụ qua chat "nhận lương 15tr") từ 7 ngày trước ngày nhận trở đi thì coi như đã nhận: không hỏi lại, ngày nhận tự chuyển sang kỳ sau.
+  - Khoản thu định kỳ không tính vào "hoá đơn sắp đến hạn" và không nhắc như hoá đơn.
 
 ### 4.4 Mục tiêu
 - Mục tiêu có số tiền, hạn chót và lọ nguồn (ví dụ laptop lấy từ lọ Hưởng thụ).
@@ -183,10 +193,10 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 
 0. **Thiết lập hồ sơ** (màn riêng, không phải chat): tên hiển thị + chọn avatar có sẵn, chỉ lưu trên máy, không đăng nhập. Có nút "Để sau".
 1. Moonee chào và giới thiệu ngắn (nhân vật xuất hiện).
-2. Hỏi thu nhập hằng tháng (khoảng) và cố định hay không đều.
+2. Hỏi thu nhập hằng tháng (khoảng) và cố định hay không đều, rồi **ngày nhận lương**. Có ngày thì tạo khoản thu định kỳ (mục 4.3), ngày nhận đầu tiên là sau hôm nay (tiền đã nhận nằm trong số dư ví ở bước 3).
 3. Hỏi các ví đang dùng, số dư ban đầu (bỏ qua được).
 4. Hỏi các hoá đơn cố định.
-5. Đề xuất % cho các lọ. User chấp nhận hoặc chỉnh.
+5. Đề xuất % cho các lọ. User chấp nhận hoặc chỉnh. Chấp nhận (hay giữ mặc định) thì toàn bộ tiền trong ví được chia vào các lọ theo % đó, nên các lọ bắt đầu bằng đúng số tiền user đang có.
 6. Chọn chế độ AI (gợi ý theo đời máy) và mức nhắc nhở.
 7. Bật Face ID (tuỳ chọn) và xin quyền thông báo.
 
@@ -319,8 +329,8 @@ Category      (id, key?, customName?, icon, jarId, kind: expense|income)
 Transaction   (id, date, amount, kind: expense|income|transfer|jarTransfer|lend|borrow|repay,
                walletId, toWalletId?, categoryId?, jarId?, note, source: text|voice|image|import|manual,
                attachment?, debtId?)
-IncomeSplit   (transactionId, jarId, amount)          // cách chia của từng khoản thu
-Recurring     (id, name, amount, isEstimate, rule, nextDue, remindDaysBefore, walletId, categoryId)
+IncomeSplit   (transactionId, jarId, amount)          // cách chia của từng khoản thu, hoặc của một lần chia tiền chưa chia vào lọ
+Recurring     (id, name, amount, isEstimate, rule, nextDue, remindDaysBefore, walletId, categoryId)   // danh mục thu = khoản thu định kỳ (lương)
 Goal          (id, name, target, deadline, jarId, saved)
 Debt          (id, person, direction: lent|borrowed, amount, remaining, dueDate?)
 Asset         (id, symbol, kind: gold|silver|stock|fx|crypto, quantity, costBasis?)

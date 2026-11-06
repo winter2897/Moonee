@@ -121,7 +121,7 @@ struct DashboardStats {
     /// Unpaid bills due within `days` days (overdue ones included), soonest first.
     static func billsDue(_ bills: [Recurring], within days: Int = 7, now: Date = .now, calendar: Calendar = .current) -> [Recurring] {
         let end = calendar.date(byAdding: .day, value: days + 1, to: calendar.startOfDay(for: now))!
-        return bills.filter { $0.nextDue < end }.sorted { $0.nextDue < $1.nextDue }
+        return bills.filter { $0.nextDue < end && !$0.isIncome }.sorted { $0.nextDue < $1.nextDue }
     }
 }
 

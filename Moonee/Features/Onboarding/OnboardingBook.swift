@@ -39,6 +39,29 @@ extension Prefs {
         return Money(major: d, context.currency).minor
     }
 
+    /// Spec §7 step 2: the declared income becomes a monthly income `Recurring` (category Salary) on payday. On payday the
+    /// Budget tab asks "Received?" and records it as income split into the jars (`BudgetActions.markPaid`). Varying
+    /// income is an estimate (asks for the real amount). The first payday is after today: money already received is in
+    /// the wallet balances the next step asks for. One salary only: running it again updates it.
+    @discardableResult
+    static func saveSalary(_ amount: Int, payday: Int, regular: Bool?, now: Date = .now, calendar: Calendar = .current,
+                           in context: ModelContext) -> Recurring? {
+        guard amount > 0 else { return nil }
+        let salary = ((try? context.fetch(FetchDescriptor<Category>())) ?? []).first { $0.key == "category.salary" }
+        let existing = ((try? context.fetch(FetchDescriptor<Recurring>())) ?? []).first { $0.isIncome && $0.category == salary }
+        let day = min(max(payday, 1), 31)
+        let tomorrow = calendar.date(byAdding: .day, value: 1, to: now) ?? now
+        let r = existing ?? Recurring(name: salary?.name ?? String(localized: "Salary", table: "Onboarding"), amount: amount, nextDue: now)
+        if existing == nil { context.insert(r) }
+        r.amount = amount
+        r.isEstimate = regular == false
+        r.dueDay = day
+        r.nextDue = BudgetActions.nextDate(day: day, from: tomorrow, calendar: calendar)
+        r.remindDaysBefore = 0
+        r.category = salary
+        return r
+    }
+
     // MARK: Wallets
 
     struct WalletDraft: Equatable {
@@ -140,16 +163,14 @@ extension Prefs {
         return p
     }
 
-    /// Writes the accepted percents (must total 100) and puts the opening wallet money into the jars by those percents,
-    /// so the envelopes start with what the user actually has (`Jar.initialBalance`). Credit-card debt counts against it.
-    static func applyJars(_ percents: [Int], to jars: [Jar], in context: ModelContext) {
+    /// Writes the accepted percents (must total 100) and splits all the money no jar holds yet (the wallets just
+    /// entered, credit-card debt counted against it) into the jars by those percents (`BudgetActions.splitUnallocated`),
+    /// so the envelopes start with what the user actually has. A wallet added later shows as "Unallocated" on Budget.
+    static func applyJars(_ percents: [Int], to jars: [Jar], now: Date = .now, in context: ModelContext) {
         let sorted = jars.sorted { $0.order < $1.order }
         guard BudgetActions.percentsValid(percents), percents.count == sorted.count else { return }
         for (jar, p) in zip(sorted, percents) { jar.percent = p }
-        let opening = ((try? context.fetch(FetchDescriptor<Wallet>())) ?? [])
-            .filter { $0.currencyCode == Money.defaultCurrency }.reduce(0) { $0 + $1.initialBalance }
-        let shares = Ledger<Int>.split(max(opening, 0), by: sorted.indices.map { ($0, percents[$0]) })
-        for (i, jar) in sorted.enumerated() { jar.initialBalance = shares[i] ?? 0 }
+        BudgetActions.splitUnallocated(BudgetActions.unallocated(in: context), jars: sorted, date: now, in: context)
     }
 
     // MARK: AI mode

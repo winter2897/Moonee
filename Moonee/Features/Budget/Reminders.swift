@@ -200,7 +200,7 @@ enum ReminderPlanner {
         let ledger = Ledger(txns: txns, wallets: wallets, jars: jars)
         let month = cal.dateInterval(of: .month, for: now)!
 
-        var bills = ((try? context.fetch(FetchDescriptor<Recurring>())) ?? [])
+        var bills = ((try? context.fetch(FetchDescriptor<Recurring>())) ?? []).filter { !$0.isIncome }
             .map { ReminderPlanner.Bill(name: $0.name, due: $0.nextDue, remindDaysBefore: $0.remindDaysBefore) }
         for card in wallets where card.type == .credit {
             if let day = card.dueDay, ledger.walletBalance(card.persistentModelID) < 0 {

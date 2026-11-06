@@ -61,6 +61,17 @@
         }
       }
     },
+    "Another day": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngày khác"
+          }
+        }
+      }
+    },
     "Any fixed bills every month? Tap one to add it with its amount and due day.": {
       "localizations": {
         "vi": {
@@ -451,6 +462,17 @@
         }
       }
     },
+    "Salary": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lương"
+          }
+        }
+      }
+    },
     "Save bills": {
       "localizations": {
         "vi": {
@@ -627,6 +649,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Moonee nên dùng “bộ não” nào? Với iPhone này, Moonee gợi ý **%@**. Bạn đổi được bất cứ lúc nào trong Tài khoản."
+          }
+        }
+      }
+    },
+    "Which day of the month does it usually come in? On that day Moonee asks you to confirm it and splits it into your jars.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thường ngày mấy trong tháng bạn nhận tiền? Hôm đó Moonee sẽ hỏi bạn xác nhận rồi chia vào các lọ."
           }
         }
       }

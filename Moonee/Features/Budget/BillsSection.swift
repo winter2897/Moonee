@@ -1,7 +1,8 @@
 import SwiftData
 import SwiftUI
 
-/// Recurring & bills section of the Budget list (spec §4.3), soonest due first. Swipe right or long-press for "Mark paid".
+/// Recurring & bills section of the Budget list (spec §4.3), soonest due first. Swipe right or long-press for "Mark paid"
+/// ("Mark received" for a salary: an income recurring, split into the jars when it comes in).
 struct BillsSection: View {
     @Binding var sheet: BudgetSheet?
     @Environment(\.modelContext) private var context
@@ -11,7 +12,7 @@ struct BillsSection: View {
     var body: some View {
         let cal = Calendar.current
         let soon = cal.date(byAdding: .day, value: 30, to: cal.startOfDay(for: .now))!
-        let dueSoon = bills.filter { $0.nextDue < soon }
+        let dueSoon = bills.filter { $0.nextDue < soon && !$0.isIncome }
         Section {
             if bills.isEmpty {
                 ContentUnavailableView {
@@ -29,13 +30,13 @@ struct BillsSection: View {
             ForEach(bills) { b in
                 Button { sheet = .bill(b) } label: { BillRow(bill: b) }
                     .swipeActions(edge: .leading) {
-                        Button(loc("Mark paid"), systemImage: "checkmark") { pay(b) }.tint(Color.brandPrimary)
+                        Button(b.isIncome ? loc("Mark received") : loc("Mark paid"), systemImage: "checkmark") { pay(b) }.tint(Color.brandPrimary)
                     }
                     .swipeActions(edge: .trailing) {
                         Button(loc("Delete"), systemImage: "trash", role: .destructive) { context.delete(b) }
                     }
                     .contextMenu {
-                        Button(loc("Mark paid"), systemImage: "checkmark.circle") { pay(b) }
+                        Button(b.isIncome ? loc("Mark received") : loc("Mark paid"), systemImage: "checkmark.circle") { pay(b) }
                         Button(loc("Edit"), systemImage: "pencil") { sheet = .bill(b) }
                         Button(loc("Delete"), systemImage: "trash", role: .destructive) { context.delete(b) }
                     }
@@ -67,7 +68,8 @@ private struct BillRow: View {
                 .foregroundStyle(Color.inkSecondary)
         } value: {
             VStack(alignment: .trailing, spacing: 2) {
-                AmountText(bill.amount, currency: bill.currencyCode)
+                AmountText(bill.amount, currency: bill.currencyCode, plus: bill.isIncome)
+                    .foregroundStyle(bill.isIncome ? Color.income : Color.ink)
                 if bill.isEstimate { Text(loc("Estimate")).font(.caption).foregroundStyle(Color.inkSecondary) }
             }
         }
@@ -93,7 +95,8 @@ struct PayBillSheet: View {
                 Section {
                     AmountField(title: loc("Amount"), minor: $amount, currency: bill.currencyCode)
                 } footer: {
-                    Text(loc("This bill is an estimate. Enter what you actually paid."))
+                    Text(bill.isIncome ? loc("This income varies. Enter what you actually received.")
+                                       : loc("This bill is an estimate. Enter what you actually paid."))
                 }
             }
             .navigationTitle(bill.name)
@@ -101,7 +104,7 @@ struct PayBillSheet: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button(loc("Cancel")) { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(loc("Mark paid")) {
+                    Button(bill.isIncome ? loc("Mark received") : loc("Mark paid")) {
                         BudgetActions.markPaid(bill, amount: amount, jars: jars, in: context)
                         dismiss()
                     }
@@ -162,14 +165,18 @@ struct RecurringForm: View {
                 Section {
                     Picker(loc("Category"), selection: $category) {
                         Text(loc("None")).tag(nil as Category?)
-                        ForEach(categories.filter { $0.kind == .expense }) { Label($0.name, systemImage: $0.icon).tag($0 as Category?) }
+                        ForEach(categories) { Label($0.name, systemImage: $0.icon).tag($0 as Category?) }
                     }
-                    Picker(loc("Pay from"), selection: $wallet) {
+                    Picker(category?.kind == .income ? loc("Paid into") : loc("Pay from"), selection: $wallet) {
                         Text(loc("None")).tag(nil as Wallet?)
                         ForEach(wallets) { Text($0.name).tag($0 as Wallet?) }
                     }
                 } footer: {
-                    if let jar = category?.jar { Text(String(localized: "Comes out of the \(jar.name) jar.", table: "Budget")) }
+                    if category?.kind == .income {
+                        Text(loc("An income: when it comes in, it is split into your jars by their percents."))
+                    } else if let jar = category?.jar {
+                        Text(String(localized: "Comes out of the \(jar.name) jar.", table: "Budget"))
+                    }
                 }
                 if bill != nil {
                     Button(loc("Delete bill"), role: .destructive) { confirmDelete = true }

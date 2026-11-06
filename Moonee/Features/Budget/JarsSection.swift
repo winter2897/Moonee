@@ -9,27 +9,37 @@ struct JarTransferDraft: Identifiable {
     var amount = 0
 }
 
-/// Jars section of the Budget list (spec §4.1): month, total, a fix for a negative jar, one row per jar.
+/// Jars section of the Budget list (spec §4.1): month, money not in a jar yet, salary due, total, a fix for a
+/// negative jar, one row per jar. The month's numbers are `BudgetFacts`, the same struct the assistant reads.
 struct JarsSection: View {
     @Binding var month: DateInterval
     @Binding var sheet: BudgetSheet?
     @Binding var path: NavigationPath
+    @Environment(\.modelContext) private var context
     @Query(sort: \Jar.order) private var jars: [Jar]
     @Query private var txns: [Txn]
+    @Query private var wallets: [Wallet]
+    @Query(sort: \Recurring.nextDue) private var recurrings: [Recurring]
 
     private let currency = Money.defaultCurrency
 
     var body: some View {
-        let ledger = Ledger(txns: txns, wallets: [], jars: jars)
+        let ledger = Ledger(txns: txns, wallets: wallets, jars: jars)
         let months = jars.map { ($0, ledger.jarMonth($0.persistentModelID, in: month)) }
-        let budget = months.reduce(0) { $0 + $1.1.budget }, spent = months.reduce(0) { $0 + $1.1.spent }
+        let facts = BudgetFacts(txns: txns, wallets: wallets, jars: jars, recurrings: recurrings, month: month)
+        let isNow = month.start <= .now && .now < month.end
         Section {
             monthPicker
-            MonthSummary(spent: spent, budget: budget, currency: currency)
+            MonthSummary(spent: facts.spent, budget: facts.budget, currency: currency)
+            LabeledContent(loc("Income")) { AmountText(facts.income, currency: currency).foregroundStyle(Color.ink) }
+            if isNow { unallocatedRows(facts.unallocated) }
+            if isNow {
+                ForEach(BudgetActions.dueIncome(recurrings, txns: txns)) { incomeDueRow($0) }
+            }
             // Mascot: a past month that closed within its budget, with no jar in the red, gets a small cheer.
-            if month.end <= .now, budget > 0, spent <= budget, !months.contains(where: { $0.1.endBalance < 0 }) {
+            if month.end <= .now, facts.budget > 0, facts.left >= 0, !facts.jars.contains(where: { $0.balance < 0 }) {
                 MooneeNoteCard(mood: .celebrate,
-                               text: String(localized: "You kept \(AmountFormat.string(budget - spent, currency)) in your jars.", table: "Budget"),
+                               text: String(localized: "You kept \(AmountFormat.string(facts.left, currency)) in your jars.", table: "Budget"),
                                title: String(localized: "\(month.start.budgetMonthTitle) closed under budget!", table: "Budget"),
                                animated: true)
             }
@@ -65,6 +75,39 @@ struct JarsSection: View {
             Text(loc("Jars"))
         } footer: {
             Text(String(localized: "Income split: \(jars.map { "\($0.percent)%" }.joined(separator: " · "))", table: "Budget"))
+        }
+    }
+
+    /// "Unallocated": wallet money no jar holds yet, split by percent in one tap. Negative = jars promise too much.
+    @ViewBuilder private func unallocatedRows(_ amount: Int) -> some View {
+        if amount != 0 {
+            BudgetRow(title: loc("Unallocated"), symbol: amount > 0 ? "tray.and.arrow.down.fill" : "exclamationmark.triangle.fill",
+                      tint: amount > 0 ? .brandDeep : .danger) {
+                Text(amount > 0 ? loc("Not in a jar yet.") : loc("More than your wallets hold."))
+                    .foregroundStyle(Color.inkSecondary)
+            } value: {
+                AmountText(amount, currency: currency).foregroundStyle(amount > 0 ? Color.ink : Color.danger)
+            }
+            if amount > 0 {
+                Button(loc("Split into jars"), systemImage: "square.stack.3d.up.fill") {
+                    withAnimation { _ = BudgetActions.splitUnallocated(amount, jars: jars, in: context) }
+                }
+                .foregroundStyle(Color.brandDeep)
+            }
+        }
+    }
+
+    /// Payday: "Salary · due 25/11", confirm when it is in (an estimate asks for the real amount first).
+    private func incomeDueRow(_ r: Recurring) -> some View {
+        BudgetRow(title: r.name, symbol: "arrow.down.circle.fill", tint: .income) {
+            Text(String(localized: "Expected \(r.nextDue.formatted(.dateTime.day().month()))", table: "Budget"))
+                .foregroundStyle(Color.inkSecondary)
+            Button(loc("Mark received")) {
+                if r.isEstimate { sheet = .payBill(r) } else { withAnimation { _ = BudgetActions.markPaid(r, jars: jars, in: context) } }
+            }
+            .buttonStyle(.borderless).foregroundStyle(Color.brandDeep).fontWeight(.semibold)
+        } value: {
+            AmountText(r.amount, currency: r.currencyCode, plus: true).foregroundStyle(Color.income)
         }
     }
 
@@ -354,7 +397,7 @@ struct JarDetailView: View {
         switch t.kind {
         case .expense: t.jar == jar ? -t.amount : nil
         case .income: (t.splits ?? []).first { $0.jar == jar }.map(\.amount)
-        case .jarTransfer: t.jar == jar ? -t.amount : t.toJar == jar ? t.amount : nil
+        case .jarTransfer: t.jar == jar ? -t.amount : t.toJar == jar ? t.amount : (t.splits ?? []).first { $0.jar == jar }.map(\.amount)
         default: nil
         }
     }

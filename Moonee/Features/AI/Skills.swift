@@ -25,10 +25,10 @@ struct Skill: Sendable, Hashable {
     func hash(into h: inout Hasher) { h.combine(id) }
 
     static let transactionParser = Skill(id: "transaction-parser", tools: [], job: .parse)
-    static let jarBudgeting = Skill(id: "jar-budgeting", tools: ["jarBalances", "splitIncome", "spendingSummary"], job: .advice)
-    static let closeManagement = Skill(id: "close-management", tools: ["monthClose", "jarBalances", "spendingSummary"], job: .advice)
+    static let jarBudgeting = Skill(id: "jar-budgeting", tools: ["jarBalances", "monthBudget", "splitIncome", "spendingSummary"], job: .advice)
+    static let closeManagement = Skill(id: "close-management", tools: ["monthClose", "monthBudget", "jarBalances", "spendingSummary"], job: .advice)
     static let spendingCoach = Skill(
-        id: "spending-coach", tools: ["spendingSummary", "listTransactions", "jarBalances", "savingsPlan"], job: .quickAnswer)
+        id: "spending-coach", tools: ["monthBudget", "spendingSummary", "listTransactions", "jarBalances", "savingsPlan"], job: .quickAnswer)
     /// Outside, current info (prices, rates, news): the only skill with web access.
     /// `.advice`: in hybrid mode the cloud model (with its built-in search) answers first.
     static let marketLookup = Skill(id: "market-lookup", tools: ["marketPrice", "webSearch"], job: .advice)
