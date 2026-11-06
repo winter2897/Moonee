@@ -38,6 +38,14 @@ enum SampleData {
         add(112_000, .expense, "category.food", "Cà phê", day(1, 9), cash)
         add(120_000, .expense, "category.education", "Mua sách", day(1, 19), bank)
         add(65_000, .expense, "category.food", "Ăn trưa", day(0, 12), cash)
+        // Daily meals and rides over the last ~6 weeks, so the period charts have a shape to compare.
+        let meals = [45_000, 55_000, 38_000, 60_000, 42_000, 70_000, 50_000]
+        for back in 2...45 {
+            add(meals[back % meals.count], .expense, "category.food", back % 3 == 0 ? "Phở" : "Cơm trưa", day(back, 12), cash)
+            if back % 4 == 0 { add(35_000 + back * 500, .expense, "category.transport", "Grab", day(back, 8), cash) }
+            if back % 9 == 0 { add(250_000, .expense, "category.entertainment", "Xem phim", day(back, 20), card) }
+            if back % 11 == 0 { add(180_000, .expense, "category.health", "Nhà thuốc", day(back, 17), cash) }
+        }
 
         let internet = Recurring(name: "Internet", amount: 199_000, nextDue: day(-2))
         internet.category = cat["category.housing"]
