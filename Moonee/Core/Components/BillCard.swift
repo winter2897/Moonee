@@ -72,7 +72,7 @@ struct BillCard: View {
     }
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 12) {
             IconBadge(symbol: symbol, color: paid ? .inkSecondary : .brandDeep)
             VStack(alignment: .leading, spacing: 2) {
                 Text(name).font(.rowTitle).foregroundStyle(Color.ink)
@@ -85,7 +85,7 @@ struct BillCard: View {
             }
             .accessibilityElement(children: .combine)
             Spacer(minLength: 8)
-            VStack(alignment: .trailing, spacing: 0) {
+            VStack(alignment: .trailing, spacing: 4) {
                 HStack(spacing: 2) {
                     if estimate { Text(verbatim: "≈").accessibilityLabel(Text("about", tableName: "Components")) }
                     AmountText(amount, currency: currency)
@@ -98,7 +98,9 @@ struct BillCard: View {
                 }
             }
         }
-        .padding(.vertical, 10).padding(.horizontal, 12)
-        .background(Color.surface.opacity(paid ? 0.6 : 0.85), in: .rect(cornerRadius: 18))
+        .padding(.vertical, 8).padding(.horizontal, 16)
+        .frame(minHeight: 44)
+        .opacity(paid ? 0.6 : 1)
+        // No background: a list row. Group bills in one `.card(padding: 0)` with dividers, like JarCard rows.
     }
 }
