@@ -90,6 +90,28 @@
         }
       }
     },
+    "%@ covers %@ of bills until %@.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ພໍສຳລັບໃບບິນ %@ ຈົນຮອດ %@."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ พอสำหรับบิล %@ จนถึง %@"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ đủ cho %@ hoá đơn đến %@."
+          }
+        }
+      }
+    },
     "%@ covers %@ of everyday needs until %@.": {
       "localizations": {
         "lo": {

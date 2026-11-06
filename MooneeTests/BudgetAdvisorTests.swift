@@ -74,6 +74,9 @@ import Testing
         #expect(plan.bills == 5_140_000)
         #expect(plan.shares["jar.essentials", default: 0] >= 5_140_000 + 113_000)
         #expect(plan.emergency > 0)
+        let shares = plan.shares.filter { $0.key != "jar.savings" }
+        #expect(shares.allSatisfy { $0.value % pay.advisor.step($0.value) == 0 }) // clean steps
+        #expect(plan.shares.values.reduce(0, +) == 40_000_000)
 
         // One tap records it into the bank and splits it by that plan.
         let t = try #require(BudgetActions.apply(card, date: at(11, 10, 9), in: context, calendar: cal).first)
@@ -99,15 +102,19 @@ import Testing
         #expect(p.emergencyTarget == 66_000_000) // 3 × 22tr
         #expect(p.emergency == 8_819_500) // half of what is left after a–b
         #expect(p.byPercent == 8_819_500)
-        #expect(p.shares["jar.essentials"] == 2_361_000 + 4_850_725)
-        #expect(p.shares["jar.savings"] == 8_819_500 + 881_950)
+        // Clean amounts (50k steps from 1tr, 10k below), rounded up; Savings takes the difference so it adds up.
+        #expect(p.shares["jar.essentials"] == 7_250_000) // 2,361,000 + 55% of the rest = 7,211,725
+        #expect(p.shares["jar.investing"] == 890_000 && p.shares["jar.play"] == 890_000 && p.shares["jar.giving"] == 450_000)
+        #expect(p.shares["jar.savings"] == 9_630_000) // 8,819,500 + 881,950 − 71,450 rounding
         #expect(p.shares.values.reduce(0, +) == 20_000_000)
         #expect(card.text.contains(try jar("jar.essentials", context).name))
 
         BudgetActions.apply(card, date: at(11, 6, 13), in: context, calendar: cal)
         let after = try facts(context, now: at(11, 6, 13))
         #expect(after.unallocated == 0)
-        #expect(try balance("jar.essentials", context) == 7_211_725 - 113_000)
+        #expect(try balance("jar.essentials", context) == 7_250_000 - 113_000)
+        #expect(!card.text.contains(",95") && !card.text.contains(".95")) // no calculator amounts
+        #expect(card.why?.contains(String(localized: "\(try jar("jar.essentials", context).name) covers \("0") of bills", table: "Budget")) == false)
     }
 
     @Test func offBudgetWalletsAreNetWorthOnly() throws {
@@ -203,6 +210,14 @@ import Testing
         #expect(warning?.moves.isEmpty == true)
         manual.muted = [.negativeJar]
         #expect(BudgetAdvisor(manual).advice.isEmpty)
+
+        // Real amounts: the move is a clean 120k when Play has it (Essentials ends slightly above zero).
+        let big = BudgetAdvisor(input([j("ess", .essentials, -113_000, percent: 55), j("play", .play, 500_000)], budget: 387_000, now: at(11, 6)))
+        #expect(big.advice.first { $0.kind == .negativeJar }?.moves == [.init(from: "play", to: "ess", amount: 120_000)])
+        #expect(big.step(881_950) == 10_000 && big.step(7_211_725) == 50_000 && big.step(40_000_000) == 100_000)
+        var usd = big.input
+        usd.currency = "USD"
+        #expect(BudgetAdvisor(usd).step(88_195) == 1_000) // $881.95 → $10 steps
     }
 
     @Test func paceMonthEndAndRebalance() {

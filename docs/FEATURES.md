@@ -171,6 +171,7 @@ Moonee hành xử như một người hiểu tài chính cá nhân, trừ khi us
      c. quỹ khẩn cấp: Tiết kiệm hướng tới 3 tháng chi tiêu thiết yếu (3–6, bắt đầu 3); chưa đủ thì nhận một nửa phần còn lại;
      d. phần còn lại chia theo %.
      Nếu các lọ đang giữ nhiều hơn ví thì phần thiếu đó để lại chưa chia trước.
+     **Số tròn:** mỗi phần làm tròn lên bước gọn (dưới 1tr: 10k, dưới 10tr: 50k, từ 10tr: 100k; tiền tệ khác: hai chữ số đầu), Tiết kiệm (hoặc lọ cuối) nhận phần chênh để tổng vẫn đúng. Bù lọ âm cũng dùng số tròn khi lọ nguồn đủ. Dòng "vì sao" bỏ phần bằng 0.
   6. **Hoá đơn đến hạn** hôm nay/ngày mai.
   7. **Tiêu nhanh:** lọ đã dùng ≥ 50% và nhanh hơn tháng ≥ 30 điểm (ví dụ 80% khi tháng mới qua 40%) → mức tiêu mỗi ngày đến cuối tháng = số dư / số ngày còn lại.
   8. **Cuối tháng** (3 ngày cuối): Hưởng thụ còn dư → giữ lại hay chuyển sang Tiết kiệm?

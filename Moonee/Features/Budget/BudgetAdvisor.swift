@@ -230,7 +230,40 @@ struct BudgetAdvisor: Sendable {
         let split = Ledger<String>.split(rest, by: input.jars.map { ($0.id, $0.percent) })
         if split.isEmpty { p.kept += rest } else { p.byPercent = rest }
         for (id, a) in split { p.shares[id, default: 0] += a }
+        p.shares = clean(p.shares)
         return p
+    }
+
+    /// A clean step for an amount: VND/LAK 10k under 1tr, 50k under 10tr, 100k above; other currencies two leading
+    /// digits (881.95 → 10, 7,240 → 100).
+    func step(_ amount: Int) -> Int {
+        let unit = Int(pow(10, Double(AmountFormat.fractionDigits(input.currency))))
+        let major = max(abs(amount) / unit, 1)
+        if ["VND", "LAK"].contains(input.currency) {
+            return (major < 1_000_000 ? 10_000 : major < 10_000_000 ? 50_000 : 100_000) * unit
+        }
+        return max(Int(pow(10, floor(log10(Double(major))) - 1)), 1) * unit
+    }
+
+    /// Rounds down to a clean step, a finer one when the amount is smaller than the step (a daily allowance).
+    func roundDown(_ amount: Int) -> Int {
+        var st = step(amount)
+        while st > 1, amount < st { st /= 10 }
+        return amount / st * st
+    }
+
+    /// Rounds each jar's share up to a clean step (so a need or a refill is never short) and lets Savings (or the last
+    /// jar with a share) absorb the difference, so the plan still adds up exactly. Too small to round: unchanged.
+    func clean(_ shares: [String: Int]) -> [String: Int] {
+        let order = input.jars.map(\.id).filter { shares[$0, default: 0] > 0 }
+        guard let sink = savings.map(\.id).flatMap({ order.contains($0) ? $0 : nil }) ?? order.last else { return shares }
+        var out = shares
+        for id in order where id != sink {
+            let a = shares[id]!, st = step(a)
+            out[id] = (a + st - 1) / st * st
+        }
+        out[sink] = shares.values.reduce(0, +) - out.filter { $0.key != sink }.values.reduce(0, +)
+        return out[sink]! >= 0 ? out : shares
     }
 
     /// Money to cover a jar below zero (`target`) or the jars' promise beyond the wallets (`target` nil), in order:
@@ -245,12 +278,13 @@ struct BudgetAdvisor: Sendable {
             .map { ($0.id, $0.balance, true) }
         var left = need, moves: [Move] = [], reserve = false
         for s in sources where left > 0 && s.available > 0 {
-            let a = min(left, s.available)
+            // A clean amount when the source has it, else exactly what is needed (or all it has).
+            let st = step(left), rounded = (left + st - 1) / st * st, a = rounded <= s.available ? rounded : min(left, s.available)
             moves.append(Move(from: s.id, to: target, amount: a))
             reserve = reserve || s.reserve
             left -= a
         }
-        return (moves, reserve, left)
+        return (moves, reserve, max(left, 0))
     }
 
     /// Every piece of advice that applies now, most urgent first, for the level and without muted kinds.
@@ -321,10 +355,10 @@ struct BudgetAdvisor: Sendable {
             .map { ($0, Double($0.spent) / Double($0.budget)) }
             .filter { $0.1 >= 0.5 && $0.1 - gone >= 0.3 }
             .max { $0.1 - gone < $1.1 - gone }
-        if let (j, used) = fast {
+        if let (j, used) = fast, case let raw = j.balance / daysLeft, case let daily = roundDown(raw) {
             out.append(Advice(kind: .pace, title: String(localized: "\(j.name) is going fast", table: "Budget"),
-                              text: String(localized: "\(Int((used * 100).rounded()))% spent with \(Int((gone * 100).rounded()))% of the month gone. Keep to about \(money(j.balance / daysLeft)) a day until the month ends.", table: "Budget"),
-                              ref: j.id, amount: j.balance / daysLeft))
+                              text: String(localized: "\(Int((used * 100).rounded()))% spent with \(Int((gone * 100).rounded()))% of the month gone. Keep to about \(money(daily)) a day until the month ends.", table: "Budget"),
+                              ref: j.id, amount: daily))
         }
 
         if daysLeft <= 3, let play = input.jars.first(where: { $0.role == .play && $0.balance > 0 }), let s = savings {
@@ -400,8 +434,9 @@ struct BudgetAdvisor: Sendable {
     func why(_ p: Plan) -> String {
         var parts: [String] = []
         if let e = essentials, p.shares[e.id] ?? 0 > 0, p.bills + p.spending > 0 {
-            parts.append(p.bills > 0
+            parts.append(p.bills > 0 && p.spending > 0
                 ? String(localized: "\(e.name) covers \(short(p.bills)) of bills and \(short(p.spending)) of everyday needs until \(day(p.until)).", table: "Budget")
+                : p.bills > 0 ? String(localized: "\(e.name) covers \(short(p.bills)) of bills until \(day(p.until)).", table: "Budget")
                 : String(localized: "\(e.name) covers \(short(p.spending)) of everyday needs until \(day(p.until)).", table: "Budget"))
         }
         if p.refill > 0 { parts.append(String(localized: "\(short(p.refill)) refills jars below zero.", table: "Budget")) }
