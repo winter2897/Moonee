@@ -221,6 +221,16 @@
           }
         }
       }
+    },
+    "Saved": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã lưu"
+          }
+        }
+      }
     }
   }
 }

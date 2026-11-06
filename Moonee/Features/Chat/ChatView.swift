@@ -1,3 +1,4 @@
+import PDFKit
 import PhotosUI
 import SwiftData
 import SwiftUI
@@ -16,6 +17,7 @@ struct ChatView: View {
     @State private var inputSource = TxSource.text
     @FocusState private var focused: Bool
     @State private var busy = false
+    @State private var lastNotice: String?
     @State private var mood = MooneeMood.greeting
     /// Parsed without an amount; Moonee asked "how much?" and the next message fills it in.
     @State private var pending: ParsedTxn?
@@ -25,6 +27,9 @@ struct ChatView: View {
     @State private var showAdd = false
     @State private var showHistory = false
     @State private var showAISettings = false
+    @State private var showCamera = false
+    @State private var showLibrary = false
+    @State private var libraryItem: PhotosPickerItem?
     @State private var savedCount = 0
     @State private var showReport = false
 
@@ -34,6 +39,10 @@ struct ChatView: View {
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 14) {
+                        // Moonee and the hills open the conversation, then scroll away with it: the chat gets the screen.
+                        MooneeHero(mood: currentMood)
+                            .animation(.smooth, value: currentMood)
+                            .padding(.bottom, -14)
                         greeting
                         ForEach(messages.indices, id: \.self) { i in row(i) }
                         if busy {
@@ -65,8 +74,8 @@ struct ChatView: View {
                 .onChange(of: messages.count) { withAnimation { proxy.scrollTo("bottom", anchor: .bottom) } }
                 .onChange(of: busy) { withAnimation { proxy.scrollTo("bottom", anchor: .bottom) } }
             }
-            ChatComposer(text: $text, focus: $focused, isRecording: speech.isRecording,
-                         onPlus: { showAdd = true }, onMic: toggleMic, onHoldStart: startHold, onHoldEnd: endHold,
+            ChatComposer(text: $text, focus: $focused, isRecording: speech.isActive,
+                         onPlus: { showAdd = true }, onVoiceStart: startVoice, onVoiceEnd: endVoice, onCamera: openCamera,
                          onSend: { send(text) }, onChangeModel: { showAISettings = true })
                 .padding(.horizontal, 12).padding(.top, 6).padding(.bottom, 10)
         }
@@ -77,14 +86,28 @@ struct ChatView: View {
             // Opens as the idle pill (owner's reference): type, or hold the voice button to talk.
         }
         .onChange(of: speech.transcript) { _, t in
-            guard !t.isEmpty else { return }
+            guard !t.isEmpty, speech.isRecording else { return }
             text = t
             inputSource = .voice
         }
-        .onChange(of: speech.error) { _, e in if let e { reply(e, mood: .confused) } }
+        .onChange(of: speech.failure) { _, f in if let f { reply(ChatLines.voice(f), mood: .confused) } }
         .sheet(isPresented: $showAdd) {
-            AddToChatSheet { image in Task { await scan(image) } }
+            AddToChatSheet(onImage: { image in Task { await scan(image) } },
+                           onPDF: { pdf, name in Task { await scan(pdf, name: name) } },
+                           onUnreadable: { reply(ChatLines.unreadableFile, mood: .confused) })
                 .presentationDetents([.medium, .large])
+        }
+        .fullScreenCover(isPresented: $showCamera) {
+            CameraPicker { image in Task { await scan(image) } }.ignoresSafeArea()
+        }
+        .photosPicker(isPresented: $showLibrary, selection: $libraryItem, matching: .images)
+        .onChange(of: libraryItem) { _, picked in
+            guard let picked else { return }
+            Task {
+                let data = try? await picked.loadTransferable(type: Data.self)
+                libraryItem = nil
+                if let data, let image = UIImage(data: data) { await scan(image) } else { reply(ChatLines.unreadableFile, mood: .confused) }
+            }
         }
         .sheet(isPresented: $showHistory) {
             ChatHistoryView(onOpen: { t in (thread, resumed, pending) = (t, true, nil) },
@@ -100,34 +123,33 @@ struct ChatView: View {
 
     private var currentMood: MooneeMood { speech.isRecording ? .listening : busy ? .thinking : mood }
 
+    /// Back · the conversation's name · history. Moonee herself is at the top of the chat, not here.
     private var header: some View {
-        VStack(spacing: 0) {
-            MooneeHeader(Text("Your finance assistant", tableName: "Chat")) {
+        HStack(spacing: 4) {
+            Color.clear.frame(width: 44, height: 44).overlay {
                 if let onBack {
                     Button(action: onBack) { HeaderCircle("chevron.left") }.accessibilityLabel(Text("Back", tableName: "Chat"))
                 }
-            } trailing: {
-                Button { showHistory = true } label: { HeaderCircle("clock.arrow.circlepath") }
-                    .accessibilityLabel(Text("Chat history", tableName: "Chat"))
             }
-            .padding(.horizontal, 16)
-
-            // 76 pt while typing so the keyboard leaves room for the chat (UI review C-1).
-            MooneeHero(mood: currentMood, compact: focused)
-                .padding(.horizontal, 16)
-                .animation(.smooth, value: focused)
-                .animation(.smooth, value: currentMood)
+            Text(thread?.displayTitle ?? ChatThreads.dailyTitle(.now))
+                .font(.headline).foregroundStyle(Color.brandDeep)
+                .lineLimit(1).minimumScaleFactor(0.8)
+                .frame(maxWidth: .infinity)
+                .accessibilityAddTraits(.isHeader)
+            Button { showHistory = true } label: { HeaderCircle("clock.arrow.circlepath") }
+                .accessibilityLabel(Text("Chat history", tableName: "Chat"))
         }
+        .padding(.horizontal, 16).padding(.bottom, 4)
     }
 
     // MARK: Messages
 
     private var greeting: some View {
         VStack(alignment: .leading, spacing: 12) {
-            ChatBubble(.moonee, String(localized: "**Hi there!** 👋\nWhat can Moonee do for you today? Log a spend, ask about your money, or snap a receipt.", table: "Chat"))
+            ChatBubble(.moonee, String(localized: "**Hi there!**\nWhat can Moonee do for you today? Log a spend, ask about your money, or snap a receipt.", table: "Chat"))
             // One row when the three fit (mockup), else the third wraps: never cut off at the edge (UI review C-3).
-            let say = QuickReplyChip(title: String(localized: "Say a spend", table: "Chat"), symbol: "mic", action: toggleMic)
-            let scan = QuickReplyChip(title: String(localized: "Scan a receipt", table: "Chat"), symbol: "camera") { showAdd = true }
+            let say = QuickReplyChip(title: String(localized: "Say a spend", table: "Chat"), symbol: "mic", action: startVoice)
+            let scan = QuickReplyChip(title: String(localized: "Scan a receipt", table: "Chat"), symbol: "camera", action: openCamera)
             let type = QuickReplyChip(title: String(localized: "Type it in", table: "Chat"), symbol: "pencil") { focused = true }
             ViewThatFits(in: .horizontal) {
                 HStack(spacing: 8) { say; scan; type }
@@ -163,6 +185,8 @@ struct ChatView: View {
                 ChatTransactionCard(
                     items: rows.map(\.item), state: editing ? .editing : .saved,
                     onUndo: { withAnimation { ChatBook.undo(m, in: context); editingCard = nil } },
+                    // One line: straight to the editor. Several: pick the line first.
+                    onStartEditing: { if txns.count == 1 { editTxn = txns[0] } else { withAnimation { editingCard = m.persistentModelID } } },
                     onEdit: { id in editTxn = rows.first { $0.item.id == id }?.txn },
                     onDoneEditing: { withAnimation { editingCard = nil } })
                     .contentShape(.rect)
@@ -182,8 +206,19 @@ struct ChatView: View {
     private func post(_ m: ChatMessage) {
         let t = ChatThreads.forNewMessage(open: thread, resumed: resumed, in: context)
         if t != thread { (thread, resumed) = (t, false) }
+        let naming = t.isManual && t.title.isEmpty && m.fromUser
         context.insert(m)
         ChatThreads.add(m, to: t)
+        // A manual chat is named after what it's about: the first sentence now, the model's short title when it answers.
+        if naming {
+            let first = m.text
+            Task {
+                if let title = await ChatThreads.modelTitle(for: first, using: LLMSettings.router().candidates(for: .quickAnswer).first) {
+                    t.title = title
+                    try? context.save()
+                }
+            }
+        }
     }
 
     private func newChat() {
@@ -247,14 +282,17 @@ struct ChatView: View {
         busy = true
         let assistant = Assistant(router: LLMSettings.router(), tools: MooneeTools(ledger: StoreLedger(context)), catalog: SkillCatalog(context))
         Task {
-            let out = await assistant.handle(input, history: history, context: parser)
+            let r = await assistant.reply(input, history: history, context: parser)
+            let out = r.output
             withAnimation { busy = false }
+            // Why the chosen model didn't answer (Apple Intelligence off, too long…), once until it changes.
+            if let notice = r.noticeText, notice != lastNotice { lastNotice = notice; reply(notice, mood: .confused) }
             switch out {
             case .transactions(let txns, _): record(txns, source: source, raw: input)
             case .answer(let answer, _, let sources): reply(answer, mood: .happy, sources: sources)
             case .facts(let facts, _):
                 if let t = ChatBook.factsText(facts) { reply(t, mood: .happy, sources: ChatBook.sources(facts)) }
-                else { reply(Self.confused, mood: .confused) }
+                else { reply(ChatLines.confused(), mood: .confused) }
             }
         }
     }
@@ -263,7 +301,7 @@ struct ChatView: View {
     private func record(_ parsed: [ParsedTxn], source: TxSource, raw: String) {
         let saved = ChatBook.save(parsed, source: source, rawInput: raw, in: context)
         if !saved.isEmpty {
-            let m = ChatMessage(fromUser: false, text: String(localized: "Got it! Moonee logged \(saved.count) transactions for you:", table: "Chat"))
+            let m = ChatMessage(fromUser: false, text: ChatLines.saved(saved))
             post(m)
             m.txns = saved
             mood = .happy
@@ -272,27 +310,15 @@ struct ChatView: View {
         let book = ChatBook.Lookup(context)
         if let ask = parsed.first(where: { book.unresolved($0) != nil }), let field = book.unresolved(ask) {
             if [.toWallet, .jar, .toJar].contains(field), book.choices(field, for: ask).isEmpty {
-                reply(String(localized: "You only have one wallet so far. Add another in Budget, then tell Moonee again.", table: "Chat"), mood: .confused)
+                reply(ChatLines.oneWallet, mood: .confused)
             } else {
                 pending = ask
-                reply(Self.question(field, ask), mood: .confused)
+                reply(ChatLines.question(field, ask), mood: .confused)
             }
         } else if saved.isEmpty {
-            reply(Self.confused, mood: .confused)
+            reply(ChatLines.confused(), mood: .confused)
         }
         try? context.save()
-    }
-
-    private static func question(_ field: ParsedTxn.Field, _ p: ParsedTxn) -> String {
-        switch field {
-        case .toWallet: return String(localized: "Which wallet did the money go to?", table: "Chat")
-        case .jar: return String(localized: "Which jar should Moonee take it from?", table: "Chat")
-        case .toJar: return String(localized: "Which jar should it go into?", table: "Chat")
-        case .amount, .person:
-            let what = p.note.trimmingCharacters(in: .whitespaces)
-            return what.isEmpty ? String(localized: "How much was it? Tell Moonee the amount, e.g. 45k.", table: "Chat")
-                                : String(localized: "How much was **\(what)**? Tell Moonee the amount, e.g. 45k.", table: "Chat")
-        }
     }
 
     private func reply(_ text: String, mood: MooneeMood, sources: [WebSource] = []) {
@@ -303,45 +329,49 @@ struct ChatView: View {
         try? context.save()
     }
 
-    private static var confused: String {
-        String(localized: "Hmm, Moonee didn't quite get that 🤔 Try something like “phở 45k” or “how much did I spend this month?”", table: "Chat")
+    private func openCamera() {
+        if UIImagePickerController.isSourceTypeAvailable(.camera) { showCamera = true } else { showLibrary = true } // Simulator: no camera
     }
 
-    private func toggleMic() {
-        if speech.isRecording {
-            speech.stop()
-            focused = true
-        } else {
-            focused = false
-            Task { await speech.start() }
-        }
-    }
-
-    /// Hold to talk: dictate while held, send on release.
-    private func startHold() {
-        guard !speech.isRecording else { return }
+    private func startVoice() {
         focused = false
         text = ""
         Task { await speech.start() }
     }
 
-    // ponytail: the recognizer delivers its final words a moment after the audio stops; 0.6 s covers it on device.
-    private func endHold() {
-        speech.stop()
+    /// Tap again or let go: wait for the last words, then send them. Silence gets a friendly word, never nothing.
+    private func endVoice() {
+        let prompting = speech.isStarting // released while the permission prompts were up: no message
         Task {
-            try? await Task.sleep(for: .milliseconds(600))
-            send(text)
+            let heard = await speech.finish()
+            guard !prompting, speech.failure == nil else { return }
+            if heard.isEmpty { reply(ChatLines.heardNothing(), mood: .confused); return }
+            inputSource = .voice
+            send(heard)
         }
     }
 
     /// Receipt → OCR (Vision) → one expense, saved like a typed one.
     private func scan(_ image: UIImage) async {
+        post(ChatMessage(fromUser: true, text: String(localized: "Receipt photo", table: "Chat")))
         busy = true
         let lines = (try? await ReceiptScanner.lines(in: image)) ?? []
         busy = false
-        post(ChatMessage(fromUser: true, text: String(localized: "📷 Receipt", table: "Chat")))
+        read(lines)
+    }
+
+    /// PDF receipt → its text (or OCR of its pages) → the same parser as a photo.
+    private func scan(_ pdf: PDFDocument, name: String) async {
+        post(ChatMessage(fromUser: true, text: name))
+        busy = true
+        let lines = await ChatBook.lines(in: pdf)
+        busy = false
+        read(lines)
+    }
+
+    private func read(_ lines: [String]) {
         if lines.isEmpty {
-            reply(String(localized: "Moonee couldn't read that photo 😵 Try again with the whole receipt in good light.", table: "Chat"), mood: .confused)
+            reply(ChatLines.unreadableReceipt, mood: .confused)
         } else {
             record([ChatBook.receipt(lines, context: ParserContext(context))], source: .image, raw: lines.joined(separator: "\n"))
         }

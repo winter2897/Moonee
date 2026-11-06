@@ -77,7 +77,13 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 - Mức nỗ lực: Thấp / Trung bình (mặc định) / Cao / Cao hơn / Tối đa, chỉ hiện khi model hỗ trợ.
 
 ### 3.3 Hỏi đáp và tư vấn
-- **Tìm web** khi user hỏi thông tin bên ngoài (giá vàng, Bitcoin...): dùng tìm kiếm có sẵn của nhà cung cấp BYOK, hoặc key Tavily/Brave của user; giá crypto qua CoinGecko. Trả lời kèm nguồn và thời điểm.
+- **Tìm web** khi user hỏi thông tin bên ngoài (giá vàng, Bitcoin...). Trả lời luôn kèm nguồn và thời điểm; Moonee chỉ đọc số từ tool, không đoán. Thứ tự (quyết định 06/11):
+  1. **Search có sẵn của provider**, khi model trả lời là của provider đó: OpenRouter (web plugin), OpenAI (tool `web_search`), Anthropic (server tool web search), Gemini (grounding `google_search`). Ở chế độ Lai, câu hỏi thị trường đi BYOK trước để dùng search này.
+  2. **Key Tavily/Brave của user**, chỉ khi model không có search sẵn: Apple on-device, model local, DeepSeek, Custom.
+  3. **Nguồn công khai không cần key**, luôn có ở mọi chế độ (tool `marketPrice`), cho câu hay hỏi nhất: giá vàng SJC và nhẫn PNJ 999.9 (feed giá công khai của PNJ, đổi sang giá mỗi lượng trong Swift; sjc.com.vn chặn bot nên không dùng), tỷ giá ra VND (bảng tỷ giá công khai của Vietcombank), crypto (CoinGecko). Timeout 8 giây, cache 5 phút (Vietcombank yêu cầu tối đa 1 lần mỗi 5 phút). Chỉ gửi tên thứ được hỏi, không gửi dữ liệu của user. Có giá từ nguồn này thì không cần tìm web.
+  - Câu khác (chứng khoán, lãi suất, tin tức) mà không có 1 hoặc 2 thì Moonee nói thật và chỉ cách bật. Mục "Tìm kiếm web" trong Cài đặt AI ghi rõ đang dùng đường nào.
+- **Apple Intelligence** (quyết định 06/11): Cài đặt AI hiện trạng thái rõ (máy không hỗ trợ, chưa bật, đang tải model, chưa hỗ trợ tiếng Việt thì trả lời bằng tiếng Anh). Model nhỏ (Apple, local) nhận **prompt rút gọn** (persona + skill bản ngắn + FACTS cắt gọn + 4 lượt chat gần nhất), vì context của Apple chỉ 4096 token trên iOS 26; tràn context thì thử lại không kèm lịch sử. Lỗi (guardrail, ngôn ngữ, tràn context) thì tự chuyển sang model on-device còn lại, rồi đến bộ parse quy tắc và số liệu của app, kèm một câu báo thân thiện trong chat. Không tự chuyển sang cloud khi user chọn on-device.
+- **Giọng Moonee**: nói như bạn thân nhắn tin, tự nhiên, ấm, 1–3 câu, không emoji, ở mọi câu trả lời và câu hỏi lại. Ghi giao dịch xong thì tóm tắt một câu ("Moonee ghi lại 40.000 ₫ ăn sáng ở GS25 hôm nay rồi nhé").
 - "Tháng này mình ăn uống hết bao nhiêu?", "Còn bao nhiêu để hưởng thụ?"
 - Gợi ý cân đối lọ cuối tháng dựa trên thu nhập và thói quen chi.
 - Hướng dẫn đạt mục tiêu: "Muốn mua laptop 30tr trước Tết thì mỗi tuần cần để dành bao nhiêu?"
@@ -200,7 +206,7 @@ Moonee không có server AI và không trả phí LLM thay user.
 
 | Chế độ | Chạy ở đâu | Ghi chú |
 |---|---|---|
-| **Apple on-device** | Apple Foundation Models, có sẵn trong iOS | Không cần tải. Chỉ máy có Apple Intelligence (iPhone 15 Pro trở lên, iOS 26+). ⚠️ Cần kiểm tra chất lượng tiếng Việt |
+| **Apple on-device** | Apple Foundation Models, có sẵn trong iOS | Không cần tải. Chỉ máy có Apple Intelligence (iPhone 15 Pro trở lên, iOS 26+; tiếng Việt từ iOS 26.1). Context 4096 token: dùng prompt rút gọn (§3.3) |
 | **Model local** | Model mở (Gemma, Qwen, Bonsai...) tải về và chạy trên máy, giống app Locally | Riêng tư, offline, miễn phí. Chạy qua MLX Swift (hoặc llama.cpp với file GGUF) |
 | **BYOK** | Cloud, bằng API key của user (OpenAI / Anthropic / Gemini...) | Thông minh nhất, cần mạng |
 | **Lai** | Parse bằng on-device/local, tư vấn và báo cáo bằng BYOK | Cân bằng giữa riêng tư và chất lượng |
@@ -373,7 +379,7 @@ Bạn đã có thiết kế, màu (xanh lá/mint + vàng) và nhân vật. Dư�
 - [ ] Format VND thống nhất: đầy đủ `1.250.000 ₫`, rút gọn `1,25tr` / `850k` (chốt quy tắc cho từng chỗ).
   - **Quy tắc (UI review 2026-11):** mặc định dùng số **đầy đủ**, kể cả trong danh sách và thẻ (`199.000 ₫`, `3.250.000 ₫ / 5.500.000 ₫`). Chỉ **rút gọn** ở tâm biểu đồ (ring, donut) và ô nhỏ hẹp hơn 90 pt (ví dụ ô lọ 4 cột ở Tổng quan). Số không vừa thì thu nhỏ chữ (`minimumScaleFactor`), không chuyển sang rút gọn.
 - [ ] **Thang chữ:** màn hình chỉ dùng token trong `Theme.swift` (`screenTitle` 20, `headerPill` 13, `heroAmountFont()` 26, `cardAmount` 20, `greeting` 17, `sectionTitle` 16, `rowTitle` 15, `bodyText` 15, `secondaryText` 13, `caption` 12, `chip` 13), không dùng `.system(size:)` cho chữ.
-- [ ] Trạng thái **ẩn số dư**: `•••••` có độ rộng cố định.
+- [ ] Trạng thái **ẩn số dư**: `*****` có độ rộng cố định.
 - [ ] Hỗ trợ **Dynamic Type**: số lớn trên dashboard vẫn phải vừa khung khi chữ to.
 - [ ] Font hiển thị đúng dấu tiếng Việt (ă, ơ, ư, ệ...), nhất là font display hoặc font tròn trang trí.
 - [ ] Layout chịu được độ dài chữ khác nhau giữa các ngôn ngữ: nút và nhãn không bị cắt, không cố định độ rộng theo chữ tiếng Anh. Kiểm tra bằng pseudo-localization trong Xcode.

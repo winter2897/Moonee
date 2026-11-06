@@ -34,7 +34,9 @@ extension CloudModel {
             let pricing = m["pricing"] as? [String: Any]
             func perMillion(_ key: String) -> Double? {
                 // OpenRouter's routers ("openrouter/auto") report -1: unknown, not a price.
-                (pricing?[key] as? String).flatMap(Double.init).flatMap { $0 < 0 ? nil : ($0 * 1_000_000 * 1000).rounded() / 1000 }
+                guard let raw = pricing?[key] as? String, let usd = Double(raw), usd >= 0 else { return nil }
+                let scaled: Double = usd * 1_000_000_000
+                return scaled.rounded() / 1000
             }
             let params = m["supported_parameters"] as? [String]
             return CloudModel(id: id, name: m["name"] as? String, contextLength: m["context_length"] as? Int,

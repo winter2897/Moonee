@@ -53,7 +53,7 @@ Mọi thứ khác xây trên nó.
 ### S2 — Design system + nhân vật
 - Token màu (`brand.*`, `semantic.income/expense/warning`, bảng 12 màu lọ an toàn cho người mù màu) trong `Theme.swift`.
 - Đưa 8 trạng thái nhân vật vào `Assets.xcassets` + `enum MooneeMood`; phát GIF bằng ImageIO (không thêm package); tôn trọng Reduce Motion.
-- Component theo mockup + spec mục E: tab bar có nút (+) nổi, `AmountText` (tabular, ẩn số dư `•••••`, VoiceOver đọc chữ), thẻ lọ (thường/≥80%/vượt/âm), thẻ hoá đơn, thẻ giao dịch trong chat (thường/sửa/hoàn tác/gộp), bong bóng chat, vòng %, donut, empty state.
+- Component theo mockup + spec mục E: tab bar có nút (+) nổi, `AmountText` (tabular, ẩn số dư `*****`, VoiceOver đọc chữ), thẻ lọ (thường/≥80%/vượt/âm), thẻ hoá đơn, thẻ giao dịch trong chat (thường/sửa/hoàn tác/gộp), bong bóng chat, vòng %, donut, empty state.
 - Một màn **Component Gallery** (Debug) để review.
 
 ### S3 — AI engine: parser + tool + skill

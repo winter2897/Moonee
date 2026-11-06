@@ -2,371 +2,382 @@ import Charts
 import SwiftData
 import SwiftUI
 
-/// Overview tab (spec §2), laid out like `asset/ui/Moonee Finance Overview Dashboard.png`.
+/// Overview tab (spec §2): a native, grouped dashboard for the chosen period (week / month / year).
+/// Balance and in/out vs the previous period, cumulative spending line, spending by category, jars this month,
+/// bills due in 7 days, the 5 latest transactions → the ledger. Charts show details on touch.
 struct OverviewView: View {
     @Query(sort: \Txn.date, order: .reverse) private var txns: [Txn]
     @Query(sort: \Wallet.order) private var wallets: [Wallet]
     @Query(sort: \Jar.order) private var jars: [Jar]
     @Query private var assets: [Asset]
     @Query(sort: \Recurring.nextDue) private var bills: [Recurring]
-    @AppStorage(Prefs.profileName) private var name = ""
     @AppStorage(Prefs.reminderLevel) private var level = MooneeNote.Level.medium.rawValue
-    @AppStorage(Prefs.hideBalances) private var hideBalances = false
-    @Environment(\.dynamicTypeSize) private var typeSize
-    #if DEBUG
+    @Environment(\.balanceHidden) private var hidden
     @Environment(\.modelContext) private var context
-    #endif
+    @State private var period = Period.month
+    @State private var selectedIndex: Int?
+    @State private var selectedAmount: Int?
+    @State private var editing: Txn?
 
     private var currency: String { Money.defaultCurrency }
 
     var body: some View {
-        let stats = OverviewStats(txns: txns, wallets: wallets, jars: jars, assets: assets)
-        let due = OverviewStats.billsDue(bills)
-        let note = MooneeNote.make(level: MooneeNote.Level(rawValue: level) ?? .medium,
-                                   jars: stats.jars.map { .init(name: $0.jar.name, balance: $0.month.balance, progress: $0.month.progress) },
-                                   bills: due.map { ($0.name, $0.nextDue) }, spentToday: stats.spentToday)
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 14) {
-                    header
-                    if txns.isEmpty {
-                        EmptyState(mood: .sleepy, title: String(localized: "No transactions yet", table: "Overview"),
-                                   message: String(localized: "Tap + and tell Moonee “lunch 45k” to log your first one.", table: "Overview"))
-                            .card()
-                    } else {
-                        hero(note)
-                        spending(stats)
-                        ReportCard(txns: txns) // last month's report (Features/Report)
-                        jarsCard(stats)
-                        let pair = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 14)) : AnyLayout(HStackLayout(alignment: .top, spacing: 12))
-                        pair {
-                            billsCard(due)
-                            // Mockup: bills ≈55% / net worth ≈45%, so full bill amounts fit next to their names.
-                            netWorthCard(stats).containerRelativeFrame(.horizontal) { w, _ in typeSize.isAccessibilitySize ? w - 32 : (w - 44) * 0.45 }
-                        }.fixedSize(horizontal: false, vertical: true)
-                        recent
+            Group {
+                if txns.isEmpty {
+                    ContentUnavailableView {
+                        Label { Text("No transactions yet", tableName: "Overview") } icon: { Image(systemName: "moon.zzz") }
+                    } description: {
+                        Text("Tap + and tell Moonee “lunch 45k” to log your first one.", tableName: "Overview")
                     }
+                } else {
+                    dashboard
                 }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 8)
             }
+            .scrollContentBackground(.hidden)
             .background(MooneeBackground())
-            .toolbar(.hidden, for: .navigationBar)
-            .foregroundStyle(Color.ink)
+            .navigationTitle(String(localized: "Overview", table: "Overview"))
+            .sheet(item: $editing) { TxnEditForm(txn: $0) }
         }
         #if DEBUG
-        .task { SampleData.insertIfRequested(context) }
+        .task {
+            SampleData.insertIfRequested(context)
+            // Screenshots: `-overviewSelect 5` shows the chart callout for day 5.
+            if UserDefaults.standard.integer(forKey: "overviewSelect") > 0 { selectedIndex = UserDefaults.standard.integer(forKey: "overviewSelect") }
+        }
         #endif
     }
 
-    // MARK: - Sections
-
-    private var header: some View {
-        MooneeHeader(Text("Your AI money assistant", tableName: "Overview")) {
-            NavigationLink { TransactionLedgerView() } label: { HeaderCircle("clock") }
-                .accessibilityLabel(Text("Transactions", tableName: "Overview"))
-        } trailing: {
-            Menu {
-                Toggle(String(localized: "Hide balances", table: "Overview"), systemImage: "eye.slash", isOn: $hideBalances)
-            } label: { HeaderCircle("ellipsis") }
-                .accessibilityLabel(Text("More", tableName: "Overview"))
-        }
-        .padding(.top, 8)
-    }
-
-    private func hero(_ note: MooneeNote) -> some View {
-        VStack(spacing: 4) {
-            // Mockup: the greeting pose; only a warning (negative/over/≥80% jar, bill due today) changes it.
-            MooneeHero(mood: note.mood == .worried ? .worried : .greeting)
-            HStack(alignment: .top, spacing: 10) {
-                MooneeAvatar(size: 41)
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(name.isEmpty ? String(localized: "Hi there! 👋", table: "Overview") : String(localized: "Hi \(name)! 👋", table: "Overview"))
-                        .font(.greeting)
-                    Text(note.text).font(.bodyText).foregroundStyle(Color.inkSecondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(14)
-                .background(Color.surface.opacity(0.9), in: .rect(cornerRadius: 20))
-                .shadow(color: .brandDeep.opacity(0.06), radius: 8, y: 3)
+    private var dashboard: some View {
+        let s = DashboardStats(txns: txns, wallets: wallets, jars: jars, assets: assets, period: period)
+        let due = DashboardStats.billsDue(bills)
+        let monthStart = Calendar.current.dateInterval(of: .month, for: .now)!.start
+        let note = MooneeNote.make(level: MooneeNote.Level(rawValue: level) ?? .medium,
+                                   jars: s.jars.map { .init(name: $0.jar.name, balance: $0.month.balance, progress: $0.month.progress) },
+                                   bills: due.map { ($0.name, $0.nextDue) },
+                                   spentToday: txns.reduce(0) { $1.kind == .expense && Calendar.current.isDateInToday($1.date) ? $0 + $1.amount : $0 })
+        return List {
+            Section {
+                Picker(selection: $period) {
+                    ForEach(Period.allCases, id: \.self) { Text($0.title).tag($0) }
+                } label: { Text("Period", tableName: "Overview") }
+                    .pickerStyle(.segmented)
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets())
             }
-            .accessibilityElement(children: .combine)
-        }
-    }
-
-    private func spending(_ s: OverviewStats) -> some View {
-        let halves = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12)) : AnyLayout(HStackLayout(spacing: 10))
-        return halves {
-            VStack(alignment: .leading, spacing: 6) {
-                Label { Text("Spent today", tableName: "Overview") } icon: { Image(systemName: "calendar").foregroundStyle(Color.brandDeep) }
-                    .font(.caption).lineLimit(1).minimumScaleFactor(0.8)
-                AmountText(s.spentToday, currency: currency).font(.cardAmount)
-                if let c = s.todayChange {
-                    changeLine(c, upIsGood: false) { Text("vs yesterday", tableName: "Overview") }
-                }
+            Section {
+                Label { Text(note.text) } icon: { Image(systemName: note.symbol).foregroundStyle(Color.brandDeep) }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            if !typeSize.isAccessibilitySize { Divider().frame(height: 60) }
-            VStack(alignment: .leading, spacing: 6) {
-                Label { Text("Spent this month", tableName: "Overview") } icon: { Image(systemName: "calendar").foregroundStyle(Color.brandDeep) }
-                    .font(.caption).lineLimit(1).minimumScaleFactor(0.8)
-                AmountText(s.spentMonth, currency: currency).font(.cardAmount)
-                if let p = s.budgetProgress {
-                    Text("\(Int((p * 100).rounded()))% of monthly budget", tableName: "Overview")
-                        .font(.caption).foregroundStyle(Color.inkSecondary).lineLimit(1).minimumScaleFactor(0.8)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            if let p = s.budgetProgress {
-                ProgressRing(progress: p, lineWidth: 7).frame(width: 66)
-            }
-        }
-        .card(padding: 14)
-    }
-
-    /// "▼ -42% vs yesterday": arrow + sign, so colour is never the only cue.
-    private func changeLine(_ change: Int, upIsGood: Bool, @ViewBuilder suffix: () -> Text) -> some View {
-        let good = change == 0 || (change > 0) == upIsGood
-        return HStack(spacing: 3) {
-            Image(systemName: change > 0 ? "arrowtriangle.up.fill" : "arrowtriangle.down.fill").imageScale(.small)
-            Text(verbatim: "\(change > 0 ? "+" : "")\(change)%").fontWeight(.semibold).monospacedDigit()
-            suffix().foregroundStyle(Color.inkSecondary)
-        }
-        .font(.caption2)
-        .foregroundStyle(good ? Color.brandDeep : Color.warningText)
-        .lineLimit(1).minimumScaleFactor(0.7)
-    }
-
-    private func sectionTitle(_ title: Text, symbol: String) -> some View {
-        HStack(spacing: 8) {
-            IconBadge(symbol: symbol, color: .brandDeep, size: 30)
-            title.font(.sectionTitle)
-        }
-    }
-
-    private var seeAll: some View {
-        HStack(spacing: 2) { Text("See all", tableName: "Overview"); Image(systemName: "chevron.right") }
-            .font(.secondaryText.weight(.semibold)).foregroundStyle(Color.brandDeep)
-            .frame(minHeight: 44).contentShape(.rect)
-    }
-
-    private func jarsCard(_ s: OverviewStats) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                sectionTitle(Text("Jar balances", tableName: "Overview"), symbol: "square.stack.3d.up.fill")
-                Spacer()
-                NavigationLink { JarsListView(jars: s.jars) } label: { seeAll }
-            }
-            // Mockup: the first 4 jars fill the card in equal columns; the rest are behind "See all".
-            let columns = typeSize.isAccessibilitySize ? 2 : 4
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: columns), spacing: 8) {
-                ForEach(s.jars.prefix(4)) { row in
-                    JarCard(name: row.jar.name, symbol: row.jar.icon, color: row.jar.color, balance: row.month.balance,
-                            spent: row.month.spent, budget: row.month.budget, currency: currency, layout: .tile)
-                        .frame(maxWidth: .infinity)
-                }
-            }
-        }
-        .card(padding: 14)
-    }
-
-    private func billsCard(_ due: [Recurring]) -> some View {
-        NavigationLink { BillsListView() } label: {
-            VStack(alignment: .leading, spacing: 10) {
-                HStack(spacing: 6) {
-                    Image(systemName: "bell").foregroundStyle(Color.brandDeep)
-                    Text("Bills due soon", tableName: "Overview").font(.sectionTitle).lineLimit(1).minimumScaleFactor(0.75)
-                    if !due.isEmpty {
-                        Text(verbatim: "\(due.count)").font(.caption2.weight(.bold)).foregroundStyle(.white)
-                            .frame(minWidth: 18, minHeight: 18).background(Color.danger, in: .circle)
-                    }
-                    Spacer(minLength: 0)
-                    Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(Color.inkSecondary)
-                }
-                if due.isEmpty {
-                    Text("Nothing due in the next 7 days.", tableName: "Overview").font(.secondaryText).foregroundStyle(Color.inkSecondary)
-                }
-                ForEach(due.prefix(2)) { b in
-                    let status = BillStatus(due: b.nextDue, paid: false)
-                    HStack(spacing: 8) {
-                        IconBadge(symbol: b.category?.icon ?? "doc.text", color: .brandDeep, size: 28)
-                        VStack(alignment: .leading, spacing: 1) {
-                            Text(b.name).font(.secondaryText.weight(.semibold)).lineLimit(1)
-                            Group {
-                                if status.urgent { status.label } else { Text("Due \(OverviewView.dayMonth(b.nextDue))", tableName: "Overview") }
-                            }
-                            .font(.caption2).foregroundStyle(status.color).lineLimit(1)
-                        }
-                        .layoutPriority(1) // the amount shrinks before the name/date truncate
-                        Spacer(minLength: 4)
-                        AmountText(b.amount, currency: b.currencyCode).font(.caption.weight(.semibold))
+            summary(s)
+            if let last = Calendar.current.date(byAdding: .month, value: -1, to: monthStart),
+               txns.contains(where: { $0.date >= last && $0.date < monthStart }) {
+                Section {
+                    NavigationLink { ReportView(month: last) } label: {
+                        Label { Text("\(last.formatted(.dateTime.month(.wide))) report", tableName: "Overview") } icon: { Image(systemName: "doc.text.magnifyingglass") }
                     }
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-            .card(padding: 14)
+            spendingChart(s)
+            categoryChart(s)
+            jarsSection(s)
+            if !due.isEmpty { billsSection(due) }
+            recentSection
         }
-        .buttonStyle(.plain)
+        .listStyle(.insetGrouped)
+        .onChange(of: period) { selectedIndex = nil; selectedAmount = nil }
     }
 
-    /// "08/11" as in the mockup (ICU gives "08-11" in vi).
-    static func dayMonth(_ d: Date) -> String {
-        d.formatted(.dateTime.day(.twoDigits).month(.twoDigits)).replacingOccurrences(of: "-", with: "/")
-    }
+    // MARK: - Summary
 
-    private func netWorthCard(_ s: OverviewStats) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 6) {
-                Image(systemName: "leaf").foregroundStyle(Color.brandDeep)
-                Text("Net worth", tableName: "Overview").font(.sectionTitle)
-            }
-            AmountText(s.netWorth, currency: currency).font(.cardAmount)
-            if let c = s.netWorthChange {
-                changeLine(c, upIsGood: true) { Text("vs last month", tableName: "Overview") }
-            }
-            Spacer(minLength: 0)
-            Chart(Array(s.netWorthTrend.enumerated()), id: \.offset) { i, v in
-                let (m, nw) = ("month", "net worth") // plain Strings: chart labels stay out of the String Catalog
-                AreaMark(x: .value(m, i), yStart: .value(nw, s.netWorthTrend.min() ?? 0), yEnd: .value(nw, v))
-                    .foregroundStyle(LinearGradient(colors: [.brandPrimary.opacity(0.35), .brandPrimary.opacity(0.02)], startPoint: .top, endPoint: .bottom))
-                    .interpolationMethod(.catmullRom)
-                LineMark(x: .value(m, i), y: .value(nw, v)).foregroundStyle(Color.brandPrimary).interpolationMethod(.catmullRom)
-            }
-            .chartXAxis(.hidden).chartYAxis(.hidden)
-            .chartYScale(domain: .automatic(includesZero: false))
-            .frame(height: 40)
-            .accessibilityHidden(true)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .card(padding: 14)
-    }
-
-    private var recent: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack {
-                sectionTitle(Text("Recent transactions", tableName: "Overview"), symbol: "arrow.left.arrow.right")
-                Spacer()
-                NavigationLink { TransactionLedgerView() } label: { seeAll }
-            }
-            .padding(.bottom, 4)
-            let recent = Array(txns.prefix(3))
-            ForEach(recent) { t in
-                TxnRow(txn: t, showDay: true)
-                if t != recent.last { Divider().padding(.leading, 46) }
-            }
-        }
-        .card(padding: 14)
-    }
-}
-
-// MARK: - Shared rows
-
-/// One transaction: icon, title, "Today · Cash wallet", signed amount.
-struct TxnRow: View {
-    let txn: Txn
-    /// Overview shows "Today"; the ledger is already grouped by day and shows the category instead.
-    var showDay = false
-
-    var body: some View {
-        HStack(spacing: 12) {
-            IconBadge(symbol: txn.category?.icon ?? txn.kind.symbol, color: txn.category?.color ?? .brandDeep)
+    private func summary(_ s: DashboardStats) -> some View {
+        Section {
             VStack(alignment: .leading, spacing: 2) {
-                Text(txn.title).font(.rowTitle).lineLimit(1)
-                Text(subtitle).font(.secondaryText).foregroundStyle(Color.inkSecondary).lineLimit(1)
+                Text("Total balance", tableName: "Overview").font(.subheadline).foregroundStyle(.secondary)
+                AmountText(s.walletTotal, currency: currency).font(.largeTitle.weight(.bold))
             }
-            Spacer(minLength: 8)
-            let flow = txn.flow
-            AmountText(flow == 0 ? txn.amount : flow, currency: txn.currencyCode, plus: flow != 0)
-                .font(.rowTitle)
-                .foregroundStyle(flow > 0 ? Color.income : Color.ink)
+            .padding(.vertical, 4)
+            .accessibilityElement(children: .combine)
+            LabeledContent { AmountText(s.netWorth, currency: currency) } label: { Text("Net worth", tableName: "Overview") }
+            changeRow(Text("Income", tableName: "Overview"), value: s.income, previous: s.previousIncome, upIsGood: true)
+            changeRow(Text("Expenses", tableName: "Overview"), value: s.expense, previous: s.previousExpense, upIsGood: false)
+            changeRow(Text("Difference", tableName: "Overview"), value: s.net, previous: s.previousNet, upIsGood: true, signed: true)
+        } footer: {
+            Text(comparedWith)
         }
-        .padding(.vertical, 6)
-        .contentShape(.rect)
+    }
+
+    private var comparedWith: String {
+        switch period {
+        case .week: String(localized: "Income and expenses this week, compared with last week.", table: "Overview")
+        case .month: String(localized: "Income and expenses this month, compared with last month.", table: "Overview")
+        case .year: String(localized: "Income and expenses this year, compared with last year.", table: "Overview")
+        }
+    }
+
+    /// "Income   12.000.000 ₫ / ↑ 8%": arrow + sign, so colour is never the only cue.
+    private func changeRow(_ title: Text, value: Int, previous: Int, upIsGood: Bool, signed: Bool = false) -> some View {
+        LabeledContent {
+            VStack(alignment: .trailing, spacing: 2) {
+                AmountText(value, currency: currency, plus: signed).foregroundStyle(.primary)
+                if let c = DashboardStats.change(value, from: previous), c != 0 {
+                    HStack(spacing: 2) {
+                        Image(systemName: c > 0 ? "arrow.up" : "arrow.down")
+                        Text(verbatim: "\(c > 0 ? "+" : "")\(c)%").monospacedDigit()
+                    }
+                    .font(.caption.weight(.semibold))
+                        .foregroundStyle((c > 0) == upIsGood ? Color.brandDeep : Color.warningText)
+                }
+            }
+        } label: { title }
+    }
+
+    // MARK: - Cumulative spending
+
+    private func spendingChart(_ s: DashboardStats) -> some View {
+        let selected = selectedIndex.flatMap { i in s.cumulative.first { $0.index == i } }
+        return Section {
+            Chart {
+                ForEach(s.cumulative) { p in
+                    if let v = p.previous {
+                        LineMark(x: .value(axisX, p.index), y: .value(axisY, v), series: .value(seriesKey, "previous"))
+                            .foregroundStyle(Color.secondary.opacity(0.6))
+                            .lineStyle(StrokeStyle(lineWidth: 2, dash: [4, 3]))
+                            .interpolationMethod(.monotone)
+                    }
+                    if let v = p.current {
+                        LineMark(x: .value(axisX, p.index), y: .value(axisY, v), series: .value(seriesKey, "current"))
+                            .foregroundStyle(Color.brandPrimary)
+                            .lineStyle(StrokeStyle(lineWidth: 3))
+                            .interpolationMethod(.monotone)
+                    }
+                }
+                if let selected {
+                    RuleMark(x: .value(axisX, selected.index))
+                        .foregroundStyle(Color.secondary.opacity(0.4))
+                        .annotation(position: .top, spacing: 4, overflowResolution: .init(x: .fit(to: .chart), y: .fit(to: .chart))) {
+                            callout(selected)
+                        }
+                }
+            }
+            .chartXSelection(value: $selectedIndex)
+            .chartXScale(domain: 1...max(s.cumulative.count, 2))
+            .chartXAxis {
+                AxisMarks(values: xTicks) { v in
+                    AxisGridLine()
+                    AxisValueLabel { if let i = v.as(Int.self) { Text(bucketLabel(i, long: false)) } }
+                }
+            }
+            .chartYAxis {
+                AxisMarks { v in
+                    AxisGridLine()
+                    AxisValueLabel { if let a = v.as(Int.self) { Text(hidden ? "" : AmountFormat.string(a, currency, short: true)) } }
+                }
+            }
+            .frame(height: 200)
+            .padding(.top, 8)
+            HStack(spacing: 16) {
+                legend(current: true, Text(periodName(previous: false)))
+                legend(current: false, Text(periodName(previous: true)))
+            }
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+        } header: {
+            Text("Spending over time", tableName: "Overview")
+        } footer: {
+            Text("Touch and hold the chart to see each day.", tableName: "Overview")
+        }
+    }
+
+    private func callout(_ p: DashboardStats.CumulativePoint) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(bucketLabel(p.index, long: true)).font(.caption.weight(.semibold))
+            if let c = p.current { HStack(spacing: 4) { Circle().fill(Color.brandPrimary).frame(width: 6, height: 6); AmountText(c, currency: currency) } }
+            if let v = p.previous { HStack(spacing: 4) { Circle().fill(Color.secondary).frame(width: 6, height: 6); AmountText(v, currency: currency) } }
+        }
+        .font(.caption)
+        .padding(8)
+        .background(Color(.systemBackground), in: .rect(cornerRadius: 8))
+        .shadow(color: .black.opacity(0.12), radius: 6, y: 2)
+    }
+
+    private func legend(current: Bool, _ title: Text) -> some View {
+        HStack(spacing: 6) {
+            Capsule().fill(current ? Color.brandPrimary : Color.secondary.opacity(0.6)).frame(width: 16, height: 3)
+            title
+        }
         .accessibilityElement(children: .combine)
     }
 
-    private var subtitle: String {
-        let day = Calendar.current.isDateInToday(txn.date) ? String(localized: "Today", table: "Overview")
-            : Calendar.current.isDateInYesterday(txn.date) ? String(localized: "Yesterday", table: "Overview")
-            : txn.date.formatted(.dateTime.day().month())
-        let from = txn.kind == .jarTransfer ? txn.jar?.name : txn.wallet?.name
-        let to = txn.kind == .jarTransfer ? txn.toJar?.name : txn.toWallet?.name
-        let place = [from, to].compactMap { $0 }.joined(separator: " → ")
-        let parts = showDay ? [day, place] : [txn.category?.name ?? txn.kind.title, place]
-        return parts.filter { !$0.isEmpty }.joined(separator: " · ")
-    }
-}
-
-private extension Txn {
-    /// Note, else category, else kind ("Transfer").
-    var title: String { !note.isEmpty ? note : category?.name ?? kind.title }
-
-    /// What it did to my money: out < 0, in > 0, a move between my own wallets/jars = 0.
-    var flow: Int {
-        switch kind {
-        case .expense, .lend: -amount
-        case .income, .borrow: amount
-        case .repay: debt?.direction == .lent ? amount : -amount
-        case .transfer, .jarTransfer: 0
+    private func periodName(previous: Bool) -> String {
+        switch (period, previous) {
+        case (.week, false): String(localized: "This week", table: "Overview")
+        case (.week, true): String(localized: "Last week", table: "Overview")
+        case (.month, false): String(localized: "This month", table: "Overview")
+        case (.month, true): String(localized: "Last month", table: "Overview")
+        case (.year, false): String(localized: "This year", table: "Overview")
+        case (.year, true): String(localized: "Last year", table: "Overview")
         }
     }
-}
 
-private extension TxKind {
-    var symbol: String {
-        switch self {
-        case .expense: "cart.fill"
-        case .income: "arrow.down.circle.fill"
-        case .transfer: "arrow.left.arrow.right"
-        case .jarTransfer: "arrow.triangle.swap"
-        case .lend: "arrow.up.forward.circle.fill"
-        case .borrow: "arrow.down.backward.circle.fill"
-        case .repay: "arrow.uturn.backward.circle.fill"
+    /// Every weekday, every week's first day, every month: clear of the plot's edges.
+    private var xTicks: [Int] {
+        switch period {
+        case .week: Array(1...7)
+        case .month: [1, 8, 15, 22, 29]
+        case .year: Array(1...12)
         }
     }
-}
 
-/// Every bill, soonest first. Read-only: the Budget tab (S6) owns adding, editing and "Mark paid".
-struct BillsListView: View {
-    @Query(sort: \Recurring.nextDue) private var bills: [Recurring]
+    /// X labels: weekday for a week, day number for a month, month for a year.
+    private func bucketLabel(_ i: Int, long: Bool) -> String {
+        let cal = Calendar.current
+        let start = cal.dateInterval(of: period.component, for: .now)!.start
+        switch period {
+        case .week:
+            return cal.date(byAdding: .day, value: i - 1, to: start)!.formatted(.dateTime.weekday(long ? .wide : .abbreviated))
+        case .month:
+            return long ? cal.date(byAdding: .day, value: i - 1, to: start)!.formatted(.dateTime.day().month()) : "\(i)"
+        case .year:
+            return cal.date(byAdding: .month, value: i - 1, to: start)!.formatted(.dateTime.month(long ? .wide : .narrow))
+        }
+    }
 
-    var body: some View {
-        ScrollView {
-            VStack(spacing: 10) {
-                if bills.isEmpty {
-                    EmptyState(mood: .sleepy, title: String(localized: "No bills yet", table: "Overview"),
-                               message: String(localized: "Add your regular bills in Budget and Moonee will remind you.", table: "Overview"))
+    // Plain Strings: chart value labels stay out of the String Catalog.
+    private let axisX = "Day", axisY = "Spent", seriesKey = "Period"
+
+    // MARK: - By category
+
+    private func categoryChart(_ s: DashboardStats) -> some View {
+        let total = s.categories.reduce(0) { $0 + $1.amount }
+        let selected = selectedAmount.flatMap { pick in
+            var running = 0
+            return s.categories.first { running += $0.amount; return pick <= running }
+        }
+        return Section {
+            if s.categories.isEmpty {
+                Text("No spending in this period.", tableName: "Overview").foregroundStyle(.secondary)
+            } else {
+                Chart(s.categories) { c in
+                    SectorMark(angle: .value(axisY, c.amount), innerRadius: .ratio(0.62), angularInset: 1.5)
+                        .cornerRadius(4)
+                        .foregroundStyle(c.color)
+                        .opacity(selected == nil || selected?.id == c.id ? 1 : 0.35)
+                        .accessibilityLabel(c.name)
                 }
-                ForEach(bills) { b in
-                    BillCard(name: b.name, symbol: b.category?.icon ?? "doc.text", amount: b.amount, currency: b.currencyCode,
-                             due: b.nextDue, estimate: b.isEstimate)
+                .chartAngleSelection(value: $selectedAmount)
+                .chartLegend(.hidden)
+                .chartBackground { proxy in
+                    GeometryReader { geo in
+                        if let plot = proxy.plotFrame {
+                            let f = geo[plot]
+                            VStack(spacing: 2) {
+                                Text(selected?.name ?? String(localized: "Spent", table: "Overview"))
+                                    .font(.subheadline).foregroundStyle(.secondary).lineLimit(1)
+                                AmountText(selected?.amount ?? total, currency: currency).font(.title3.weight(.bold))
+                            }
+                            .frame(width: f.width * 0.55)
+                            .position(x: f.midX, y: f.midY)
+                        }
+                    }
+                }
+                .frame(height: 220)
+                .padding(.vertical, 8)
+                ForEach(s.categories) { c in
+                    LabeledContent {
+                        HStack(spacing: 8) {
+                            Text(total > 0 ? (Double(c.amount) / Double(total)).formatted(.percent.precision(.fractionLength(0))) : "")
+                                .foregroundStyle(.secondary).monospacedDigit()
+                            AmountText(c.amount, currency: currency).foregroundStyle(.primary)
+                        }
+                    } label: {
+                        Label { Text(c.name) } icon: { Image(systemName: c.icon).foregroundStyle(c.color) }
+                    }
                 }
             }
-            .padding(16)
+        } header: {
+            Text("Spending by category", tableName: "Overview")
         }
-        .background(MooneeBackground())
-        .navigationTitle(String(localized: "Bills", table: "Overview"))
     }
-}
 
-/// Every jar as a row (Overview → Jar balances → See all). Read-only; the Budget tab (S6) owns jar editing.
-struct JarsListView: View {
-    let jars: [OverviewStats.JarRow]
+    // MARK: - Jars
 
-    var body: some View {
-        ScrollView {
-            VStack(spacing: 0) {
-                ForEach(jars) { row in
-                    JarCard(name: row.jar.name, symbol: row.jar.icon, color: row.jar.color, balance: row.month.balance,
-                            spent: row.month.spent, budget: row.month.budget, currency: Money.defaultCurrency, subtitle: "\(row.jar.percent)%")
-                    if row.id != jars.last?.id { Divider().padding(.leading, 56) }
+    private func jarsSection(_ s: DashboardStats) -> some View {
+        Section {
+            ForEach(s.jars) { row in
+                let m = row.month
+                let level = BudgetLevel(balance: m.balance, spent: m.spent, budget: m.budget)
+                let progress = BudgetLevel.progress(spent: m.spent, budget: m.budget)
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack {
+                        Label { Text(row.jar.name) } icon: { Image(systemName: row.jar.icon).foregroundStyle(row.jar.color) }
+                        Spacer()
+                        AmountText(m.balance, currency: currency).font(.body.weight(.semibold)).fixedSize()
+                            .foregroundStyle(m.balance < 0 ? Color.danger : .primary)
+                    }
+                    ProgressView(value: min(max(progress, 0), 1)).tint(level.fill)
+                    HStack(spacing: 4) {
+                        AmountText(m.spent, currency: currency)
+                        Text(verbatim: "/")
+                        AmountText(m.budget, currency: currency)
+                        Spacer()
+                        if let symbol = level.symbol { Image(systemName: symbol).foregroundStyle(level.text) }
+                        Text(progress.formatted(.percent.precision(.fractionLength(0)))).monospacedDigit()
+                            .foregroundStyle(level == .normal ? Color.secondary : level.text)
+                    }
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                }
+                .padding(.vertical, 4)
+                .accessibilityElement(children: .combine)
+            }
+        } header: {
+            Text("Jars this month", tableName: "Overview")
+        } footer: {
+            Text("Big number: what is left in the jar. Bar: spent this month out of what the jar had for the month.", tableName: "Overview")
+        }
+    }
+
+    // MARK: - Bills
+
+    private func billsSection(_ due: [Recurring]) -> some View {
+        Section {
+            ForEach(due) { b in
+                let status = BillStatus(due: b.nextDue, paid: false)
+                LabeledContent {
+                    HStack(spacing: 2) {
+                        if b.isEstimate { Text(verbatim: "≈") }
+                        AmountText(b.amount, currency: b.currencyCode)
+                    }
+                    .foregroundStyle(.primary)
+                } label: {
+                    Label {
+                        Text(b.name)
+                        HStack(spacing: 4) {
+                            if let symbol = status.symbol { Image(systemName: symbol) }
+                            status.label
+                        }
+                        .foregroundStyle(status.color)
+                    } icon: { Image(systemName: b.category?.icon ?? "doc.text").foregroundStyle(Color.brandDeep) }
                 }
             }
-            .card(padding: 0)
-            .padding(16)
+        } header: {
+            Text("Bills due in 7 days", tableName: "Overview")
         }
-        .background(MooneeBackground())
-        .navigationTitle(String(localized: "Jar balances", table: "Overview"))
+    }
+
+    // MARK: - Recent
+
+    private var recentSection: some View {
+        Section {
+            ForEach(txns.prefix(5)) { t in
+                Button { editing = t } label: { TxnRow(txn: t, showDay: true) }
+                    .tint(.primary)
+            }
+            NavigationLink { TransactionLedgerView() } label: {
+                Text("All transactions", tableName: "Overview").foregroundStyle(Color.brandDeep)
+            }
+        } header: {
+            Text("Recent transactions", tableName: "Overview")
+        }
     }
 }

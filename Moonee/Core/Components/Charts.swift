@@ -81,14 +81,15 @@ struct EmptyState<Action: View>: View {
     @ViewBuilder var action: Action
 
     var body: some View {
-        VStack(spacing: 12) {
-            MooneeCharacter(mood: mood).frame(height: 150)
-            Text(title).font(.title3.weight(.bold)).foregroundStyle(Color.ink)
+        // Like ContentUnavailableView, with Moonee in place of the symbol.
+        VStack(spacing: 8) {
+            MooneeCharacter(mood: mood).frame(height: 104).padding(.bottom, 4)
+            Text(title).font(.title3.weight(.semibold)).foregroundStyle(Color.ink)
             Text(message).font(.subheadline).foregroundStyle(Color.inkSecondary)
-            action
+            action.padding(.top, 8)
         }
         .multilineTextAlignment(.center)
-        .padding(24)
+        .padding(20)
         .frame(maxWidth: .infinity)
     }
 }

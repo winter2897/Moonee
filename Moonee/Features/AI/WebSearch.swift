@@ -46,7 +46,7 @@ struct WebSearch: Sendable {
         }
         guard let backend else {
             return SearchResult(configured: false, searchedAt: at, message:
-                "Web search is not set up. Tell the user: open Account → AI assistant → Web search and add a Tavily or Brave key, or use OpenRouter, OpenAI, Anthropic or Gemini as the AI provider.")
+                "Web search is not set up. Gold, exchange rates and crypto still work through marketPrice. For anything else tell the user: open Account → AI assistant → Web search and add a Tavily or Brave key, or use OpenRouter, OpenAI, Anthropic or Gemini as the AI provider.")
         }
         do {
             let r = try await backend.search(query)
@@ -109,12 +109,20 @@ final class SourceLog: @unchecked Sendable {
         }
     }
 
-    /// The same tool, recording the results it hands to the model. Other tools pass through.
+    /// The same tool, recording the pages it hands to the model (search hits, the price source). Other tools pass through.
     func wrap(_ tool: AITool) -> AITool {
-        guard tool.name == "webSearch" else { return tool }
+        guard tool.name == "webSearch" || tool.name == "marketPrice" else { return tool }
         return AITool(name: tool.name, description: tool.description, parameters: tool.parameters) { [self] data in
             let out = try await tool.run(data)
-            if let r = try? JSONDecoder().decode(SearchResult.self, from: Data(out.utf8)) { lock.withLock { hits += r.results } }
+            let found: [SearchHit]
+            if let r = try? JSONDecoder().decode(SearchResult.self, from: Data(out.utf8)) {
+                found = r.results
+            } else if let q = try? JSONDecoder().decode(MarketPrices.Quote.self, from: Data(out.utf8)), let url = q.url {
+                found = [SearchHit(title: q.name ?? q.source, url: url, text: "", date: q.updatedAt)]
+            } else {
+                found = []
+            }
+            lock.withLock { hits += found }
             return out
         }
     }
@@ -155,9 +163,22 @@ enum SearchSettings {
     /// Who sees search queries, for "What leaves this iPhone".
     static var note: String {
         guard let b = backend() else {
-            return String(localized: "Web search is off. Add a Tavily or Brave key below, or use a provider with built-in search.", table: "AI")
+            return String(localized: "Gold prices, exchange rates and crypto come from PNJ, Vietcombank and CoinGecko; only the item you ask about is sent, never your data.", table: "AI")
         }
         return String(localized: "When you ask about prices, rates or news, your search query is sent to \(b.sourceName).", table: "AI")
+    }
+
+    /// Which way web questions go right now, for the Web search section of AI settings.
+    static var route: String {
+        let base = String(localized: "Gold, exchange rates and crypto always come from PNJ, Vietcombank and CoinGecko, no key needed.", table: "AI")
+        guard LLMSettings.webSearch else { return String(localized: "Web search is off.", table: "AI") + " " + base }
+        guard let b = backend() else {
+            return base + " " + String(localized: "For other questions (stocks, interest rates, news), add a Tavily or Brave key, or use OpenRouter, OpenAI, Anthropic or Gemini.", table: "AI")
+        }
+        let way = b is TavilySearch || b is BraveSearch
+            ? String(localized: "Searching with your \(b.sourceName) key.", table: "AI")
+            : String(localized: "Searching with \(b.sourceName)'s built-in search.", table: "AI")
+        return way + " " + base
     }
 }
 
@@ -313,60 +334,4 @@ private func cited(_ text: String, _ start: Int?, _ end: Int?) -> String {
 private func unique(_ hits: [SearchHit]) -> [SearchHit] {
     var seen = Set<String>()
     return hits.filter { seen.insert($0.url).inserted }
-}
-
-// MARK: - Crypto prices
-
-/// Keyless crypto prices from CoinGecko's public `simple/price`. Gold, stocks and FX go through `webSearch`
-/// (no scraping of sites with unclear terms).
-struct MarketPrices: Sendable {
-    var send: HTTPTransport = HTTP.live
-
-    /// Ticker → CoinGecko id. Names ("bitcoin") and CoinGecko ids are accepted too.
-    static let coins: [String: String] = [
-        "btc": "bitcoin", "eth": "ethereum", "usdt": "tether", "usdc": "usd-coin", "bnb": "binancecoin", "sol": "solana",
-        "xrp": "ripple", "ada": "cardano", "doge": "dogecoin", "ton": "the-open-network", "trx": "tron", "dot": "polkadot",
-        "ltc": "litecoin", "link": "chainlink", "avax": "avalanche-2", "shib": "shiba-inu",
-    ]
-
-    static func coinID(_ symbol: String) -> String? {
-        let s = symbol.lowercased().trimmingCharacters(in: .whitespaces)
-        return coins[s] ?? (coins.values.contains(s) ? s : nil)
-    }
-
-    /// The first coin named in a message ("giá bitcoin hôm nay" → "bitcoin").
-    static func symbol(in text: String) -> String? {
-        Token.split(text).lazy.compactMap { coinID($0.folded) }.first
-    }
-
-    struct Quote: Codable, Equatable {
-        struct Price: Codable, Equatable { var currency: String; var price: String }
-        var symbol: String
-        var coin: String
-        var prices: [Price]
-        var updatedAt: String?
-        var source = "CoinGecko"
-    }
-
-    /// Prices in `currency` (the user's) and USD, formatted with `Money`.
-    func quote(_ symbol: String, currency: String, locale: Locale) async throws -> Quote {
-        guard let id = Self.coinID(symbol) else {
-            throw LLMError("\(symbol) is not a supported crypto symbol; use webSearch for gold, stocks and exchange rates")
-        }
-        let codes = Array(Set([currency.uppercased(), "USD"])).sorted()
-        var c = URLComponents(string: "https://api.coingecko.com/api/v3/simple/price")!
-        c.queryItems = [.init(name: "ids", value: id), .init(name: "vs_currencies", value: codes.joined(separator: ",").lowercased()),
-                        .init(name: "include_last_updated_at", value: "true")]
-        let json = try await HTTP.getJSON(c.url!, headers: ["Accept": "application/json"], send: send)
-        guard let row = json[id] as? [String: Any] else { throw LLMError("No price for \(id)") }
-        let prices = codes.compactMap { code -> Quote.Price? in
-            guard let v = (row[code.lowercased()] as? NSNumber)?.decimalValue else { return nil }
-            // Sub-unit coins (SHIB) would round to $0.00 in minor units: keep significant digits there.
-            let text = v < 1 ? v.formatted(.currency(code: code).locale(locale).precision(.significantDigits(1...4)))
-                : Money(major: v, code).formatted(locale: locale)
-            return .init(currency: code, price: text)
-        }
-        let updated = (row["last_updated_at"] as? NSNumber).map { Date(timeIntervalSince1970: $0.doubleValue).formatted(.iso8601) }
-        return Quote(symbol: symbol.uppercased(), coin: id, prices: prices, updatedAt: updated)
-    }
 }

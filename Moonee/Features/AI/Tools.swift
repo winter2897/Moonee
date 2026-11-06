@@ -183,8 +183,8 @@ struct MooneeTools: Sendable {
 
     var marketPrice: AITool {
         AITool(name: "marketPrice",
-               description: "Current crypto price (BTC, ETH, SOL…) from CoinGecko, in the user's currency and USD, with the update time. Not for gold or stocks: use webSearch.",
-               parameters: .object([.init("symbol", .string("Ticker or coin name, e.g. BTC or ethereum"), required: true)])) {
+               description: "Current price with source and update time, no web search needed: crypto (BTC, ETH, SOL… from CoinGecko), Vietnamese gold (SJC, PNJ or GOLD, per tael, from PNJ) and exchange rates in VND (USD, EUR, JPY… from Vietcombank). Not for stocks or interest rates: use webSearch.",
+               parameters: .object([.init("symbol", .string("BTC, ethereum, SJC, PNJ, GOLD, USD, EUR…"), required: true)])) {
             (a: ToolArgs) -> MarketPrices.Quote in
             guard let symbol = a.symbol else { throw LLMError("symbol is missing") }
             return try await prices.quote(symbol, currency: ledger.currency, locale: locale)

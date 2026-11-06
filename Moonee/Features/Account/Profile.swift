@@ -91,12 +91,43 @@ struct AvatarPicker: View {
 struct ProfileEditView: View {
     @AppStorage(Prefs.profileName) private var name = ""
     @AppStorage(Prefs.profileAvatar) private var avatar = ""
+    @ScaledMetric private var cell = 56
 
     var body: some View {
-        ProfileForm(name: $name, avatar: $avatar)
-            .padding(.top, 8)
-            .mooneeScreen(String(localized: "Profile", table: "Account"))
-            .navigationBarTitleDisplayMode(.inline)
+        Form {
+            Section {
+                ProfileAvatarImage(avatar: avatar, size: 96)
+                    .frame(maxWidth: .infinity)
+                    .listRowBackground(Color.clear)
+            }
+            Section {
+                TextField(String(localized: "Your name", table: "Account"), text: $name)
+                    .textContentType(.name)
+            } header: {
+                Text("Display name", tableName: "Account")
+            }
+            Section {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: cell), spacing: 12)], spacing: 12) {
+                    ForEach(Array(ProfileAvatars.all.enumerated()), id: \.element) { i, a in
+                        Button { avatar = a } label: {
+                            ProfileAvatarImage(avatar: a, size: cell)
+                                .padding(3)
+                                .overlay { if a == avatar { Circle().stroke(.tint, lineWidth: 3) } }
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(Text("Avatar \(i + 1)", tableName: "Account"))
+                        .accessibilityAddTraits(a == avatar ? .isSelected : [])
+                    }
+                }
+                .padding(.vertical, 6)
+            } header: {
+                Text("Choose avatar", tableName: "Account")
+            } footer: {
+                Text("Stored on this device only · No account needed", tableName: "Account")
+            }
+        }
+        .navigationTitle(Text("Profile", tableName: "Account"))
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

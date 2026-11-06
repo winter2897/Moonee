@@ -2,24 +2,6 @@
   "sourceLanguage": "en",
   "version": "1.0",
   "strings": {
-    "%@ %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@, %2$@"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ %2$@"
-          }
-        }
-      },
-      "comment": "Month and year on the month chip"
-    },
     "%@ has used 80%% of this month's budget. Go easy for a bit!": {
       "extractionState": "manual",
       "localizations": {
@@ -75,17 +57,6 @@
         }
       }
     },
-    "%lld due · %lld paid this month": {
-      "extractionState": "manual",
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld khoản sắp tới · %lld đã trả tháng này"
-          }
-        }
-      }
-    },
     "%lld%% of each income": {
       "extractionState": "manual",
       "localizations": {
@@ -93,6 +64,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld%% mỗi khoản thu"
+          }
+        }
+      }
+    },
+    "%lld%% spent": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã chi %lld%%"
           }
         }
       }
@@ -119,7 +101,7 @@
         }
       }
     },
-    "Add a bill": {
+    "Add bill": {
       "extractionState": "manual",
       "localizations": {
         "vi": {
@@ -251,6 +233,17 @@
         }
       }
     },
+    "Balance": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Số dư"
+          }
+        }
+      }
+    },
     "Bill reminder": {
       "extractionState": "manual",
       "localizations": {
@@ -269,6 +262,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hoá đơn đến hạn và lọ vượt 100%."
+          }
+        }
+      }
+    },
+    "Budget": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngân sách"
           }
         }
       }
@@ -372,17 +376,6 @@
         }
       }
     },
-    "Credit cards": {
-      "extractionState": "manual",
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Thẻ tín dụng"
-          }
-        }
-      }
-    },
     "Credit limit": {
       "extractionState": "manual",
       "localizations": {
@@ -445,6 +438,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dư nợ lúc thêm"
+          }
+        }
+      }
+    },
+    "Delete": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá"
           }
         }
       }
@@ -559,13 +563,24 @@
         }
       }
     },
-    "Edit split": {
+    "Edit income split": {
       "extractionState": "manual",
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sửa tỉ lệ phân chia"
+            "value": "Sửa % chia thu nhập"
+          }
+        }
+      }
+    },
+    "Edit jar": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sửa lọ"
           }
         }
       }
@@ -577,6 +592,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sửa ví"
+          }
+        }
+      }
+    },
+    "Estimate": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ước tính"
           }
         }
       }
@@ -713,17 +739,6 @@
         }
       }
     },
-    "Jars (%lld)": {
-      "extractionState": "manual",
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Các lọ (%lld)"
-          }
-        }
-      }
-    },
     "Last month's report is ready. See how your jars did!": {
       "extractionState": "manual",
       "localizations": {
@@ -768,17 +783,6 @@
         }
       }
     },
-    "Manage categories": {
-      "extractionState": "manual",
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Quản lý danh mục"
-          }
-        }
-      }
-    },
     "Mark paid": {
       "extractionState": "manual",
       "localizations": {
@@ -797,6 +801,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vừa"
+          }
+        }
+      }
+    },
+    "Month": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tháng"
           }
         }
       }
@@ -830,17 +845,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chuyển"
-          }
-        }
-      }
-    },
-    "Move %@ from %@ to cover it?": {
-      "extractionState": "manual",
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chuyển %@ từ lọ %@ sang để bù nhé?"
           }
         }
       }
@@ -1123,12 +1127,6 @@
     "Remind %lld days before": {
       "extractionState": "manual",
       "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nhắc trước %lld ngày"
-          }
-        },
         "en": {
           "variations": {
             "plural": {
@@ -1145,6 +1143,12 @@
                 }
               }
             }
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhắc trước %lld ngày"
           }
         }
       }
@@ -1259,17 +1263,6 @@
         }
       }
     },
-    "Statement: day %lld": {
-      "extractionState": "manual",
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sao kê: ngày %lld"
-          }
-        }
-      }
-    },
     "Swiping the card is spending (it comes out of a jar); paying the card is a transfer.": {
       "extractionState": "manual",
       "localizations": {
@@ -1277,6 +1270,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Quẹt thẻ là chi tiêu (trừ vào lọ); trả nợ thẻ là chuyển ví."
+          }
+        }
+      }
+    },
+    "Tap to move money from %@.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chạm để chuyển tiền từ lọ %@."
           }
         }
       }
@@ -1347,13 +1351,13 @@
         }
       }
     },
-    "Total budget this month": {
+    "Total budget": {
       "extractionState": "manual",
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tổng ngân sách tháng này"
+            "value": "Tổng ngân sách"
           }
         }
       }
@@ -1365,6 +1369,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tổng tiền trong ví"
+          }
+        }
+      }
+    },
+    "Transactions": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giao dịch"
           }
         }
       }
@@ -1435,17 +1450,6 @@
         }
       }
     },
-    "Wallets / Accounts": {
-      "extractionState": "manual",
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ví / Tài khoản"
-          }
-        }
-      }
-    },
     "Your week with Moonee": {
       "extractionState": "manual",
       "localizations": {
@@ -1464,6 +1468,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Báo cáo tuần đã sẵn sàng. Xem nhanh nhé?"
+          }
+        }
+      }
+    },
+    "next %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "kỳ sau %@"
           }
         }
       }

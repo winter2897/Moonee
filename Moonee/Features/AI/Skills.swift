@@ -30,7 +30,8 @@ struct Skill: Sendable, Hashable {
     static let spendingCoach = Skill(
         id: "spending-coach", tools: ["spendingSummary", "listTransactions", "jarBalances", "savingsPlan"], job: .quickAnswer)
     /// Outside, current info (prices, rates, news): the only skill with web access.
-    static let marketLookup = Skill(id: "market-lookup", tools: ["webSearch", "marketPrice"], job: .quickAnswer)
+    /// `.advice`: in hybrid mode the cloud model (with its built-in search) answers first.
+    static let marketLookup = Skill(id: "market-lookup", tools: ["marketPrice", "webSearch"], job: .advice)
     static let all = [transactionParser, jarBudgeting, closeManagement, spendingCoach, marketLookup]
 
     var isBuiltIn: Bool { Skill.all.contains(self) }
@@ -46,9 +47,9 @@ struct Skill: Sendable, Hashable {
                          short: parts.count > 1 ? parts[1].trimmingCharacters(in: .whitespacesAndNewlines) : "")
     }
 
-    /// Moonee's voice and ground rules (spec G: "Moonee – bạn").
-    static func persona(language: String) -> String {
-        resource("moonee", language: language).trimmingCharacters(in: .whitespacesAndNewlines)
+    /// Moonee's voice and ground rules (spec G: "Moonee – bạn"); `short` for small models.
+    static func persona(language: String, short: Bool = false) -> String {
+        bundled("moonee", language: language).pick(short: short)
     }
 
     /// `<name>.<lang>.md` from the app bundle, falling back to English.

@@ -71,262 +71,142 @@
         }
       }
     },
-    "%lld%% of monthly budget": {
+    "%@ report": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld%% ngân sách tháng"
+            "value": "Báo cáo %@"
           }
         }
       }
     },
-    "Add your regular bills in Budget and Moonee will remind you.": {
+    "All transactions": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Thêm hoá đơn định kỳ ở Ngân sách, Moonee sẽ nhắc bạn."
+            "value": "Tất cả giao dịch"
           }
         }
       }
     },
-    "All": {
+    "Big number: what is left in the jar. Bar: spent this month out of what the jar had for the month.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tất cả"
+            "value": "Số lớn: tiền còn lại trong lọ. Thanh: đã chi tháng này trên số tiền lọ có trong tháng."
           }
         }
       }
     },
-    "Amount (%@)": {
+    "Bills due in 7 days": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Số tiền (%@)"
+            "value": "Hoá đơn đến hạn trong 7 ngày"
           }
         }
       }
     },
-    "Bills": {
+    "Difference": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hoá đơn"
+            "value": "Chênh lệch"
           }
         }
       }
     },
-    "Bills due soon": {
+    "Expenses": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hoá đơn sắp tới"
+            "value": "Chi tiêu"
           }
         }
       }
     },
-    "Cancel": {
+    "Income": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Huỷ"
+            "value": "Thu nhập"
           }
         }
       }
     },
-    "Category": {
+    "Income and expenses this month, compared with last month.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Danh mục"
+            "value": "Thu và chi tháng này, so với tháng trước."
           }
         }
       }
     },
-    "Clear filters": {
+    "Income and expenses this week, compared with last week.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Xoá bộ lọc"
+            "value": "Thu và chi tuần này, so với tuần trước."
           }
         }
       }
     },
-    "Date": {
+    "Income and expenses this year, compared with last year.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ngày"
+            "value": "Thu và chi năm nay, so với năm trước."
           }
         }
       }
     },
-    "Date range": {
+    "Jars this month": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Khoảng ngày"
+            "value": "Các lọ tháng này"
           }
         }
       }
     },
-    "Delete": {
+    "Last month": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Xoá"
+            "value": "Tháng trước"
           }
         }
       }
     },
-    "Delete this transaction?": {
+    "Last week": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Xoá giao dịch này?"
+            "value": "Tuần trước"
           }
         }
       }
     },
-    "Delete transaction": {
+    "Last year": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Xoá giao dịch"
-          }
-        }
-      }
-    },
-    "Done": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Xong"
-          }
-        }
-      }
-    },
-    "Due %@": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ngày %@"
-          }
-        }
-      }
-    },
-    "Edit transaction": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sửa giao dịch"
-          }
-        }
-      }
-    },
-    "Filters": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bộ lọc"
-          }
-        }
-      }
-    },
-    "From": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Từ ngày"
-          }
-        }
-      }
-    },
-    "From wallet": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Từ ví"
-          }
-        }
-      }
-    },
-    "Hi %@! 👋": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chào %@! 👋"
-          }
-        }
-      }
-    },
-    "Hi there! 👋": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chào bạn! 👋"
-          }
-        }
-      }
-    },
-    "Hide balances": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ẩn số dư"
-          }
-        }
-      }
-    },
-    "Jar": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lọ"
-          }
-        }
-      }
-    },
-    "Jar balances": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Số dư các lọ"
-          }
-        }
-      }
-    },
-    "More": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Thêm"
+            "value": "Năm trước"
           }
         }
       }
@@ -341,12 +221,12 @@
         }
       }
     },
-    "No bills yet": {
+    "No spending in this period.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chưa có hoá đơn nào"
+            "value": "Chưa có khoản chi nào trong kỳ này."
           }
         }
       }
@@ -361,42 +241,42 @@
         }
       }
     },
-    "None": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Không có"
-          }
-        }
-      }
-    },
-    "Note": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ghi chú"
-          }
-        }
-      }
-    },
-    "Nothing due in the next 7 days.": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Không có hoá đơn nào trong 7 ngày tới."
-          }
-        }
-      }
-    },
     "Nothing logged today yet. Tell me what you spent?": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "Hôm nay chưa ghi khoản nào. Kể Moonee nghe bạn đã chi gì nhé?"
+          }
+        }
+      }
+    },
+    "Other": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khác"
+          }
+        }
+      }
+    },
+    "Overview": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tổng quan"
+          }
+        }
+      }
+    },
+    "Period": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kỳ"
           }
         }
       }
@@ -411,52 +291,32 @@
         }
       }
     },
-    "Save": {
+    "Spending by category": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lưu"
+            "value": "Chi theo danh mục"
           }
         }
       }
     },
-    "Search notes, categories, wallets": {
+    "Spending over time": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tìm ghi chú, danh mục, ví"
+            "value": "Chi tiêu cộng dồn"
           }
         }
       }
     },
-    "See all": {
+    "Spent": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Xem tất cả"
-          }
-        }
-      }
-    },
-    "Spent this month": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Đã chi tháng này"
-          }
-        }
-      }
-    },
-    "Spent today": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Đã chi hôm nay"
+            "value": "Đã chi"
           }
         }
       }
@@ -471,82 +331,52 @@
         }
       }
     },
-    "To": {
+    "This month": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Đến ngày"
+            "value": "Tháng này"
           }
         }
       }
     },
-    "To wallet": {
+    "This week": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Đến ví"
+            "value": "Tuần này"
           }
         }
       }
     },
-    "Today": {
+    "This year": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hôm nay"
+            "value": "Năm nay"
           }
         }
       }
     },
-    "Transactions": {
+    "Total balance": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sổ giao dịch"
+            "value": "Tổng số dư"
           }
         }
       }
     },
-    "Type": {
+    "Touch and hold the chart to see each day.": {
       "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Loại"
-          }
-        }
-      }
-    },
-    "Wallet": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ví"
-          }
-        }
-      }
-    },
-    "Yesterday": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hôm qua"
-          }
-        }
-      }
-    },
-    "Your AI money assistant": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trợ lý tài chính cá nhân AI"
+            "value": "Chạm và giữ biểu đồ để xem từng ngày."
           }
         }
       }
@@ -557,26 +387,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Các lọ tháng này vẫn trong tầm kiểm soát. Giỏi lắm!"
-          }
-        }
-      }
-    },
-    "vs last month": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "so với tháng trước"
-          }
-        }
-      }
-    },
-    "vs yesterday": {
-      "localizations": {
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "so với hôm qua"
           }
         }
       }

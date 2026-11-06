@@ -1,4 +1,5 @@
 import Foundation
+import PDFKit
 import SwiftData
 import SwiftUI
 
@@ -84,7 +85,8 @@ struct ChatCardLine: Codable, Equatable {
     }
 
     func item(id: UUID = UUID(), calendar: Calendar = .current) -> ChatTransactionCard.Item {
-        let when = calendar.isDateInToday(date) ? String(localized: "Today", table: "Chat")
+        // Category · Jar first (what the owner checks); the day only when it isn't today.
+        let when: String? = calendar.isDateInToday(date) ? nil
             : calendar.isDateInYesterday(date) ? String(localized: "Yesterday", table: "Chat")
             : date.formatted(.dateTime.day().month())
         return .init(id: id, title: title, symbol: symbol, color: Color(hex: colorHex), category: category, jar: jar,
@@ -175,12 +177,20 @@ struct ChatCardLine: Codable, Equatable {
             return d
         }
 
+        let parser = ParserContext(context)
+        /// Every expense and income gets a category (and so a jar) on the card: the parser's, a guess from the words, else "Other".
+        func category(_ p: ParsedTxn, _ kind: TxKind) -> Category? {
+            guard kind == .expense || kind == .income else { return nil }
+            let key = p.categoryKey ?? QuickParser.hints(in: p.note, context: parser).categoryKey
+            let fallback = kind == .expense ? "category.other" : "category.otherIncome"
+            return key.flatMap { k in categories.first { $0.parserKey == k && $0.kind == kind } } ?? categories.first { $0.key == fallback }
+        }
+
         var out: [Txn] = []
         for p in parsed where book.unresolved(p) == nil {
             let kind = TxKind(rawValue: p.kind.rawValue) ?? .expense
             let t = Txn(amount: p.amount ?? 0, kind: kind, currencyCode: p.currency, date: p.date, note: p.note, source: source, rawInput: rawInput,
-                        category: p.categoryKey.flatMap { k in categories.first { $0.parserKey == k } },
-                        wallet: book.source(p))
+                        category: category(p, kind), wallet: book.source(p))
             context.insert(t)
             switch kind {
             case .transfer: t.toWallet = book.wallet(p.toWallet)
@@ -211,6 +221,21 @@ struct ChatCardLine: Codable, Equatable {
     }
 
     // MARK: Receipts
+
+    /// A PDF receipt's lines: its text, or OCR of its first pages when it has none (a scan).
+    static func lines(in pdf: PDFDocument) async -> [String] {
+        let text = (pdf.string ?? "").split(whereSeparator: \.isNewline)
+            .map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+        if !text.isEmpty { return text }
+        var out: [String] = []
+        for i in 0..<min(pdf.pageCount, 3) {
+            guard let page = pdf.page(at: i) else { continue }
+            let box = page.bounds(for: .mediaBox)
+            let image = page.thumbnail(of: CGSize(width: box.width * 2, height: box.height * 2), for: .mediaBox)
+            out += (try? await ReceiptScanner.lines(in: image)) ?? []
+        }
+        return out
+    }
 
     /// A receipt's OCR lines → one expense: the last "total" line's amount (else the biggest amount), the first text line as merchant.
     // ponytail: rule-based; hand the lines to a vision/LLM model when one is configured (spec §9.3).
@@ -245,7 +270,12 @@ struct ChatCardLine: Codable, Equatable {
                 return ([text] + top).joined(separator: "\n")
             case "jarBalances":
                 let rows = (json as? [[String: Any]] ?? []).map { j in
-                    "• \(s("name", j)): **\(s("balance", j))**" + (s("status", j) == "ok" ? "" : " ⚠️")
+                    let note: String = switch s("status", j) {
+                    case "ok": ""
+                    case "warning": " " + String(localized: "(running low)", table: "Chat")
+                    default: " " + String(localized: "(over budget)", table: "Chat")
+                    }
+                    return "• \(s("name", j)): **\(s("balance", j))**" + note
                 }
                 guard !rows.isEmpty else { continue }
                 return ([String(localized: "Here's what's in your jars right now:", table: "Chat")] + rows).joined(separator: "\n")
@@ -263,9 +293,13 @@ struct ChatCardLine: Codable, Equatable {
                 guard !hits.isEmpty else { return String(localized: "Moonee searched the web but found nothing useful.", table: "Chat") }
                 return ([String(localized: "Here's what Moonee found on the web:", table: "Chat")] + hits).joined(separator: "\n")
             case "marketPrice":
-                let prices = (o["prices"] as? [[String: Any]] ?? []).map { s("price", $0) }.filter { !$0.isEmpty }
-                guard !prices.isEmpty else { continue }
-                var text = "**\(s("coin").capitalized) (\(s("symbol").uppercased()))**: " + prices.joined(separator: " · ")
+                let rows = (o["prices"] as? [[String: Any]] ?? []).filter { !s("price", $0).isEmpty }
+                guard !rows.isEmpty else { continue }
+                var text = if let name = o["name"] as? String { // gold, exchange rates: one labelled row per price
+                    (["**\(name)**"] + rows.map { "• \(s("label", $0)): **\(s("price", $0))**" }).joined(separator: "\n")
+                } else {
+                    "**\(s("coin").capitalized) (\(s("symbol").uppercased()))**: " + rows.map { s("price", $0) }.joined(separator: " · ")
+                }
                 if !s("source").isEmpty { text += "\n" + String(localized: "Source: \(s("source"))", table: "Chat") }
                 return text
             case "savingsPlan":

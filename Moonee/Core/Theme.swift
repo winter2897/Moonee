@@ -14,6 +14,7 @@ extension ShapeStyle where Self == Color {
     static var brandPrimary: Color { Color(hex: 0x22C55E) }      // pills, FAB, progress
     static var brandPrimaryLight: Color { Color(hex: 0x4ADE80) } // gradient top
     static var brandDeep: Color { Color(hex: 0x15803D) }         // green text/icons on white (5:1)
+    static var brandAction: Color { Color(hex: 0x16A34A) }       // button tint: white label stays readable (3.3:1, bold text)
     static var brandMint: Color { Color(hex: 0xE7FBF1) }         // screen background
     static var brandMintSoft: Color { Color(hex: 0xDCFCE7) }     // chips, user bubble, saved banner
     static var brandYellow: Color { Color(hex: 0xFACC15) }       // coin, sparkles, hills
@@ -72,14 +73,14 @@ extension Font {
     static let chip = Font.footnote.weight(.medium)
 }
 
-extension View {
-    /// The one big amount of a screen (budget total, net worth, wallet total): 26 bold rounded, scaled like `.title`.
-    func heroAmountFont() -> some View { modifier(HeroAmountFont()) }
+extension Font {
+    /// The one big amount of a screen (budget total, net worth, wallet total): system `.title` (28), bold rounded.
+    static let heroAmount = Font.system(.title, design: .rounded, weight: .bold)
 }
 
-private struct HeroAmountFont: ViewModifier {
-    @ScaledMetric(relativeTo: .title) private var size: CGFloat = 26
-    func body(content: Content) -> some View { content.font(.system(size: size, weight: .bold, design: .rounded)) }
+extension View {
+    /// Same as `.font(.heroAmount)`; kept for existing call sites.
+    func heroAmountFont() -> some View { font(.heroAmount) }
 }
 
 extension LinearGradient {
@@ -149,11 +150,12 @@ struct Hills: View {
 }
 
 extension View {
-    /// Frosted white card.
+    /// White card on the mint background, like an inset-grouped list section: 16 pt padding, 20 pt continuous corners,
+    /// a hairline shadow only. Rows inside use `.card(padding: 0)` and their own 16 pt insets.
     func card(padding: CGFloat = 16) -> some View {
         self.padding(padding)
-            .background(.white.opacity(0.78), in: .rect(cornerRadius: 18))
-            .shadow(color: .mooneeDark.opacity(0.08), radius: 14, y: 6)
+            .background(Color.surface.opacity(0.92), in: .rect(cornerRadius: 20, style: .continuous))
+            .shadow(color: .black.opacity(0.04), radius: 6, y: 2)
     }
 
     /// Standard tab screen: scroll + background + large title.
@@ -168,7 +170,8 @@ extension View {
 struct IconBadge: View {
     let symbol: String
     let color: Color
-    var size: CGFloat = 34
+    /// 30 pt, like Settings' row icons; larger only for a hero (jar detail).
+    var size: CGFloat = 30
 
     var body: some View {
         Image(systemName: symbol)
@@ -179,73 +182,46 @@ struct IconBadge: View {
     }
 }
 
-/// Pill segmented control (Chi tiêu/Thu nhập, Tuần/Tháng/Năm).
-/// 36 pt tall at the default text size; each segment is a 44 pt touch target.
+/// Segmented control (Chi tiêu/Thu nhập, Tuần/Tháng/Năm): the system `Picker(.segmented)`, kept as a type so call sites stay short.
 struct PillPicker<T: Hashable>: View {
     let options: [(T, String)]
     @Binding var selection: T
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        HStack(spacing: 4) {
-            ForEach(options, id: \.0) { value, title in
-                Button { withAnimation(reduceMotion ? nil : .snappy) { selection = value } } label: {
-                    Text(title)
-                        .font(.chip.weight(.semibold))
-                        .lineLimit(1)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 6)
-                        .foregroundStyle(selection == value ? .white : .ink)
-                        .background {
-                            if selection == value {
-                                Capsule().fill(LinearGradient.brand)
-                            }
-                        }
-                        .padding(3)
-                        .frame(minHeight: 44)
-                        .contentShape(.rect)
-                }
-                .buttonStyle(.plain)
-                .accessibilityAddTraits(selection == value ? .isSelected : [])
-            }
-        }
-        .padding(.horizontal, 4)
-        .background(.white.opacity(0.7), in: .capsule.inset(by: 4)) // 36 visual; the 4 pt around it is touch area
+        Picker(selection: $selection) {
+            ForEach(options, id: \.0) { value, title in Text(title).tag(value) }
+        } label: { EmptyView() }
+        .pickerStyle(.segmented)
+        .labelsHidden()
     }
 }
 
-/// Primary green capsule button style.
-struct MooneeButtonStyle: ButtonStyle {
+/// Primary action: the system `.borderedProminent` capsule, `.large`, full width, brand green.
+/// Same as `.buttonStyle(.borderedProminent).controlSize(.large).buttonBorderShape(.capsule).tint(.brandAction)`.
+struct MooneeButtonStyle: PrimitiveButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.headline)
-            .foregroundStyle(.white)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 13)
-            .background(LinearGradient.brand, in: .capsule)
-            .shadow(color: .mooneeGreen.opacity(0.35), radius: 10, y: 5)
-            .scaleEffect(configuration.isPressed ? 0.97 : 1)
+        Button(role: configuration.role, action: configuration.trigger) {
+            configuration.label.fontWeight(.semibold).frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.borderedProminent)
+        .buttonBorderShape(.capsule)
+        .controlSize(.large)
+        .tint(.brandAction)
     }
 }
 
-/// Small capsule button, 30 pt visual inside a 44 pt touch target: outlined green ("Undo", "Paid") or filled ("Done").
-struct OutlinePillStyle: ButtonStyle {
+/// Small action ("Undo", "Paid", "Download"): the system `.bordered` capsule, `.small`, brand green;
+/// `filled: true` is `.borderedProminent` ("Done").
+struct OutlinePillStyle: PrimitiveButtonStyle {
     var filled = false
 
     func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.chip.weight(.semibold))
-            .lineLimit(1)
-            .foregroundStyle(filled ? Color.white : Color.brandDeep)
-            .padding(.horizontal, 12).padding(.vertical, 6)
-            .frame(minHeight: 30)
-            .background {
-                if filled { Capsule().fill(LinearGradient.brand) } else { Capsule().fill(Color.surface) }
-            }
-            .overlay { if !filled { Capsule().strokeBorder(Color.brandPrimary, lineWidth: 1.2) } }
+        // One line: a small action never wraps; the content beside it reflows instead.
+        let button = Button(role: configuration.role, action: configuration.trigger) { configuration.label.fontWeight(.semibold).lineLimit(1) }
             .fixedSize()
-            .frame(minHeight: 44)
-            .contentShape(.rect)
-            .opacity(configuration.isPressed ? 0.7 : 1)
+            .buttonBorderShape(.capsule)
+            .controlSize(.small)
+            .tint(.brandAction)
+        if filled { button.buttonStyle(.borderedProminent) } else { button.buttonStyle(.bordered) }
     }
 }

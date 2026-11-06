@@ -56,7 +56,7 @@ struct RootView: View {
                 MooneeTabBar(items: [
                     .init(tab: .overview, title: String(localized: "Overview"), symbol: "house"),
                     .init(tab: .budget, title: String(localized: "Budget"), symbol: "wallet.bifold"),
-                    .init(tab: .watchlist, title: String(localized: "Watchlist"), symbol: "chart.bar"),
+                    .init(tab: .watchlist, title: String(localized: "Watchlist"), symbol: "chart.pie"),
                     .init(tab: .account, title: String(localized: "Account"), symbol: "person"),
                 ], selection: $tab) { tab = .moonee }
                 .fixedSize(horizontal: false, vertical: true)

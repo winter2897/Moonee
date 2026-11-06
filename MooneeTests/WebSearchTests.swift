@@ -143,7 +143,7 @@ struct WebSearchTests {
     @Test func toolsGoThroughSwift() async throws {
         var tools = Books.tools
         let coingecko = StubTransport([["bitcoin": ["usd": 68000.5, "vnd": 1_790_000_000, "last_updated_at": 1_762_400_000]]])
-        tools.prices = MarketPrices(send: coingecko.send)
+        tools.prices = MarketPrices(send: coingecko.send, cache: QuoteCache())
         tools.search = WebSearch(backend: nil, now: { Books.now })
 
         let quote = try #require(await tools.json("marketPrice", #"{"symbol":"btc"}"#) as? [String: Any])
@@ -152,8 +152,8 @@ struct WebSearchTests {
         #expect(quote["source"] as? String == "CoinGecko")
         #expect(coingecko.requests[0].url?.query()?.contains("vs_currencies=usd,vnd") == true)
 
-        let gold = try #require(await tools.json("marketPrice", #"{"symbol":"SJC"}"#) as? [String: Any])
-        #expect((gold["error"] as? String)?.contains("webSearch") == true) // gold goes through web search, not scraping
+        let stock = try #require(await tools.json("marketPrice", #"{"symbol":"VNM"}"#) as? [String: Any])
+        #expect((stock["error"] as? String)?.contains("webSearch") == true) // stocks go through web search
 
         let search = try #require(await tools.json("webSearch", #"{"query":"giá vàng"}"#) as? [String: Any])
         #expect(search["configured"] as? Bool == false)
@@ -161,7 +161,7 @@ struct WebSearchTests {
 
         #expect(MarketPrices.symbol(in: "giá bitcoin hôm nay") == "bitcoin")
         #expect(MarketPrices.symbol(in: "ETH bao nhiêu") == "ethereum")
-        #expect(MarketPrices.symbol(in: "giá vàng") == nil)
+        #expect(MarketPrices.symbol(in: "giá vàng") == "GOLD")
         #expect(MooneeTools.allNames == tools.all.map(\.name))
     }
 
@@ -185,7 +185,7 @@ struct WebSearchTests {
         #expect(out == .answer("Theo SJC, giá bán 152 triệu.", skill: "market-lookup",
                                sources: [WebSource(title: "SJC", url: URL(string: "https://sjc.vn")!, site: "sjc.vn")]))
         let system = try #require(apple.requests.first?.system)
-        #expect(system.contains("https://sjc.vn"))
+        #expect(apple.requests.first?.messages.last?.text.contains("https://sjc.vn") == true) // facts ride in the user turn
         #expect(system.contains(Skill.marketLookup.instructions(language: "vi", short: true)))
     }
 }

@@ -44,13 +44,20 @@ func loc(_ key: String.LocalizationValue) -> String { String(localized: key, tab
         context.insert(t)
         t.allocate(jars: jars, in: context)
         bill.lastPaid = date
-        bill.nextDue = nextDue(after: bill.nextDue, bill.frequency, calendar: calendar)
+        let anchor = bill.dueDay ?? calendar.component(.day, from: bill.nextDue)
+        bill.dueDay = anchor
+        bill.nextDue = nextDue(after: bill.nextDue, bill.frequency, day: anchor, calendar: calendar)
         return t
     }
 
-    // ponytail: one period from the current due date, so a 31st bill drifts to the 28th after February. Store an anchor day if users notice.
-    nonisolated static func nextDue(after due: Date, _ frequency: Frequency, calendar: Calendar = .current) -> Date {
-        calendar.date(byAdding: frequency.component, value: 1, to: due) ?? due
+    /// One period after `due`. Monthly/yearly bills land on `day` (a 31st bill is due Feb 28, then Mar 31 again).
+    nonisolated static func nextDue(after due: Date, _ frequency: Frequency, day: Int? = nil, calendar: Calendar = .current) -> Date {
+        guard let next = calendar.date(byAdding: frequency.component, value: 1, to: due) else { return due }
+        guard let day, frequency == .monthly || frequency == .yearly,
+              let days = calendar.range(of: .day, in: .month, for: next) else { return next }
+        var c = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: next)
+        c.day = min(day, days.count)
+        return calendar.date(from: c) ?? next
     }
 
     /// The next date on `day` of the month (clamped to the month's length) on or after today. Credit-card due/statement days.
