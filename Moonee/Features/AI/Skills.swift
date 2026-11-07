@@ -82,7 +82,7 @@ struct Skill: Sendable, Hashable {
         if asks(marketLookup), question || !isTransaction() { return catalog.resolved(marketLookup) }
         if question {
             let aboutJars = QuickParser.hints(in: text, context: context).jarKey != nil
-                || [Phrase](phrases: context.lexicons.flatMap(\.jarWords)).contained(in: tokens)
+                || [Phrase](phrases: context.lexicons.flatMap { $0.jarWords + $0.limitWords }).contained(in: tokens)
             return catalog.resolved(aboutJars ? jarBudgeting : spendingCoach)
         }
         return catalog.resolved(isTransaction() ? transactionParser : spendingCoach)

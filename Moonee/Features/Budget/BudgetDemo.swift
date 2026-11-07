@@ -38,6 +38,8 @@ enum BudgetDemo {
         add(1_600_000, .expense, 3, "category.education", momo, "Khoá học")
         add(2_450_000, .expense, 4, "category.shopping", card, "Giày")
         add(180_000, .expense, 5, "category.food", cash, "Phở + cafe")
+        // Category limits (P1-1): food at 90%, housing over, shopping's limit more than the Fun jar has.
+        for (key, limit) in [("category.food", 200_000), ("category.housing", 6_000_000), ("category.shopping", 3_000_000)] { cat(key)?.monthlyLimit = limit }
         if jars.count > 2 { BudgetActions.moveBetweenJars(600_000, from: jars[2], to: jars[1], jars: jars, in: context) }
 
         let rent = Recurring(name: "Internet", amount: 220_000, nextDue: cal.date(byAdding: .day, value: 3, to: .now)!)

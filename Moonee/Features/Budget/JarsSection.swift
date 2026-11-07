@@ -200,6 +200,7 @@ struct JarDetailView: View {
     @Query(sort: \Jar.order) private var jars: [Jar]
     @Query(sort: \Txn.date, order: .reverse) private var txns: [Txn]
     @State private var transfer: JarTransferDraft?
+    @State private var limitFor: Category?
     @Environment(\.balanceHidden) private var hidden
 
     private let currency = Money.defaultCurrency
@@ -220,7 +221,9 @@ struct JarDetailView: View {
         // Only the clock and currency matter for "per day" and the forecast.
         let clock = BudgetAdvisor(.init(jars: [], budgetBalance: 0, unallocated: 0, now: .now, currency: currency))
         let moves = txns.filter { interval.contains($0.date) }.compactMap { t in delta(t, jar).map { (t, $0) } }
-        let categories = (jar.categories ?? []).sorted { $0.order < $1.order }
+        let categories = BudgetFacts.CategoryLine.categories(of: jar)
+        let spent = BudgetFacts.CategoryLine.spent(txns, in: interval)
+        let limits = categories.reduce(0) { $0 + ($1.monthlyLimit ?? 0) }
         return List {
             Section {
                 LabeledContent(loc("Balance")) {
@@ -256,9 +259,21 @@ struct JarDetailView: View {
             }
 
             if !categories.isEmpty {
-                Section(loc("Categories")) {
+                Section {
                     ForEach(categories) { c in
-                        Label { Text(c.name) } icon: { Image(systemName: c.icon).foregroundStyle(c.color) }
+                        Button { limitFor = c } label: { CategoryLimitRow(category: c, line: .init(c, spent: spent)) }
+                            .accessibilityHint(loc("Set a monthly limit"))
+                    }
+                } header: {
+                    Text(loc("Category limits"))
+                } footer: {
+                    // Same rule as BudgetFacts.JarLine.limitsOverBudget.
+                    if limits > max(m.budget, 0) {
+                        Label(String(localized: "Limits add up to \(hidden ? AmountFormat.mask : AmountFormat.string(limits, currency)), more than this jar has this month (\(hidden ? AmountFormat.mask : AmountFormat.string(m.budget, currency))).", table: "Budget"),
+                              systemImage: "exclamationmark.triangle.fill")
+                            .foregroundStyle(Color.warningText)
+                    } else {
+                        Text(loc("Tap a category to set a monthly limit. A limit holds no money: the jar does."))
                     }
                 }
             }
@@ -290,6 +305,7 @@ struct JarDetailView: View {
             }
         }
         .sheet(item: $transfer) { JarTransferSheet(draft: $0) }
+        .sheet(item: $limitFor) { CategoryLimitSheet(category: $0, spent: spent[$0.persistentModelID] ?? 0) }
     }
 
     private func line(_ title: String, _ amount: Int) -> some View {
@@ -317,6 +333,83 @@ struct JarDetailView: View {
         } value: {
             AmountText(d, currency: t.currencyCode, plus: true).foregroundStyle(d > 0 ? Color.income : Color.ink)
         }
+    }
+}
+
+/// A category in the jar detail: with a limit, spent of the limit, what is left and a bar (80% / 100% colours like jars).
+private struct CategoryLimitRow: View {
+    let category: Category
+    let line: BudgetFacts.CategoryLine
+    @Environment(\.balanceHidden) private var hidden
+
+    var body: some View {
+        let short = { (v: Int) in hidden ? AmountFormat.mask : AmountFormat.string(v, Money.defaultCurrency, short: true) }
+        VStack(alignment: .leading, spacing: 8) {
+            BudgetRow(title: category.name, symbol: category.icon, tint: category.color) {
+                if let limit = line.limit, let level = line.level {
+                    Label(String(localized: "\(short(line.spent)) of \(short(limit)) limit", table: "Budget"), systemImage: level.symbol ?? "circle.fill")
+                        .labelStyle(SpentLabelStyle(showIcon: level.symbol != nil))
+                        .foregroundStyle(level == .normal ? Color.inkSecondary : level.text)
+                } else if line.spent > 0 {
+                    Text(String(localized: "Spent \(short(line.spent))", table: "Budget")).foregroundStyle(Color.inkSecondary)
+                }
+            } value: {
+                if let left = line.left {
+                    AmountText(left, currency: Money.defaultCurrency).foregroundStyle(left < 0 ? Color.danger : Color.ink)
+                } else {
+                    Text(loc("Set limit")).foregroundStyle(Color.brandDeep)
+                }
+            }
+            if let limit = line.limit, let level = line.level {
+                GrowBar(progress: BudgetLevel.progress(spent: line.spent, budget: limit), color: level == .normal ? category.color : level.fill)
+            }
+        }
+        .padding(.vertical, 2)
+    }
+}
+
+/// "Set limit": a monthly spending cap for one category, inside its jar (spec P1-1). Month only.
+struct CategoryLimitSheet: View {
+    let category: Category
+    let spent: Int
+    @State private var amount: Int
+    @Environment(\.modelContext) private var context
+    @Environment(\.dismiss) private var dismiss
+
+    init(category: Category, spent: Int) {
+        self.category = category
+        self.spent = spent
+        _amount = State(initialValue: category.monthlyLimit ?? 0)
+    }
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    AmountField(title: loc("Monthly limit"), minor: $amount)
+                } footer: {
+                    Text(String(localized: "Spent this month: \(AmountFormat.string(spent, Money.defaultCurrency)). Moonee reminds you at 80% and 100%.", table: "Budget"))
+                }
+                if category.monthlyLimit != nil {
+                    Section {
+                        Button(loc("Remove limit"), role: .destructive) { save(nil) }
+                    }
+                }
+            }
+            .navigationTitle(category.name)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) { Button(loc("Cancel")) { dismiss() } }
+                ToolbarItem(placement: .confirmationAction) { Button(loc("Save")) { save(amount) }.disabled(amount <= 0) }
+            }
+        }
+        .presentationDetents([.medium])
+    }
+
+    private func save(_ limit: Int?) {
+        category.monthlyLimit = limit
+        try? context.save()
+        dismiss()
     }
 }
 

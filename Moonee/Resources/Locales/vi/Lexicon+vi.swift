@@ -66,6 +66,7 @@ extension Lexicon {
             ("jar.growth", ["phát triển bản thân", "giáo dục"]), ("jar.play", ["hưởng thụ", "vui chơi"]), ("jar.giving", ["từ thiện", "cho đi"]),
         ],
         jarWords: ["lọ"],
+        limitWords: ["hạn mức", "giới hạn", "định mức"],
         questionCues: ["bao nhiêu", "mấy", "thế nào", "như thế nào", "tại sao", "làm sao", "có nên", "nên làm gì", "gợi ý", "tư vấn", "được không"],
         skillCues: [
             ("close-management", ["chốt sổ", "cuối tháng", "tổng kết tháng", "báo cáo tháng", "kết thúc tháng"]),

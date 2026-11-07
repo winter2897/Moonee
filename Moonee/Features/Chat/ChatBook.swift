@@ -207,6 +207,23 @@ struct ChatCardLine: Codable, Equatable {
         try? context.save()
     }
 
+    /// "đặt hạn mức ăn uống 3tr": sets the category's monthly limit and says how the month stands (spec P1-1). Nil = not a limit.
+    static func setLimit(_ text: String, in context: ModelContext, now: Date = .now) -> String? {
+        guard let cmd = QuickParser.limit(in: text, context: ParserContext(context, now: now)),
+              let category = ((try? context.fetch(FetchDescriptor<Category>())) ?? []).first(where: { $0.parserKey == cmd.categoryKey && $0.kind == .expense })
+        else { return nil }
+        category.monthlyLimit = cmd.amount
+        try? context.save()
+        let jar = BudgetFacts(context, now: now).jars.first { $0.categories.contains { $0.key == cmd.categoryKey } }
+        let line = jar?.categories.first { $0.key == cmd.categoryKey }
+        let money = { (v: Int) in Money(v, Money.defaultCurrency).formatted() }
+        var text = String(localized: "Done: **\(category.name)** can spend up to **\(money(cmd.amount))** a month. Spent so far: **\(money(line?.spent ?? 0))**.", table: "Chat")
+        if let jar, jar.limitsOverBudget {
+            text += " " + String(localized: "Heads up: the limits in \(jar.name) add up to **\(money(jar.limits))**, more than the jar has this month (**\(money(jar.budget))**).", table: "Chat")
+        }
+        return text
+    }
+
     /// After a repayment: what is still owed on that debt, or that it's all settled.
     static func debtLeft(_ saved: [Txn], in context: ModelContext) -> String? {
         guard let debt = saved.last(where: { $0.kind == .repay })?.debt else { return nil }
@@ -406,6 +423,12 @@ struct ChatCardLine: Codable, Equatable {
                 guard !rows.isEmpty else { continue }
                 return ([String(localized: "Here's what's in your jars right now:", table: "Chat")] + rows).joined(separator: "\n")
             case "monthBudget":
+                if let c = o["category"] as? [String: Any] { // "ăn uống còn bao nhiêu?": its limit, else the spending summary
+                    guard c["limit"] is String else { continue }
+                    return c["over"] is String
+                        ? String(localized: "\(s("name", c)): spent **\(s("spent", c))** of its **\(s("limit", c))** limit this month, **\(s("over", c))** over.", table: "Chat")
+                        : String(localized: "\(s("name", c)): **\(s("left", c))** left of its **\(s("limit", c))** limit this month (spent **\(s("spent", c))**).", table: "Chat")
+                }
                 var text = String(localized: "This month you have **\(s("left"))** left to spend of **\(s("totalBudget"))** (spent **\(s("spent"))**).", table: "Chat")
                 if (o["billsDueThisMonth"] as? [Any])?.isEmpty == false {
                     text += " " + String(localized: "After the bills still due: **\(s("leftAfterBills"))**.", table: "Chat")

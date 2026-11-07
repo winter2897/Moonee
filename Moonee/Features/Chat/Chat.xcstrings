@@ -3568,6 +3568,98 @@
           }
         }
       }
+    },
+    "%@: spent **%@** of its **%@** limit this month, **%@** over.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: tháng này đã chi **%@** trên hạn mức **%@**, vượt **%@**."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: เดือนนี้ใช้ไป **%@** จากวงเงิน **%@** เกินมา **%@**"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: ເດືອນນີ້ໃຊ້ໄປ **%@** ຈາກວົງເງິນ **%@**, ເກີນ **%@**."
+          }
+        }
+      }
+    },
+    "%@: **%@** left of its **%@** limit this month (spent **%@**).": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: còn **%@** trong hạn mức **%@** tháng này (đã chi **%@**)."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: เหลือ **%@** จากวงเงิน **%@** เดือนนี้ (ใช้ไป **%@**)"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: ເຫຼືອ **%@** ຈາກວົງເງິນ **%@** ເດືອນນີ້ (ໃຊ້ໄປ **%@**)."
+          }
+        }
+      }
+    },
+    "Done: **%@** can spend up to **%@** a month. Spent so far: **%@**.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xong: **%@** được chi tối đa **%@** mỗi tháng. Tháng này đã chi **%@**."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เรียบร้อย: **%@** ใช้ได้ไม่เกิน **%@** ต่อเดือน เดือนนี้ใช้ไปแล้ว **%@**"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແລ້ວ: **%@** ໃຊ້ໄດ້ບໍ່ເກີນ **%@** ຕໍ່ເດືອນ. ເດືອນນີ້ໃຊ້ໄປແລ້ວ **%@**."
+          }
+        }
+      }
+    },
+    "Heads up: the limits in %@ add up to **%@**, more than the jar has this month (**%@**).": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lưu ý: hạn mức trong lọ %@ cộng lại **%@**, vượt số tiền lọ có tháng này (**%@**)."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ข้อควรรู้: วงเงินในกระปุก %@ รวมกัน **%@** มากกว่าเงินที่กระปุกมีเดือนนี้ (**%@**)"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຂໍ້ຄວນຮູ້: ວົງເງິນໃນກະປຸກ %@ ລວມກັນ **%@**, ຫຼາຍກວ່າເງິນທີ່ກະປຸກມີເດືອນນີ້ (**%@**)."
+          }
+        }
+      }
     }
   }
 }
