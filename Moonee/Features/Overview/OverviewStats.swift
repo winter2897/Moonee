@@ -23,6 +23,8 @@ struct DashboardStats {
     struct CategorySlice: Identifiable {
         /// Category key/name, or "other".
         let id: String
+        /// nil for "Other".
+        var category: Category?
         let name: String
         let icon: String
         let color: Color
@@ -70,7 +72,7 @@ struct DashboardStats {
         func buckets(_ i: DateInterval) -> [Int] {
             let count = calendar.dateComponents([unit], from: i.start, to: i.end).value(for: unit) ?? 0
             var sums = Array(repeating: 0, count: count)
-            for t in txns where t.kind == .expense && i.start <= t.date && t.date < i.end {
+            for t in txns where t.isSpending && i.start <= t.date && t.date < i.end {
                 let b = calendar.dateComponents([unit], from: i.start, to: t.date).value(for: unit) ?? 0
                 if sums.indices.contains(b) { sums[b] += t.amount }
             }
@@ -85,13 +87,13 @@ struct DashboardStats {
         }
 
         let span = interval // a local: closures can't capture self before init ends
-        let byCategory = Dictionary(grouping: txns.filter { $0.kind == .expense && span.start <= $0.date && $0.date < span.end }, by: \.category)
+        let byCategory = Dictionary(grouping: txns.filter { $0.isSpending && span.start <= $0.date && $0.date < span.end }, by: \.category)
             .map { (category: $0.key, amount: $0.value.reduce(0) { $0 + $1.amount }) }
             .sorted { $0.amount > $1.amount }
         let top = byCategory.filter { $0.category != nil }.prefix(5)
         let rest = byCategory.reduce(0) { $0 + $1.amount } - top.reduce(0) { $0 + $1.amount }
         var slices = top.compactMap { c in
-            c.category.map { CategorySlice(id: $0.key ?? $0.name, name: $0.name, icon: $0.icon, color: $0.color, amount: c.amount) }
+            c.category.map { CategorySlice(id: $0.key ?? $0.name, category: $0, name: $0.name, icon: $0.icon, color: $0.color, amount: c.amount) }
         }
         if rest > 0 { slices.append(CategorySlice(id: "other", name: String(localized: "Other", table: "Overview"), icon: "ellipsis", color: .gray, amount: rest)) }
         categories = slices

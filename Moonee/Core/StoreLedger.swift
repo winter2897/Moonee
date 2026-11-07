@@ -24,7 +24,8 @@ struct StoreLedger: LedgerReading {
             return LedgerDebt(person: d.person, theyOweMe: d.direction == .lent, remaining: left, dueDate: d.dueDate)
         }
         jarList = jars.map { LedgerJar(key: $0.parserKey, name: $0.name, percent: $0.percent, balance: ledger.jarBalance($0.persistentModelID)) }
-        self.txns = txns.filter { $0.currencyCode == currency }.map { t in
+        // Not-counted txns (P1-2) stay out of the assistant's spending sums, like every report.
+        self.txns = txns.filter { $0.currencyCode == currency && !$0.excludedFromReport }.map { t in
             LedgerTxn(date: t.date, amount: t.amount, kind: EntryKind(rawValue: t.kindRaw) ?? .expense,
                       categoryKey: t.category?.parserKey, categoryName: t.category?.name,
                       jarKey: t.jar?.parserKey, toJarKey: t.toJar?.parserKey,
@@ -71,10 +72,10 @@ struct BudgetFacts: Sendable, Equatable {
         /// 80% → warning, past 100% → over, the same colours as jars. nil without a limit.
         var level: BudgetLevel? { limit.map { BudgetLevel(spent: spent, budget: $0) } }
 
-        /// Spent this month per category (expenses only), minor units.
+        /// Spent this month per category (expenses only, never ones kept out of reports), minor units.
         @MainActor static func spent(_ txns: [Txn], in month: DateInterval) -> [PersistentIdentifier: Int] {
             txns.reduce(into: [:]) { sums, t in
-                if t.kind == .expense, month.contains(t.date), let c = t.category { sums[c.persistentModelID, default: 0] += t.amount }
+                if t.kind == .expense, !t.excludedFromReport, month.contains(t.date), let c = t.category { sums[c.persistentModelID, default: 0] += t.amount }
             }
         }
 

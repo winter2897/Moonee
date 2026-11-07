@@ -72,6 +72,8 @@ struct ChatTransactionCard: View {
         let amount: Int
         let currency: String
         var income = false
+        /// A transfer between wallets or jars: no sign, ink colour.
+        var neutral = false
     }
 
     enum State { case saved, editing, undone }
@@ -110,9 +112,10 @@ struct ChatTransactionCard: View {
                 Text(line).font(.caption).foregroundStyle(Color.inkSecondary).lineLimit(typeSize.isAccessibilitySize ? nil : 1)
             }
             Spacer(minLength: 8)
-            AmountText(item.income ? item.amount : -item.amount, currency: item.currency, plus: item.income)
+            // Owner: money in green, money out red; transfers stay ink, unsigned.
+            AmountText(item.neutral || item.income ? item.amount : -item.amount, currency: item.currency, plus: item.income && !item.neutral)
                 .font(.rowTitle)
-                .foregroundStyle(item.income ? Color.income : Color.expense)
+                .foregroundStyle(item.neutral ? Color.ink : item.income ? Color.income : Color.danger)
             if state == .editing {
                 Image(systemName: "pencil.circle.fill").font(.title3).foregroundStyle(Color.brandPrimary)
                     .accessibilityHidden(true)
@@ -222,11 +225,12 @@ struct QuickReplyChip: View {
 
 /// Shrinks a little while pressed (disabled with Reduce Motion: dims instead).
 struct PressScaleStyle: ButtonStyle {
+    var scale = 0.95
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .scaleEffect(configuration.isPressed && !reduceMotion ? 0.95 : 1)
+            .scaleEffect(configuration.isPressed && !reduceMotion ? scale : 1)
             .opacity(configuration.isPressed && reduceMotion ? 0.7 : 1)
             .animation(.snappy(duration: 0.15), value: configuration.isPressed)
     }

@@ -93,6 +93,7 @@ enum BudgetSheet: Identifiable {
     case transfer(JarTransferDraft)
     case wallet(Wallet?)
     case payCard(Wallet, debt: Int)
+    case adjust(Wallet, balance: Int)
     case bill(Recurring?)
     case payBill(Recurring)
     case setAside(SetAsideSheet.Mode)
@@ -103,6 +104,7 @@ enum BudgetSheet: Identifiable {
         case .transfer(let d): "transfer.\(d.id)"
         case .wallet(let w): "wallet.\(w.map { "\($0.persistentModelID)" } ?? "new")"
         case .payCard(let w, _): "pay.\(w.persistentModelID)"
+        case .adjust(let w, _): "adjust.\(w.persistentModelID)"
         case .bill(let b): "bill.\(b.map { "\($0.persistentModelID)" } ?? "new")"
         case .payBill(let b): "paid.\(b.persistentModelID)"
         case .setAside(let m): "setAside.\(m.rawValue)"
@@ -115,6 +117,7 @@ enum BudgetSheet: Identifiable {
         case .transfer(let d): JarTransferSheet(draft: d)
         case .wallet(let w): WalletForm(wallet: w)
         case .payCard(let w, let debt): PayCardSheet(card: w, debt: debt)
+        case .adjust(let w, let b): NavigationStack { AdjustBalanceView(wallet: w, balance: b, showsCancel: true) }.presentationDetents([.medium, .large])
         case .bill(let b): RecurringForm(bill: b)
         case .payBill(let b): PayBillSheet(bill: b)
         case .setAside(let m): SetAsideSheet(mode: m)

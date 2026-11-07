@@ -2,11 +2,15 @@ import SwiftData
 import SwiftUI
 
 /// Money in and money out (spec §2): income and expense txns only. Wallet transfers, jar transfers and
-/// lend / borrow / repay move money you already have, so they are not counted. The ledger's totals card,
-/// the Overview and the monthly report all use this one function, so the three always show the same numbers.
+/// lend / borrow / repay move money you already have, so they are not counted. Nor are txns marked "Don't count in
+/// reports" (`Txn.excludedFromReport`, P1-2): they sit in `excludedIn` / `excludedOut` so the report can show them.
+/// The ledger's totals card, the Overview and the monthly report all use this one function, so the three always match.
 struct CashFlow: Equatable {
     var income = 0
     var expense = 0
+    /// Income / spending marked "Don't count in reports" (balance adjustments, money paid back to you).
+    var excludedIn = 0
+    var excludedOut = 0
     var net: Int { income - expense }
 
     init(income: Int = 0, expense: Int = 0) {
@@ -17,9 +21,11 @@ struct CashFlow: Equatable {
     /// `interval` nil = every txn given.
     init(_ txns: [Txn], in interval: DateInterval? = nil) {
         for t in txns where interval.map({ $0.start <= t.date && t.date < $0.end }) ?? true {
-            switch t.kind {
-            case .income: income += t.amount
-            case .expense: expense += t.amount
+            switch (t.kind, t.excludedFromReport) {
+            case (.income, false): income += t.amount
+            case (.expense, false): expense += t.amount
+            case (.income, true): excludedIn += t.amount
+            case (.expense, true): excludedOut += t.amount
             default: break
             }
         }
@@ -31,7 +37,7 @@ struct CashFlow: Equatable {
 
 /// The span the ledger shows (spec §2): this month by default, ‹ › or a swipe steps by its unit.
 /// Pure, with the period's aggregations (wallet opening → closing, groups, upcoming bills), so it is unit-tested.
-struct TxnPeriod: Equatable {
+struct TxnPeriod: Hashable {
     enum Unit: String, CaseIterable, Identifiable {
         case week, month, year, all, custom
         var id: String { rawValue }
@@ -141,8 +147,8 @@ struct TxnPeriod: Equatable {
         }
         return Dictionary(grouping: txns, by: key).map { id, list in
             let first = list[0]
-            let spent = list.reduce(0) { $1.kind == .expense ? $0 + $1.amount : $0 }
-            let received = list.reduce(0) { $1.kind == .income ? $0 + $1.amount : $0 }
+            let spent = list.reduce(0) { $1.isSpending ? $0 + $1.amount : $0 }
+            let received = list.reduce(0) { $1.kind == .income && !$1.excludedFromReport ? $0 + $1.amount : $0 }
             let total = spent > 0 ? spent : received > 0 ? received : list.reduce(0) { $0 + $1.amount }
             let of = spent > 0 ? flow.expense : received > 0 ? flow.income : 0
             let percent = of > 0 ? Int((Double(total) * 100 / Double(of)).rounded()) : nil
@@ -186,6 +192,11 @@ struct TxnPeriod: Equatable {
         }
         return out.sorted { $0.date < $1.date }
     }
+}
+
+extension Txn {
+    /// Spending that counts (an expense not marked "Don't count in reports"): every spending total uses it.
+    var isSpending: Bool { kind == .expense && !excludedFromReport }
 }
 
 extension TxKind {

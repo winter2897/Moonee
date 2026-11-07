@@ -84,11 +84,13 @@ struct WalletsSection: View {
                     if w.type == .credit, balance(w) < 0 {
                         Button(loc("Pay card"), systemImage: "creditcard") { sheet = .payCard(w, debt: -balance(w)) }.tint(Color.brandPrimary)
                     }
+                    Button(loc("Update balance"), systemImage: "slider.horizontal.3") { sheet = .adjust(w, balance: balance(w)) }.tint(Color.brandDeep)
                 }
                 .contextMenu {
                     if w.type == .credit, balance(w) < 0 {
                         Button(loc("Pay card"), systemImage: "creditcard") { sheet = .payCard(w, debt: -balance(w)) }
                     }
+                    Button(loc("Update balance"), systemImage: "slider.horizontal.3") { sheet = .adjust(w, balance: balance(w)) }
                     Button(loc("Edit"), systemImage: "pencil") { sheet = .wallet(w) }
                 }
             }
@@ -204,6 +206,7 @@ struct PayCardSheet: View {
 struct WalletForm: View {
     let wallet: Wallet?
     @Query private var wallets: [Wallet]
+    @Query private var txns: [Txn]
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
@@ -236,7 +239,17 @@ struct WalletForm: View {
                     Picker(loc("Type"), selection: $type) {
                         ForEach(WalletType.allCases, id: \.self) { Label($0.title, systemImage: $0.symbol).tag($0) }
                     }
-                    AmountField(title: type == .credit ? loc("Debt when added") : loc("Opening balance"), minor: $initial)
+                    if let wallet, hasTxns {
+                        // P1-2: the opening balance is history once the wallet has txns; a wrong balance is fixed by the difference.
+                        let balance = Ledger(txns: txns, wallets: wallets, jars: []).walletBalance(wallet.persistentModelID)
+                        NavigationLink { AdjustBalanceView(wallet: wallet, balance: balance) } label: {
+                            LabeledContent(loc("Update balance")) {
+                                AmountText(wallet.type == .credit ? -balance : balance, currency: wallet.currencyCode)
+                            }
+                        }
+                    } else {
+                        AmountField(title: type == .credit ? loc("Debt when added") : loc("Opening balance"), minor: $initial)
+                    }
                 }
                 Section {
                     Toggle(loc("Count in budget"), isOn: $inBudget)
@@ -276,6 +289,9 @@ struct WalletForm: View {
         .presentationDetents([.medium, .large])
     }
 
+    /// Opening balance is editable only while the wallet has no txns (P1-2).
+    private var hasTxns: Bool { !(wallet?.txns ?? []).isEmpty || !(wallet?.incoming ?? []).isEmpty }
+
     private func dayPicker(_ title: String, _ day: Binding<Int?>) -> some View {
         Picker(title, selection: day) {
             Text(loc("Not set")).tag(nil as Int?)
@@ -289,7 +305,7 @@ struct WalletForm: View {
         w.name = name.trimmingCharacters(in: .whitespaces)
         w.type = type
         w.inBudget = inBudget
-        w.initialBalance = type == .credit ? -initial : initial
+        if !hasTxns { w.initialBalance = type == .credit ? -initial : initial }
         w.creditLimit = type == .credit && limit > 0 ? limit : nil
         w.statementDay = type == .credit ? statementDay : nil
         w.dueDay = type == .credit ? dueDay : nil

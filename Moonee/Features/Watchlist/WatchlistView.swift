@@ -2,7 +2,8 @@ import Charts
 import SwiftData
 import SwiftUI
 
-/// Watchlist tab, MVP (spec §5, ROADMAP): net worth over time, what it is made of, and manually priced assets.
+/// Assets tab (UI name; was Watchlist), MVP (spec §5, ROADMAP): net worth over time (always, rebuilt from the ledger
+/// for months without a snapshot), what it is made of (donut), and manually priced assets.
 /// Standard list layout (feedback 3): large title, inset-grouped sections, sheet form, swipe to delete.
 /// No live prices, watchlist feed or price alerts: those need a data source (version 2).
 struct WatchlistView: View {
@@ -49,7 +50,7 @@ struct WatchlistView: View {
                 }
             }
             .background(MooneeBackground())
-            .navigationTitle(String(localized: "Watchlist", table: "Watchlist"))
+            .navigationTitle(String(localized: "Assets", table: "Watchlist"))
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Menu {
@@ -157,21 +158,21 @@ struct WatchlistView: View {
 // MARK: - Net worth and chart
 
 enum ChartPeriod: CaseIterable, Hashable {
-    case sixMonths, year, all
+    case threeMonths, sixMonths, year
 
     var months: Int {
         switch self {
+        case .threeMonths: 3
         case .sixMonths: 6
         case .year: 12
-        case .all: 120 // ponytail: 10 years back is "all" until someone has more history than that
         }
     }
 
     var title: String {
         switch self {
+        case .threeMonths: String(localized: "3M", table: "Watchlist")
         case .sixMonths: String(localized: "6M", table: "Watchlist")
         case .year: String(localized: "1Y", table: "Watchlist")
-        case .all: String(localized: "All", table: "Watchlist")
         }
     }
 }
@@ -207,15 +208,14 @@ private struct NetWorthHeader: View {
                 .fontDesign(.rounded)
                 .animation(.smooth, value: shown)
                 .foregroundStyle(shown < 0 ? Color.danger : Color.ink)
-            if selected == nil, let change = NetWorthHistory.change(points), let first = points.first {
-                ChangeLine(amount: change.amount, percent: change.percent, since: first.month, currency: currency)
+            // vs the previous month (the series always has it: see `NetWorthHistory.points`).
+            if selected == nil, let change = NetWorthHistory.change(points), points.count > 1 {
+                ChangeLine(amount: change.amount, percent: change.percent, since: points[points.count - 2].month, currency: currency)
             }
-            if points.count > 1 {
-                CapsuleSwitcher(options: ChartPeriod.allCases.map { ($0, $0.title) }, selection: $period)
-                    .accessibilityLabel(Text("Period", tableName: "Watchlist"))
-                    .padding(.top, 8)
-                chart(selected: selected)
-            }
+            CapsuleSwitcher(options: ChartPeriod.allCases.map { ($0, $0.title) }, selection: $period)
+                .accessibilityLabel(Text("Period", tableName: "Watchlist"))
+                .padding(.top, 8)
+            chart(selected: selected)
         }
         .padding(.vertical, 6)
     }

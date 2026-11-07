@@ -53,6 +53,9 @@ import Testing
             context.insert(t)
             t.allocate(jars: jars, in: context)
         }
+        let reimbursed = Txn(amount: 400_000, kind: .expense, currencyCode: "VND", date: at(11, 6), category: food) // paid back: not counted
+        reimbursed.excludedFromReport = true
+        context.insert(reimbursed)
         let facts = BudgetFacts(txns: try context.fetch(FetchDescriptor<Txn>()), wallets: try context.fetch(FetchDescriptor<Wallet>()),
                                 jars: jars, recurrings: [], now: at(11, 7), calendar: cal)
         let essentials = try #require(facts.jars.first { $0.key == "jar.essentials" })

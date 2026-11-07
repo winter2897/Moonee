@@ -44,8 +44,9 @@ struct SpendingHeatmap: View {
                     }
                 }
                 .overlay {
-                    if isSelected { shape.strokeBorder(Color.brandYellow, lineWidth: 3) }
-                    else if today { shape.strokeBorder(Color.ink, lineWidth: compact ? 1.5 : 2) }
+                    // Brand yellow marks the day: thicker when picked, thinner for today.
+                    if isSelected { shape.strokeBorder(Color.mooneeYellow, lineWidth: 3) }
+                    else if today { shape.strokeBorder(Color.mooneeYellow, lineWidth: compact ? 2 : 2.5) }
                 }
         }
         .buttonStyle(.plain)

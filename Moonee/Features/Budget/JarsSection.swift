@@ -314,7 +314,8 @@ struct JarDetailView: View {
 
     /// What `t` did to this jar (− out, + in), or nil if it did not touch it.
     private func delta(_ t: Txn, _ jar: Jar) -> Int? {
-        switch t.kind {
+        if t.excludedFromReport && (t.kind == .expense || t.kind == .income) { return nil } // never in a jar (P1-2)
+        return switch t.kind {
         case .expense: t.jar == jar ? -t.amount : nil
         case .income: (t.splits ?? []).first { $0.jar == jar }.map(\.amount)
         case .jarTransfer: t.jar == jar ? -t.amount : t.toJar == jar ? t.amount : (t.splits ?? []).first { $0.jar == jar }.map(\.amount)

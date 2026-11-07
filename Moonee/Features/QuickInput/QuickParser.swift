@@ -9,7 +9,8 @@ enum EntryKind: String, CaseIterable, Codable, Sendable {
 struct ParsedTxn: Equatable, Sendable {
     /// `kind`: a transfer to / from a person read from a photo: spending, a loan or a repayment? (`DocRead.Kind.sent`).
     /// `dueDate`: asked after a lend/borrow is saved ("When will Nam pay you back?"); never blocks the save.
-    enum Field: String, Codable, Sendable { case amount, person, toWallet, jar, toJar, kind, dueDate }
+    /// `reimbursed`: asked after a spend someone may pay back ("chi hộ sếp 500k"); yes = not counted in reports (P1-2).
+    enum Field: String, Codable, Sendable { case amount, person, toWallet, jar, toJar, kind, dueDate, reimbursed }
 
     /// Minor units of `currency` (VND: đồng, USD: cents). Nil = ask the user (spec §3.2), never guess.
     var amount: Int?
@@ -33,6 +34,8 @@ struct ParsedTxn: Equatable, Sendable {
     var reference: String?
     /// Lend / borrow: when it is due back, as answered to Moonee's question (nil = no due date).
     var dueDate: Date?
+    /// The answer to "Will you be paid back for this?" (nil = not asked).
+    var reimbursed: Bool?
 
     static func missing(of t: ParsedTxn) -> [Field] {
         var out: [Field] = []

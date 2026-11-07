@@ -224,6 +224,28 @@
         }
       }
     },
+    "Assets": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊັບສິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สินทรัพย์"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tài sản"
+          }
+        }
+      }
+    },
     "Assign categories": {
       "localizations": {
         "lo": {
@@ -1368,28 +1390,6 @@
         }
       }
     },
-    "Watchlist": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ຕິດຕາມ"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ติดตาม"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Quan tâm"
-          }
-        }
-      }
-    },
     "Week": {
       "localizations": {
         "lo": {
@@ -1952,6 +1952,35 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tiết kiệm"
+          }
+        }
+      }
+    },
+    "category.adjustment": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balance adjustment"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປັບຍອດເງິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปรับยอดเงิน"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Điều chỉnh số dư"
           }
         }
       }

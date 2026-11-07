@@ -42,7 +42,7 @@ struct SpendingSummary {
         let previous = calendar.dateInterval(of: period.component, for: interval.start.addingTimeInterval(-1))!
 
         func expenses(in i: DateInterval) -> [Txn] {
-            txns.filter { $0.kind == .expense && $0.date >= i.start && $0.date < i.end }
+            txns.filter { $0.isSpending && $0.date >= i.start && $0.date < i.end }
         }
         let current = expenses(in: interval)
         total = current.reduce(0) { $0 + $1.amount }

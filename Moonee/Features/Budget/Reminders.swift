@@ -54,11 +54,11 @@ extension Prefs {
 struct Reminder: Equatable {
     /// Raw order = priority when the daily cap drops some.
     enum Kind: Int, CaseIterable, Comparable {
-        case jarOver, limitOver, payday, bill, jarWarning, limitWarning, debt, monthlyReport, weeklyReport, debtNudge, dailyLog
+        case jarOver, limitOver, payday, bill, autoPosted, jarWarning, limitWarning, debt, monthlyReport, weeklyReport, debtNudge, dailyLog
 
         var minLevel: ReminderLevel {
             switch self {
-            case .jarOver, .limitOver, .payday, .bill: .low
+            case .jarOver, .limitOver, .payday, .bill, .autoPosted: .low
             case .jarWarning, .limitWarning, .debt, .monthlyReport, .weeklyReport, .debtNudge: .medium
             case .dailyLog: .high
             }
@@ -80,7 +80,8 @@ struct Reminder: Equatable {
 
 /// Pure planning: what to notify and when. No UserNotifications, so it is unit-tested.
 enum ReminderPlanner {
-    struct Bill { var name: String; var due: Date; var remindDaysBefore: Int }
+    /// `autoPost`: Moonee records it on the due day, so that morning says "recorded" instead of the due reminders.
+    struct Bill { var name: String; var due: Date; var remindDaysBefore: Int; var autoPost = false }
     struct JarState { var id: String; var name: String; var level: BudgetLevel; var advice: String? = nil }
     /// An open debt. With a due date: that morning (and the day before when the user owes it). Without one, or past it:
     /// a gentle nudge every two weeks from `since` (the last lend/borrow/repay). `amount` is what is left, formatted.
@@ -118,6 +119,10 @@ enum ReminderPlanner {
         // Bills: N days before and on the due day.
         for b in bills {
             let due = calendar.startOfDay(for: b.due)
+            if b.autoPost {
+                raw.append(Reminder(kind: .autoPosted, date: at(due, settings.morning), items: [b.name]))
+                continue
+            }
             let days = Set([max(b.remindDaysBefore, 0), 0]).compactMap { calendar.date(byAdding: .day, value: -$0, to: due) }
             raw += days.map { Reminder(kind: .bill, date: at($0, settings.morning), items: [b.name]) }
         }
@@ -247,7 +252,7 @@ enum ReminderPlanner {
         let month = cal.dateInterval(of: .month, for: now)!
 
         var bills = ((try? context.fetch(FetchDescriptor<Recurring>())) ?? []).filter { !$0.isIncome }
-            .map { ReminderPlanner.Bill(name: $0.name, due: $0.nextDue, remindDaysBefore: $0.remindDaysBefore) }
+            .map { ReminderPlanner.Bill(name: $0.name, due: $0.nextDue, remindDaysBefore: $0.remindDaysBefore, autoPost: $0.autoPost && !$0.isEstimate) }
         for card in wallets where card.type == .credit {
             if let day = card.dueDay, ledger.walletBalance(card.persistentModelID) < 0 {
                 bills.append(.init(name: card.name, due: BudgetActions.nextDate(day: day, from: now, calendar: cal), remindDaysBefore: 3))
@@ -318,6 +323,7 @@ enum ReminderPlanner {
         case .limitOver: (loc("Over a spending limit"), String(localized: "\(names) went past this month's limit. The jar still pays, but take it easy.", table: "Budget"))
         case .limitWarning: (loc("80% of a limit"), String(localized: "\(names) has used 80% of this month's limit.", table: "Budget"))
         case .bill: (loc("Bill reminder"), String(localized: "\(names) is due soon. Tap Mark paid in Budget once it's done.", table: "Budget"))
+        case .autoPosted: (loc("Recorded for you"), String(localized: "Moonee records \(names) today. Open Moonee to check it or undo.", table: "Budget"))
         case .debt: (loc("Debt due"), String(localized: "Debts due soon with \(names). Open the debt book in Budget.", table: "Budget"))
         case .debtNudge: (loc("Debt book"), String(localized: "Still open in your debt book: \(names).", table: "Budget"))
         case .weeklyReport: (loc("Your week with Moonee"), loc("Your weekly report is ready. Take a quick look?"))

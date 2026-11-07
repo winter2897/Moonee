@@ -24,6 +24,28 @@
         }
       }
     },
+    "3M": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3 ເດືອນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3 เดือน"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3T"
+          }
+        }
+      }
+    },
     "6M": {
       "localizations": {
         "lo": {
@@ -112,24 +134,24 @@
         }
       }
     },
-    "All": {
+    "Assets": {
       "localizations": {
         "lo": {
           "stringUnit": {
             "state": "translated",
-            "value": "ທັງໝົດ"
+            "value": "ຊັບສິນ"
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "ทั้งหมด"
+            "value": "สินทรัพย์"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tất cả"
+            "value": "Tài sản"
           }
         }
       }
@@ -812,28 +834,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ví được quản lý ở tab Ngân sách."
-          }
-        }
-      }
-    },
-    "Watchlist": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ຕິດຕາມ"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ติดตาม"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Quan tâm"
           }
         }
       }

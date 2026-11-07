@@ -16,6 +16,9 @@ struct MooneeApp: App {
         Seed.ifNeeded(container.mainContext)
         Seed.mergeDuplicates(container.mainContext)
         Seed.assignOrphanCategories(container.mainContext)
+        #if DEBUG && targetEnvironment(simulator)
+        DemoUser.seedIfRequested(container.mainContext) // -demoUser YES
+        #endif
         LLMSettings.migrate() // one-time: old openAICompatible provider → OpenRouter / Custom; Apple mode → Local
     }
 
@@ -25,13 +28,14 @@ struct MooneeApp: App {
                 .task { DevSecrets.load() }
                 // iCloud just delivered records (e.g. a reinstall meeting its old data): fold duplicate defaults.
                 .onReceive(NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange)
-                    .debounce(for: .seconds(2), scheduler: RunLoop.main)) { _ in Seed.mergeDuplicates(container.mainContext) }
+                    .debounce(for: .seconds(2), scheduler: RunLoop.main)) { _ in
+                    Seed.mergeDuplicates(container.mainContext)
+                    Autopilot.dropDuplicatePosts(container.mainContext) // P1-4: two devices posted the same bill date
+                }
         }
         .modelContainer(container)
     }
 }
-
-enum AppTab: Hashable { case overview, budget, moonee, watchlist, account }
 
 /// The 5 tabs from docs/FEATURES.md §1 with the mockups' floating bar; (+) opens the Moonee chat.
 /// Each tab's root view lives in its feature folder, so feature sessions never need to edit this file.
@@ -59,7 +63,7 @@ struct RootView: View {
                 MooneeTabBar(items: [
                     .init(tab: .overview, title: String(localized: "Overview"), symbol: "house"),
                     .init(tab: .budget, title: String(localized: "Budget"), symbol: "wallet.bifold"),
-                    .init(tab: .watchlist, title: String(localized: "Watchlist"), symbol: "chart.pie"),
+                    .init(tab: .watchlist, title: String(localized: "Assets"), symbol: "chart.line.uptrend.xyaxis"),
                     .init(tab: .account, title: String(localized: "Account"), symbol: "person"),
                 ], selection: $tab) { tab = .moonee }
                 .fixedSize(horizontal: false, vertical: true)
@@ -69,6 +73,7 @@ struct RootView: View {
         .environment(\.balanceHidden, hideBalances)
         .onOpenURL { url in if url == WidgetSnapshot.deepLink { route.composeRequest += 1 } }
         .onChange(of: route.composeRequest, initial: true) { _, n in if n > 0 { tab = .moonee } }
+        .onChange(of: route.tab) { _, t in if let t { tab = t; route.tab = nil } }
         .reminderScheduling()
         .widgetSync() // widget numbers in the App Group (App/WidgetSync.swift)
         .tint(.mooneeGreen)

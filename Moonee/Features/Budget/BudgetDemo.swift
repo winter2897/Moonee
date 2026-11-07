@@ -46,6 +46,7 @@ enum BudgetDemo {
         let power = Recurring(name: "Tiền điện", amount: 650_000, nextDue: .now)
         power.isEstimate = true
         let netflix = Recurring(name: "Netflix", amount: 260_000, nextDue: cal.date(byAdding: .day, value: -2, to: .now)!)
+        netflix.autoPost = true // P1-4: Moonee records it on launch (Budget card + chat, with Undo)
         let house = Recurring(name: "Tiền nhà", amount: 5_000_000, nextDue: cal.date(byAdding: .month, value: 1, to: day(5))!)
         house.lastPaid = day(2)
         for (r, c) in [(rent, "category.housing"), (power, "category.housing"), (netflix, "category.entertainment"), (house, "category.housing")] {
