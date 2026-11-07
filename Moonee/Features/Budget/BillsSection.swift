@@ -54,9 +54,69 @@ struct BillsSection: View {
     }
 }
 
+/// "Coming up" on the Budget tab (P0-3): the expected salary and the bills due before the month ends, soonest first, each
+/// with its "Received" / "Paid" button. Every bill (also next month's) is one tap away in "All recurring & bills".
+struct ComingUpSection: View {
+    @Binding var sheet: BudgetSheet?
+    @Binding var path: NavigationPath
+    @Environment(\.modelContext) private var context
+    @Query(sort: \Recurring.nextDue) private var recurrings: [Recurring]
+    @Query private var jars: [Jar]
+    @Query private var txns: [Txn]
+
+    var body: some View {
+        let end = Calendar.current.dateInterval(of: .month, for: .now)!.end
+        let due = recurrings.filter { r in
+            r.nextDue < end && !(r.isIncome && BudgetActions.isReceived(r, txns: txns))
+        }
+        Section {
+            ForEach(due) { r in
+                BillRow(bill: r, mark: { pay(r) })
+                    .contentShape(.rect)
+                    .onTapGesture { sheet = .bill(r) }
+                    .contextMenu {
+                        Button(loc("Edit"), systemImage: "pencil") { sheet = .bill(r) }
+                    }
+            }
+            NavigationLink(value: BudgetRoute.bills) {
+                Label(due.isEmpty ? loc("Nothing due before the month ends") : loc("All recurring & bills"), systemImage: "calendar")
+                    .foregroundStyle(Color.ink)
+            }
+        } header: {
+            Text(loc("Coming up"))
+        }
+    }
+
+    /// Estimated amounts ask for the real one first.
+    private func pay(_ r: Recurring) {
+        if r.isEstimate { sheet = .payBill(r) }
+        else if r.isIncome { withAnimation { _ = BudgetActions.receive(r, in: context) } }
+        else { withAnimation { _ = BudgetActions.markPaid(r, jars: jars, in: context) } }
+    }
+}
+
+/// Every recurring income and bill, as its own screen (Budget → Coming up → All recurring & bills).
+struct BillsView: View {
+    @State private var sheet: BudgetSheet?
+
+    var body: some View {
+        List { BillsSection(sheet: $sheet) }
+            .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
+            .background(MooneeBackground())
+            .navigationTitle(loc("Recurring & Bills"))
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) { Button(loc("Add bill"), systemImage: "plus") { sheet = .bill(nil) } }
+            }
+            .sheet(item: $sheet) { $0.view }
+    }
+}
+
 /// Name, due state and date, amount. Paid this month shows "Paid · next date".
 private struct BillRow: View {
     let bill: Recurring
+    /// "Received" / "Paid" as a visible button under the date (Coming up); nil = swipe only.
+    var mark: (() -> Void)?
 
     var body: some View {
         let paid = bill.lastPaid.map { Calendar.current.isDate($0, equalTo: .now, toGranularity: .month) } ?? false
@@ -68,6 +128,10 @@ private struct BillRow: View {
             + Text(verbatim: " · ").foregroundStyle(Color.inkSecondary)
             + (paid ? Text(String(localized: "next \(bill.nextDue.formatted(.dateTime.day().month()))", table: "Budget")) : date)
                 .foregroundStyle(Color.inkSecondary)
+            if let mark {
+                Button(bill.isIncome ? loc("Mark received") : loc("Mark paid"), action: mark)
+                    .buttonStyle(.bordered).controlSize(.small).tint(Color.brandDeep).fontWeight(.semibold)
+            }
         } value: {
             VStack(alignment: .trailing, spacing: 2) {
                 AmountText(bill.amount, currency: bill.currencyCode, plus: bill.isIncome)

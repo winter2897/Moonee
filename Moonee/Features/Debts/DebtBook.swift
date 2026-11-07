@@ -93,44 +93,24 @@ func dloc(_ key: String.LocalizationValue) -> String { String(localized: key, ta
 
 // MARK: - Budget section
 
-/// One small section in Budget: what people owe you and what you owe, opening the debt book.
+/// The Budget tab's one debt row (P0-3): "Debt book · to collect 800k · to pay back 2tr", opening the debt book.
 struct DebtsSection: View {
-    @Binding var path: NavigationPath
     @Query(sort: \Debt.createdAt) private var debts: [Debt]
     @Query private var txns: [Txn]
+    @Environment(\.balanceHidden) private var hidden
 
     var body: some View {
         let open = DebtBook.lines(debts, txns: txns).filter(\.isOpen)
-        let owed = open.filter(\.theyOweMe), owing = open.filter { !$0.theyOweMe }
-        Section {
-            Button { path.append(BudgetRoute.debts) } label: {
-                HStack(spacing: 12) {
-                    IconBadge(symbol: "person.2.fill", color: .brandDeep, size: 36)
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text(dloc("Debt book")).font(.rowTitle).foregroundStyle(Color.ink)
-                        if open.isEmpty {
-                            Text(dloc("No open debts")).font(.subheadline).foregroundStyle(Color.inkSecondary)
-                        } else {
-                            HStack(alignment: .top, spacing: 28) {
-                                if !owed.isEmpty { figure(dloc("To collect"), owed, color: .income) }
-                                if !owing.isEmpty { figure(dloc("To pay back"), owing, color: .danger) }
-                            }
-                        }
-                    }
-                    Spacer(minLength: 4)
-                    Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(Color.inkSecondary)
-                }
-                .padding(.vertical, 4)
+        let owed = open.filter(\.theyOweMe).reduce(0) { $0 + $1.remaining }
+        let owing = open.filter { !$0.theyOweMe }.reduce(0) { $0 + $1.remaining }
+        let money = { (m: Int) in hidden ? AmountFormat.mask : AmountFormat.string(m, Money.defaultCurrency, short: true) }
+        let parts = (owed > 0 ? ["\(dloc("To collect")) \(money(owed))"] : []) + (owing > 0 ? ["\(dloc("To pay back")) \(money(owing))"] : [])
+        NavigationLink(value: BudgetRoute.debts) {
+            BudgetRow(title: dloc("Debt book"), symbol: "person.2.fill") {
+                Text(parts.isEmpty ? dloc("No open debts") : parts.joined(separator: " · ")).foregroundStyle(Color.inkSecondary)
+            } value: {
+                EmptyView()
             }
-        }
-    }
-
-    /// "Cần thu" over its total.
-    private func figure(_ title: String, _ lines: [DebtBook.Line], color: Color) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(title).font(.caption).foregroundStyle(Color.inkSecondary)
-            AmountText(lines.reduce(0) { $0 + $1.remaining }, currency: Money.defaultCurrency)
-                .font(.headline).monospacedDigit().foregroundStyle(color)
         }
     }
 }

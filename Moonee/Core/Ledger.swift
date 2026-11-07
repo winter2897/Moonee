@@ -37,7 +37,10 @@ struct Ledger<ID: Hashable> {
         var spent: Int
         /// Big number on the card: balance now (end of the entries given).
         var balance: Int
-        /// What the month had to spend.
+        /// Money that left the budget out of this jar during the month: an asset bought, a savings deposit ("Set aside").
+        /// Kept apart from `added`, so "Available this month" never shrinks when you save.
+        var setAside = 0
+        /// What the month had to spend ("Available this month").
         var budget: Int { start + added }
         /// The card's bar: spent / budget. > 1 = over; nothing to spend but spending = .infinity.
         var progress: Double {
@@ -85,7 +88,13 @@ struct Ledger<ID: Hashable> {
         for e in entries {
             for (id, d) in jarDeltas(e) where id == jar {
                 if e.date < month.start { m.start += d }
-                else if e.date < month.end { if e.kind == .expense { m.spent -= d } else { m.added += d } }
+                else if e.date < month.end {
+                    switch e.kind {
+                    case .expense: m.spent -= d
+                    case .transfer: m.setAside -= d
+                    default: m.added += d
+                    }
+                }
             }
         }
         return m
@@ -110,7 +119,8 @@ struct Ledger<ID: Hashable> {
     /// What the given jars hold for the month: Σ start + added, Σ spent. "Total budget" / "Spent" / "Left" on the Budget tab.
     func monthTotals(_ jars: [ID], in month: DateInterval) -> JarMonth {
         jars.map { jarMonth($0, in: month) }.reduce(JarMonth(start: 0, added: 0, spent: 0, balance: 0)) {
-            JarMonth(start: $0.start + $1.start, added: $0.added + $1.added, spent: $0.spent + $1.spent, balance: $0.balance + $1.balance)
+            JarMonth(start: $0.start + $1.start, added: $0.added + $1.added, spent: $0.spent + $1.spent, balance: $0.balance + $1.balance,
+                     setAside: $0.setAside + $1.setAside)
         }
     }
 

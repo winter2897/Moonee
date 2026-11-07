@@ -119,7 +119,7 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 - Thêm, bớt, đổi tên, đổi màu/icon và sửa % (tổng phải đủ 100%).
 - **Một luật duy nhất cho tiền vào** (quyết định 07/11, P0-1): mọi tiền vào ngân sách đi qua một hàm `BudgetActions.receive`, chỉ phụ thuộc mức hỗ trợ (mục 4.6). Gồm: khoản thu nhắn trong chat hoặc thêm bằng form, lương bấm **Đã nhận**, số dư ban đầu ở onboarding (áp khi user chọn mức hỗ trợ), ví mới, bán tài sản, rút tiết kiệm.
   - **Tự động:** áp kế hoạch a–d (mục 4.6) ngay. Thẻ giao dịch trong chat ghi "Moonee đã chia: Thiết yếu 8,3tr · …" kèm **Hoàn tác** (về Chưa chia vào lọ) và **Sửa**; tiền vào Chưa chia (ví mới, bán tài sản…) hiện thẻ "Moonee đã chia tiền" có **Hoàn tác** ở tab Ngân sách.
-  - **Gợi ý (mặc định):** tiền nằm ở Chưa chia vào lọ. Ngay dưới thẻ giao dịch trong chat có **Chia theo gợi ý của Moonee** (một chạm = kế hoạch a–d), **Theo %**, **Để sau**; thẻ Moonee gợi ý ở tab Ngân sách có cùng lựa chọn (**Chia theo gợi ý**, **Theo %**, **Để sau**, ⋯ bỏ hết vào một lọ).
+  - **Gợi ý (mặc định):** tiền nằm ở Chưa chia vào lọ. Ngay dưới thẻ giao dịch trong chat có **Chia theo gợi ý của Moonee** (một chạm = kế hoạch a–d), **Theo %**, **Để sau**; đầu tab Ngân sách thành lời kêu gọi **Chia ngay** với cùng lựa chọn (**Kế hoạch của Moonee**, **Theo %**, **Bỏ hết vào một lọ**).
   - **Tự làm:** chia theo % ngay.
   - Không đổi model: chia một khoản thu lưu bằng `IncomeSplit`; khoản thu không có phần chia (hoặc chia thiếu) thì phần còn lại nằm ở Chưa chia vào lọ. Khoản thu cùng danh mục với lương (ví dụ "nhận lương 15tr") vẫn khớp vào dòng lương (mục 4.3).
   - Sửa một khoản thu (form sửa giao dịch) có mục **Chia vào lọ**: số cho từng lọ, nút **Chia theo %** và **Để hết ở Chưa chia vào lọ**; phần không vào lọ nào nằm ở Chưa chia.
@@ -129,11 +129,18 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 - **Không có tiền nằm ngoài lọ** (quyết định 06/11, kiểu envelope như YNAB "Ready to assign"):
   - **Chỉ tiền để tiêu mới vào lọ** (quyết định 06/11, đợt 2): **ví tính vào ngân sách = tổng các lọ + Chưa chia vào lọ**, luôn đúng.
   - **Chưa chia vào lọ** = tổng số dư các ví bật "Tính vào ngân sách" (thẻ tín dụng tính âm) − tổng số dư các lọ. Tài khoản tiết kiệm/đầu tư (tắt "Tính vào ngân sách"), tài sản (vàng, cổ phiếu, crypto) và tiền cho mượn chỉ tính vào tài sản ròng (Quan tâm), không bao giờ vào lọ hay Chưa chia. Vì thế cho mượn làm con số này giảm (tiền rời ví), đi vay làm nó tăng; chuyển giữa các ví ngân sách, rút ATM, nạp ví, trả thẻ không đổi gì.
-  - Khác 0 thì tab Ngân sách hiện dòng **Chưa chia vào lọ** ngay đầu mục "Tháng này", với menu **Chia vào các lọ**: **Kế hoạch của Moonee** (mục 4.6), **Chia theo %**, hoặc **Bỏ hết vào một lọ**. Mỗi cách ghi thành một giao dịch chuyển lọ có ngày (không có lọ nguồn, mỗi lọ một phần chia), nên lịch sử các tháng trước không đổi. Âm nghĩa là các lọ hứa nhiều hơn tiền thật: Moonee gợi ý lấy bớt từ lọ nào.
+  - Dương thì đầu tab Ngân sách thành lời kêu gọi "Bạn có 20tr chưa chia vào lọ" với **Chia ngay**: **Kế hoạch của Moonee** (mục 4.6), **Chia theo %**, hoặc **Bỏ hết vào một lọ**. Âm thì hiện dòng đỏ **Chưa chia vào lọ**. Mỗi cách ghi thành một giao dịch chuyển lọ có ngày (không có lọ nguồn, mỗi lọ một phần chia), nên lịch sử các tháng trước không đổi. Âm nghĩa là các lọ hứa nhiều hơn tiền thật: Moonee gợi ý lấy bớt từ lọ nào.
   - **Tiền có sẵn** (số dư ban đầu, ví mới, sửa số dư, bán tài sản, rút tiết kiệm) đều vào đây rồi theo luật tiền vào ở trên (Gợi ý: thẻ Moonee gợi ý đưa kế hoạch; Tự động: Moonee áp dụng; Tự làm: chia theo %). Sửa số dư ví chưa đi qua luật này (S28).
 - **Số trên tab Ngân sách** (một struct `BudgetFacts`, trợ lý đọc đúng struct này):
   - **Thu nhập** = các khoản thu trong tháng (Tổng quan dùng cùng con số).
-  - **Tổng ngân sách** = số dư các lọ đầu tháng + tiền vào lọ trong tháng (chia thu nhập, chia tiền chưa chia, chuyển lọ). **Đã chi** = chi từ các lọ trong tháng. **Còn lại** = Tổng ngân sách − Đã chi = tổng số dư các lọ cuối tháng.
+  - **Có trong tháng** = số dư các lọ đầu tháng + tiền vào lọ trong tháng (chia thu nhập, chia tiền chưa chia, chuyển lọ). **Đã chi** = chi từ các lọ trong tháng. **Đã để dành** = mua tài sản / gửi tiết kiệm từ lọ trong tháng (`JarMonth.setAside`): không phải chi, không trừ vào Có trong tháng. **Còn tiêu được** = Có trong tháng − Đã chi − Đã để dành = tổng số dư các lọ cuối tháng.
+  - **Mỗi ngày còn khoảng X** (tháng này) = Còn tiêu được ÷ số ngày còn lại tính cả hôm nay, làm tròn xuống bước gọn (mục 4.6). Mỗi lọ cũng có "còn X/ngày". Chi tiết lọ: **Với tốc độ này, cuối tháng chi khoảng Y** = đã chi ÷ số ngày đã qua × số ngày của tháng, từ ngày thứ 7 (trước đó một khoản tiền nhà đầu tháng làm dự báo vô nghĩa); đỏ khi vượt Có trong tháng.
+- **Bố cục tab Ngân sách** (P0-3), từ trên xuống:
+  1. Tháng (‹ › hoặc vuốt ngang), rồi **Còn tiêu được tháng này** + **Mỗi ngày còn khoảng X**. Khi Chưa chia vào lọ > 0, đầu trang thành lời kêu gọi chia (không bao giờ hiện tổng âm màu đỏ khi còn tiền chưa chia); lọ âm mà Chưa chia bù được: Gợi ý/Tự làm có nút **Bù từ tiền chưa chia**, Tự động thì Moonee tự bù và báo bằng thẻ có **Hoàn tác**.
+  2. Một thẻ Moonee: tiêu đề + một dòng; số của kế hoạch a–d và lý do gập trong **Vì sao?**. Tiền chưa chia không thành thẻ thứ hai (đầu trang đã lo).
+  3. Các lọ.
+  4. **Sắp tới**: lương dự kiến (chưa nhận) và hoá đơn đến hạn trước cuối tháng, nút **Đã nhận** / **Đã trả**; dòng cuối mở tất cả khoản định kỳ.
+  5. Một dòng **Ví** (tổng · trong ngân sách · nợ thẻ) mở màn Ví, một dòng **Sổ nợ** (cần thu · cần trả) mở sổ nợ.
 
 ### 4.2 Ví / nguồn tiền
 - Các loại: tiền mặt, tài khoản ngân hàng, ví điện tử (MoMo, ZaloPay...), **thẻ tín dụng**.
