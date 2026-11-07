@@ -548,9 +548,9 @@ struct TxnRow: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(txn.title).font(.body).lineLimit(1)
                 Text(subtitle).font(.subheadline).foregroundStyle(.secondary).lineLimit(1)
-                if txn.kind == .transfer || txn.kind == .jarTransfer {
+                if txn.kind == .transfer || txn.kind == .jarTransfer || txn.excludedFromReport {
                     HStack(spacing: 4) {
-                        Image(systemName: "arrow.left.arrow.right")
+                        Image(systemName: txn.excludedFromReport ? "eye.slash" : "arrow.left.arrow.right")
                         Text("Not counted in income & spending", tableName: "Transactions")
                     }
                     .font(.caption).foregroundStyle(.secondary).lineLimit(1).minimumScaleFactor(0.8)

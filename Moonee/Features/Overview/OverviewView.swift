@@ -72,7 +72,7 @@ struct OverviewView: View {
         let note = MooneeNote.make(level: MooneeNote.Level(rawValue: level) ?? .medium, advice: advice,
                                    jars: s.jars.map { .init(name: $0.jar.name, balance: $0.month.balance, progress: $0.month.progress) },
                                    bills: due.map { ($0.name, $0.nextDue) },
-                                   spentToday: txns.reduce(0) { $1.kind == .expense && Calendar.current.isDateInToday($1.date) ? $0 + $1.amount : $0 })
+                                   spentToday: txns.reduce(0) { $1.isSpending && Calendar.current.isDateInToday($1.date) ? $0 + $1.amount : $0 })
         return VStack(spacing: 14) {
             OverviewHeader(name: name, avatar: avatar)
             CapsuleSwitcher(options: Period.allCases.map { ($0, $0.title) }, selection: $period)

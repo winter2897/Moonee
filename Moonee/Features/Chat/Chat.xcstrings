@@ -3568,6 +3568,138 @@
           }
         }
       }
+    },
+    "Yes, I'll be paid back": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແມ່ນ ຈະໄດ້ຄືນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใช่ จะได้คืน"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Có, sẽ được hoàn lại"
+          }
+        }
+      }
+    },
+    "No, it's my spending": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ ຈ່າຍເອງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่ใช่ จ่ายเอง"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không, mình tự chi"
+          }
+        }
+      }
+    },
+    "Will you be paid back for this **%@**?": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**%@** ນີ້ຈະໄດ້ເງິນຄືນບໍ່?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**%@** นี้จะได้เงินคืนไหม?"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khoản **%@** này có được hoàn lại không?"
+          }
+        }
+      }
+    },
+    "Is this **%@** something you'll get back? Moonee can keep it out of your spending.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**%@** ນີ້ຈະໄດ້ຄືນບໍ່? ຖ້າໄດ້ Moonee ຈະບໍ່ນັບເປັນລາຍຈ່າຍຂອງເຈົ້າ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**%@** นี้จะได้คืนไหม? ถ้าได้ Moonee จะไม่นับเป็นรายจ่ายของคุณ"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khoản **%@** này có được hoàn lại không? Nếu có, Moonee sẽ không tính vào chi tiêu."
+          }
+        }
+      }
+    },
+    "Got it: it's out of your wallet, but not counted in your spending, jars or reports.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຮັບຊາບ: ເງິນອອກຈາກກະເປົາແລ້ວ ແຕ່ບໍ່ນັບໃນລາຍຈ່າຍ ກະປຸກ ຫຼື ລາຍງານ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รับทราบ: เงินออกจากกระเป๋าแล้ว แต่ไม่นับในรายจ่าย กระปุก หรือรายงาน"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã rõ: tiền vẫn ra khỏi ví, nhưng không tính vào chi tiêu, lọ hay báo cáo."
+          }
+        }
+      }
+    },
+    "Okay, it stays in your spending.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂອເຄ ນັບເປັນລາຍຈ່າຍຂອງເຈົ້າຄືເກົ່າ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โอเค นับเป็นรายจ่ายของคุณตามเดิม"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ok, vẫn tính vào chi tiêu của bạn nhé."
+          }
+        }
+      }
     }
   }
 }

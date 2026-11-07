@@ -105,6 +105,18 @@ struct ReportView: View {
                     Text(verbatim: r.savingsRate.map { "\($0)%" } ?? "–").font(.rowTitle).monospacedDigit()
                 }
             }
+            if r.excludedIn + r.excludedOut > 0 { // P1-2: what "Don't count in reports" kept out, so nothing disappears
+                Divider()
+                HStack(spacing: 6) {
+                    Image(systemName: "eye.slash")
+                    Text("Not counted", tableName: "Report")
+                    Spacer()
+                    if r.excludedIn > 0 { AmountText(r.excludedIn, currency: currency, plus: true) }
+                    if r.excludedOut > 0 { AmountText(-r.excludedOut, currency: currency) }
+                }
+                .font(.footnote).foregroundStyle(Color.inkSecondary)
+                .accessibilityElement(children: .combine)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .card()

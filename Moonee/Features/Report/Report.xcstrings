@@ -704,6 +704,28 @@
           }
         }
       }
+    },
+    "Not counted": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ນັບ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่นับ"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không tính"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
