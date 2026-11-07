@@ -2974,6 +2974,402 @@
           }
         }
       }
+    },
+    "This weekend": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuối tuần"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สุดสัปดาห์นี้"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທ້າຍອາທິດນີ້"
+          }
+        }
+      }
+    },
+    "End of month": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuối tháng"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สิ้นเดือน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທ້າຍເດືອນ"
+          }
+        }
+      }
+    },
+    "No due date": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không thời hạn"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มีกำหนด"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ມີກຳນົດ"
+          }
+        }
+      }
+    },
+    "Pick a date…": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chọn ngày…"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เลือกวัน…"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເລືອກວັນ…"
+          }
+        }
+      }
+    },
+    "When do you plan to pay %@ back?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khi nào bạn định trả %@?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คุณจะคืนเงิน %@ เมื่อไร?"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທ່ານຈະສົ່ງເງິນຄືນ %@ ເມື່ອໃດ?"
+          }
+        }
+      }
+    },
+    "When will you pay %@ back? Moonee will remind you.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn tính khi nào trả %@? Moonee sẽ nhắc bạn."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "จะคืนเงิน %@ เมื่อไร? Moonee จะเตือนให้"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຈະສົ່ງເງິນຄືນ %@ ເມື່ອໃດ? Moonee ຈະເຕືອນໃຫ້."
+          }
+        }
+      }
+    },
+    "When will %@ pay you back?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khi nào %@ trả bạn?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ จะคืนเงินคุณเมื่อไร?"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ຈະສົ່ງເງິນຄືນທ່ານເມື່ອໃດ?"
+          }
+        }
+      }
+    },
+    "When did %@ say they'd pay you back? Moonee will remind you.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ hẹn khi nào trả bạn? Moonee sẽ nhắc giúp."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ บอกว่าจะคืนเงินเมื่อไร? Moonee จะเตือนให้"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ບອກວ່າຈະສົ່ງເງິນຄືນເມື່ອໃດ? Moonee ຈະເຕືອນໃຫ້."
+          }
+        }
+      }
+    },
+    "Got it, no due date. Moonee will check in every couple of weeks.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ok, không thời hạn. Cứ hai tuần Moonee nhắc nhẹ một lần nhé."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รับทราบ ไม่มีกำหนด Moonee จะเตือนเบาๆ ทุกสองสัปดาห์"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຮັບຊາບ, ບໍ່ມີກຳນົດ. Moonee ຈະເຕືອນເບົາໆທຸກສອງອາທິດ."
+          }
+        }
+      }
+    },
+    "Okay, due %@. Moonee will remind you that morning.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ok, hạn là %@. Sáng hôm đó Moonee sẽ nhắc bạn."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โอเค ครบกำหนด %@ เช้าวันนั้น Moonee จะเตือนคุณ"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂອເຄ, ຄົບກຳນົດ %@. ເຊົ້າມື້ນັ້ນ Moonee ຈະເຕືອນທ່ານ."
+          }
+        }
+      }
+    },
+    "All settled with %@!": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xong nợ với %@ rồi!"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เคลียร์กับ %@ ครบแล้ว!"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສະສາງກັບ %@ ຄົບແລ້ວ!"
+          }
+        }
+      }
+    },
+    "%@ still owes you **%@**.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ còn nợ bạn **%2$@**."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ ยังติดเงินคุณ **%2$@**"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ ຍັງຕິດໜີ້ທ່ານ **%2$@**."
+          }
+        }
+      }
+    },
+    "You still owe %@ **%@**.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn còn nợ %1$@ **%2$@**."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คุณยังติดเงิน %1$@ **%2$@**"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທ່ານຍັງຕິດໜີ້ %1$@ **%2$@**."
+          }
+        }
+      }
+    },
+    "Due date": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hạn trả"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "วันครบกำหนด"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ວັນຄົບກຳນົດ"
+          }
+        }
+      }
+    },
+    "Your debt book is clear: nobody owes you and you owe nobody.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sổ nợ đang sạch: không ai nợ bạn và bạn cũng không nợ ai."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สมุดหนี้ว่าง: ไม่มีใครติดเงินคุณ และคุณไม่ได้ติดเงินใคร"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປຶ້ມໜີ້ວ່າງ: ບໍ່ມີໃຜຕິດໜີ້ທ່ານ ແລະ ທ່ານບໍ່ໄດ້ຕິດໜີ້ໃຜ."
+          }
+        }
+      }
+    },
+    "(due %@)": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(hạn %@)"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(ครบกำหนด %@)"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(ຄົບກຳນົດ %@)"
+          }
+        }
+      }
+    },
+    "To collect: **%@**": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cần thu: **%@**"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รอรับคืน: **%@**"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລໍຖ້າຮັບຄືນ: **%@**"
+          }
+        }
+      }
+    },
+    "To pay back: **%@**": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cần trả: **%@**"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ต้องคืน: **%@**"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕ້ອງສົ່ງຄືນ: **%@**"
+          }
+        }
+      }
     }
   }
 }

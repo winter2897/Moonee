@@ -730,6 +730,28 @@
         }
       }
     },
+    "Debt book": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sổ nợ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สมุดหนี้"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປຶ້ມໜີ້"
+          }
+        }
+      }
+    },
     "Delete all data": {
       "localizations": {
         "lo": {

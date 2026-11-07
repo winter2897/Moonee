@@ -46,18 +46,20 @@ extension Prefs {
     static let quietEnd = "reminders.quietEnd"
     /// [String]. Jar alerts already sent ("jar.over.<jar>.<yyyy-MM>"), so each fires once a month.
     static let remindersSent = "reminders.sent"
+    /// Bool. Moonee asked iOS for full alerts once (after onboarding); later it is the Reminders screen's button.
+    static let remindersAsked = "reminders.asked"
 }
 
 /// One notification to schedule. Same-kind alerts on the same day are grouped into one (`items`).
 struct Reminder: Equatable {
     /// Raw order = priority when the daily cap drops some.
     enum Kind: Int, CaseIterable, Comparable {
-        case jarOver, payday, bill, jarWarning, debt, monthlyReport, weeklyReport, dailyLog
+        case jarOver, payday, bill, jarWarning, debt, monthlyReport, weeklyReport, debtNudge, dailyLog
 
         var minLevel: ReminderLevel {
             switch self {
             case .jarOver, .payday, .bill: .low
-            case .jarWarning, .debt, .monthlyReport, .weeklyReport: .medium
+            case .jarWarning, .debt, .monthlyReport, .weeklyReport, .debtNudge: .medium
             case .dailyLog: .high
             }
         }
@@ -80,7 +82,16 @@ struct Reminder: Equatable {
 enum ReminderPlanner {
     struct Bill { var name: String; var due: Date; var remindDaysBefore: Int }
     struct JarState { var id: String; var name: String; var level: BudgetLevel; var advice: String? = nil }
-    struct DebtDue { var person: String; var due: Date }
+    /// An open debt. With a due date: that morning (and the day before when the user owes it). Without one, or past it:
+    /// a gentle nudge every two weeks from `since` (the last lend/borrow/repay). `amount` is what is left, formatted.
+    struct DebtDue {
+        var person: String
+        var due: Date?
+        var amount = ""
+        var owedByMe = false
+        var since: Date?
+    }
+    static let debtNudgeDays = 14
     /// "Salary 40tr in yet?" on payday morning with Moonee's split (spec §4.6 moment 2).
     struct Payday { var name: String; var due: Date; var title: String; var body: String }
 
@@ -125,7 +136,24 @@ enum ReminderPlanner {
             raw.append(Reminder(kind: kind, date: now, items: [j.name], keys: [key], body: kind == .jarOver ? j.advice : nil))
         }
         for p in paydays { raw.append(Reminder(kind: .payday, date: at(p.due, settings.morning), items: [p.name], title: p.title, body: p.body)) }
-        for d in debts { raw.append(Reminder(kind: .debt, date: at(d.due, settings.morning), items: [d.person])) }
+        for d in debts {
+            let (person, amount) = (d.person, d.amount)
+            if let due = d.due.map(calendar.startOfDay), due >= today {
+                raw.append(Reminder(kind: .debt, date: at(due, settings.morning), items: [person], body: d.owedByMe
+                    ? String(localized: "Today you're due to pay \(person) back \(amount).", table: "Budget")
+                    : String(localized: "\(person) is due to pay you back \(amount) today. A gentle nudge?", table: "Budget")))
+                if d.owedByMe, let before = calendar.date(byAdding: .day, value: -1, to: due) {
+                    raw.append(Reminder(kind: .debt, date: at(before, settings.morning), items: [person],
+                                        body: String(localized: "Tomorrow you're due to pay \(person) back \(amount).", table: "Budget")))
+                }
+            } else {
+                var next = calendar.startOfDay(for: d.due ?? d.since ?? now)
+                repeat { next = calendar.date(byAdding: .day, value: debtNudgeDays, to: next)! } while next < today
+                raw.append(Reminder(kind: .debtNudge, date: at(next, settings.morning), items: [person], body: d.owedByMe
+                    ? String(localized: "You still owe \(person) \(amount). Pay it back when you can?", table: "Budget")
+                    : String(localized: "\(person) still owes you \(amount). A gentle reminder?", table: "Budget")))
+            }
+        }
         // Reports and the evening nudge, every day in the horizon.
         var day = today
         while day < end {
@@ -163,7 +191,11 @@ enum ReminderPlanner {
             return list.sorted { ($0.kind, $0.date) < ($1.kind, $1.date) }.prefix(max(cap, 0))
         }
         .sorted { ($0.date, $0.kind) < ($1.date, $1.kind) }
+        .prefix(maxPending).map { $0 }
     }
+
+    /// iOS keeps at most 64 pending local notifications per app and silently drops the rest.
+    static let maxPending = 60
 
     /// Moves a date out of quiet hours to the moment they end.
     static func outOfQuietHours(_ date: Date, _ s: Settings, _ calendar: Calendar) -> Date {
@@ -186,15 +218,19 @@ enum ReminderPlanner {
 
     static func refresh(_ context: ModelContext, now: Date = .now) async {
         let center = UNUserNotificationCenter.current()
+        center.delegate = ReminderPresenter.shared
+        let defaults = UserDefaults.standard
         var status = await center.notificationSettings().authorizationStatus
-        if status == .notDetermined {
-            // Quiet delivery to Notification Center until the user turns on full alerts (Reminder settings / onboarding).
-            _ = try? await center.requestAuthorization(options: [.alert, .sound, .badge, .provisional])
+        // Real alerts, asked once after onboarding (which has its own toggle). Provisional permission used to be asked
+        // silently at first launch: iOS then delivers quietly to Notification Center only (no banner, sound or lock screen),
+        // so a user who skipped the onboarding toggle never saw a reminder. Asking again from provisional shows the prompt.
+        if status == .notDetermined || status == .provisional, defaults.bool(forKey: Prefs.onboardingDone), !defaults.bool(forKey: Prefs.remindersAsked) {
+            defaults.set(true, forKey: Prefs.remindersAsked)
+            _ = try? await center.requestAuthorization(options: [.alert, .sound, .badge])
             status = await center.notificationSettings().authorizationStatus
         }
         guard status == .authorized || status == .provisional || status == .ephemeral else { return }
 
-        let defaults = UserDefaults.standard
         var settings = ReminderPlanner.Settings(level: ReminderLevel.current)
         if defaults.object(forKey: Prefs.quietStart) != nil {
             settings.quietStart = defaults.integer(forKey: Prefs.quietStart)
@@ -219,8 +255,9 @@ enum ReminderPlanner {
             return ReminderPlanner.JarState(id: j.key ?? j.name, name: j.name, level: BudgetLevel(balance: m.endBalance, spent: m.spent, budget: m.budget))
         }
         let debts = ((try? context.fetch(FetchDescriptor<Debt>())) ?? []).compactMap { d -> ReminderPlanner.DebtDue? in
-            guard let due = d.dueDate, (ledger.debtRemaining[d.persistentModelID] ?? 0) > 0 else { return nil }
-            return .init(person: d.person, due: due)
+            guard let left = ledger.debtRemaining[d.persistentModelID], left > 0 else { return nil }
+            return .init(person: d.person, due: d.dueDate, amount: Money(left, d.currencyCode).formatted(), owedByMe: d.direction == .borrowed,
+                         since: (d.txns ?? []).map(\.date).max() ?? d.createdAt)
         }
 
         // Moonee's advice (spec §4.6): how to fix a jar, and the payday plan.
@@ -275,12 +312,38 @@ enum ReminderPlanner {
         case .jarOver: (loc("A jar went over"), String(localized: "\(names) went past this month's budget. Moonee can help you move money from another jar.", table: "Budget"))
         case .jarWarning: (loc("Heads up: 80% used"), String(localized: "\(names) has used 80% of this month's budget. Go easy for a bit!", table: "Budget"))
         case .bill: (loc("Bill reminder"), String(localized: "\(names) is due soon. Tap Mark paid in Budget once it's done.", table: "Budget"))
-        case .debt: (loc("Debt due today"), String(localized: "Today is the due date with \(names).", table: "Budget"))
+        case .debt: (loc("Debt due"), String(localized: "Debts due soon with \(names). Open the debt book in Budget.", table: "Budget"))
+        case .debtNudge: (loc("Debt book"), String(localized: "Still open in your debt book: \(names).", table: "Budget"))
         case .weeklyReport: (loc("Your week with Moonee"), loc("Your weekly report is ready. Take a quick look?"))
         case .monthlyReport: (loc("New month, fresh jars"), loc("Last month's report is ready. See how your jars did!"))
         case .dailyLog: (loc("Anything to log today?"), loc("Tell Moonee what you spent today, it takes a few seconds."))
         }
     }
+}
+
+/// iOS shows nothing for a notification that fires while the app is open unless a delegate asks for it:
+/// a jar alert (5 s after the save that caused it) was lost, and marked sent.
+final class ReminderPresenter: NSObject, UNUserNotificationCenterDelegate, @unchecked Sendable {
+    static let shared = ReminderPresenter()
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
+        [.banner, .list, .sound]
+    }
+
+    #if DEBUG
+    /// Reminder settings' debug row: one notification in 5 s, through the same path as the real ones.
+    @MainActor static func sendTest() async {
+        let center = UNUserNotificationCenter.current()
+        center.delegate = shared
+        _ = try? await center.requestAuthorization(options: [.alert, .sound, .badge])
+        let content = UNMutableNotificationContent()
+        (content.title, content.body) = Reminders.text(Reminder(kind: .debtNudge, date: .now, items: ["Nam"]))
+        content.sound = .default
+        // Not "moonee.…": a refresh in the next 5 s would remove it.
+        try? await center.add(UNNotificationRequest(identifier: "debug.test", content: content,
+                                                    trigger: UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)))
+    }
+    #endif
 }
 
 extension View {

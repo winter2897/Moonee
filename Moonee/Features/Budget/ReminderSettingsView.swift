@@ -53,6 +53,18 @@ struct ReminderSettingsView: View {
             } footer: {
                 Text(loc("Reminders that fall in quiet hours wait until they end."))
             }
+
+            #if DEBUG
+            Section {
+                Button {
+                    Task { await ReminderPresenter.sendTest(); await load() }
+                } label: {
+                    Label { Text(verbatim: "Send a test reminder in 5 s") } icon: { Image(systemName: "bell.and.waves.left.and.right") }
+                }
+            } footer: {
+                Text(verbatim: "Debug only. Shows as a banner even with the app open.")
+            }
+            #endif
         }
         .scrollContentBackground(.hidden)
         .background(MooneeBackground())

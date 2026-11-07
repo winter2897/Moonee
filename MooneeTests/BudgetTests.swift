@@ -181,6 +181,42 @@ import Testing
         #expect(P.outOfQuietHours(at(11, 5, 12), P.Settings(), cal) == at(11, 5, 12))
     }
 
+    @Test func freshUserAtMediumGetsReminders() {
+        // Right after onboarding: a rent bill and a payday, nothing logged, no jar in trouble, no debts.
+        let now = at(11, 25, 10)
+        let plan = P.plan(bills: [.init(name: "Rent", due: at(12, 5), remindDaysBefore: 3)],
+                          paydays: [.init(name: "Salary", due: at(11, 30), title: "Salary in yet?", body: "Tap Received.")],
+                          settings: .init(level: .medium), now: now, calendar: cal)
+        #expect(plan.allSatisfy { $0.date >= now && $0.date < at(12, 9, 0) })
+        #expect(plan.contains { $0.kind == .weeklyReport && $0.date == at(11, 29, 19) })   // Sunday evening
+        #expect(plan.contains { $0.kind == .payday && $0.date == at(11, 30, 9) })
+        #expect(plan.contains { $0.kind == .monthlyReport && $0.date == at(12, 1, 9) })   // month end → new month
+        #expect(plan.filter { $0.kind == .bill }.map(\.date) == [at(12, 2, 9), at(12, 5, 9)])
+        #expect(!plan.contains { $0.kind == .dailyLog }) // the evening nudge is "High" (spec §3.4)
+        #expect(plan.count <= P.maxPending)
+        // Even with no bills at all, the first weekly report is at most a week away.
+        #expect(P.plan(settings: .init(level: .medium), now: now, calendar: cal).first?.date == at(11, 29, 19))
+    }
+
+    @Test func debtReminders() {
+        let plan = P.plan(debts: [.init(person: "Nam", due: at(11, 10), amount: "300k"),                 // lent: on the day
+                                  .init(person: "Lan", due: at(11, 12), amount: "2tr", owedByMe: true),  // owed: day before too
+                                  .init(person: "Hùng", due: nil, amount: "500k", since: at(10, 30))], // no date: every 2 weeks
+                          settings: .init(level: .medium), now: at(11, 5, 10), calendar: cal)
+        let debts = plan.filter { $0.kind == .debt || $0.kind == .debtNudge }
+        #expect(debts.map(\.date) == [at(11, 10, 9), at(11, 11, 9), at(11, 12, 9), at(11, 13, 9)])
+        #expect(debts.map(\.items) == [["Nam"], ["Lan"], ["Lan"], ["Hùng"]])
+        #expect(debts.last?.kind == .debtNudge)
+        #expect(debts[0].body?.contains("300k") == true)
+        #expect(debts[1].body?.contains("Tomorrow") == true)
+        // Past its due date: the nudge goes on every two weeks from that day. Low level: no debt reminders.
+        let overdue = P.plan(debts: [.init(person: "Nam", due: at(10, 25), amount: "300k")], settings: .init(level: .medium),
+                             now: at(11, 5, 10), calendar: cal)
+        #expect(overdue.first { $0.kind == .debtNudge }?.date == at(11, 8, 9))
+        #expect(!P.plan(debts: [.init(person: "Nam", due: at(11, 10))], settings: .init(level: .low), now: at(11, 5), calendar: cal)
+            .contains { $0.kind == .debt })
+    }
+
     @Test func jarAlertsFireOncePerMonth() {
         let jars = [P.JarState(id: "a", name: "Play", level: .warning)]
         let sent: Set<String> = ["jar.warn.a.2026-11"]

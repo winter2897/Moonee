@@ -1,0 +1,842 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "%@ pays back %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ trả %2$@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ คืนเงิน %2$@"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ ສົ່ງເງິນຄືນ %2$@"
+          }
+        }
+      }
+    },
+    "Add to Calendar": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm vào Lịch"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เพิ่มในปฏิทิน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເພີ່ມໃສ່ປະຕິທິນ"
+          }
+        }
+      }
+    },
+    "Amount": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Số tiền"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "จำนวนเงิน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຈຳນວນເງິນ"
+          }
+        }
+      }
+    },
+    "Borrowed in total": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tổng đã vay"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยืมทั้งหมด"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຢືມທັງໝົດ"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Huỷ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยกเลิก"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍົກເລີກ"
+          }
+        }
+      }
+    },
+    "Close without payment": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đóng, không ghi tiền trả"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปิดโดยไม่บันทึกการคืนเงิน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປິດໂດຍບໍ່ບັນທຶກການສົ່ງຄືນ"
+          }
+        }
+      }
+    },
+    "Closed without full repayment.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã đóng khi chưa trả đủ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปิดแล้วโดยยังไม่ได้คืนครบ"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປິດແລ້ວໂດຍຍັງບໍ່ໄດ້ສົ່ງຄືນຄົບ."
+          }
+        }
+      }
+    },
+    "Date": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngày"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "วันที่"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ວັນທີ"
+          }
+        }
+      }
+    },
+    "Debt book": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sổ nợ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สมุดหนี้"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປຶ້ມໜີ້"
+          }
+        }
+      }
+    },
+    "Due %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hạn %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ครบกำหนด %@"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄົບກຳນົດ %@"
+          }
+        }
+      }
+    },
+    "Due date": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hạn trả"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "วันครบกำหนด"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ວັນຄົບກຳນົດ"
+          }
+        }
+      }
+    },
+    "From wallet": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Từ ví"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "จากกระเป๋า"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຈາກກະເປົາ"
+          }
+        }
+      }
+    },
+    "History": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lịch sử"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ประวัติ"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປະຫວັດ"
+          }
+        }
+      }
+    },
+    "Into wallet": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vào ví"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เข้ากระเป๋า"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຂົ້າກະເປົາ"
+          }
+        }
+      }
+    },
+    "Left after this: %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Còn lại sau lần này: %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คงเหลือหลังจากนี้: %@"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຫຼືອຫຼັງຈາກນີ້: %@"
+          }
+        }
+      }
+    },
+    "Lent in total": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tổng đã cho mượn"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ให้ยืมทั้งหมด"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃຫ້ຢືມທັງໝົດ"
+          }
+        }
+      }
+    },
+    "Mark settled": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đánh dấu đã xong"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ทำเครื่องหมายว่าเคลียร์แล้ว"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໝາຍວ່າສະສາງແລ້ວ"
+          }
+        }
+      }
+    },
+    "Moonee reminds you on the due day.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee sẽ nhắc bạn vào ngày tới hạn."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee จะเตือนคุณในวันครบกำหนด"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ຈະເຕືອນທ່ານໃນມື້ຄົບກຳນົດ."
+          }
+        }
+      }
+    },
+    "No debts yet": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa có khoản nợ nào"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยังไม่มีหนี้"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍັງບໍ່ມີໜີ້"
+          }
+        }
+      }
+    },
+    "No due date": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không thời hạn"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มีกำหนด"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ມີກຳນົດ"
+          }
+        }
+      }
+    },
+    "No due date: Moonee checks in every couple of weeks.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không thời hạn: cứ hai tuần Moonee nhắc nhẹ một lần."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มีกำหนด: Moonee จะเตือนเบาๆ ทุกสองสัปดาห์"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ມີກຳນົດ: Moonee ຈະເຕືອນເບົາໆທຸກສອງອາທິດ."
+          }
+        }
+      }
+    },
+    "No open debts": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có khoản nợ nào"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มีหนี้ค้าง"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ມີໜີ້ຄ້າງ"
+          }
+        }
+      }
+    },
+    "Overdue · %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quá hạn · %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เลยกำหนด · %@"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກາຍກຳນົດ · %@"
+          }
+        }
+      }
+    },
+    "Paid back in full (%@)": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã trả đủ (%@)"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คืนครบแล้ว (%@)"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສົ່ງຄືນຄົບແລ້ວ (%@)"
+          }
+        }
+      }
+    },
+    "Paid back records the money in your wallet. Closing without payment just ends the debt.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã trả đủ sẽ ghi tiền vào ví. Đóng không ghi tiền chỉ kết thúc khoản nợ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คืนครบแล้วจะบันทึกเงินในกระเป๋า ปิดโดยไม่บันทึกการคืนเงินจะแค่จบหนี้นี้"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສົ່ງຄືນຄົບແລ້ວຈະບັນທຶກເງິນໃນກະເປົາ. ປິດໂດຍບໍ່ບັນທຶກແມ່ນພຽງແຕ່ຈົບໜີ້ນີ້."
+          }
+        }
+      }
+    },
+    "Pay %@ back %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trả %1$@ %2$@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คืนเงิน %1$@ %2$@"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສົ່ງເງິນຄືນ %1$@ %2$@"
+          }
+        }
+      }
+    },
+    "Pay back by": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trả trước ngày"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คืนภายใน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສົ່ງຄືນພາຍໃນ"
+          }
+        }
+      }
+    },
+    "Record a repayment": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ghi nhận trả"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บันทึกการคืนเงิน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບັນທຶກການສົ່ງຄືນ"
+          }
+        }
+      }
+    },
+    "Reopen": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mở lại"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เปิดอีกครั้ง"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເປີດຄືນ"
+          }
+        }
+      }
+    },
+    "Save": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lưu"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บันทึก"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບັນທຶກ"
+          }
+        }
+      }
+    },
+    "Settled": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã xong"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เคลียร์แล้ว"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສະສາງແລ້ວ"
+          }
+        }
+      }
+    },
+    "Settled (%lld)": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã xong (%lld)"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เคลียร์แล้ว (%lld)"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສະສາງແລ້ວ (%lld)"
+          }
+        }
+      }
+    },
+    "Still owes you": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Còn nợ bạn"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยังติดเงินคุณ"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍັງຕິດໜີ້ທ່ານ"
+          }
+        }
+      }
+    },
+    "Tell Moonee “lent Nam 500k” or “borrowed 2tr from Lan” and it shows up here, with a reminder when it's due.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhắn Moonee “cho Nam mượn 500k” hay “Lan cho mình vay 2tr” là khoản nợ hiện ở đây, kèm nhắc nhở khi tới hạn."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บอก Moonee ว่า “ให้นัมยืม 500k” หรือ “ยืมลาน 2tr” แล้วจะแสดงที่นี่ พร้อมเตือนเมื่อครบกำหนด"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບອກ Moonee ວ່າ “ໃຫ້ນາມຢືມ 500k” ຫຼື “ຢືມລານ 2tr” ແລ້ວຈະສະແດງຢູ່ນີ້ ພ້ອມເຕືອນເມື່ອຄົບກຳນົດ."
+          }
+        }
+      }
+    },
+    "Total %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tổng %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รวม %@"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລວມ %@"
+          }
+        }
+      }
+    },
+    "You still owe": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn còn nợ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คุณยังติดเงิน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທ່ານຍັງຕິດໜີ້"
+          }
+        }
+      }
+    },
+    "To collect": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cần thu"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รอรับคืน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລໍຖ້າຮັບຄືນ"
+          }
+        }
+      }
+    },
+    "To pay back": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cần trả"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ต้องคืน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕ້ອງສົ່ງຄືນ"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

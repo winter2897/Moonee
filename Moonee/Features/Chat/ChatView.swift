@@ -33,6 +33,9 @@ struct ChatView: View {
     @State private var attachments: [ChatAttachment] = []
     @State private var savedCount = 0
     @State private var showReport = false
+    /// "Pick a date…" under "When will Nam pay you back?".
+    @State private var pickingDue = false
+    @State private var dueDay = Calendar.current.date(byAdding: .day, value: 7, to: .now)!
 
     var body: some View {
         VStack(spacing: 0) {
@@ -118,6 +121,7 @@ struct ChatView: View {
         .sheet(isPresented: $showAISettings) { NavigationStack { AISettingsView() } }
         .sheet(item: $editTxn) { TxnEditForm(txn: $0) }
         .sheet(isPresented: $showReport) { ReportSheet() }
+        .sheet(isPresented: $pickingDue) { duePicker }
         .sensoryFeedback(.success, trigger: savedCount)
     }
 
@@ -233,16 +237,26 @@ struct ChatView: View {
     private var choices: [String] {
         guard let p = pending else { return [] }
         let book = ChatBook.Lookup(context)
-        return book.unresolved(p).map { book.choices($0, for: p) } ?? []
+        return book.asking(p).map { book.choices($0, for: p) } ?? []
     }
 
     private var choiceChips: some View {
-        let chips = ForEach(choices, id: \.self) { name in QuickReplyChip(title: name) { send(name) } }
+        let chips = ForEach(choices, id: \.self) { chip($0) }
+        let rows = stride(from: 0, to: choices.count, by: 2).map { Array(choices[$0..<min($0 + 2, choices.count)]) }
         return ViewThatFits(in: .horizontal) {
             HStack(spacing: 8) { chips }
+            VStack(alignment: .leading, spacing: 8) { // two a row ("This weekend · End of month")
+                ForEach(rows, id: \.self) { row in HStack(spacing: 8) { ForEach(row, id: \.self) { chip($0) } } }
+            }
             VStack(alignment: .leading, spacing: 8) { chips }
         }
         .padding(.leading, 48)
+    }
+
+    private func chip(_ name: String) -> some View {
+        QuickReplyChip(title: name, symbol: name == DebtBook.pickDateTitle ? "calendar" : nil) {
+            if name == DebtBook.pickDateTitle { pickingDue = true } else { send(name) }
+        }
     }
 
     private var tiles: some View {
@@ -274,11 +288,11 @@ struct ChatView: View {
 
         // An answer to Moonee's question ("45k", "Vietcombank") fills the waiting transaction;
         // an amount only counts when the message is not a new transaction of its own.
-        if var p = pending, let field = ChatBook.Lookup(context).unresolved(p),
+        if var p = pending, let field = ChatBook.Lookup(context).asking(p),
            field != .amount || QuickParser.parse(input, context: parser).count <= 1,
            ChatBook.fill(&p, field, from: input, context: parser) {
             pending = nil
-            record([p], source: source, raw: input)
+            if field == .dueDate { saveDue(p) } else { record([p], source: source, raw: input) }
             return
         }
         pending = nil
@@ -305,7 +319,7 @@ struct ChatView: View {
     private func record(_ parsed: [ParsedTxn], source: TxSource, raw: String) {
         let saved = ChatBook.save(parsed, source: source, rawInput: raw, in: context)
         if !saved.isEmpty {
-            let m = ChatMessage(fromUser: false, text: ChatLines.saved(saved))
+            let m = ChatMessage(fromUser: false, text: [ChatLines.saved(saved), ChatBook.debtLeft(saved, in: context)].compactMap { $0 }.joined(separator: " "))
             post(m)
             m.txns = saved
             mood = .happy
@@ -320,10 +334,40 @@ struct ChatView: View {
                 pending = ask
                 reply(ChatLines.question(field, ask), mood: .confused)
             }
+        } else if let ask = ChatBook.dueQuestion(saved) { // a new loan: when is it due back? (spec §4.5)
+            pending = ask
+            reply(ChatLines.question(.dueDate, ask), mood: .happy)
         } else if saved.isEmpty {
             reply(ChatLines.confused(), mood: .confused)
         }
         try? context.save()
+    }
+
+    private func saveDue(_ p: ParsedTxn) {
+        ChatBook.setDue(p, in: context)
+        reply(ChatLines.dueSaved(p), mood: .happy)
+    }
+
+    private var duePicker: some View {
+        NavigationStack {
+            DatePicker(String(localized: "Due date", table: "Chat"), selection: $dueDay, in: Calendar.current.startOfDay(for: .now)..., displayedComponents: .date)
+                .datePickerStyle(.graphical)
+                .padding()
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button(String(localized: "Done", table: "Chat")) {
+                            pickingDue = false
+                            guard var p = pending else { return }
+                            pending = nil
+                            p.dueDate = Calendar.current.startOfDay(for: dueDay)
+                            post(ChatMessage(fromUser: true, text: dueDay.formatted(.dateTime.day().month(.defaultDigits).year())))
+                            saveDue(p)
+                        }
+                    }
+                }
+        }
+        .presentationDetents([.medium, .large])
     }
 
     private func reply(_ text: String, mood: MooneeMood, sources: [WebSource] = []) {

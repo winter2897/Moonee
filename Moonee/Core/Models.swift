@@ -344,6 +344,9 @@ private func displayName(key: String?, customName: String?) -> String {
     var dueDate: Date?
     var note: String = ""
     var createdAt: Date = Date.now
+    /// Closed by hand with money still owed (forgiven, called even): drops out of the open list, reminders and net worth.
+    /// A debt repaid in full is settled without it.
+    var settledAt: Date?
     @Relationship(deleteRule: .nullify, inverse: \Txn.debt) var txns: [Txn]? = []
 
     init(person: String, direction: DebtDirection, currencyCode: String = Money.defaultCurrency, dueDate: Date? = nil) {
@@ -467,6 +470,7 @@ extension Ledger where ID == PersistentIdentifier {
                   walletOpening: Dictionary(uniqueKeysWithValues: wallets.map { ($0.persistentModelID, $0.initialBalance) }),
                   offBudget: Set(wallets.filter { !$0.inBudget }.map(\.persistentModelID)),
                   jarOpening: Dictionary(uniqueKeysWithValues: jars.map { ($0.persistentModelID, $0.initialBalance) }),
-                  debtDirections: Dictionary(txns.compactMap { $0.debt.map { ($0.persistentModelID, $0.direction) } }, uniquingKeysWith: { a, _ in a }))
+                  debtDirections: Dictionary(txns.compactMap { $0.debt.map { ($0.persistentModelID, $0.direction) } }, uniquingKeysWith: { a, _ in a }),
+                  settledDebts: Set(txns.compactMap { t in t.debt.flatMap { $0.settledAt == nil ? nil : $0.persistentModelID } }))
     }
 }

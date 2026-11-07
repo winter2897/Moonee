@@ -10,10 +10,22 @@ protocol LedgerReading: Sendable {
     func transactions(in interval: DateInterval) async throws -> [LedgerTxn]
     /// This month's Budget tab numbers (`BudgetFacts`), or nil when the books can't give them.
     func budget() async throws -> BudgetFacts?
+    /// Open debts in the debt book (spec §4.5).
+    func debts() async throws -> [LedgerDebt]
 }
 
 extension LedgerReading {
     func budget() async throws -> BudgetFacts? { nil }
+    func debts() async throws -> [LedgerDebt] { [] }
+}
+
+struct LedgerDebt: Sendable, Equatable {
+    var person: String
+    /// lent: they owe the user. Else the user owes them.
+    var theyOweMe: Bool
+    /// Still owed, minor units.
+    var remaining: Int
+    var dueDate: Date?
 }
 
 struct LedgerJar: Sendable, Equatable {
