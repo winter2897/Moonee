@@ -1,7 +1,7 @@
 import Foundation
 
-/// The Overview spending calendar (GitHub-contribution style): one month's expense total per day and a 0–4 heat level.
-/// Pure over the fetched txns, so it is unit-tested; `SpendingCalendarCard` only renders it.
+/// The spending calendar (ledger Calendar mode, Overview card) (GitHub-contribution style): one month's expense total per day and a 0–4 heat level.
+/// Pure over the fetched txns, so it is unit-tested; `SpendingHeatmap` only renders it.
 struct SpendingCalendar {
     struct Day: Identifiable {
         let date: Date
