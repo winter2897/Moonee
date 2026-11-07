@@ -31,7 +31,7 @@ struct CashFlow: Equatable {
 
 /// The span the ledger shows (spec §2): this month by default, ‹ › or a swipe steps by its unit.
 /// Pure, with the period's aggregations (wallet opening → closing, groups, upcoming bills), so it is unit-tested.
-struct TxnPeriod: Equatable {
+struct TxnPeriod: Hashable {
     enum Unit: String, CaseIterable, Identifiable {
         case week, month, year, all, custom
         var id: String { rawValue }

@@ -222,11 +222,12 @@ struct QuickReplyChip: View {
 
 /// Shrinks a little while pressed (disabled with Reduce Motion: dims instead).
 struct PressScaleStyle: ButtonStyle {
+    var scale = 0.95
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .scaleEffect(configuration.isPressed && !reduceMotion ? 0.95 : 1)
+            .scaleEffect(configuration.isPressed && !reduceMotion ? scale : 1)
             .opacity(configuration.isPressed && reduceMotion ? 0.7 : 1)
             .animation(.snappy(duration: 0.15), value: configuration.isPressed)
     }

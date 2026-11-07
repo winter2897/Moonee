@@ -32,17 +32,19 @@ struct TransactionLedgerView: View {
     private let openIn: Mode?
     private let cal = Calendar.current
 
-    /// `mode` opens in that mode (and remembers it); `day` opens Calendar on that day.
-    init(mode: Mode? = nil, day: Date? = nil) {
+    /// `mode` opens in that mode (and remembers it); `day` opens Calendar on that day; `period` (else this month),
+    /// `kind` and `category` start the ledger there (Overview cards drill in this way).
+    init(mode: Mode? = nil, day: Date? = nil, period: TxnPeriod? = nil, kind: TxnFilter.Kind? = nil, category: Category? = nil) {
         openIn = day == nil ? mode : .calendar
         var month = day ?? .now
         #if DEBUG
         // Screenshots: `-ledgerBack 1` opens on last month.
         let back = UserDefaults.standard.integer(forKey: "ledgerBack")
-        if day == nil, back > 0 { month = Calendar.current.date(byAdding: .month, value: -back, to: .now)! }
+        if day == nil, period == nil, back > 0 { month = Calendar.current.date(byAdding: .month, value: -back, to: .now)! }
         #endif
-        _period = State(initialValue: .current(.month, now: month))
+        _period = State(initialValue: period ?? .current(.month, now: month))
         _day = State(initialValue: day)
+        _filter = State(initialValue: TxnFilter(category: category, kind: kind))
     }
 
     var body: some View {
@@ -296,9 +298,10 @@ struct TransactionLedgerView: View {
         }
     }
 
-    /// Bills, salary and other recurring items due in the next 1 / 3 / 12 months, while the period includes today.
+    /// Bills, salary and other recurring items due in the next 1 / 3 / 12 months, while the period includes today
+    /// and no filter is on (they don't follow the filters, so "Food" would still list the rent).
     @ViewBuilder private var upcomingSection: some View {
-        if period.contains(.now), !recurrings.isEmpty {
+        if period.contains(.now), !recurrings.isEmpty, !filter.isActive {
             let items = TxnPeriod.upcoming(recurrings, txns: txns, months: upcomingMonths)
             Section {
                 ForEach(items) { u in

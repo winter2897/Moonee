@@ -87,13 +87,16 @@ enum NetWorthHistory {
     }
 
     /// The chart: the last `months` months, then this month at the live total. A past month uses its snapshot,
-    /// or without one `estimate(end of month)`. Months before `since` (the first transaction) are left out.
+    /// or without one `estimate(end of month)` (the ledger replayed to that day + today's asset values).
+    /// It starts one month before the first data (`since` = first transaction, or the first snapshot): that month is
+    /// the "before Moonee" baseline, so even a brand-new user has two points and sees the trend.
     static func points(_ snapshots: [(month: Date, total: Int)], current: Int, since: Date?, estimate: (Date) -> Int,
                        now: Date = .now, months: Int = 6, calendar: Calendar = .current) -> [Point] {
         let start = { (d: Date) in calendar.dateInterval(of: .month, for: d)!.start }
         let thisMonth = start(now)
         let stored = Dictionary(snapshots.map { (start($0.month), $0.total) }, uniquingKeysWith: { a, _ in a })
-        let first = ([since].compactMap { $0 } + stored.keys).min().map(start) ?? thisMonth
+        let firstData = ([since].compactMap { $0 } + stored.keys).min().map(start) ?? thisMonth
+        let first = calendar.date(byAdding: .month, value: -1, to: firstData)!
         let past = (1..<max(months, 1)).reversed().compactMap { back -> Point? in
             let m = calendar.date(byAdding: .month, value: -back, to: thisMonth)!
             guard m >= first else { return nil }
@@ -102,9 +105,10 @@ enum NetWorthHistory {
         return past + [Point(month: thisMonth, total: current)]
     }
 
-    /// Change over the points shown: last minus first. nil with fewer than two points (new user).
+    /// Change vs the previous month: the last point minus the one before it. nil with a single point.
     static func change(_ points: [Point]) -> (amount: Int, percent: Double?)? {
-        guard let first = points.first, let last = points.last, points.count > 1 else { return nil }
+        guard points.count > 1, let last = points.last else { return nil }
+        let first = points[points.count - 2]
         let amount = last.total - first.total
         return (amount, first.total == 0 ? nil : Double(amount) / Double(abs(first.total)))
     }
