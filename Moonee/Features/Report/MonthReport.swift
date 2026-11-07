@@ -31,6 +31,10 @@ struct MonthReport {
     let income: Int
     let spent: Int
     let previousSpent: Int
+    /// Money in / out marked "Don't count in reports" (balance adjustments, money paid back): the "Not counted" line,
+    /// so nothing disappears from the month.
+    let excludedIn: Int
+    let excludedOut: Int
     /// Spending by the jar each expense was pinned to; expenses with no jar are one "No jar" slice. Biggest first.
     let byJar: [Slice]
     /// Spending by category with the previous month's total, biggest first.
@@ -43,7 +47,7 @@ struct MonthReport {
     let jars: [JarRow]
 
     var saved: Int { income - spent }
-    var isEmpty: Bool { income == 0 && spent == 0 }
+    var isEmpty: Bool { income == 0 && spent == 0 && excludedIn == 0 && excludedOut == 0 }
     /// Percent change of spending vs the previous month; nil when that month had none.
     var change: Int? { previousSpent > 0 ? Int((Double(spent - previousSpent) * 100 / Double(previousSpent)).rounded()) : nil }
     var savingsRate: Int? { income > 0 ? Int((Double(saved) * 100 / Double(income)).rounded()) : nil }
@@ -52,13 +56,14 @@ struct MonthReport {
         let m = calendar.dateInterval(of: .month, for: anchor)!
         let prev = calendar.dateInterval(of: .month, for: m.start.addingTimeInterval(-1))!
         month = m
-        func expenses(_ i: DateInterval) -> [Txn] { txns.filter { $0.kind == .expense && $0.date >= i.start && $0.date < i.end } }
+        func expenses(_ i: DateInterval) -> [Txn] { txns.filter { $0.isSpending && $0.date >= i.start && $0.date < i.end } }
         let now = expenses(m), before = expenses(prev)
         // The same function as the ledger's totals card and the Overview, so the numbers always match.
         let flow = CashFlow(txns, in: m)
         spent = flow.expense
         previousSpent = CashFlow(txns, in: prev).expense
         income = flow.income
+        (excludedIn, excludedOut) = (flow.excludedIn, flow.excludedOut)
 
         byJar = Dictionary(grouping: now) { $0.jar?.persistentModelID }.map { id, list in
             let jar = list.first?.jar

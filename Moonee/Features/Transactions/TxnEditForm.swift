@@ -22,6 +22,8 @@ struct TxnEditForm: View {
     /// income: major units per jar; `splitEdited` once the user touched it (else a new amount rescales the old split).
     @State private var split: [PersistentIdentifier: Decimal] = [:]
     @State private var splitEdited = false
+    /// "Don't count in reports" (P1-2).
+    @State private var excluded = false
 
     private var hasCategory: Bool { txn.kind == .expense || txn.kind == .income }
     /// A transfer must land in another wallet, or the money goes nowhere.
@@ -52,10 +54,10 @@ struct TxnEditForm: View {
                         Picker(selection: $category) {
                             // Every spend belongs to a jar through its category (P0-2): an expense can't drop it.
                             if txn.kind != .expense || txn.category == nil { Text("None", tableName: "Transactions").tag(Category?.none) }
-                            ForEach(categories.filter { $0.kind == txn.kind }) { Label($0.name, systemImage: $0.icon).tag(Optional($0)) }
+                            ForEach(categories.filter { $0.kind == txn.kind || $0 == txn.category }) { Label($0.name, systemImage: $0.icon).tag(Optional($0)) }
                         } label: { Text("Category", tableName: "Transactions") }
                     }
-                    if txn.kind == .expense {
+                    if txn.kind == .expense && !excluded {
                         LabeledContent { Text((category == txn.category ? txn.jar : category?.jar)?.name ?? "—") } label: {
                             Text("Jar", tableName: "Transactions")
                         }
@@ -75,7 +77,16 @@ struct TxnEditForm: View {
                 } footer: {
                     if hasCategory { Text("Moonee remembers your category for next time.", tableName: "Transactions") }
                 }
-                if txn.kind == .income { splitSection }
+                if txn.kind == .income && !excluded { splitSection }
+                if hasCategory {
+                    Section {
+                        Toggle(isOn: $excluded) { Text("Don't count in reports", tableName: "Transactions") }
+                    } header: {
+                        Text("Advanced", tableName: "Transactions")
+                    } footer: {
+                        Text("It still changes the wallet's balance, but never counts in income, spending, jars or reports. For money someone pays you back.", tableName: "Transactions")
+                    }
+                }
                 Section {
                     Button(role: .destructive) { confirmDelete = true } label: { Text("Delete transaction", tableName: "Transactions") }
                 }
@@ -102,6 +113,7 @@ struct TxnEditForm: View {
                 category = txn.category
                 wallet = txn.wallet
                 toWallet = txn.toWallet
+                excluded = txn.excludedFromReport
                 for s in txn.splits ?? [] {
                     if let j = s.jar { split[j.persistentModelID, default: 0] += Money(s.amount, txn.currencyCode).major }
                 }
@@ -138,7 +150,8 @@ struct TxnEditForm: View {
 
     private func save() {
         TxnEdit.apply(to: txn, amount: amountMinor, date: date, note: note, category: category, wallet: wallet, toWallet: toWallet,
-                      splits: txn.kind == .income && splitEdited ? splitMinor : nil, in: context)
+                      splits: txn.kind == .income && splitEdited && !excluded ? splitMinor : nil,
+                      excluded: hasCategory ? excluded : nil, in: context)
         try? context.save()
         dismiss()
     }
@@ -147,8 +160,10 @@ struct TxnEditForm: View {
 /// The writes behind `TxnEditForm`, kept apart so they are testable.
 @MainActor enum TxnEdit {
     /// `splits`: an income's new split per jar (what no jar gets waits in Unallocated); nil keeps it, rescaled to a new amount.
+    /// `excluded`: "Don't count in reports" (nil keeps it). An excluded expense has no jar; counted again, it goes back to its
+    /// category's jar. An excluded income keeps its split on record, but `Ledger` ignores it while excluded.
     static func apply(to txn: Txn, amount: Int, date: Date, note: String, category: Category?, wallet: Wallet?, toWallet: Wallet?,
-                      splits newSplits: [Jar: Int]? = nil, in context: ModelContext) {
+                      splits newSplits: [Jar: Int]? = nil, excluded: Bool? = nil, in context: ModelContext) {
         if txn.kind == .income, let newSplits {
             (txn.splits ?? []).forEach(context.delete)
             txn.splits = []
@@ -167,6 +182,11 @@ struct TxnEditForm: View {
         if txn.kind == .expense || txn.kind == .income { setCategory(category, of: txn, in: context) } // after the note: the rule learns it
         if txn.kind != .jarTransfer { txn.wallet = wallet }
         if txn.kind == .transfer { txn.toWallet = toWallet }
+        if let excluded, txn.kind == .expense || txn.kind == .income {
+            if !excluded, txn.excludedFromReport, txn.kind == .expense { txn.jar = txn.category?.jar }
+            txn.excludedFromReport = excluded
+        }
+        if txn.excludedFromReport, txn.kind == .expense { txn.jar = nil } // never in a jar (P1-2)
     }
 
     /// A category correction: re-pin this expense's jar and remember note → category for the next parse (spec §3.2).

@@ -6134,6 +6134,182 @@
           }
         }
       }
+    },
+    "Moonee's debt": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໜີ້ຕາມ Moonee"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "หนี้ตาม Moonee"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dư nợ theo Moonee"
+          }
+        }
+      }
+    },
+    "Moonee's balance": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍອດເງິນຕາມ Moonee"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยอดเงินตาม Moonee"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Số dư theo Moonee"
+          }
+        }
+      }
+    },
+    "Real debt now": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໜີ້ແທ້ຕອນນີ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "หนี้จริงตอนนี้"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dư nợ thực tế"
+          }
+        }
+      }
+    },
+    "Real balance now": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍອດເງິນແທ້ຕອນນີ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยอดเงินจริงตอนนี้"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Số dư thực tế"
+          }
+        }
+      }
+    },
+    "Difference": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສ່ວນຕ່າງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ส่วนต่าง"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chênh lệch"
+          }
+        }
+      }
+    },
+    "Moonee records the difference as one “Balance adjustment”: it changes this wallet only and isn't counted as income or spending.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ຈະບັນທຶກສ່ວນຕ່າງເປັນ “ປັບຍອດເງິນ” ໜຶ່ງລາຍການ: ປ່ຽນແຕ່ຍອດຂອງກະເປົາເງິນນີ້ ແລະ ບໍ່ນັບເປັນລາຍຮັບ ຫຼື ລາຍຈ່າຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee จะบันทึกส่วนต่างเป็น “ปรับยอดเงิน” หนึ่งรายการ: เปลี่ยนแค่ยอดของกระเป๋าเงินนี้ และไม่นับเป็นรายรับหรือรายจ่าย"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ghi phần chênh thành một khoản “Điều chỉnh số dư”: chỉ đổi số dư ví này, không tính vào thu hay chi."
+          }
+        }
+      }
+    },
+    "The extra money goes to Unallocated, like any money coming in.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເງິນທີ່ເກີນຈະໄປຢູ່ທີ່ ຍັງບໍ່ໄດ້ແບ່ງໃສ່ກະປຸກ ຄືກັບເງິນເຂົ້າທຸກຄັ້ງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เงินที่เกินจะไปอยู่ที่ ยังไม่แบ่งลงกระปุก เหมือนเงินเข้าทุกครั้ง"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phần dư vào mục Chưa chia vào lọ, như mọi khoản tiền vào."
+          }
+        }
+      }
+    },
+    "The missing money comes out of Unallocated.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເງິນທີ່ຂາດຈະຫັກຈາກ ຍັງບໍ່ໄດ້ແບ່ງໃສ່ກະປຸກ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เงินที่ขาดจะหักจาก ยังไม่แบ่งลงกระปุก"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phần thiếu được trừ vào mục Chưa chia vào lọ."
+          }
+        }
+      }
     }
   }
 }

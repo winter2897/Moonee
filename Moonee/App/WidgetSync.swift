@@ -14,7 +14,7 @@ extension WidgetSnapshot {
         let day = calendar.dateInterval(of: .day, for: now)!
         let (start, end, expense) = (day.start, day.end, TxKind.expense.rawValue)
         let today = (try? context.fetch(FetchDescriptor<Txn>(predicate: #Predicate { $0.date >= start && $0.date < end && $0.kindRaw == expense }))) ?? []
-        self.init(date: now, currency: Money.defaultCurrency, hidden: hidden, spentToday: today.reduce(0) { $0 + $1.amount },
+        self.init(date: now, currency: Money.defaultCurrency, hidden: hidden, spentToday: today.reduce(0) { $1.excludedFromReport ? $0 : $0 + $1.amount },
                   jars: facts.jars.map { Jar(name: $0.name, colorHex: colors[$0.key] ?? 0x64748B, budget: $0.budget, spent: $0.spent, balance: $0.balance) })
     }
 }

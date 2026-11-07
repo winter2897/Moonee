@@ -131,7 +131,7 @@ struct ChatCardLine: Codable, Equatable {
 
         /// What Moonee is asking about `p`: what blocks the save, else when a saved loan is due back.
         func asking(_ p: ParsedTxn) -> ParsedTxn.Field? {
-            unresolved(p) ?? (p.missing.contains(.dueDate) ? .dueDate : nil)
+            unresolved(p) ?? p.missing.first { $0 == .dueDate || $0 == .reimbursed }
         }
 
         /// Names to offer as quick replies for `field`.
@@ -145,6 +145,7 @@ struct ChatCardLine: Codable, Equatable {
                 // This weekend · End of month · Pick a date… · No due date
                 DebtBook.dueChoices(now: .now, calendar: .current).map(\.title).dropLast() + [DebtBook.pickDateTitle]
                     + DebtBook.dueChoices(now: .now, calendar: .current).map(\.title).suffix(1)
+            case .reimbursed: [ChatBook.reimbursedYes, ChatBook.reimbursedNo]
             case .amount, .person: []
             }
         }
@@ -183,6 +184,11 @@ struct ChatCardLine: Codable, Equatable {
             }
             p.missing = []
             return true
+        case .reimbursed:
+            guard let yes = reimbursedAnswer(input) else { return false }
+            p.reimbursed = yes
+            p.missing = []
+            return true
         }
         p.missing = ParsedTxn.missing(of: p)
         return true
@@ -204,6 +210,53 @@ struct ChatCardLine: Codable, Equatable {
         let debts = (try? context.fetch(FetchDescriptor<Debt>())) ?? []
         guard let person = p.person, let debt = DebtBook.find(person, p.kind == .lend ? .lent : .borrowed, in: debts) else { return }
         debt.dueDate = p.dueDate
+        try? context.save()
+    }
+
+    /// Words for money someone pays back (paying for the boss, work trips): Moonee asks before keeping it out of reports (P1-2).
+    // ponytail: a short list per language, matched on the spend's note; move into `Lexicon` if it grows.
+    nonisolated static let reimbursableWords = [
+        "chi hộ", "trả hộ", "mua hộ", "ứng hộ", "công tác phí", "đi công tác", "tạm ứng", "hoàn ứng",
+        "on behalf", "for my boss", "for the boss", "business trip", "work trip", "reimburs", "expense claim",
+        "จ่ายแทน", "สำรองจ่าย", "เบิกบริษัท", "ค่าเดินทางบริษัท", "ຈ່າຍແທນ", "ເບີກບໍລິສັດ", "ໄປວຽກ",
+    ]
+    nonisolated static var reimbursedYes: String { String(localized: "Yes, I'll be paid back", table: "Chat") }
+    nonisolated static var reimbursedNo: String { String(localized: "No, it's my spending", table: "Chat") }
+
+    nonisolated static func isReimbursable(_ text: String) -> Bool {
+        reimbursableWords.contains { text.range(of: $0, options: [.caseInsensitive, .diacriticInsensitive]) != nil }
+    }
+
+    /// A chip or a yes / no word ("có", "không", "yes", "ไม่"); nil = not an answer.
+    nonisolated static func reimbursedAnswer(_ input: String) -> Bool? {
+        let s = input.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        if s == reimbursedYes.lowercased() { return true }
+        if s == reimbursedNo.lowercased() { return false }
+        let first = s.split(whereSeparator: { !$0.isLetter }).first.map(String.init) ?? s
+        // Thai and Lao have no spaces between words: a prefix is enough there. "No" words first ("ไม่ได้" is no).
+        let starts = { (w: String) in first == w || (!w.unicodeScalars.allSatisfy(\.isASCII) && first.hasPrefix(w)) }
+        if ["không", "khong", "ko", "no", "nope", "ไม่", "ບໍ່"].contains(where: starts) { return false }
+        if ["có", "co", "yes", "yep", "yeah", "ừ", "ok", "được", "vâng", "ใช่", "ได้", "ແມ່ນ", "ໄດ້"].contains(where: starts) { return true }
+        return nil
+    }
+
+    /// After a new spend that sounds like money someone pays back: "Will you be paid back for this?".
+    static func reimburseQuestion(_ saved: [Txn]) -> ParsedTxn? {
+        guard let t = saved.first(where: { $0.kind == .expense && !$0.excludedFromReport && isReimbursable($0.note) }) else { return nil }
+        var p = ParsedTxn(amount: t.amount, currency: t.currencyCode, kind: .expense, date: t.date, note: t.note)
+        p.missing = [.reimbursed]
+        return p
+    }
+
+    /// "Yes": the spend is not counted in reports and leaves its jar. The newest matching spend is the one just asked about.
+    static func setReimbursed(_ p: ParsedTxn, in context: ModelContext) {
+        guard p.reimbursed == true else { return }
+        let (amount, note, expense) = (p.amount ?? 0, p.note, TxKind.expense.rawValue)
+        let found = try? context.fetch(FetchDescriptor<Txn>(predicate: #Predicate { $0.amount == amount && $0.note == note && $0.kindRaw == expense },
+                                                             sortBy: [SortDescriptor(\.createdAt, order: .reverse)])).first
+        guard let t = found else { return }
+        t.excludedFromReport = true
+        t.jar = nil
         try? context.save()
     }
 

@@ -316,7 +316,13 @@ struct ChatView: View {
            field != .amount || QuickParser.parse(input, context: parser).count <= 1,
            ChatBook.fill(&p, field, from: input, context: parser) {
             pending = nil
-            if field == .dueDate { saveDue(p) } else { record([p], source: source, raw: input) }
+            switch field {
+            case .dueDate: saveDue(p)
+            case .reimbursed:
+                ChatBook.setReimbursed(p, in: context)
+                reply(ChatLines.reimbursedSaved(p), mood: .happy)
+            default: record([p], source: source, raw: input)
+            }
             return
         }
         pending = nil
@@ -364,6 +370,9 @@ struct ChatView: View {
         } else if let ask = ChatBook.dueQuestion(saved) { // a new loan: when is it due back? (spec §4.5)
             pending = ask
             reply(ChatLines.question(.dueDate, ask), mood: .happy)
+        } else if let ask = ChatBook.reimburseQuestion(saved) { // paid for the boss: not my spending? (P1-2)
+            pending = ask
+            reply(ChatLines.question(.reimbursed, ask), mood: .thinking)
         } else if saved.isEmpty {
             reply(ChatLines.confused(), mood: .confused)
         }

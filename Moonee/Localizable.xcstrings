@@ -1955,6 +1955,35 @@
           }
         }
       }
+    },
+    "category.adjustment": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balance adjustment"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປັບຍອດເງິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปรับยอดเงิน"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Điều chỉnh số dư"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
