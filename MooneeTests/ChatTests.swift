@@ -56,6 +56,63 @@ import Testing
         #expect(a.debt?.direction == .lent)
     }
 
+    @Test func newLoanAsksWhenItIsDueBackAndSavesTheAnswer() throws {
+        let lent = say("cho Nam mượn 500k")
+        var ask = try #require(ChatBook.dueQuestion(lent))
+        #expect(ask.person == "Nam" && ask.kind == .lend)
+        let book = ChatBook.Lookup(context)
+        #expect(book.unresolved(ask) == nil && book.asking(ask) == .dueDate) // already saved: only the date is asked
+        #expect(book.choices(.dueDate, for: ask).count == 4)
+        #expect(ChatLines.question(.dueDate, ask, variant: 0) == "When will Nam pay you back?")
+
+        // A new transaction is not an answer; a chip or a date is.
+        var other = ask
+        #expect(!ChatBook.fill(&other, .dueDate, from: "ăn trưa hôm qua 50k", context: parser()))
+        #expect(ChatBook.fill(&ask, .dueDate, from: "Cuối tháng", context: parser()))
+        let endOfMonth = Calendar.current.dateInterval(of: .month, for: .now)!.end.addingTimeInterval(-1)
+        #expect(ask.dueDate.map { Calendar.current.isDate($0, inSameDayAs: endOfMonth) || $0 > endOfMonth } == true)
+        ChatBook.setDue(ask, in: context)
+        #expect(lent.first?.debt?.dueDate == ask.dueDate)
+
+        // "Không thời hạn" saves none; a second loan to Nam is not asked again.
+        var none = try #require(ChatBook.dueQuestion(say("Lan cho mình vay 2tr")))
+        #expect(none.kind == .borrow && none.person == "Lan")
+        #expect(ChatBook.fill(&none, .dueDate, from: "Không thời hạn", context: parser()) && none.dueDate == nil)
+        #expect(ChatBook.dueQuestion(say("cho Nam mượn 100k")) == nil)
+    }
+
+    @Test func repaymentInChatReducesTheDebt() throws {
+        let debt = try #require(say("cho Nam mượn 500k").first?.debt)
+        let paid = say("Nam trả 200k")
+        #expect(paid.first?.kind == .repay && paid.first?.debt === debt)
+        #expect(ChatBook.debtLeft(paid, in: context) == "Nam still owes you **\(Money(300_000, "VND").formatted())**.")
+        #expect(ChatBook.debtLeft(say("Nam trả nợ 300k"), in: context) == "All settled with Nam!")
+        #expect(DebtBook.line(debt, in: context).remaining == 0)
+        // A shop before "trả" is still spending; so is a person with no debt.
+        #expect(say("cafe trả bằng momo 30k").first?.kind == .expense)
+    }
+
+    @Test func closingADebtByHandDropsItEverywhere() async throws {
+        let debt = try #require(say("cho Hùng mượn 1tr").first?.debt)
+        #expect(try await StoreLedger(context, currency: "VND").debts().map(\.person) == ["Hùng"])
+        DebtBook.close(debt, in: context)
+        #expect(DebtBook.line(debt, in: context).remaining == 0)
+        #expect(try await StoreLedger(context, currency: "VND").debts().isEmpty)
+        // Lending to Hùng again starts a new debt.
+        #expect(say("cho Hùng mượn 200k").first?.debt !== debt)
+    }
+
+    @Test func debtBookFactsAnswerWhoOwesMe() async throws {
+        _ = say("cho Nam mượn 500k")
+        _ = say("Lan cho mình vay 2tr")
+        let json = try await MooneeTools(ledger: StoreLedger(context, currency: "VND")).debtBook.run(Data("{}".utf8))
+        let text = try #require(ChatBook.factsText([.init(tool: "debtBook", json: json)]))
+        #expect(text.contains("Nam") && text.contains("Lan") && text.contains(Money(500_000, "VND").formatted()))
+        #expect(Skill.route("ai đang nợ mình?", context: parser()).id == "debt-tracking")
+        #expect(Skill.route("who owes me money?", context: parser()).id == "debt-tracking")
+        #expect(Skill.route("cho Nam mượn 2tr", context: parser()).id == "transaction-parser")
+    }
+
     @Test func undoRemovesTransactionsAndKeepsTheCard() throws {
         let m = ChatMessage(fromUser: false, text: "")
         context.insert(m)
@@ -231,6 +288,22 @@ import Testing
         #expect(ChatThreads.forNewMessage(open: late, resumed: true, now: at(6, 9), calendar: cal, in: context) === late)
         // With nothing open, today's newest thread is reused.
         #expect(ChatThreads.forNewMessage(open: nil, resumed: false, now: at(6, 10), calendar: cal, in: context) === next)
+    }
+
+    @Test func theChatRollsOverToTodayWhenTheDayChanges() {
+        let cal = Self.hcm
+        let late = ChatThreads.forNewMessage(open: nil, resumed: false, now: at(5, 23, 58), calendar: cal, in: context)
+        // Same day: whatever is open stays, a thread reopened from history too.
+        let same = ChatThreads.onScreen(open: late, resumed: true, lastCheck: at(5, 23, 58), now: at(5, 23, 59), calendar: cal, in: context)
+        #expect(same.thread === late && same.resumed)
+        // Past midnight (or back the next morning): today's thread, none yet, so the first message starts it.
+        let next = ChatThreads.onScreen(open: late, resumed: true, lastCheck: at(5, 23, 59), now: at(6, 0, 1), calendar: cal, in: context)
+        #expect(next.thread == nil && !next.resumed)
+        // A "New chat" yesterday doesn't swallow today's messages; today's existing thread is shown.
+        let manual = ChatThreads.start(now: at(5, 22), calendar: cal, in: context)
+        let today = ChatThreads.forNewMessage(open: nil, resumed: false, now: at(6, 8), calendar: cal, in: context)
+        let shown = ChatThreads.onScreen(open: manual, resumed: true, lastCheck: at(5, 22), now: at(6, 9), calendar: cal, in: context)
+        #expect(shown.thread === today && !shown.resumed)
     }
 
     @Test func newChatAddsASecondThreadToday() {

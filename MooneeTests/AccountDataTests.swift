@@ -9,6 +9,15 @@ struct AccountDataTests {
         try ModelContainer(for: Schema.moonee, configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none))
     }
 
+    @Test func feedbackMailGoesToTheOwnerWithTheFacts() throws {
+        let url = FeedbackMail.mailto
+        let parts = try #require(URLComponents(url: url, resolvingAgainstBaseURL: false))
+        #expect(parts.scheme == "mailto" && parts.path == "haiquantran2897@gmail.com")
+        #expect(parts.queryItems?.first { $0.name == "subject" }?.value == "Moonee feedback (\(AppInfo.number) (\(AppInfo.build)))")
+        let body = try #require(parts.queryItems?.first { $0.name == "body" }?.value)
+        #expect(body.contains("iOS") && body.contains("Device: ") && body.contains("Language: "))
+    }
+
     @Test func csvExportUsesFixedEnglishHeadersAndKeys() throws {
         let container = try container()
         let context = container.mainContext

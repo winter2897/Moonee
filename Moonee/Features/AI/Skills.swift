@@ -32,7 +32,9 @@ struct Skill: Sendable, Hashable {
     /// Outside, current info (prices, rates, news): the only skill with web access.
     /// `.advice`: in hybrid mode the cloud model (with its built-in search) answers first.
     static let marketLookup = Skill(id: "market-lookup", tools: ["marketPrice", "webSearch"], job: .advice)
-    static let all = [transactionParser, receiptReader, jarBudgeting, closeManagement, spendingCoach, marketLookup]
+    /// "Ai đang nợ mình?": the debt book (spec §4.5).
+    static let debtTracking = Skill(id: "debt-tracking", tools: ["debtBook", "listTransactions"], job: .quickAnswer)
+    static let all = [transactionParser, receiptReader, jarBudgeting, closeManagement, spendingCoach, marketLookup, debtTracking]
 
     var isBuiltIn: Bool { Skill.all.contains(self) }
 
@@ -76,6 +78,7 @@ struct Skill: Sendable, Hashable {
         if asks(jarBudgeting) { return catalog.resolved(jarBudgeting) }
         let user = catalog.userSkills.first { [Phrase](phrases: $0.triggers).contained(in: tokens) }
         if let user, question || !isTransaction() { return user }
+        if asks(debtTracking), question || !isTransaction() { return catalog.resolved(debtTracking) }
         if asks(marketLookup), question || !isTransaction() { return catalog.resolved(marketLookup) }
         if question {
             let aboutJars = QuickParser.hints(in: text, context: context).jarKey != nil

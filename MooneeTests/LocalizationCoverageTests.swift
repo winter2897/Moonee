@@ -4,10 +4,13 @@ import Testing
 /// Every UI language ships every string: a key translated to Vietnamese must also have Thai and Lao.
 struct LocalizationCoverageTests {
     static let sources = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().appending(path: "Moonee")
+    /// The widget extension ships its own catalog.
+    static let widgets = sources.deletingLastPathComponent().appending(path: "MooneeWidgets")
 
     @Test func translatedKeysHaveThaiAndLao() throws {
-        let catalogs = FileManager.default.enumerator(at: Self.sources, includingPropertiesForKeys: nil)!
+        let catalogs = [Self.sources, Self.widgets].flatMap { FileManager.default.enumerator(at: $0, includingPropertiesForKeys: nil)! }
             .compactMap { $0 as? URL }.filter { $0.pathExtension == "xcstrings" }
+        #expect(catalogs.contains { $0.lastPathComponent == "Widgets.xcstrings" })
         #expect(catalogs.count > 5)
         var missing: [String] = []
         for url in catalogs {

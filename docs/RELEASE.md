@@ -6,9 +6,12 @@ Everything up to the upload is in the repo. Steps marked **Owner** need the Appl
 |---|---|
 | Bundle ID | `com.haiquan.moonee` |
 | Team | Quan Tran (`WXNAFMHDN8`), automatic signing |
-| Version / build | `MARKETING_VERSION` 1.0.0 / `CURRENT_PROJECT_VERSION` 1 (raise the build number for every upload) |
+| Version / build | `MARKETING_VERSION` 1.0.0 / `CURRENT_PROJECT_VERSION` (raise the build number for every upload). Both are set once at the project level, so the app and the widget extension always match. |
+| Widget extension | `com.haiquan.moonee.widgets` (`MooneeWidgets/`), embedded in the app: Home and Lock Screen widgets, quick add, Control Center control |
+| App Group | `group.com.haiquan.moonee` on the app and the extension: the app writes `widget.json` there, the widget only reads it |
 | iCloud | CloudKit container `iCloud.com.haiquan.moonee`, private database, push (`aps-environment`), background mode `remote-notification` |
-| Other entitlements | `com.apple.developer.kernel.increased-memory-limit` (local models) |
+| Other entitlements | `com.apple.developer.kernel.increased-memory-limit` (local models), `com.apple.security.application-groups` (app + widget) |
+| URL scheme | `moonee://chat` opens the chat composer (widgets, control) |
 | Business model | Paid upfront, no in-app purchases, no ads |
 | Category | Finance (secondary: Productivity) |
 | Devices | iPhone only, iOS 26+, portrait, light mode |
@@ -45,6 +48,18 @@ The app opens SwiftData with `cloudKitDatabase: .private("iCloud.com.haiquan.moo
 5. Every later model change: add properties only (never rename or delete: CloudKit cannot), then repeat 3–4 before that build ships. `CloudKitSchemaTests` keeps the schema CloudKit-compatible.
 
 Fresh installs (a reinstall, a new iPhone without a backup) seed the default jars/categories before iCloud delivers the old ones. `Seed.mergeDuplicates` (at launch and after each iCloud import) keeps the oldest copy of each default by `createdAt` and moves transactions, splits, goals and rules onto it. The new install's empty "Cash wallet" is not merged (wallets have no key); the user can delete it.
+
+## 2b. Widgets (App Group) — **Owner check**
+
+The widget extension `com.haiquan.moonee.widgets` (`MooneeWidgets/`) ships inside the app. App and extension share the App Group `group.com.haiquan.moonee`: the app writes the widget numbers to `widget.json` there (`Moonee/App/WidgetSync.swift`), the extension only reads it. The SwiftData store stays where every earlier build put it (the app's own Application Support, pinned with `groupContainer: .none` in `CloudSync.makeContainer()`), so TestFlight users keep their data and nothing is migrated.
+
+`-allowProvisioningUpdates` registers all of this with automatic signing (first done 2026-11-07). To check, or if a portal step is ever missing:
+
+1. [Identifiers → App Groups](https://developer.apple.com/account/resources/identifiers/list/applicationGroup): `group.com.haiquan.moonee` exists. If not: **+** → App Groups → Description `Moonee`, Identifier `group.com.haiquan.moonee` → Register.
+2. [Identifiers → App IDs](https://developer.apple.com/account/resources/identifiers/list): `com.haiquan.moonee` and `com.haiquan.moonee.widgets` both have **App Groups** on with `group.com.haiquan.moonee` ticked (Edit → Configure). The widget App ID needs nothing else (no iCloud, no push).
+3. The App Store profile for each App ID must list the App Group; automatic signing regenerates them. `codesign -d --entitlements - build/ipa/Payload/Moonee.app/PlugIns/MooneeWidgets.appex` shows `com.apple.security.application-groups`.
+
+Nothing changes in App Store Connect: the extension is part of the same app and build.
 
 ## 3. App Store Connect metadata
 
@@ -299,6 +314,8 @@ Repeat with an "iPhone 17 Pro" simulator for 6.3".
 - [ ] On a real iPhone:
   - [ ] Fresh install: onboarding, default jars; log by text, by voice (mic + speech prompts), by receipt photo (camera + photos prompts).
   - [ ] Face ID lock, hide balances, app switcher cover.
+  - [ ] Widgets: Home small/medium, quick add, Lock Screen circular/rectangular/inline and the Control Center "Log a transaction" control; numbers match Budget → Left; logging in chat updates them; hide balances shows ***** everywhere; tapping opens the chat with the keyboard up.
+  - [ ] Upgrade over the previous TestFlight build: all data still there (the store is not moved).
   - [ ] Reminders: notification prompt; a bill reminder arrives.
   - [ ] iCloud: Account → Data shows **On**. Delete and reinstall (or a second iPhone on the same Apple ID): data comes back within a minute, no duplicate jars or categories.
   - [ ] Signed out of iCloud (or iCloud off for Moonee): Data shows the sign-in hint; everything else works.

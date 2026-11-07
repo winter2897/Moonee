@@ -11,6 +11,7 @@
 		AA0000000000000000000042 /* MLXLMCommon in Frameworks */ = {isa = PBXBuildFile; productRef = AA0000000000000000000052 /* MLXLMCommon */; };
 		AA0000000000000000000043 /* MLXGuidedGeneration in Frameworks */ = {isa = PBXBuildFile; productRef = AA0000000000000000000053 /* MLXGuidedGeneration */; };
 		AA0000000000000000000044 /* Tokenizers in Frameworks */ = {isa = PBXBuildFile; productRef = AA0000000000000000000054 /* Tokenizers */; };
+		AA000000000000000000007B /* MooneeWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000071 /* MooneeWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -21,15 +22,51 @@
 			remoteGlobalIDString = AA0000000000000000000006;
 			remoteInfo = Moonee;
 		};
+		AA000000000000000000007D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AA0000000000000000000009 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA0000000000000000000077;
+			remoteInfo = MooneeWidgets;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AA000000000000000000007C /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				AA000000000000000000007B /* MooneeWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		AA0000000000000000000001 /* Moonee.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Moonee.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA0000000000000000000021 /* MooneeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MooneeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA0000000000000000000071 /* MooneeWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MooneeWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		AA0000000000000000000073 /* Exceptions for "Moonee" folder in "MooneeWidgets" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Core/Components/AmountText.swift,
+				Core/OpenChatIntent.swift,
+				Core/Theme.swift,
+				Core/WidgetSnapshot.swift,
+			);
+			target = AA0000000000000000000077 /* MooneeWidgets */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		AA0000000000000000000002 /* Moonee */ = {isa = PBXFileSystemSynchronizedRootGroup; path = Moonee; sourceTree = "<group>"; };
+		AA0000000000000000000002 /* Moonee */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (AA0000000000000000000073 /* Exceptions for "Moonee" folder in "MooneeWidgets" target */, ); path = Moonee; sourceTree = "<group>"; };
+		AA0000000000000000000072 /* MooneeWidgets */ = {isa = PBXFileSystemSynchronizedRootGroup; path = MooneeWidgets; sourceTree = "<group>"; };
 		AA0000000000000000000022 /* MooneeTests */ = {isa = PBXFileSystemSynchronizedRootGroup; path = MooneeTests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -52,6 +89,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AA0000000000000000000075 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -60,6 +104,7 @@
 			children = (
 				AA0000000000000000000002 /* Moonee */,
 				AA0000000000000000000022 /* MooneeTests */,
+				AA0000000000000000000072 /* MooneeWidgets */,
 				AA0000000000000000000005 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -69,6 +114,7 @@
 			children = (
 				AA0000000000000000000001 /* Moonee.app */,
 				AA0000000000000000000021 /* MooneeTests.xctest */,
+				AA0000000000000000000071 /* MooneeWidgets.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -83,10 +129,12 @@
 				AA0000000000000000000007 /* Sources */,
 				AA0000000000000000000003 /* Frameworks */,
 				AA0000000000000000000008 /* Resources */,
+				AA000000000000000000007C /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				AA000000000000000000007E /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				AA0000000000000000000002 /* Moonee */,
@@ -125,6 +173,28 @@
 			productReference = AA0000000000000000000021 /* MooneeTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		AA0000000000000000000077 /* MooneeWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA0000000000000000000078 /* Build configuration list for PBXNativeTarget "MooneeWidgets" */;
+			buildPhases = (
+				AA0000000000000000000074 /* Sources */,
+				AA0000000000000000000075 /* Frameworks */,
+				AA0000000000000000000076 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				AA0000000000000000000072 /* MooneeWidgets */,
+			);
+			name = MooneeWidgets;
+			packageProductDependencies = (
+			);
+			productName = MooneeWidgets;
+			productReference = AA0000000000000000000071 /* MooneeWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -141,6 +211,9 @@
 					AA0000000000000000000026 = {
 						CreatedOnToolsVersion = 26.0;
 						TestTargetID = AA0000000000000000000006;
+					};
+					AA0000000000000000000077 = {
+						CreatedOnToolsVersion = 26.0;
 					};
 				};
 			};
@@ -167,6 +240,7 @@
 			targets = (
 				AA0000000000000000000006 /* Moonee */,
 				AA0000000000000000000026 /* MooneeTests */,
+				AA0000000000000000000077 /* MooneeWidgets */,
 			);
 		};
 /* End PBXProject section */
@@ -180,6 +254,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AA0000000000000000000028 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0000000000000000000076 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -203,6 +284,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AA0000000000000000000074 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -210,6 +298,11 @@
 			isa = PBXTargetDependency;
 			target = AA0000000000000000000006 /* Moonee */;
 			targetProxy = AA0000000000000000000020 /* PBXContainerItemProxy */;
+		};
+		AA000000000000000000007E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AA0000000000000000000077 /* MooneeWidgets */;
+			targetProxy = AA000000000000000000007D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -221,7 +314,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Moonee.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = WXNAFMHDN8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -240,7 +332,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.haiquan.moonee;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -256,7 +347,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Moonee.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = WXNAFMHDN8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -275,7 +365,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.haiquan.moonee;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -291,6 +380,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -301,6 +391,7 @@
 					"$(inherited)",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -316,11 +407,13 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -333,10 +426,8 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = WXNAFMHDN8;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.haiquan.mooneeTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -350,15 +441,59 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = WXNAFMHDN8;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.haiquan.mooneeTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Moonee.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Moonee";
+			};
+			name = Release;
+		};
+		AA0000000000000000000079 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = MooneeWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = WXNAFMHDN8;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "MooneeWidgets-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Moonee;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.haiquan.moonee.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		AA000000000000000000007A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = MooneeWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = WXNAFMHDN8;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "MooneeWidgets-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Moonee;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.haiquan.moonee.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -388,6 +523,15 @@
 			buildConfigurations = (
 				AA0000000000000000000031 /* Debug */,
 				AA0000000000000000000032 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA0000000000000000000078 /* Build configuration list for PBXNativeTarget "MooneeWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0000000000000000000079 /* Debug */,
+				AA000000000000000000007A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

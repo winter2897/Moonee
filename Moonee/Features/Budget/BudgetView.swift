@@ -16,6 +16,7 @@ struct BudgetView: View {
                 JarsSection(month: $month, sheet: $sheet, path: $path)
                 WalletsSection(sheet: $sheet)
                 BillsSection(sheet: $sheet)
+                DebtsSection(path: $path)
             }
             .listStyle(.insetGrouped)
             .scrollContentBackground(.hidden)
@@ -65,6 +66,7 @@ enum BudgetRoute: Hashable {
     case mapping
     case reminders
     case advisor
+    case debts
 
     @ViewBuilder var view: some View {
         switch self {
@@ -73,6 +75,7 @@ enum BudgetRoute: Hashable {
         case .mapping: JarMappingView()
         case .reminders: ReminderSettingsView()
         case .advisor: AdvisorSettingsView()
+        case .debts: DebtBookView()
         }
     }
 }

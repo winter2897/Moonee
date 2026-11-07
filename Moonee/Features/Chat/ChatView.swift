@@ -5,6 +5,8 @@ import SwiftUI
 /// The Moonee chat (spec §3.1–3.3), opened by the (+) tab: type, say or snap a transaction, ask about money.
 struct ChatView: View {
     var onBack: (() -> Void)? = nil
+    /// Raised by the `moonee://chat` deep link: focus the composer.
+    var composeRequest = 0
 
     @Environment(\.modelContext) private var context
     @Query(sort: \ChatMessage.date) private var allMessages: [ChatMessage]
@@ -12,6 +14,9 @@ struct ChatView: View {
     @State private var thread: ChatThread?
     /// Reopened from history: it keeps going even on a later day.
     @State private var resumed = false
+    /// When `showToday` last ran: a later day replaces the open thread with today's.
+    @State private var lastDayCheck = Date.now
+    @Environment(\.scenePhase) private var scenePhase
     @State private var text = ""
     @State private var inputSource = TxSource.text
     @FocusState private var focused: Bool
@@ -33,6 +38,11 @@ struct ChatView: View {
     @State private var attachments: [ChatAttachment] = []
     @State private var savedCount = 0
     @State private var showReport = false
+    /// "Pick a date…" under "When will Nam pay you back?".
+    @State private var pickingDue = false
+    @State private var dueDay = Calendar.current.date(byAdding: .day, value: 7, to: .now)!
+    /// The last `composeRequest` that focused the composer, so coming back to the tab does not raise the keyboard again.
+    @State private var handledCompose = 0
 
     var body: some View {
         VStack(spacing: 0) {
@@ -84,8 +94,16 @@ struct ChatView: View {
         .background(MooneeBackground())
         .onAppear {
             ChatThreads.migrate(in: context)
-            if thread == nil { thread = ChatThreads.todays(in: context) }
+            showToday()
             // Opens as the idle pill (owner's reference): type, or hold the voice button to talk.
+        }
+        // The tab stays alive for days: back from the background or past midnight, a new day gets its own thread.
+        .onChange(of: scenePhase) { _, phase in if phase == .active { showToday() } }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.significantTimeChangeNotification)) { _ in showToday() }
+        .task(id: composeRequest) {
+            guard composeRequest != handledCompose else { return }
+            handledCompose = composeRequest
+            focused = true // the widget's quick add: straight to typing
         }
         .onChange(of: speech.transcript) { _, t in
             guard !t.isEmpty, speech.isRecording else { return }
@@ -118,6 +136,7 @@ struct ChatView: View {
         .sheet(isPresented: $showAISettings) { NavigationStack { AISettingsView() } }
         .sheet(item: $editTxn) { TxnEditForm(txn: $0) }
         .sheet(isPresented: $showReport) { ReportSheet() }
+        .sheet(isPresented: $pickingDue) { duePicker }
         .sensoryFeedback(.success, trigger: savedCount)
     }
 
@@ -225,6 +244,12 @@ struct ChatView: View {
         }
     }
 
+    private func showToday() {
+        let shown = ChatThreads.onScreen(open: thread, resumed: resumed, lastCheck: lastDayCheck, in: context)
+        if shown.thread != thread { (pending, editingCard) = (nil, nil) }
+        (thread, resumed, lastDayCheck) = (shown.thread, shown.resumed, .now)
+    }
+
     private func newChat() {
         (thread, resumed, pending, editingCard) = (ChatThreads.start(in: context), true, nil, nil)
     }
@@ -233,16 +258,26 @@ struct ChatView: View {
     private var choices: [String] {
         guard let p = pending else { return [] }
         let book = ChatBook.Lookup(context)
-        return book.unresolved(p).map { book.choices($0, for: p) } ?? []
+        return book.asking(p).map { book.choices($0, for: p) } ?? []
     }
 
     private var choiceChips: some View {
-        let chips = ForEach(choices, id: \.self) { name in QuickReplyChip(title: name) { send(name) } }
+        let chips = ForEach(choices, id: \.self) { chip($0) }
+        let rows = stride(from: 0, to: choices.count, by: 2).map { Array(choices[$0..<min($0 + 2, choices.count)]) }
         return ViewThatFits(in: .horizontal) {
             HStack(spacing: 8) { chips }
+            VStack(alignment: .leading, spacing: 8) { // two a row ("This weekend · End of month")
+                ForEach(rows, id: \.self) { row in HStack(spacing: 8) { ForEach(row, id: \.self) { chip($0) } } }
+            }
             VStack(alignment: .leading, spacing: 8) { chips }
         }
         .padding(.leading, 48)
+    }
+
+    private func chip(_ name: String) -> some View {
+        QuickReplyChip(title: name, symbol: name == DebtBook.pickDateTitle ? "calendar" : nil) {
+            if name == DebtBook.pickDateTitle { pickingDue = true } else { send(name) }
+        }
     }
 
     private var tiles: some View {
@@ -268,17 +303,17 @@ struct ChatView: View {
         if speech.isRecording { speech.stop() }
         let source = inputSource
         (text, inputSource, editingCard) = ("", .text, nil)
-        let history = messages.suffix(10).map { LLMMessage(role: $0.fromUser ? .user : .assistant, text: $0.text) }
+        let history = messages.suffix(10).map { LLMMessage(role: $0.fromUser ? .user : .assistant, text: $0.text.replacingOccurrences(of: Terms.footerLine, with: "")) }
         post(ChatMessage(fromUser: true, text: input))
         let parser = ParserContext(context)
 
         // An answer to Moonee's question ("45k", "Vietcombank") fills the waiting transaction;
         // an amount only counts when the message is not a new transaction of its own.
-        if var p = pending, let field = ChatBook.Lookup(context).unresolved(p),
+        if var p = pending, let field = ChatBook.Lookup(context).asking(p),
            field != .amount || QuickParser.parse(input, context: parser).count <= 1,
            ChatBook.fill(&p, field, from: input, context: parser) {
             pending = nil
-            record([p], source: source, raw: input)
+            if field == .dueDate { saveDue(p) } else { record([p], source: source, raw: input) }
             return
         }
         pending = nil
@@ -293,9 +328,12 @@ struct ChatView: View {
             if let notice = r.noticeText, notice != lastNotice { lastNotice = notice; reply(notice, mood: .confused) }
             switch out {
             case .transactions(let txns, _): record(txns, source: source, raw: input)
-            case .answer(let answer, _, let sources): reply(answer, mood: .happy, sources: sources)
-            case .facts(let facts, _):
-                if let t = ChatBook.factsText(facts) { reply(t, mood: .happy, sources: ChatBook.sources(facts)) }
+            case .answer(let answer, let skill, let sources):
+                reply(answer + (Terms.needsFooter(skill: skill, question: input) ? Terms.footerLine : ""), mood: .happy, sources: sources)
+            case .facts(let facts, let skill):
+                if let t = ChatBook.factsText(facts) {
+                    reply(t + (Terms.needsFooter(skill: skill, question: input) ? Terms.footerLine : ""), mood: .happy, sources: ChatBook.sources(facts))
+                }
                 else { reply(ChatLines.confused(), mood: .confused) }
             }
         }
@@ -305,7 +343,7 @@ struct ChatView: View {
     private func record(_ parsed: [ParsedTxn], source: TxSource, raw: String) {
         let saved = ChatBook.save(parsed, source: source, rawInput: raw, in: context)
         if !saved.isEmpty {
-            let m = ChatMessage(fromUser: false, text: ChatLines.saved(saved))
+            let m = ChatMessage(fromUser: false, text: [ChatLines.saved(saved), ChatBook.debtLeft(saved, in: context)].compactMap { $0 }.joined(separator: " "))
             post(m)
             m.txns = saved
             mood = .happy
@@ -320,10 +358,40 @@ struct ChatView: View {
                 pending = ask
                 reply(ChatLines.question(field, ask), mood: .confused)
             }
+        } else if let ask = ChatBook.dueQuestion(saved) { // a new loan: when is it due back? (spec §4.5)
+            pending = ask
+            reply(ChatLines.question(.dueDate, ask), mood: .happy)
         } else if saved.isEmpty {
             reply(ChatLines.confused(), mood: .confused)
         }
         try? context.save()
+    }
+
+    private func saveDue(_ p: ParsedTxn) {
+        ChatBook.setDue(p, in: context)
+        reply(ChatLines.dueSaved(p), mood: .happy)
+    }
+
+    private var duePicker: some View {
+        NavigationStack {
+            DatePicker(String(localized: "Due date", table: "Chat"), selection: $dueDay, in: Calendar.current.startOfDay(for: .now)..., displayedComponents: .date)
+                .datePickerStyle(.graphical)
+                .padding()
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button(String(localized: "Done", table: "Chat")) {
+                            pickingDue = false
+                            guard var p = pending else { return }
+                            pending = nil
+                            p.dueDate = Calendar.current.startOfDay(for: dueDay)
+                            post(ChatMessage(fromUser: true, text: dueDay.formatted(.dateTime.day().month(.defaultDigits).year())))
+                            saveDue(p)
+                        }
+                    }
+                }
+        }
+        .presentationDetents([.medium, .large])
     }
 
     private func reply(_ text: String, mood: MooneeMood, sources: [WebSource] = []) {

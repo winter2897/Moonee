@@ -31,6 +31,9 @@ struct AccountView: View {
                     NavigationLink { BudgetSetupView() } label: {
                         SettingsLabel("Categories, jars & wallets", symbol: "square.stack.3d.up.fill", color: .orange)
                     }
+                    NavigationLink { DebtBookView() } label: {
+                        SettingsLabel("Debt book", symbol: "person.2.fill", color: .indigo)
+                    }
                 } header: {
                     Text("General", tableName: "Account")
                 }
@@ -64,7 +67,7 @@ struct AccountView: View {
                         ShareLink(item: AppLinks.appStore, message: Text("Moonee: a friendly money assistant", tableName: "Account")) {
                             SettingsLabel("Share Moonee", symbol: "square.and.arrow.up", color: .blue)
                         }
-                        Link(destination: AppLinks.feedback) { SettingsLabel("Help & feedback", symbol: "questionmark", color: .teal) }
+                        FeedbackRow()
                     }
                     .foregroundStyle(.primary)
                     NavigationLink { AboutView() } label: {
@@ -128,15 +131,14 @@ struct SettingsIcon: View {
 }
 
 enum AppLinks {
-    // ponytail: placeholders until the App Store listing exists (S11): fill in the app id and the support address.
+    // ponytail: placeholder until the App Store listing exists (S11): fill in the app id.
     static let appStore = URL(string: "https://apps.apple.com/app/moonee")!
-    static let feedback = URL(string: "mailto:?subject=Moonee%20feedback")!
 }
 
 enum AppInfo {
-    static var version: String {
-        "v" + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0")
-    }
+    static var version: String { "v" + number }
+    static var number: String { Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0" }
+    static var build: String { Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "?" }
 }
 
 /// Settings that existed before this screen: categories, jars, wallets.
@@ -170,14 +172,14 @@ private struct AboutView: View {
                 .listRowBackground(Color.clear)
             }
             Section {
+                NavigationLink { TermsView() } label: {
+                    Label { Text("Terms & disclaimer", tableName: "Terms") } icon: { SettingsIcon(symbol: "doc.text.fill", color: .gray) }
+                }
+            }
+            Section {
                 Text("Moonee has no server and no account. Your data stays on this iPhone (and in your own iCloud when sync is on). Nothing is sent anywhere unless you pick a cloud AI with your own key; AI settings show exactly what is sent.", tableName: "Account")
             } header: {
                 Text("Privacy", tableName: "Account")
-            }
-            Section {
-                Text("Moonee's finance skills adapt ideas from the finance plugin of anthropics/knowledge-work-plugins (Apache-2.0).", tableName: "Account")
-            } header: {
-                Text("Thanks", tableName: "Account")
             }
         }
         .navigationTitle(Text("About Moonee", tableName: "Account"))

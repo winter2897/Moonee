@@ -12,6 +12,7 @@ extension Skill {
         case Skill.jarBudgeting.id: String(localized: "Jar budgeting", table: "Account")
         case Skill.closeManagement.id: String(localized: "Month-end close", table: "Account")
         case Skill.marketLookup.id: String(localized: "Market lookup", table: "AI")
+        case Skill.debtTracking.id: String(localized: "Debt book", table: "AI")
         default: String(localized: "Spending coach", table: "Account")
         }
     }
@@ -23,6 +24,7 @@ extension Skill {
         case Skill.jarBudgeting.id: String(localized: "Splitting income and balancing jars.", table: "Account")
         case Skill.closeManagement.id: String(localized: "Month-end checklist and report.", table: "Account")
         case Skill.marketLookup.id: String(localized: "Gold, exchange rates, crypto and news, with sources. Uses web search.", table: "AI")
+        case Skill.debtTracking.id: String(localized: "Who owes you, whom you owe, and when it's due.", table: "AI")
         default: String(localized: "Questions about your spending, with tips.", table: "Account")
         }
     }
@@ -39,6 +41,7 @@ enum ToolInfo {
         case "monthClose": String(localized: "Month-end close", table: "Account")
         case "webSearch": String(localized: "Web search", table: "AI")
         case "marketPrice": String(localized: "Crypto prices", table: "AI")
+        case "debtBook": String(localized: "Debt book", table: "AI")
         default: name
         }
     }

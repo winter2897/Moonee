@@ -59,7 +59,10 @@ extension BudgetAdvisor.Input: Equatable {
                 guard owed > 0, let day = w.dueDay else { return nil }
                 return .init(id: w.ref, name: w.name, owed: owed, due: BudgetActions.nextDate(day: day, from: now, calendar: calendar))
             },
-            income: income, history: history, now: now, calendar: calendar, level: level, muted: muted)
+            income: income, history: history, now: now,
+            // The money's own currency (clean steps and labels), not the phone region's: a VND budget on a US-region iPhone.
+            currency: wallets.first(where: \.inBudget)?.currencyCode ?? Money.defaultCurrency,
+            calendar: calendar, level: level, muted: muted)
     }
 }
 

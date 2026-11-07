@@ -6,6 +6,18 @@
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<!-- CloudKit pushes wake the app to pull iCloud changes (SwiftData sync). -->
+	<!-- moonee://chat: widgets and the Control Center control open the chat composer. -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.haiquan.moonee</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>moonee</string>
+			</array>
+		</dict>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

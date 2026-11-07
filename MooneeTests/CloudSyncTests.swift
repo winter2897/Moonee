@@ -5,6 +5,15 @@ import Testing
 
 @MainActor
 struct CloudSyncTests {
+    /// Builds before the widgets kept the store in Application Support/default.store. The App Group entitlement must not
+    /// move it (SwiftData's `.automatic` would open an empty store in the group container): users keep their data.
+    @Test func storeStaysWhereEarlierBuildsPutIt() {
+        let pinned = ModelConfiguration(schema: Schema.moonee, groupContainer: CloudSync.groupContainer, cloudKitDatabase: .none)
+        #expect(pinned.url == URL.applicationSupportDirectory.appending(path: "default.store"))
+        let automatic = ModelConfiguration(schema: Schema.moonee, cloudKitDatabase: .none)
+        #expect(automatic.url != pinned.url) // the entitlement is there: without the pin the store would move
+    }
+
     /// A reinstall seeds new defaults, then iCloud delivers the old ones (with history): the old copies win,
     /// whatever pointed at the new copies moves over, and user-made jars are kept.
     @Test func mergeDuplicatesKeepsOldestDefaultsAndMovesReferences() throws {

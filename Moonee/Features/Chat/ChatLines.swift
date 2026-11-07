@@ -97,6 +97,13 @@ enum ChatLines {
                 return String(localized: "Sent **\(amount)**. Was it spending, a loan, or paying back a debt?", table: "Chat")
             }
             return String(localized: "Sent **\(amount)** to \(person). Spending, a loan, or paying back a debt?", table: "Chat")
+        case .dueDate:
+            let person = p.person ?? ""
+            return p.kind == .borrow
+                ? pick([String(localized: "When do you plan to pay \(person) back?", table: "Chat"),
+                        String(localized: "When will you pay \(person) back? Moonee will remind you.", table: "Chat")], variant)
+                : pick([String(localized: "When will \(person) pay you back?", table: "Chat"),
+                        String(localized: "When did \(person) say they'd pay you back? Moonee will remind you.", table: "Chat")], variant)
         case .amount, .person:
             let what = p.note.trimmingCharacters(in: .whitespaces)
             if what.isEmpty {
@@ -106,6 +113,22 @@ enum ChatLines {
             return pick([String(localized: "How much was **\(what)**? Just the number is fine, like 45k.", table: "Chat"),
                          String(localized: "How much did **\(what)** cost? Something like 45k works.", table: "Chat")], variant)
         }
+    }
+
+    /// The due date Moonee just saved for a loan.
+    static func dueSaved(_ p: ParsedTxn, calendar: Calendar = .current) -> String {
+        guard let due = p.dueDate else {
+            return String(localized: "Got it, no due date. Moonee will check in every couple of weeks.", table: "Chat")
+        }
+        let day = due.formatted(.dateTime.weekday(.wide).day().month(.defaultDigits))
+        return String(localized: "Okay, due \(day). Moonee will remind you that morning.", table: "Chat")
+    }
+
+    /// After a repayment: what's left on that debt.
+    static func debtLeft(person: String, theyOweMe: Bool, left: String?) -> String {
+        guard let left else { return String(localized: "All settled with \(person)!", table: "Chat") }
+        return theyOweMe ? String(localized: "\(person) still owes you **\(left)**.", table: "Chat")
+                         : String(localized: "You still owe \(person) **\(left)**.", table: "Chat")
     }
 
     static var oneWallet: String {

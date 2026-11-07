@@ -40,12 +40,14 @@ struct RootView: View {
     @State private var lastTab = AppTab.overview
     @AppStorage(Prefs.hideBalances) private var hideBalances = false
     @State private var barHeight: CGFloat = 76
+    /// The `moonee://chat` deep link (widgets) and the Control Center control: the chat opens with the keyboard up.
+    private let route = AppRoute.shared
 
     var body: some View {
         TabView(selection: $tab) {
             Tab(value: .overview) { OverviewView().mooneeTabContent(barHeight: barHeight) }
             Tab(value: .budget) { BudgetView().mooneeTabContent(barHeight: barHeight) }
-            Tab(value: .moonee) { ChatView { tab = lastTab }.toolbarVisibility(.hidden, for: .tabBar) }
+            Tab(value: .moonee) { ChatView(onBack: { tab = lastTab }, composeRequest: route.composeRequest).toolbarVisibility(.hidden, for: .tabBar) }
             Tab(value: .watchlist) { WatchlistView().mooneeTabContent(barHeight: barHeight) }
             Tab(value: .account) { AccountView().mooneeTabContent(barHeight: barHeight) }
         }
@@ -64,7 +66,10 @@ struct RootView: View {
             }
         }
         .environment(\.balanceHidden, hideBalances)
+        .onOpenURL { url in if url == WidgetSnapshot.deepLink { route.composeRequest += 1 } }
+        .onChange(of: route.composeRequest, initial: true) { _, n in if n > 0 { tab = .moonee } }
         .reminderScheduling()
+        .widgetSync() // widget numbers in the App Group (App/WidgetSync.swift)
         .tint(.mooneeGreen)
         .onboarding() // first launch only (Features/Onboarding)
         .appLock() // Face ID lock + App Switcher cover (Features/Account/Security.swift)
@@ -82,6 +87,8 @@ enum Prefs {
     static let profileAvatar = "profile.avatar"
     /// String: "low" | "medium" | "high". Reminder level (spec §3.4), default medium.
     static let reminderLevel = "reminders.level"
+    /// Bool, default on. iCloud sync (spec §6.3); `CloudSync.makeContainer()` reads it, so a change applies on the next launch.
+    static let iCloudSync = "sync.iCloud"
 }
 
 // ponytail: delete once every tab has its real screen

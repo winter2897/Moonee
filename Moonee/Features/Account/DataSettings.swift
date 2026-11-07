@@ -69,22 +69,26 @@ struct DataSettings: View {
     @State private var confirmStep = 0
     @State private var error: String?
     @State private var cloud = CloudSync.Status.off
+    @AppStorage(Prefs.iCloudSync) private var syncOn = true
 
     var body: some View {
         Section {
-            LabeledContent {
-                Text(cloud == .on ? "On" : "Off", tableName: "Account")
-            } label: {
+            Toggle(isOn: $syncOn) {
                 Label { Text("iCloud sync", tableName: "Account") } icon: { SettingsIcon(symbol: cloud == .on ? "checkmark.icloud.fill" : "icloud.slash.fill", color: .blue) }
             }
         } header: {
             Text("Data", tableName: "Account")
         } footer: {
-            switch cloud {
-            case .on: Text("Your data syncs to your own private iCloud, so a new iPhone or a reinstall gets it back. Nobody else, Moonee included, can read it.", tableName: "Account")
-            case .noAccount: Text("Sign in to iCloud (or turn on iCloud for Moonee) in the Settings app to sync. Until then your data stays on this iPhone.", tableName: "Account")
-            case .unavailable: Text("iCloud is not available right now. Your data is safe on this iPhone and syncs when iCloud is back.", tableName: "Account")
-            case .off: Text("Your data is stored on this iPhone only.", tableName: "Account")
+            VStack(alignment: .leading, spacing: 6) {
+                switch cloud {
+                case .on: Text("Your data syncs to your own private iCloud, so a new iPhone or a reinstall gets it back. Nobody else, Moonee included, can read it.", tableName: "Account")
+                case .noAccount: Text("Sign in to iCloud (or turn on iCloud for Moonee) in the Settings app to sync. Until then your data stays on this iPhone.", tableName: "Account")
+                case .unavailable: Text("iCloud is not available right now. Your data is safe on this iPhone and syncs when iCloud is back.", tableName: "Account")
+                case .off: Text("Your data is stored on this iPhone only.", tableName: "Account")
+                }
+                if syncOn != CloudSync.requested {
+                    Text("Takes effect the next time Moonee starts: close it from the App Switcher and open it again.", tableName: "Account")
+                }
             }
         }
         .task { cloud = await CloudSync.status() }

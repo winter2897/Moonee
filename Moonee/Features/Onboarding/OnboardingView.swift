@@ -9,15 +9,20 @@ extension View {
 
 private struct OnboardingModifier: ViewModifier {
     @AppStorage(Prefs.onboardingDone) private var done = false
+    @AppStorage(Prefs.termsVersion) private var termsAccepted = 0
     @Environment(\.modelContext) private var context
 
     func body(content: Content) -> some View {
         content
-            .accessibilityHidden(!done)
+            .accessibilityHidden(!done || Terms.needsConsent(accepted: termsAccepted))
             .overlay {
                 // An overlay, not a cover: the first frame is already onboarding, with no slide-up over the dashboard.
                 if !done {
                     OnboardingFlow { withAnimation(.smooth) { done = true } }
+                        .transition(.opacity)
+                } else if Terms.needsConsent(accepted: termsAccepted) {
+                    // An existing user (or one who skipped onboarding) who hasn't accepted this version of the terms.
+                    ConsentView(updated: termsAccepted > 0)
                         .transition(.opacity)
                 }
             }
@@ -27,15 +32,18 @@ private struct OnboardingModifier: ViewModifier {
     }
 }
 
-/// Step 1 (profile screen), then steps 2–4 as a scripted chat.
+/// Terms consent (until accepted), step 1 (profile screen), then steps 2–4 as a scripted chat.
 struct OnboardingFlow: View {
     var onFinish: () -> Void
     @State private var profileDone = false
+    @AppStorage(Prefs.termsVersion) private var termsAccepted = 0
 
     var body: some View {
         ZStack {
             MooneeBackground()
-            if profileDone {
+            if Terms.needsConsent(accepted: termsAccepted) {
+                ConsentView().transition(.opacity)
+            } else if profileDone {
                 OnboardingChat(onFinish: onFinish).transition(.move(edge: .trailing).combined(with: .opacity))
             } else {
                 ProfileSetupView { withAnimation(.smooth) { profileDone = true } }

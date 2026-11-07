@@ -991,6 +991,28 @@
         }
       }
     },
+    "Spent this month": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃຊ້ໄປເດືອນນີ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใช้ไปเดือนนี้"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã chi tháng này"
+          }
+        }
+      }
+    },
     "Tap + and tell Moonee “lunch 45k” to log your first one.": {
       "localizations": {
         "lo": {
