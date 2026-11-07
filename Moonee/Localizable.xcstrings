@@ -1236,28 +1236,6 @@
         }
       }
     },
-    "Spending in these categories is not counted in any jar.": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ລາຍຈ່າຍໃນໝວດໝູ່ເຫຼົ່ານີ້ ຍັງບໍ່ຖືກນັບເຂົ້າກະປຸກໃດເລີຍ"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "รายจ่ายในหมวดหมู่เหล่านี้ยังไม่ถูกนับเข้ากระปุกไหนเลย"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chi tiêu của các danh mục này chưa được tính vào lọ nào."
-          }
-        }
-      }
-    },
     "Total %lld%%": {
       "localizations": {
         "lo": {

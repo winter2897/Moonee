@@ -216,6 +216,9 @@ struct ChatView: View {
                     .onTapGesture { if !editing { withAnimation { editingCard = m.persistentModelID } } }
                     .accessibilityAction(named: Text("Edit", tableName: "Chat")) { editingCard = m.persistentModelID }
                     .padding(.leading, 20)
+                ForEach(txns.filter { $0.kind == .income }) { t in
+                    IncomeSplitPrompt(txn: t) { editTxn = t }.padding(.leading, 20)
+                }
             }
         }
     }

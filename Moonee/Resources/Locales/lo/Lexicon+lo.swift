@@ -48,6 +48,10 @@ extension Lexicon {
             ("category.salary", ["ເງິນເດືອນ"]),
             ("category.bonus", ["ໂບນັດ"]),
         ],
+        bills: [ // specific first: "học phí nhà trường" is tuition
+            ("category.entertainment", ["netflix", "spotify", "youtube"]),
+            ("category.housing", ["ໄຟ", "ນ້ຳ", "ເຮືອນ", "ເນັດ", "ໂທລະສັບ", "ຄ່າເຊົ່າ"]),
+        ],
         jars: [
             ("jar.essentials", ["ຈຳເປັນ"]), ("jar.investing", ["ລົງທຶນ", "ອິດສະຫຼະພາບທາງການເງິນ"]), ("jar.savings", ["ເງິນອອມ", "ອອມ"]),
             ("jar.growth", ["ພັດທະນາຕົນເອງ", "ການສຶກສາ"]), ("jar.play", ["ຄວາມສຸກ", "ມ່ວນ"]), ("jar.giving", ["ແບ່ງປັນ", "ການໃຫ້"]),

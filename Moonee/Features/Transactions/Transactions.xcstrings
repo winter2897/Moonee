@@ -1057,6 +1057,138 @@
           }
         }
       }
+    },
+    "Unallocated": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa chia vào lọ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยังไม่แบ่งลงกระปุก"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍັງບໍ່ໄດ້ແບ່ງໃສ່ກະປຸກ"
+          }
+        }
+      }
+    },
+    "By percent": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chia theo %"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แบ่งตาม %"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແບ່ງຕາມ %"
+          }
+        }
+      }
+    },
+    "Leave it all in Unallocated": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Để hết ở Chưa chia vào lọ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เก็บไว้ในยังไม่แบ่งลงกระปุกทั้งหมด"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເກັບໄວ້ໃນຍັງບໍ່ໄດ້ແບ່ງໃສ່ກະປຸກທັງໝົດ"
+          }
+        }
+      }
+    },
+    "Split into jars": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chia vào lọ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แบ่งลงกระปุก"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແບ່ງໃສ່ກະປຸກ"
+          }
+        }
+      }
+    },
+    "The jars get more than this income.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Các lọ đang nhận nhiều hơn khoản thu này."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กระปุกได้มากกว่ารายรับนี้"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກະປຸກໄດ້ຫຼາຍກວ່າລາຍຮັບນີ້."
+          }
+        }
+      }
+    },
+    "What no jar gets waits in Unallocated.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phần không vào lọ nào sẽ nằm ở Chưa chia vào lọ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ส่วนที่ไม่ได้ลงกระปุกไหนจะอยู่ในยังไม่แบ่งลงกระปุก"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສ່ວນທີ່ບໍ່ໄດ້ໃສ່ກະປຸກໃດຈະຢູ່ໃນຍັງບໍ່ໄດ້ແບ່ງໃສ່ກະປຸກ."
+          }
+        }
+      }
     }
   }
 }

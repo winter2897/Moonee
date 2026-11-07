@@ -131,10 +131,18 @@ extension Prefs {
             let r = Recurring(name: d.name.trimmingCharacters(in: .whitespaces), amount: d.amount,
                               nextDue: BudgetActions.nextDate(day: min(max(d.day, 1), 31), from: now, calendar: calendar))
             context.insert(r)
-            r.category = categories.first { $0.key == d.categoryKey }
+            // A bill the user named ("Tiền điện", "Học phí", "Netflix") gets its category from the words, not "Other".
+            let key = d.categoryKey == "category.other" ? billCategory(d.name) : d.categoryKey
+            r.category = categories.first { $0.key == key }
             r.wallet = wallet
             return r
         }
+    }
+
+    /// A bill's category from its name, by the parser's dictionary (`Lexicon.bills`, then spending words); else Other
+    /// (in Essentials, so the bill still comes out of a jar).
+    nonisolated static func billCategory(_ name: String) -> String {
+        QuickParser.billCategory(name).flatMap { DefaultKeys.expenseCategories.contains($0) ? $0 : nil } ?? "category.other"
     }
 
     // MARK: Jars
@@ -167,13 +175,19 @@ extension Prefs {
         return p
     }
 
-    /// Writes the accepted percents (must total 100). The wallets just entered stay Unallocated: existing money is
-    /// split once on the Budget tab, by Moonee's plan, by percent or into one jar (spec §4.1 rule A.4; Automatic
-    /// applies the plan by itself).
+    /// Writes the accepted percents (must total 100). The wallets just entered stay Unallocated until the help level is
+    /// chosen (`chooseLevel`, spec §4.1 rule A.4).
     static func applyJars(_ percents: [Int], to jars: [Jar], in context: ModelContext) {
         let sorted = jars.sorted { $0.order < $1.order }
         guard BudgetActions.percentsValid(percents), percents.count == sorted.count else { return }
         for (jar, p) in zip(sorted, percents) { jar.percent = p }
+    }
+
+    /// Spec §7 step 3: the help level. The opening money waiting in Unallocated then follows the one rule for inflows
+    /// (spec §4.1): Automatic splits it by Moonee's plan, Do it myself by percent, Suggest leaves it for the Budget card.
+    static func chooseLevel(_ level: AdvisorLevel, now: Date = .now, calendar: Calendar = .current, in context: ModelContext) {
+        UserDefaults.standard.set(level.rawValue, forKey: Prefs.advisorLevel)
+        BudgetActions.receive(BudgetActions.unallocated(in: context), level: level, date: now, in: context, calendar: calendar)
     }
 
     // MARK: AI mode

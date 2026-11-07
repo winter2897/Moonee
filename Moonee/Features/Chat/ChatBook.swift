@@ -243,7 +243,9 @@ struct ChatCardLine: Codable, Equatable {
 
     /// Saves every parsed transaction that is complete and allocates it to jars once. The rest are skipped:
     /// the chat asks for what is missing (`Lookup.unresolved`) instead of guessing.
-    static func save(_ parsed: [ParsedTxn], source: TxSource, rawInput: String, in context: ModelContext) -> [Txn] {
+    /// Money in follows the one rule for inflows (`BudgetActions.receive`): `level` decides its split.
+    static func save(_ parsed: [ParsedTxn], source: TxSource, rawInput: String, level: AdvisorLevel = .current,
+                     in context: ModelContext) -> [Txn] {
         let categories = (try? context.fetch(FetchDescriptor<Category>())) ?? []
         let book = Lookup(context)
         var debts = (try? context.fetch(FetchDescriptor<Debt>())) ?? []
@@ -298,7 +300,8 @@ struct ChatCardLine: Codable, Equatable {
             case .expense: t.jar = book.jar(p.jar) // a jar the user named; else allocate takes the category's
             case .income: break
             }
-            t.allocate(jars: book.jars, in: context)
+            // Money in follows the one rule for inflows (spec §4.1): the help level splits it, or it waits in Unallocated.
+            if kind == .income { BudgetActions.receive(income: t, level: level, in: context) } else { t.allocate(jars: book.jars, in: context) }
             out.append(t)
         }
         return out

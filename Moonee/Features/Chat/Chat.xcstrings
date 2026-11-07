@@ -1564,28 +1564,6 @@
         }
       }
     },
-    "Nice, **%@** came in from %@ %@.": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ດີຫຼາຍ, ມີ **%@** ເຂົ້າມາຈາກ%@ %@."
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "เยี่ยม! มี **%@** เข้ามาจาก%@ %@"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tuyệt, có **%1$@** tiền vào từ %2$@ %3$@ nhé."
-          }
-        }
-      }
-    },
     "Money in! **%@** from %@ %@, split into your jars.": {
       "localizations": {
         "lo": {
@@ -3367,6 +3345,226 @@
           "stringUnit": {
             "state": "translated",
             "value": "ຕ້ອງສົ່ງຄືນ: **%@**"
+          }
+        }
+      }
+    },
+    "Moonee split it: %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee đã chia: %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee แบ่งให้แล้ว: %@"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ແບ່ງໃຫ້ແລ້ວ: %@"
+          }
+        }
+      }
+    },
+    "Split into jars: %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã chia vào lọ: %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แบ่งลงกระปุกแล้ว: %@"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແບ່ງໃສ່ກະປຸກແລ້ວ: %@"
+          }
+        }
+      }
+    },
+    "Undo": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoàn tác"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยกเลิก"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍົກເລີກ"
+          }
+        }
+      }
+    },
+    "**%@** is waiting in Unallocated. Split it now?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**%@** đang nằm ở Chưa chia vào lọ. Chia luôn nhé?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**%@** ยังอยู่ในยังไม่แบ่งลงกระปุก แบ่งเลยไหม?"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**%@** ຍັງຢູ່ໃນຍັງບໍ່ໄດ້ແບ່ງໃສ່ກະປຸກ. ແບ່ງເລີຍບໍ?"
+          }
+        }
+      }
+    },
+    "Split as Moonee suggests": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chia theo gợi ý của Moonee"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แบ่งตามที่ Moonee แนะนำ"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແບ່ງຕາມທີ່ Moonee ແນະນຳ"
+          }
+        }
+      }
+    },
+    "By %": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Theo %"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตาม %"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕາມ %"
+          }
+        }
+      }
+    },
+    "Later": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Để sau"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไว้ทีหลัง"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໄວ້ພາຍຫຼັງ"
+          }
+        }
+      }
+    },
+    "Nice, **%@** came in from %@ %@. It's waiting in Unallocated.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tuyệt, có **%1$@** tiền vào từ %2$@ %3$@. Tiền đang nằm ở Chưa chia vào lọ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เยี่ยม! มี **%1$@** เข้ามาจาก%2$@ %3$@ ตอนนี้อยู่ในยังไม่แบ่งลงกระปุก"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ດີຫຼາຍ, ມີ **%1$@** ເຂົ້າມາຈາກ%2$@ %3$@. ຕອນນີ້ຢູ່ໃນຍັງບໍ່ໄດ້ແບ່ງໃສ່ກະປຸກ."
+          }
+        }
+      }
+    },
+    "Money in! **%@** from %@ %@. Split it into your jars below?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Có tiền vào! **%1$@** từ %2$@ %3$@. Chia vào các lọ ngay bên dưới nhé?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เงินเข้า! **%1$@** จาก%2$@ %3$@ แบ่งลงกระปุกข้างล่างเลยไหม?"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເງິນເຂົ້າ! **%1$@** ຈາກ%2$@ %3$@. ແບ່ງໃສ່ກະປຸກຂ້າງລຸ່ມເລີຍບໍ?"
+          }
+        }
+      }
+    },
+    "Nice, **%@** came in from %@ %@, split into your jars.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tuyệt, có **%1$@** tiền vào từ %2$@ %3$@, đã chia vào các lọ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เยี่ยม! มี **%1$@** เข้ามาจาก%2$@ %3$@ แบ่งลงกระปุกแล้ว"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ດີຫຼາຍ, ມີ **%1$@** ເຂົ້າມາຈາກ%2$@ %3$@, ແບ່ງໃສ່ກະປຸກແລ້ວ."
           }
         }
       }

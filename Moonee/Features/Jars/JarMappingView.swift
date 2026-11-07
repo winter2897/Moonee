@@ -18,7 +18,7 @@ struct JarMappingView: View {
                     Label("No jar (\(unassigned.count))", systemImage: "exclamationmark.triangle.fill")
                         .foregroundStyle(.orange).textCase(nil)
                 } footer: {
-                    Text("Spending in these categories is not counted in any jar.")
+                    Text("Spending in these categories is not counted in any jar. Pick one, or keep it out in the category's Advanced settings.", tableName: "Account")
                 }
             }
             Section("Assigned") {
@@ -33,7 +33,7 @@ struct JarMappingView: View {
 
     private func row(_ c: Category) -> some View {
         Picker(selection: Binding(get: { c.jar }, set: { c.jar = $0 })) {
-            Text("No jar").tag(nil as Jar?)
+            if c.jar == nil { Text("No jar").tag(nil as Jar?) } // set only in the category's Advanced settings (P0-2)
             ForEach(jars) { Label($0.name, systemImage: $0.icon).tag($0 as Jar?) }
         } label: {
             Label { Text(c.name) } icon: { Image(systemName: c.icon).foregroundStyle(c.color) }

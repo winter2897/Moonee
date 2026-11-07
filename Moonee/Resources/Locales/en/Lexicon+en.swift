@@ -47,6 +47,14 @@ extension Lexicon {
             ("category.salary", ["salary", "paycheck"]),
             ("category.bonus", ["bonus"]),
         ],
+        bills: [ // specific first: "học phí nhà trường" is tuition
+            ("category.entertainment", ["netflix", "spotify", "youtube", "icloud", "subscription"]),
+            ("category.education", ["tuition", "school"]),
+            ("category.health", ["insurance", "gym"]),
+            ("category.transport", ["parking", "fuel"]),
+            ("category.housing", ["rent", "electricity", "electric", "power", "water", "gas", "internet", "wifi", "phone", "mobile",
+                                  "utilities", "hoa"]),
+        ],
         jars: [
             ("jar.essentials", ["essentials", "necessities"]), ("jar.investing", ["investment", "investing", "financial freedom"]),
             ("jar.savings", ["savings", "saving"]), ("jar.growth", ["education", "self-development", "growth"]),

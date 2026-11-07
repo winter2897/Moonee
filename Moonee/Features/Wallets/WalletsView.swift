@@ -270,6 +270,8 @@ struct WalletForm: View {
         w.creditLimit = type == .credit && limit > 0 ? limit : nil
         w.statementDay = type == .credit ? statementDay : nil
         w.dueDay = type == .credit ? dueDay : nil
+        // A new budget wallet's money is new money for the jars: the one rule for inflows (spec §4.1).
+        if wallet == nil, w.inBudget, type != .credit { BudgetActions.receive(initial, in: context) }
         dismiss()
     }
 }

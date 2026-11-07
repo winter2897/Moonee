@@ -54,6 +54,13 @@ extension Lexicon {
             ("category.salary", ["lương"]),
             ("category.bonus", ["thưởng"]),
         ],
+        bills: [ // specific first: "học phí nhà trường" is tuition
+            ("category.entertainment", ["netflix", "spotify", "youtube", "icloud"]),
+            ("category.education", ["học phí", "học"]),
+            ("category.health", ["bảo hiểm", "gym"]),
+            ("category.transport", ["gửi xe", "xăng"]),
+            ("category.housing", ["điện", "nước", "nhà", "internet", "wifi", "mạng", "điện thoại", "chung cư", "phí quản lý", "gas", "rác"]),
+        ],
         jars: [
             ("jar.essentials", ["thiết yếu"]), ("jar.investing", ["đầu tư", "tự do tài chính"]), ("jar.savings", ["tiết kiệm"]),
             ("jar.growth", ["phát triển bản thân", "giáo dục"]), ("jar.play", ["hưởng thụ", "vui chơi"]), ("jar.giving", ["từ thiện", "cho đi"]),

@@ -43,7 +43,7 @@ MLX compiles Metal shaders: a fresh machine needs `xcodebuild -downloadComponent
 
 ## Conventions
 - Add new `@Model` types in your feature folder and register them in `Schema.mooneeModels` (Models.swift). Keep them CloudKit-ready (defaults/optionals, optional relationships with inverses, no `.unique`).
-- Every txn creator (chat, form, import, onboarding) calls `txn.allocate(jars:in:)` once at save: it pins the expense jar and writes the income splits, so later percent edits / category remaps never change jar history.
+- Every txn creator (chat, form, import, onboarding) calls `txn.allocate(jars:in:)` once at save: it pins the expense jar, so later category remaps never change jar history. Money coming in (an income, opening balances, a new wallet, selling an asset, a savings withdrawal) goes through `BudgetActions.receive` instead: the help level decides its split (spec §4.1). Every expense category has a jar (`Seed.assignOrphanCategories`).
 - Money: store minor units + `currencyCode`, format with `Money.formatted()`, compute with `Ledger`. Never `"\(amount)đ"`.
 - UI text goes through the String Catalog (English key + `vi`); store keys, not translated text.
 - Secrets (API keys) go in Keychain, never SwiftData/UserDefaults.
