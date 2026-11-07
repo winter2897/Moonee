@@ -67,6 +67,26 @@ struct LedgerTests {
         #expect(l.walletBalance("cash") == 3_000_000 - 850_001) // jar transfer moved no wallet money
     }
 
+    /// P0-3: buying an asset / a savings deposit out of a jar is "Set aside": it lowers the balance, never "Available this month".
+    @Test func setAsideIsApartFromAvailable() {
+        let l = L(entries: [
+            e(.income, 5_000_000, day(10, 1), wallet: "bank", splits: ["invest": 5_000_000]),
+            e(.transfer, 1_000_000, day(10, 20), wallet: "bank", jar: "invest"),                 // October: in the carry-over
+            e(.income, 2_000_000, day(11, 1), wallet: "bank", splits: ["invest": 2_000_000]),
+            e(.transfer, 1_500_000, day(11, 5), wallet: "bank", jar: "invest"),                  // gold
+            e(.transfer, 500_000, day(11, 6), wallet: "bank", to: "savings", jar: "invest"),     // deposit
+            e(.expense, 100_000, day(11, 7), wallet: "bank", jar: "invest"),
+        ], offBudget: ["savings"])
+        let m = l.jarMonth("invest", in: november)
+        #expect(m.start == 4_000_000)
+        #expect(m.added == 2_000_000)
+        #expect(m.budget == 6_000_000) // not 4tr: saving never shrinks what the month had
+        #expect(m.setAside == 2_000_000)
+        #expect(m.spent == 100_000)
+        #expect(m.endBalance == 3_900_000 && m.endBalance == l.jarBalance("invest"))
+        #expect(l.monthTotals(["invest", "play"], in: november).setAside == 2_000_000)
+    }
+
     @Test func overspentAndEmptyJarProgress() {
         let l = L(entries: [e(.expense, 10, jar: "play")])
         #expect(l.jarMonth("play", in: november).progress == .infinity)

@@ -20,6 +20,29 @@ struct WalletsView: View {
     }
 }
 
+/// The Budget tab's one wallet row (P0-3): "Wallets · 25tr · in budget 22tr", opening `WalletsView`.
+struct WalletsSummaryRow: View {
+    @Query(sort: \Wallet.order) private var wallets: [Wallet]
+    @Query private var txns: [Txn]
+    @Environment(\.balanceHidden) private var hidden
+
+    var body: some View {
+        let ledger = Ledger(txns: txns, wallets: wallets, jars: [])
+        let total = wallets.reduce(0) { $0 + ledger.walletBalance($1.persistentModelID) }
+        let cardDebt = wallets.filter { $0.type == .credit }.reduce(0) { $0 + max(-ledger.walletBalance($1.persistentModelID), 0) }
+        let money = { (m: Int) in hidden ? AmountFormat.mask : AmountFormat.string(m, Money.defaultCurrency, short: true) }
+        let parts = (wallets.contains { !$0.inBudget } ? [String(localized: "in budget \(money(ledger.budgetBalance))", table: "Budget")] : [])
+            + (cardDebt > 0 ? [String(localized: "card debt \(money(cardDebt))", table: "Budget")] : [])
+        NavigationLink(value: BudgetRoute.wallets) {
+            BudgetRow(title: loc("Wallets"), symbol: "wallet.bifold.fill") {
+                if !parts.isEmpty { Text(parts.joined(separator: " · ")).foregroundStyle(Color.inkSecondary) }
+            } value: {
+                AmountText(total, currency: Money.defaultCurrency)
+            }
+        }
+    }
+}
+
 /// Wallets section of the Budget list (spec §4.2): total, each wallet, credit cards with debt, limit and due day.
 struct WalletsSection: View {
     @Binding var sheet: BudgetSheet?

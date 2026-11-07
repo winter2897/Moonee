@@ -239,6 +239,64 @@ import Testing
         #expect(BudgetAdvisor(i).rebalance() == nil) // needs 2 months
     }
 
+    /// P1-3: "about X a day" = left ÷ days left (today included), rounded down to a clean step.
+    @Test func dailyAllowance() {
+        let a = BudgetAdvisor(input([], budget: 0, now: at(11, 10)))
+        #expect(a.daysLeft == 21)
+        #expect(a.perDay(1_000_000) == 40_000)   // 47.619 → 40k
+        #expect(a.perDay(5_000_000) == 230_000)  // 238.095 → 230k
+        #expect(a.perDay(150_000) == 7_000)      // under one step: a finer one
+        #expect(a.perDay(0) == 0 && a.perDay(-113_000) == 0)
+        #expect(BudgetAdvisor(input([], budget: 0, now: at(11, 30, 22))).daysLeft == 1)
+    }
+
+    /// P1-3: "at this pace, about Y by month end" = spent ÷ days gone × days in the month; nothing in the first week.
+    @Test func monthEndForecast() {
+        let a = BudgetAdvisor(input([], budget: 0, now: at(11, 10)))  // 10 of 30 days gone
+        #expect(a.monthEndForecast(spent: 1_000_000) == 3_000_000)
+        #expect(a.monthEndForecast(spent: 1_234_567) == 3_700_000)
+        #expect(a.monthEndForecast(spent: 0) == nil)
+        #expect(BudgetAdvisor(input([], budget: 0, now: at(11, 6))).monthEndForecast(spent: 1_000_000) == nil)
+        #expect(BudgetAdvisor(input([], budget: 0, now: at(11, 6))).monthEndForecast(spent: 1_000_000, minDays: 1) == 5_000_000)
+    }
+
+    /// P0-3: jars below zero are covered from Unallocated, worst first, while the money lasts.
+    @Test func coverFromUnallocated() {
+        let a = BudgetAdvisor(input([j("ess", .essentials, -113_000), j("play", .play, -50_000), j("sav", .savings, 0)],
+                                    budget: 0, unallocated: 140_000, now: at(11, 6)))
+        let c = a.unallocatedCover
+        #expect(c?.moves == [.init(from: nil, to: "ess", amount: 113_000), .init(from: nil, to: "play", amount: 27_000)])
+        #expect(c?.amount == 140_000)
+        #expect(BudgetAdvisor(input([j("ess", .essentials, -113_000)], budget: 0, unallocated: 0, now: at(11, 6))).unallocatedCover == nil)
+        #expect(BudgetAdvisor(input([j("ess", .essentials, 0)], budget: 0, unallocated: 500, now: at(11, 6))).unallocatedCover == nil)
+    }
+
+    /// The owner's phone: 20tr unsplit and lunch −113k. The header shows money to split (never a red total), offers to cover
+    /// Essentials; Automatic covers it by itself, says so, and Undo puts it back.
+    @Test func ownerUnsplitMoneyCoversTheLunch() throws {
+        let (context, _) = try owner(bank: 20_000_000)
+        let f = try facts(context, now: at(11, 6, 13))
+        #expect(f.unallocated == 20_000_000) // wallets 19,887tr, jars −113k
+        #expect(f.left == -113_000)
+        let cover = try #require(f.advisor.unallocatedCover)
+        #expect(cover.moves == [.init(from: nil, to: "jar.essentials", amount: 113_000)])
+
+        let defaults = UserDefaults.standard
+        let saved = (defaults.string(forKey: Prefs.advisorLevel), defaults.stringArray(forKey: Prefs.advisorHandled), defaults.data(forKey: Prefs.advisorAuto))
+        defer {
+            defaults.set(saved.0, forKey: Prefs.advisorLevel)
+            defaults.set(saved.1, forKey: Prefs.advisorHandled)
+            defaults.set(saved.2, forKey: Prefs.advisorAuto)
+        }
+        defaults.set(AdvisorLevel.automatic.rawValue, forKey: Prefs.advisorLevel)
+        defaults.removeObject(forKey: Prefs.advisorHandled)
+        let record = try #require(Autopilot.run(context, now: at(11, 6, 13), calendar: cal, notify: false))
+        #expect(record.title == loc("Moonee covered a jar below zero"))
+        #expect(try balance("jar.essentials", context) == 0)
+        Autopilot.undo(record, in: context)
+        #expect(try balance("jar.essentials", context) == -113_000)
+    }
+
     @Test func emergencyCheckBeforeBuying() {
         var i = input([j("ess", .essentials, 0, percent: 50), j("sav", .savings, 10_000_000)], budget: 10_000_000, now: at(11, 6))
         i.income = .init(name: "Salary", amount: 20_000_000, due: day(11, 25), next: day(12, 25))

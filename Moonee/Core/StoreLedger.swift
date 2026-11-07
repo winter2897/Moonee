@@ -48,6 +48,9 @@ struct BudgetFacts: Sendable, Equatable {
         var percent: Int
         /// Carried over from before the month, added during it (income splits, moves), spent, balance at the end.
         var start, added, spent, balance: Int
+        /// Assets bought / savings deposits out of the jar this month ("Set aside"): not spending, not in `budget`.
+        var setAside = 0
+        /// "Available this month": start + added.
         var budget: Int { start + added }
     }
 
@@ -72,11 +75,14 @@ struct BudgetFacts: Sendable, Equatable {
     var advisor: BudgetAdvisor
     var advice: [BudgetAdvisor.Advice] { month.contains(advisor.input.now) ? advisor.advice : [] }
 
-    /// "Total budget": what the jars have for the month (start of month + added).
+    /// "Available this month": what the jars have for the month (start of month + added).
     var budget: Int { jars.reduce(0) { $0 + $1.budget } }
     var spent: Int { jars.reduce(0) { $0 + $1.spent } }
-    /// "Left" = budget − spent.
-    var left: Int { budget - spent }
+    var setAside: Int { jars.reduce(0) { $0 + $1.setAside } }
+    /// "Left to spend this month" = Σ jar balances at the month's end = budget − spent − set aside.
+    var left: Int { jars.reduce(0) { $0 + $1.balance } }
+    /// "About X a day": `left` over the days left in the month (today included), on a clean step. 0 outside this month.
+    var perDay: Int { month.contains(advisor.input.now) ? advisor.perDay(left) : 0 }
     var billsTotal: Int { bills.reduce(0) { $0 + $1.amount } }
 
     @MainActor init(txns: [Txn], wallets: [Wallet], jars: [Jar], recurrings: [Recurring], month: DateInterval? = nil,
@@ -89,7 +95,8 @@ struct BudgetFacts: Sendable, Equatable {
         self.month = month
         self.jars = jars.sorted { $0.order < $1.order }.map { j in
             let m = ledger.jarMonth(j.persistentModelID, in: month)
-            return JarLine(key: j.parserKey, name: j.name, percent: j.percent, start: m.start, added: m.added, spent: m.spent, balance: m.endBalance)
+            return JarLine(key: j.parserKey, name: j.name, percent: j.percent, start: m.start, added: m.added, spent: m.spent,
+                           balance: m.endBalance, setAside: m.setAside)
         }
         unallocated = ledger.unallocated
         income = ledger.income(in: month)

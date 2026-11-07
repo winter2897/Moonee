@@ -252,6 +252,39 @@ struct BudgetAdvisor: Sendable {
         return amount / st * st
     }
 
+    /// Days left in this month, today included (1 on the last day).
+    var daysLeft: Int { max(days(to: input.calendar.dateInterval(of: .month, for: input.now)!.end), 1) }
+
+    /// "About X a day" (P1-3): `left` ÷ days left in the month, rounded down to a clean step. Nothing left: 0.
+    func perDay(_ left: Int) -> Int { left > 0 ? roundDown(left / daysLeft) : 0 }
+
+    /// "At this pace, about Y by month end" (P1-3): spent ÷ days gone (today included) × days in the month, on a clean step.
+    /// nil before `minDays` have gone: a rent paid on the 1st would read as 30 rents.
+    func monthEndForecast(spent: Int, minDays: Int = 7) -> Int? {
+        let monthDays = input.calendar.range(of: .day, in: .month, for: input.now)?.count ?? 30
+        let gone = monthDays - daysLeft + 1
+        guard spent > 0, gone >= minDays else { return nil }
+        return roundDown(spent * monthDays / gone)
+    }
+
+    /// Jars below zero that Unallocated money can refill, worst first: "Cover from unallocated" (Suggest, Do it myself)
+    /// or what Automatic does by itself. Each jar gets back to zero while the money lasts. nil: nothing to cover.
+    var unallocatedCover: Advice? {
+        var left = input.unallocated
+        var moves: [Move] = []
+        for j in input.jars.filter({ $0.balance < 0 }).sorted(by: { $0.balance < $1.balance }) where left > 0 {
+            let a = min(-j.balance, left)
+            moves.append(Move(from: nil, to: j.id, amount: a))
+            left -= a
+        }
+        guard !moves.isEmpty else { return nil }
+        let names = moves.map { name($0.to) }.formatted(.list(type: .and).locale(input.locale))
+        let total = moves.reduce(0) { $0 + $1.amount }
+        return Advice(kind: .negativeJar, title: loc("Moonee covered a jar below zero"),
+                      text: String(localized: "\(money(total)) from Unallocated into \(names).", table: "Budget"),
+                      moves: moves, ref: "unallocated", amount: total)
+    }
+
     /// Rounds each jar's share up to a clean step (so a need or a refill is never short) and lets Savings (or the last
     /// jar with a share) absorb the difference, so the plan still adds up exactly. Too small to round: unchanged.
     func clean(_ shares: [String: Int]) -> [String: Int] {
@@ -347,9 +380,7 @@ struct BudgetAdvisor: Sendable {
                               text: String(localized: "\(money(b.amount)). Mark it paid once it's done.", table: "Budget"), ref: b.id, amount: b.amount))
         }
 
-        let month = input.calendar.dateInterval(of: .month, for: input.now)!
         let monthDays = input.calendar.range(of: .day, in: .month, for: input.now)?.count ?? 30
-        let daysLeft = max(days(to: month.end), 1) // today included
         let gone = Double(monthDays - daysLeft + 1) / Double(monthDays)
         let fast = input.jars.filter { !$0.role.isReserve && $0.budget > 0 && $0.balance > 0 }
             .map { ($0, Double($0.spent) / Double($0.budget)) }

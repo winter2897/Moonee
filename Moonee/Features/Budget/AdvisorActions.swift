@@ -306,6 +306,12 @@ extension BudgetActions {
         guard AdvisorLevel.current == .automatic else { return nil }
         let handled = AdvisorMemory.handledToday(now: now)
         let facts = BudgetFacts(context, now: now, calendar: calendar)
+        // P0-3: a jar below zero while money waits in Unallocated: Moonee covers it and says so (Undo puts it back).
+        if let c = facts.advisor.unallocatedCover, !handled.contains(c.id) {
+            let txns = BudgetActions.apply(c, date: now, in: context, calendar: calendar)
+            AdvisorMemory.handle(c, now: now)
+            return record(txns, id: c.id, kind: c.kind, title: c.title, text: c.text, now: now, notify: notify)
+        }
         guard let a = facts.advice.first(where: { auto.contains($0.kind) && !handled.contains($0.id) && !$0.moves.isEmpty }),
               !(a.kind == .payday && facts.advisor.input.income?.isEstimate == true) else { return nil }
         let previousDue = a.kind == .payday ? facts.advisor.input.income?.due : nil

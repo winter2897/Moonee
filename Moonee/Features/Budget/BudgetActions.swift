@@ -135,5 +135,5 @@ extension Recurring {
 
 extension Ledger.JarMonth {
     /// Balance at the end of the month shown (equals the live balance for the current month).
-    var endBalance: Int { start + added - spent }
+    var endBalance: Int { start + added - spent - setAside }
 }
