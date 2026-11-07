@@ -16,6 +16,9 @@ struct MooneeApp: App {
         Seed.ifNeeded(container.mainContext)
         Seed.mergeDuplicates(container.mainContext)
         Seed.assignOrphanCategories(container.mainContext)
+        #if DEBUG
+        DemoUser.seedIfRequested(container.mainContext) // -demoUser YES
+        #endif
         LLMSettings.migrate() // one-time: old openAICompatible provider → OpenRouter / Custom; Apple mode → Local
     }
 

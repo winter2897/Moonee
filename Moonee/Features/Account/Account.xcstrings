@@ -3018,6 +3018,116 @@
           }
         }
       }
+    },
+    "Erase and load": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລຶບແລ້ວໂຫຼດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ลบแล้วโหลด"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xoá và nạp"
+          }
+        }
+      }
+    },
+    "Everything on this iPhone is erased first. This cannot be undone.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຂໍ້ມູນທັງໝົດໃນ iPhone ນີ້ຈະຖືກລຶບກ່ອນ ແລະ ຍົກເລີກບໍ່ໄດ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ข้อมูลทั้งหมดบน iPhone เครื่องนี้จะถูกลบก่อน และย้อนกลับไม่ได้"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toàn bộ dữ liệu trên iPhone này sẽ bị xoá trước. Không thể hoàn tác."
+          }
+        }
+      }
+    },
+    "Load sample data": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂຫຼດຂໍ້ມູນຕົວຢ່າງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โหลดข้อมูลตัวอย่าง"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nạp dữ liệu mẫu"
+          }
+        }
+      }
+    },
+    "Load sample data?": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂຫຼດຂໍ້ມູນຕົວຢ່າງບໍ?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โหลดข้อมูลตัวอย่างไหม?"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nạp dữ liệu mẫu?"
+          }
+        }
+      }
+    },
+    "Test builds only: a sample user, Minh, with 3 months of spending, jars, bills, debts and chats.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສະເພາະເວີຊັນທົດສອບ: ຜູ້ໃຊ້ຕົວຢ່າງຊື່ Minh ພ້ອມລາຍຈ່າຍ 3 ເດືອນ, ໂຖເງິນ, ບິນ, ໜີ້ ແລະ ແຊັດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เฉพาะเวอร์ชันทดสอบ: ผู้ใช้ตัวอย่างชื่อ Minh พร้อมรายจ่าย 3 เดือน โถเงิน บิล หนี้ และแชต"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chỉ có ở bản thử nghiệm: người dùng mẫu Minh với 3 tháng chi tiêu, hũ, hoá đơn, sổ nợ và trò chuyện."
+          }
+        }
+      }
     }
   },
   "version": "1.0"
