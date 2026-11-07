@@ -640,50 +640,6 @@
         }
       }
     },
-    "Say a spend": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ເວົ້າລາຍຈ່າຍ"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "พูดรายจ่าย"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nói chi tiêu"
-          }
-        }
-      }
-    },
-    "Scan a receipt": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ສະແກນໃບບິນຮັບເງິນ"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "สแกนใบเสร็จ"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chụp hoá đơn"
-          }
-        }
-      }
-    },
     "Search chats": {
       "localizations": {
         "lo": {
@@ -856,28 +812,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hôm nay"
-          }
-        }
-      }
-    },
-    "Type it in": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ພິມເອົາ"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "พิมพ์เอง"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nhập thông tin"
           }
         }
       }

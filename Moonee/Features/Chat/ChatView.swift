@@ -168,22 +168,9 @@ struct ChatView: View {
 
     // MARK: Messages
 
+    /// Moonee's hello. No shortcut chips under it: the composer already has the mic, camera and text field.
     private var greeting: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            ChatBubble(.moonee, String(localized: "**Hi there!**\nWhat can Moonee do for you today? Log a spend, ask about your money, or snap a receipt.", table: "Chat"))
-            // One row when the three fit (mockup), else the third wraps: never cut off at the edge (UI review C-3).
-            let say = QuickReplyChip(title: String(localized: "Say a spend", table: "Chat"), symbol: "mic", action: startVoice)
-            let scan = QuickReplyChip(title: String(localized: "Scan a receipt", table: "Chat"), symbol: "camera", action: openCamera)
-            let type = QuickReplyChip(title: String(localized: "Type it in", table: "Chat"), symbol: "pencil") { focused = true }
-            ViewThatFits(in: .horizontal) {
-                HStack(spacing: 8) { say; scan; type }
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack(spacing: 8) { say; scan }
-                    type
-                }
-            }
-            .padding(.vertical, 4)
-        }
+        ChatBubble(.moonee, String(localized: "**Hi there!**\nWhat can Moonee do for you today? Log a spend, ask about your money, or snap a receipt.", table: "Chat"))
     }
 
     @ViewBuilder private func row(_ i: Int) -> some View {
