@@ -326,6 +326,11 @@ struct ChatView: View {
             return
         }
         pending = nil
+        // "đặt hạn mức ăn uống 3tr": a setting, not a transaction.
+        if let done = ChatBook.setLimit(input, in: context) {
+            reply(done, mood: .happy)
+            return
+        }
 
         busy = true
         let assistant = Assistant(router: LLMSettings.router(), tools: MooneeTools(ledger: StoreLedger(context)), catalog: SkillCatalog(context))

@@ -133,6 +133,18 @@ enum QuickParser {
         return (period, parse(text, context: context).first?.categoryKey, jar)
     }
 
+    /// "đặt hạn mức ăn uống 3tr" / "set food limit 3m": a monthly limit for one expense category (spec P1-1), or nil.
+    /// Needs a limit word, one amount and a category; a question ("hạn mức ăn uống còn bao nhiêu?") is not one.
+    static func limit(in text: String, context: ParserContext = .init()) -> (categoryKey: String, amount: Int)? {
+        let tokens = Token.split(text)
+        guard [Phrase](phrases: context.lexicons.flatMap(\.limitWords)).contained(in: tokens), !isQuestion(text, lexicons: context.lexicons),
+              let amount = amount(in: text, context: context), amount.amount > 0,
+              let key = parse(text, context: context).first?.categoryKey ?? hints(in: text, context: context).categoryKey,
+              !DefaultKeys.incomeCategories.contains(key)
+        else { return nil }
+        return (key, amount.amount)
+    }
+
     /// A bill's category from its name (onboarding: "Điện", "Nước", "Học phí"): bill words first, then spending words.
     static func billCategory(_ name: String, context: ParserContext = .init()) -> String? {
         let tokens = Token.split(name)

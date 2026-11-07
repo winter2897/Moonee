@@ -61,6 +61,7 @@ extension Lexicon {
             ("jar.play", ["play", "fun"]), ("jar.giving", ["giving"]),
         ],
         jarWords: ["jar"],
+        limitWords: ["limit", "spending limit"],
         questionCues: ["how much", "how many", "what", "why", "should i", "how do", "how can", "can i", "tips", "advice"],
         skillCues: [
             ("close-management", ["close the month", "month end", "month-end", "monthly report", "wrap up the month"]),

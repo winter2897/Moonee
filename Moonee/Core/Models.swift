@@ -205,6 +205,8 @@ private func displayName(key: String?, customName: String?) -> String {
     /// Picks which copy of a default survives when two installs meet in iCloud (`Seed.mergeDuplicates`).
     var createdAt: Date = Date.now
     var jar: Jar?
+    /// Spending limit per month inside its jar, minor units (spec P1-1). nil = none. Only a limit: the jar holds the money.
+    var monthlyLimit: Int?
     @Relationship(deleteRule: .nullify, inverse: \Txn.category) var txns: [Txn]? = []
     @Relationship(deleteRule: .nullify, inverse: \Recurring.category) var recurrings: [Recurring]? = []
     @Relationship(deleteRule: .cascade, inverse: \MerchantRule.category) var rules: [MerchantRule]? = []

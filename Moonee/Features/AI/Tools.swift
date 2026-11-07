@@ -28,9 +28,13 @@ struct MooneeTools: Sendable {
 
     var monthBudget: AITool {
         AITool(name: "monthBudget",
-               description: "This month's budget exactly as the Budget tab shows it: total budget the jars hold, spent, left to spend, left after the bills still due, money in wallets not split into jars yet, income received, the expected salary and payday, unpaid bills due this month, each jar's budget, spent and left, and Moonee's advice now (the plan with its numbers and why, the same as the Budget card). Explain the advice; never change its numbers.",
-               parameters: .object([])) { (_: ToolArgs) -> BudgetReply in
+               description: "This month's budget exactly as the Budget tab shows it: total budget the jars hold, spent, left to spend, left after the bills still due, money in wallets not split into jars yet, income received, the expected salary and payday, unpaid bills due this month, each jar's budget, spent and left with its category spending limits (limit, spent, left, status ok/warning/over), and Moonee's advice now (the plan with its numbers and why, the same as the Budget card). With categoryKey, \"category\" is that category's month (limit null = no limit set). Explain the advice; never change its numbers.",
+               parameters: .object([Self.category])) { (a: ToolArgs) -> BudgetReply in
             guard let b = try await ledger.budget() else { throw LLMError("budget unavailable") }
+            let limit = { (c: BudgetFacts.CategoryLine) in
+                BudgetReply.Limit(name: c.name, spent: money(c.spent), limit: c.limit.map(money), left: c.left.map { money(max($0, 0)) },
+                                  over: c.left.flatMap { $0 < 0 ? money(-$0) : nil }, status: c.level.map { $0 == .normal ? "ok" : $0 == .warning ? "warning" : "over" })
+            }
             let due = { (d: BudgetFacts.Due) in BudgetReply.Due(name: d.name, amount: money(d.amount), date: day(d.date), estimate: d.isEstimate ? true : nil) }
             return BudgetReply(
                 month: "\(day(b.month.start)) – \(day(b.month.end.addingTimeInterval(-1)))", today: day(now()),
@@ -38,7 +42,12 @@ struct MooneeTools: Sendable {
                 billsStillDue: money(b.billsTotal), leftAfterBills: money(b.left - b.billsTotal),
                 unallocated: money(b.unallocated), incomeReceived: money(b.income),
                 expectedIncome: b.expectedIncome.map(due), billsDueThisMonth: b.bills.map(due),
-                jars: b.jars.map { .init(name: $0.name, budget: money($0.budget), spent: money($0.spent), left: money($0.balance)) },
+                jars: b.jars.map { j in
+                    let limits = j.categories.filter { $0.limit != nil }.map(limit)
+                    return .init(name: j.name, budget: money(j.budget), spent: money(j.spent), left: money(j.balance),
+                                 categoryLimits: limits.isEmpty ? nil : limits, limitsOverJar: j.limitsOverBudget ? true : nil)
+                },
+                category: a.categoryKey.map { k in b.jars.flatMap(\.categories).first { $0.key == k }.map(limit) ?? .init(name: k) },
                 advice: b.advice.map { .init(kind: $0.kind.rawValue, title: $0.title, text: $0.text, why: $0.why) })
         }
     }
@@ -289,13 +298,22 @@ struct ToolArgs: Codable, Sendable {
 
 struct BudgetReply: Encodable {
     struct Due: Encodable { var name, amount, date: String; var estimate: Bool? }
-    struct Jar: Encodable { var name, budget, spent, left: String }
+    struct Jar: Encodable {
+        var name, budget, spent, left: String
+        /// Categories with a monthly limit (nil = none); `limitsOverJar`: they add up to more than the jar has this month.
+        var categoryLimits: [Limit]?
+        var limitsOverJar: Bool?
+    }
+    /// A category's month: `limit`/`left`/`status` are nil without a limit; `over` = spent past the limit.
+    struct Limit: Encodable { var name: String; var spent, limit, left, over, status: String? }
     /// `BudgetAdvisor` output: numbers already in the text.
     struct Advice: Encodable { var kind, title, text: String; var why: String? }
     var month, today, totalBudget, spent, left, billsStillDue, leftAfterBills, unallocated, incomeReceived: String
     var expectedIncome: [Due]
     var billsDueThisMonth: [Due]
     var jars: [Jar]
+    /// The category asked about (`categoryKey`), else nil.
+    var category: Limit?
     var advice: [Advice]
 }
 

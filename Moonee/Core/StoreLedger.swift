@@ -51,8 +51,42 @@ struct BudgetFacts: Sendable, Equatable {
         var start, added, spent, balance: Int
         /// Assets bought / savings deposits out of the jar this month ("Set aside"): not spending, not in `budget`.
         var setAside = 0
+        /// The jar's expense categories this month, with their limits (spec P1-1).
+        var categories: [CategoryLine] = []
         /// "Available this month": start + added.
         var budget: Int { start + added }
+        /// Σ category limits in the jar.
+        var limits: Int { categories.reduce(0) { $0 + ($1.limit ?? 0) } }
+        /// "Limits are more than this jar has": the limits promise money the jar didn't get this month.
+        var limitsOverBudget: Bool { limits > max(budget, 0) }
+    }
+
+    /// One category's month: spent against its monthly limit (nil = no limit). A limit holds no money: the jar does.
+    struct CategoryLine: Sendable, Equatable {
+        var key: String
+        var name: String
+        var limit: Int?
+        var spent: Int
+        /// What is left under the limit (negative = over), nil without a limit.
+        var left: Int? { limit.map { $0 - spent } }
+        /// 80% → warning, past 100% → over, the same colours as jars. nil without a limit.
+        var level: BudgetLevel? { limit.map { BudgetLevel(spent: spent, budget: $0) } }
+
+        /// Spent this month per category (expenses only, never ones kept out of reports), minor units.
+        @MainActor static func spent(_ txns: [Txn], in month: DateInterval) -> [PersistentIdentifier: Int] {
+            txns.reduce(into: [:]) { sums, t in
+                if t.kind == .expense, !t.excludedFromReport, month.contains(t.date), let c = t.category { sums[c.persistentModelID, default: 0] += t.amount }
+            }
+        }
+
+        /// A jar's expense categories in their order.
+        @MainActor static func categories(of jar: Jar) -> [Category] {
+            (jar.categories ?? []).filter { $0.kind == .expense }.sorted { $0.order < $1.order }
+        }
+
+        @MainActor static func lines(_ jar: Jar, spent: [PersistentIdentifier: Int]) -> [CategoryLine] {
+            categories(of: jar).map { CategoryLine($0, spent: spent) }
+        }
     }
 
     struct Due: Sendable, Equatable {
@@ -85,6 +119,8 @@ struct BudgetFacts: Sendable, Equatable {
     /// "About X a day": `left` over the days left in the month (today included), on a clean step. 0 outside this month.
     var perDay: Int { month.contains(advisor.input.now) ? advisor.perDay(left) : 0 }
     var billsTotal: Int { bills.reduce(0) { $0 + $1.amount } }
+    /// Categories with a monthly limit, every jar.
+    var limited: [CategoryLine] { jars.flatMap(\.categories).filter { $0.limit != nil } }
 
     @MainActor init(txns: [Txn], wallets: [Wallet], jars: [Jar], recurrings: [Recurring], month: DateInterval? = nil,
                     now: Date = .now, calendar: Calendar = .current, level: AdvisorLevel = .current,
@@ -94,10 +130,11 @@ struct BudgetFacts: Sendable, Equatable {
                                       calendar: calendar, level: level, muted: muted))
         let month = month ?? calendar.dateInterval(of: .month, for: now)!
         self.month = month
+        let byCategory = CategoryLine.spent(txns, in: month)
         self.jars = jars.sorted { $0.order < $1.order }.map { j in
             let m = ledger.jarMonth(j.persistentModelID, in: month)
             return JarLine(key: j.parserKey, name: j.name, percent: j.percent, start: m.start, added: m.added, spent: m.spent,
-                           balance: m.endBalance, setAside: m.setAside)
+                           balance: m.endBalance, setAside: m.setAside, categories: CategoryLine.lines(j, spent: byCategory))
         }
         unallocated = ledger.unallocated
         income = ledger.income(in: month)
@@ -108,6 +145,12 @@ struct BudgetFacts: Sendable, Equatable {
         }.sorted { $0.date < $1.date }
         bills = recurrings.filter { !$0.isIncome && $0.nextDue < month.end }.sorted { $0.nextDue < $1.nextDue }
             .map { Due(name: $0.name, amount: $0.amount, date: $0.nextDue, isEstimate: $0.isEstimate) }
+    }
+}
+
+extension BudgetFacts.CategoryLine {
+    @MainActor init(_ c: Category, spent: [PersistentIdentifier: Int]) {
+        self.init(key: c.parserKey, name: c.name, limit: c.monthlyLimit, spent: spent[c.persistentModelID] ?? 0)
     }
 }
 

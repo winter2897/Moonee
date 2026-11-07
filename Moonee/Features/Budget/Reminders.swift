@@ -54,12 +54,12 @@ extension Prefs {
 struct Reminder: Equatable {
     /// Raw order = priority when the daily cap drops some.
     enum Kind: Int, CaseIterable, Comparable {
-        case jarOver, payday, bill, autoPosted, jarWarning, debt, monthlyReport, weeklyReport, debtNudge, dailyLog
+        case jarOver, limitOver, payday, bill, autoPosted, jarWarning, limitWarning, debt, monthlyReport, weeklyReport, debtNudge, dailyLog
 
         var minLevel: ReminderLevel {
             switch self {
-            case .jarOver, .payday, .bill, .autoPosted: .low
-            case .jarWarning, .debt, .monthlyReport, .weeklyReport, .debtNudge: .medium
+            case .jarOver, .limitOver, .payday, .bill, .autoPosted: .low
+            case .jarWarning, .limitWarning, .debt, .monthlyReport, .weeklyReport, .debtNudge: .medium
             case .dailyLog: .high
             }
         }
@@ -108,7 +108,8 @@ enum ReminderPlanner {
         var horizonDays = 14
     }
 
-    static func plan(bills: [Bill] = [], jars: [JarState] = [], debts: [DebtDue] = [], paydays: [Payday] = [], settings: Settings = .init(),
+    /// `limits`: categories with a monthly limit (spec P1-1), alerted at 80% and 100% like jars.
+    static func plan(bills: [Bill] = [], jars: [JarState] = [], limits: [JarState] = [], debts: [DebtDue] = [], paydays: [Payday] = [], settings: Settings = .init(),
                      now: Date, sent: Set<String> = [], deliveredToday: Int = 0, calendar: Calendar = .current) -> [Reminder] {
         let today = calendar.startOfDay(for: now)
         let end = calendar.date(byAdding: .day, value: settings.horizonDays, to: today)!
@@ -128,16 +129,18 @@ enum ReminderPlanner {
         // Jars: once per month per jar and level, as soon as possible.
         let month = calendar.dateComponents([.year, .month], from: now)
         let monthTag = String(format: "%04d-%02d", month.year ?? 0, month.month ?? 0)
-        for j in jars {
-            let kind: Reminder.Kind
+        for (j, isLimit) in jars.map({ ($0, false) }) + limits.map({ ($0, true) }) {
+            let over: Bool
             switch j.level {
-            case .over, .negative: kind = .jarOver
-            case .warning: kind = .jarWarning
+            case .over, .negative: over = true
+            case .warning: over = false
             case .normal: continue
             }
-            let key = "\(kind == .jarOver ? "jar.over" : "jar.warn").\(j.id).\(monthTag)"
+            let kind: Reminder.Kind = isLimit ? (over ? .limitOver : .limitWarning) : (over ? .jarOver : .jarWarning)
+            let prefix = isLimit ? "limit" : "jar"
+            let key = "\(prefix).\(over ? "over" : "warn").\(j.id).\(monthTag)"
             // An over alert also covers the 80% one.
-            if sent.contains(key) || (kind == .jarWarning && sent.contains("jar.over.\(j.id).\(monthTag)")) { continue }
+            if sent.contains(key) || (!over && sent.contains("\(prefix).over.\(j.id).\(monthTag)")) { continue }
             raw.append(Reminder(kind: kind, date: now, items: [j.name], keys: [key], body: kind == .jarOver ? j.advice : nil))
         }
         for p in paydays { raw.append(Reminder(kind: .payday, date: at(p.due, settings.morning), items: [p.name], title: p.title, body: p.body)) }
@@ -286,7 +289,8 @@ enum ReminderPlanner {
         var sent = Set(defaults.stringArray(forKey: Prefs.remindersSent) ?? [])
         let delivered = await center.deliveredNotifications()
             .filter { $0.request.identifier.hasPrefix(prefix) && cal.isDate($0.date, inSameDayAs: now) }.count
-        let plan = ReminderPlanner.plan(bills: bills, jars: advisedJars, debts: debts, paydays: paydays, settings: settings, now: now,
+        let limits = facts.limited.map { ReminderPlanner.JarState(id: $0.key, name: $0.name, level: $0.level ?? .normal) }
+        let plan = ReminderPlanner.plan(bills: bills, jars: advisedJars, limits: limits, debts: debts, paydays: paydays, settings: settings, now: now,
                                         sent: sent, deliveredToday: delivered, calendar: cal)
 
         let pending = await center.pendingNotificationRequests().map(\.identifier).filter { $0.hasPrefix(prefix) && !$0.hasPrefix(jarPrefix) }
@@ -316,6 +320,8 @@ enum ReminderPlanner {
         case .payday: (loc("Payday"), String(localized: "\(names): tap Received in Budget once it's in.", table: "Budget"))
         case .jarOver: (loc("A jar went over"), String(localized: "\(names) went past this month's budget. Moonee can help you move money from another jar.", table: "Budget"))
         case .jarWarning: (loc("Heads up: 80% used"), String(localized: "\(names) has used 80% of this month's budget. Go easy for a bit!", table: "Budget"))
+        case .limitOver: (loc("Over a spending limit"), String(localized: "\(names) went past this month's limit. The jar still pays, but take it easy.", table: "Budget"))
+        case .limitWarning: (loc("80% of a limit"), String(localized: "\(names) has used 80% of this month's limit.", table: "Budget"))
         case .bill: (loc("Bill reminder"), String(localized: "\(names) is due soon. Tap Mark paid in Budget once it's done.", table: "Budget"))
         case .autoPosted: (loc("Recorded for you"), String(localized: "Moonee records \(names) today. Open Moonee to check it or undo.", table: "Budget"))
         case .debt: (loc("Debt due"), String(localized: "Debts due soon with \(names). Open the debt book in Budget.", table: "Budget"))

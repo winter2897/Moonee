@@ -6486,6 +6486,328 @@
           }
         }
       }
+    },
+    "Set a monthly limit": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đặt hạn mức tháng"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตั้งวงเงินรายเดือน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕັ້ງວົງເງິນລາຍເດືອນ"
+          }
+        }
+      }
+    },
+    "Category limits": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hạn mức danh mục"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "วงเงินตามหมวด"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ວົງເງິນຕາມໝວດ"
+          }
+        }
+      }
+    },
+    "Limits add up to %@, more than this jar has this month (%@).": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hạn mức cộng lại %@, vượt số tiền lọ có tháng này (%@)."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "วงเงินรวมกัน %@ มากกว่าเงินที่กระปุกมีเดือนนี้ (%@)"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ວົງເງິນລວມກັນ %@ ຫຼາຍກວ່າເງິນທີ່ກະປຸກມີເດືອນນີ້ (%@)."
+          }
+        }
+      }
+    },
+    "Tap a category to set a monthly limit. A limit holds no money: the jar does.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chạm vào danh mục để đặt hạn mức tháng. Hạn mức không giữ tiền, tiền vẫn nằm trong lọ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แตะหมวดเพื่อตั้งวงเงินรายเดือน วงเงินไม่ได้เก็บเงิน เงินยังอยู่ในกระปุก"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແຕະໝວດເພື່ອຕັ້ງວົງເງິນລາຍເດືອນ. ວົງເງິນບໍ່ໄດ້ເກັບເງິນ, ເງິນຍັງຢູ່ໃນກະປຸກ."
+          }
+        }
+      }
+    },
+    "%@ of %@ limit": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ / hạn mức %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ จากวงเงิน %@"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ຈາກວົງເງິນ %@"
+          }
+        }
+      }
+    },
+    "Spent %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã chi %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใช้ไป %@"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃຊ້ໄປ %@"
+          }
+        }
+      }
+    },
+    "Set limit": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đặt hạn mức"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตั้งวงเงิน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕັ້ງວົງເງິນ"
+          }
+        }
+      }
+    },
+    "Monthly limit": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hạn mức tháng"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "วงเงินต่อเดือน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ວົງເງິນຕໍ່ເດືອນ"
+          }
+        }
+      }
+    },
+    "Spent this month: %@. Moonee reminds you at 80%% and 100%%.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tháng này đã chi: %@. Moonee sẽ nhắc khi chạm 80%% và 100%%."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เดือนนี้ใช้ไป: %@ Moonee จะเตือนเมื่อถึง 80%% และ 100%%"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເດືອນນີ້ໃຊ້ໄປ: %@. Moonee ຈະເຕືອນເມື່ອຮອດ 80%% ແລະ 100%%."
+          }
+        }
+      }
+    },
+    "Remove limit": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bỏ hạn mức"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ลบวงเงิน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລຶບວົງເງິນ"
+          }
+        }
+      }
+    },
+    "Over a spending limit": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vượt hạn mức chi"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เกินวงเงินใช้จ่าย"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເກີນວົງເງິນໃຊ້ຈ່າຍ"
+          }
+        }
+      }
+    },
+    "%@ went past this month's limit. The jar still pays, but take it easy.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ đã vượt hạn mức tháng này. Lọ vẫn chi trả, nhưng chậm lại chút nhé."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ เกินวงเงินเดือนนี้แล้ว กระปุกยังจ่ายได้ แต่ค่อยๆ ใช้นะ"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ເກີນວົງເງິນເດືອນນີ້ແລ້ວ. ກະປຸກຍັງຈ່າຍໄດ້, ແຕ່ຄ່ອຍໆໃຊ້ເດີ້."
+          }
+        }
+      }
+    },
+    "80% of a limit": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã dùng 80% hạn mức"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใช้ไป 80% ของวงเงิน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃຊ້ໄປ 80% ຂອງວົງເງິນ"
+          }
+        }
+      }
+    },
+    "%@ has used 80%% of this month's limit.": {
+      "extractionState": "manual",
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ đã dùng 80%% hạn mức tháng này."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ใช้ไป 80%% ของวงเงินเดือนนี้แล้ว"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ໃຊ້ໄປ 80%% ຂອງວົງເງິນເດືອນນີ້ແລ້ວ."
+          }
+        }
+      }
     }
   }
 }

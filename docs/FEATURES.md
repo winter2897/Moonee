@@ -101,8 +101,8 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 ### 3.4 Nhắc nhở (theo mức user chọn)
 | Mức | Nội dung |
 |---|---|
-| Ít | Hoá đơn đến hạn, lọ vượt 100% |
-| Vừa (mặc định) | + lọ chạm 80%, báo cáo tuần/tháng, nhắc thu/trả nợ |
+| Ít | Hoá đơn đến hạn, lọ vượt 100%, danh mục vượt hạn mức |
+| Vừa (mặc định) | + lọ / hạn mức danh mục chạm 80%, báo cáo tuần/tháng, nhắc thu/trả nợ |
 | Nhiều | + nhắc ghi chép mỗi tối, nhận xét giao dịch lớn, gợi ý hằng ngày |
 
 - Dùng local notification, không cần server.
@@ -130,6 +130,11 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 - **Chi tiêu trừ thẳng vào lọ**, xác định qua danh mục. **Mọi danh mục chi đều thuộc một lọ** (P0-2): "Khác" thuộc Thiết yếu; bản cũ được gán một lần lúc mở app (danh mục chi chưa có lọ → Thiết yếu; giao dịch cũ giữ lọ đã ghim). Tạo/sửa danh mục chi phải chọn lọ; "Không thuộc lọ nào" nằm ở phần Nâng cao, kèm giải thích (chi ở đó trừ vào Chưa chia vào lọ và không tính vào Đã chi). Nhờ vậy **Đã chi** ở Ngân sách bằng **Chi** ở Tổng quan.
 - Số dư **cộng dồn** sang tháng sau. Lọ âm thì Moonee gợi ý lấy từ lọ nào, bao nhiêu (mục 4.6).
 - **Chuyển giữa các lọ** bằng thao tác tay hoặc qua chat.
+- **Hạn mức theo danh mục, nằm trong lọ** (P1-1): `Category.monthlyLimit` (nil = không đặt). Hạn mức chỉ là trần chi theo tháng, không giữ tiền; tiền vẫn ở lọ.
+  - Chi tiết lọ → mục **Hạn mức danh mục**: chạm một danh mục để **Đặt hạn mức** / **Bỏ hạn mức**. Danh mục có hạn mức hiện "đã chi / hạn mức", còn lại và thanh tiến độ đổi màu ở 80% / quá 100% như lọ.
+  - Tổng hạn mức trong một lọ > Có trong tháng của lọ → nhắc nhẹ "hạn mức vượt số tiền lọ có" (không chặn).
+  - Nhắc 80% (mức Vừa trở lên) và vượt 100% (mọi mức), mỗi danh mục một lần mỗi tháng, tính vào giới hạn thông báo mỗi ngày (mục 3.4).
+  - Chat: "đặt hạn mức ăn uống 3tr" đặt luôn; "ăn uống tháng này còn bao nhiêu?" trả lời từ cùng số (`BudgetFacts.JarLine.categories`, tool `monthBudget`). Chỉ theo tháng; không có hạn mức theo tuần/quý hay theo ví.
 - **Không có tiền nằm ngoài lọ** (quyết định 06/11, kiểu envelope như YNAB "Ready to assign"):
   - **Chỉ tiền để tiêu mới vào lọ** (quyết định 06/11, đợt 2): **ví tính vào ngân sách = tổng các lọ + Chưa chia vào lọ**, luôn đúng.
   - **Chưa chia vào lọ** = tổng số dư các ví bật "Tính vào ngân sách" (thẻ tín dụng tính âm) − tổng số dư các lọ. Tài khoản tiết kiệm/đầu tư (tắt "Tính vào ngân sách"), tài sản (vàng, cổ phiếu, crypto) và tiền cho mượn chỉ tính vào tài sản ròng (Quan tâm), không bao giờ vào lọ hay Chưa chia. Vì thế cho mượn làm con số này giảm (tiền rời ví), đi vay làm nó tăng; chuyển giữa các ví ngân sách, rút ATM, nạp ví, trả thẻ không đổi gì.
@@ -395,7 +400,7 @@ Ngôn ngữ khác thêm theo checklist ở mục 10.6. Tiếng Thái và tiếng
 ```
 Wallet        (id, name, type: cash|bank|ewallet|credit|savings|investment, balance, creditLimit?, statementDay?, dueDay?, inBudget)
 Jar           (id, key?, customName?, icon, color, percent, balance, order)   // key cho lọ mặc định, customName cho lọ user đặt
-Category      (id, key?, customName?, icon, jarId, kind: expense|income)
+Category      (id, key?, customName?, icon, jarId, kind: expense|income, monthlyLimit?)
 Transaction   (id, date, amount, kind: expense|income|transfer|jarTransfer|lend|borrow|repay,
                walletId, toWalletId?, categoryId?, jarId?, note, source: text|voice|image|import|manual,
                attachment?, debtId?, excludedFromReport)   // excludedFromReport: "Không tính vào báo cáo" (P1-2)

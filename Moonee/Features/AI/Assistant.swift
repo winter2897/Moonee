@@ -192,8 +192,9 @@ struct Assistant: Sendable {
         for tool in tools {
             // A keyless price (gold, rates, crypto) answers it: no web search needed.
             if tool.name == "webSearch", out.contains(where: { $0.tool == "marketPrice" }) { continue }
-            // A question about one category or jar ("ăn uống hết bao nhiêu") is not about the whole month's budget.
-            if tool.name == "monthBudget", h.categoryKey != nil || h.jarKey != nil { continue }
+            // A question about one jar ("hưởng thụ còn bao nhiêu") is not about the whole month's budget. One about a
+            // category keeps it: the category's limit line answers "ăn uống còn bao nhiêu?" (no limit: spendingSummary does).
+            if tool.name == "monthBudget", h.jarKey != nil { continue }
             if let json = try? await tool.run(data) { out.append(.init(tool: tool.name, json: json)) }
         }
         return out

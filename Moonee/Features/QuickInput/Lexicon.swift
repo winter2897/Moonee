@@ -48,6 +48,8 @@ struct Lexicon: Sendable {
     var jars: [(key: String, words: [String])] = []
     /// A word meaning "jar" ("lọ"): a transfer that names one is a jar transfer.
     var jarWords: [String] = []
+    /// "hạn mức": a message with one, a category and an amount sets that category's monthly limit (`QuickParser.limit`).
+    var limitWords: [String] = []
     var questionCues: [String] = []
     /// Skill id → phrases that ask for it ("chốt sổ" → close-management).
     var skillCues: [(skill: String, words: [String])] = []
