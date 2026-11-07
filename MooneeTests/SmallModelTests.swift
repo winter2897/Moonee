@@ -89,7 +89,7 @@ struct SmallModelTests {
         #expect(r.messages.last?.text.hasSuffix("tháng này mình tiêu bao nhiêu?") == true)
         // ~3 characters a Vietnamese token: well inside a small model's 4096-token window with room for the answer.
         #expect(r.system.count + r.messages.map(\.text.count).reduce(0, +) < 3_600)
-        #expect(Skill.persona(language: "vi", short: true).count < 400)
+        #expect(Skill.persona(language: "vi", short: true).count < 450) // 400 + the no-investment-advice rule (docs/TERMS.md)
         #expect(!Skill.persona(language: "vi").contains("<!-- short -->"))
 
         let hits = (1...5).map { SearchHit(title: "t\($0)", url: "https://a\($0).vn", text: String(repeating: "x", count: 500)) }

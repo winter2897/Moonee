@@ -268,7 +268,7 @@ struct ChatView: View {
         if speech.isRecording { speech.stop() }
         let source = inputSource
         (text, inputSource, editingCard) = ("", .text, nil)
-        let history = messages.suffix(10).map { LLMMessage(role: $0.fromUser ? .user : .assistant, text: $0.text) }
+        let history = messages.suffix(10).map { LLMMessage(role: $0.fromUser ? .user : .assistant, text: $0.text.replacingOccurrences(of: Terms.footerLine, with: "")) }
         post(ChatMessage(fromUser: true, text: input))
         let parser = ParserContext(context)
 
@@ -293,9 +293,12 @@ struct ChatView: View {
             if let notice = r.noticeText, notice != lastNotice { lastNotice = notice; reply(notice, mood: .confused) }
             switch out {
             case .transactions(let txns, _): record(txns, source: source, raw: input)
-            case .answer(let answer, _, let sources): reply(answer, mood: .happy, sources: sources)
-            case .facts(let facts, _):
-                if let t = ChatBook.factsText(facts) { reply(t, mood: .happy, sources: ChatBook.sources(facts)) }
+            case .answer(let answer, let skill, let sources):
+                reply(answer + (Terms.needsFooter(skill: skill, question: input) ? Terms.footerLine : ""), mood: .happy, sources: sources)
+            case .facts(let facts, let skill):
+                if let t = ChatBook.factsText(facts) {
+                    reply(t + (Terms.needsFooter(skill: skill, question: input) ? Terms.footerLine : ""), mood: .happy, sources: ChatBook.sources(facts))
+                }
                 else { reply(ChatLines.confused(), mood: .confused) }
             }
         }
