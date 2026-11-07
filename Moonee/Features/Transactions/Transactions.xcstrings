@@ -1911,6 +1911,72 @@
           }
         }
       }
+    },
+    "Advanced": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຂັ້ນສູງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ขั้นสูง"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nâng cao"
+          }
+        }
+      }
+    },
+    "Don't count in reports": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ນັບໃນລາຍງານ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่นับในรายงาน"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không tính vào báo cáo"
+          }
+        }
+      }
+    },
+    "It still changes the wallet's balance, but never counts in income, spending, jars or reports. For money someone pays you back.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍັງປ່ຽນຍອດກະເປົາເງິນ ແຕ່ບໍ່ນັບໃນລາຍຮັບ ລາຍຈ່າຍ ກະປຸກ ຫຼື ລາຍງານ ໃຊ້ກັບເງິນທີ່ຈະມີຄົນສົ່ງຄືນໃຫ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยังเปลี่ยนยอดกระเป๋าเงิน แต่ไม่นับในรายรับ รายจ่าย กระปุก หรือรายงาน ใช้กับเงินที่จะมีคนคืนให้"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vẫn đổi số dư ví, nhưng không tính vào thu, chi, lọ hay báo cáo. Dùng cho khoản sẽ có người hoàn lại."
+          }
+        }
+      }
     }
   }
 }

@@ -72,7 +72,7 @@ struct DashboardStats {
         func buckets(_ i: DateInterval) -> [Int] {
             let count = calendar.dateComponents([unit], from: i.start, to: i.end).value(for: unit) ?? 0
             var sums = Array(repeating: 0, count: count)
-            for t in txns where t.kind == .expense && i.start <= t.date && t.date < i.end {
+            for t in txns where t.isSpending && i.start <= t.date && t.date < i.end {
                 let b = calendar.dateComponents([unit], from: i.start, to: t.date).value(for: unit) ?? 0
                 if sums.indices.contains(b) { sums[b] += t.amount }
             }
@@ -87,7 +87,7 @@ struct DashboardStats {
         }
 
         let span = interval // a local: closures can't capture self before init ends
-        let byCategory = Dictionary(grouping: txns.filter { $0.kind == .expense && span.start <= $0.date && $0.date < span.end }, by: \.category)
+        let byCategory = Dictionary(grouping: txns.filter { $0.isSpending && span.start <= $0.date && $0.date < span.end }, by: \.category)
             .map { (category: $0.key, amount: $0.value.reduce(0) { $0 + $1.amount }) }
             .sorted { $0.amount > $1.amount }
         let top = byCategory.filter { $0.category != nil }.prefix(5)

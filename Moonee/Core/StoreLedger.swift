@@ -24,7 +24,8 @@ struct StoreLedger: LedgerReading {
             return LedgerDebt(person: d.person, theyOweMe: d.direction == .lent, remaining: left, dueDate: d.dueDate)
         }
         jarList = jars.map { LedgerJar(key: $0.parserKey, name: $0.name, percent: $0.percent, balance: ledger.jarBalance($0.persistentModelID)) }
-        self.txns = txns.filter { $0.currencyCode == currency }.map { t in
+        // Not-counted txns (P1-2) stay out of the assistant's spending sums, like every report.
+        self.txns = txns.filter { $0.currencyCode == currency && !$0.excludedFromReport }.map { t in
             LedgerTxn(date: t.date, amount: t.amount, kind: EntryKind(rawValue: t.kindRaw) ?? .expense,
                       categoryKey: t.category?.parserKey, categoryName: t.category?.name,
                       jarKey: t.jar?.parserKey, toJarKey: t.toJar?.parserKey,

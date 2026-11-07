@@ -76,6 +76,7 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 - **Lưu ngay** rồi hiện **thẻ giao dịch** (số tiền, danh mục, lọ, ví, ngày, ghi chú). Nhấn để sửa, có nút **Hoàn tác**.
 - **Học từ lần sửa:** user đổi danh mục cho "Highlands" thì lần sau Moonee tự gán đúng (lưu cặp merchant → danh mục ở máy).
 - Thiếu thông tin quan trọng (không có số tiền) thì Moonee hỏi lại thay vì đoán.
+- **Khoản chi hộ / công tác** (P1-2): "chi hộ sếp 500k", "công tác phí 2tr"… lưu xong Moonee hỏi "Khoản này có được hoàn lại không?" với hai chip. **Có** → khoản đó bật "Không tính vào báo cáo" (mục 4.2). Không có công tắc toàn cục.
 
 ### 3.1b Lịch sử chat và ô nhập
 - Mỗi ngày một cuộc chat, sang ngày mới tự mở cuộc mới; user tạo cuộc mới, ghim (sao), xoá bất kỳ cuộc nào (xoá chat không xoá giao dịch).
@@ -112,6 +113,7 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
   - Biểu đồ chi theo lọ, theo danh mục, so sánh với kỳ trước
   - Top khoản chi, xu hướng
   - Lời khuyên từ Moonee
+  - Dòng **"Không tính"**: tổng tiền vào / ra của các khoản "Không tính vào báo cáo" trong tháng (điều chỉnh số dư, chi hộ), để không mất dấu.
 - Vẽ bằng Swift Charts.
 
 ## 4. Ngân sách
@@ -132,7 +134,7 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
   - **Chỉ tiền để tiêu mới vào lọ** (quyết định 06/11, đợt 2): **ví tính vào ngân sách = tổng các lọ + Chưa chia vào lọ**, luôn đúng.
   - **Chưa chia vào lọ** = tổng số dư các ví bật "Tính vào ngân sách" (thẻ tín dụng tính âm) − tổng số dư các lọ. Tài khoản tiết kiệm/đầu tư (tắt "Tính vào ngân sách"), tài sản (vàng, cổ phiếu, crypto) và tiền cho mượn chỉ tính vào tài sản ròng (Quan tâm), không bao giờ vào lọ hay Chưa chia. Vì thế cho mượn làm con số này giảm (tiền rời ví), đi vay làm nó tăng; chuyển giữa các ví ngân sách, rút ATM, nạp ví, trả thẻ không đổi gì.
   - Dương thì đầu tab Ngân sách thành lời kêu gọi "Bạn có 20tr chưa chia vào lọ" với **Chia ngay**: **Kế hoạch của Moonee** (mục 4.6), **Chia theo %**, hoặc **Bỏ hết vào một lọ**. Âm thì hiện dòng đỏ **Chưa chia vào lọ**. Mỗi cách ghi thành một giao dịch chuyển lọ có ngày (không có lọ nguồn, mỗi lọ một phần chia), nên lịch sử các tháng trước không đổi. Âm nghĩa là các lọ hứa nhiều hơn tiền thật: Moonee gợi ý lấy bớt từ lọ nào.
-  - **Tiền có sẵn** (số dư ban đầu, ví mới, sửa số dư, bán tài sản, rút tiết kiệm) đều vào đây rồi theo luật tiền vào ở trên (Gợi ý: thẻ Moonee gợi ý đưa kế hoạch; Tự động: Moonee áp dụng; Tự làm: chia theo %). Sửa số dư ví chưa đi qua luật này (S28).
+  - **Tiền có sẵn** (số dư ban đầu, ví mới, cập nhật số dư (mục 4.2), bán tài sản, rút tiết kiệm) đều vào đây rồi theo luật tiền vào ở trên (Gợi ý: thẻ Moonee gợi ý đưa kế hoạch; Tự động: Moonee áp dụng; Tự làm: chia theo %).
 - **Số trên tab Ngân sách** (một struct `BudgetFacts`, trợ lý đọc đúng struct này):
   - **Thu nhập** = các khoản thu trong tháng (Tổng quan dùng cùng con số).
   - **Có trong tháng** = số dư các lọ đầu tháng + tiền vào lọ trong tháng (chia thu nhập, chia tiền chưa chia, chuyển lọ). **Đã chi** = chi từ các lọ trong tháng. **Đã để dành** = mua tài sản / gửi tiết kiệm từ lọ trong tháng (`JarMonth.setAside`): không phải chi, không trừ vào Có trong tháng. **Còn tiêu được** = Có trong tháng − Đã chi − Đã để dành = tổng số dư các lọ cuối tháng.
@@ -153,6 +155,8 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
   - Lưu ngày sao kê, ngày đến hạn và hạn mức.
   - Quẹt thẻ được tính là chi tiêu (trừ lọ, tăng dư nợ thẻ).
   - Trả nợ thẻ là **chuyển ví**, không tính là chi lần hai.
+- **Cập nhật số dư** (P1-2; vuốt / giữ dòng ví, hoặc trong form ví): user nhập số dư thật (thẻ: dư nợ thật). Moonee ghi **một** khoản thu (nếu dư) hoặc chi (nếu thiếu) bằng phần chênh, danh mục cố định **Điều chỉnh số dư** (`category.adjustment`), không vào lọ, bật "Không tính vào báo cáo". Phần dư ở ví ngân sách là tiền vào nên theo luật tiền vào (mục 4.1, mức Gợi ý: nằm ở Chưa chia); phần thiếu trừ Chưa chia. **Số dư ban đầu** chỉ sửa được khi ví chưa có giao dịch.
+- **Không tính vào báo cáo** (công tắc ở phần Nâng cao của form giao dịch, chỉ cho thu/chi): khoản đó vẫn đổi số dư ví nhưng không vào Thu/Chi, báo cáo, Tổng quan, lọ hay hạn mức danh mục; khoản chi có cờ thì không có lọ. Dòng trong sổ có chữ "Không tính vào thu chi". Dùng cho tiền người khác sẽ trả lại (chi hộ, công tác phí).
 
 ### 4.3 Khoản định kỳ và hoá đơn
 - Tiền nhà, điện, nước, internet, bảo hiểm, subscription, trả góp.
@@ -394,7 +398,7 @@ Jar           (id, key?, customName?, icon, color, percent, balance, order)   //
 Category      (id, key?, customName?, icon, jarId, kind: expense|income)
 Transaction   (id, date, amount, kind: expense|income|transfer|jarTransfer|lend|borrow|repay,
                walletId, toWalletId?, categoryId?, jarId?, note, source: text|voice|image|import|manual,
-               attachment?, debtId?)
+               attachment?, debtId?, excludedFromReport)   // excludedFromReport: "Không tính vào báo cáo" (P1-2)
 IncomeSplit   (transactionId, jarId, amount)          // cách chia của từng khoản thu, hoặc của một lần chia tiền chưa chia vào lọ
 Recurring     (id, name, amount, isEstimate, rule, nextDue, remindDaysBefore, walletId, categoryId)   // danh mục thu = khoản thu định kỳ (lương)
 Goal          (id, name, target, deadline, jarId, saved)

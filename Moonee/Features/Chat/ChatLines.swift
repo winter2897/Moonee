@@ -107,6 +107,10 @@ enum ChatLines {
                         String(localized: "When will you pay \(person) back? Moonee will remind you.", table: "Chat")], variant)
                 : pick([String(localized: "When will \(person) pay you back?", table: "Chat"),
                         String(localized: "When did \(person) say they'd pay you back? Moonee will remind you.", table: "Chat")], variant)
+        case .reimbursed:
+            let amount = Money(p.amount ?? 0, p.currency).formatted()
+            return pick([String(localized: "Will you be paid back for this **\(amount)**?", table: "Chat"),
+                         String(localized: "Is this **\(amount)** something you'll get back? Moonee can keep it out of your spending.", table: "Chat")], variant)
         case .amount, .person:
             let what = p.note.trimmingCharacters(in: .whitespaces)
             if what.isEmpty {
@@ -125,6 +129,13 @@ enum ChatLines {
         }
         let day = due.formatted(.dateTime.weekday(.wide).day().month(.defaultDigits))
         return String(localized: "Okay, due \(day). Moonee will remind you that morning.", table: "Chat")
+    }
+
+    /// The answer to "Will you be paid back?".
+    static func reimbursedSaved(_ p: ParsedTxn) -> String {
+        p.reimbursed == true
+            ? String(localized: "Got it: it's out of your wallet, but not counted in your spending, jars or reports.", table: "Chat")
+            : String(localized: "Okay, it stays in your spending.", table: "Chat")
     }
 
     /// After a repayment: what's left on that debt.

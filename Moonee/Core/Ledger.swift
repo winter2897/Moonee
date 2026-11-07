@@ -13,6 +13,8 @@ import Foundation
 /// - jarTransfer: jar → toJar, no wallet moves. With splits and no source jar it is a split of unallocated money
 ///   (wallet money no jar holds yet, `unallocated`) into the jars.
 /// - lend/borrow/repay: wallet and debt book only, never jars.
+/// - excluded income/expense ("Don't count in reports", balance adjustments): wallet only, so money in or out lands in
+///   or comes out of `unallocated`.
 // ponytail: one currency per ledger; amounts in other currencies are summed as-is. Add FX when multi-currency wallets ship.
 struct Ledger<ID: Hashable> {
     struct Entry {
@@ -26,6 +28,8 @@ struct Ledger<ID: Hashable> {
         var debt: ID?
         /// income: its split into jars (empty = unallocated). jarTransfer: extra jar inflows (splitting unallocated money).
         var splits: [ID: Int] = [:]
+        /// "Don't count in reports" (P1-2): an income or expense that moves its wallet only. No jar, not in `income(in:)`.
+        var excluded = false
     }
 
     /// One jar's numbers for a month (the jar card).
@@ -126,7 +130,7 @@ struct Ledger<ID: Hashable> {
 
     /// Income received in `interval` (Overview and Budget show the same number).
     func income(in interval: DateInterval) -> Int {
-        entries.reduce(0) { $1.kind == .income && interval.start <= $1.date && $1.date < interval.end ? $0 + $1.amount : $0 }
+        entries.reduce(0) { $1.kind == .income && !$1.excluded && interval.start <= $1.date && $1.date < interval.end ? $0 + $1.amount : $0 }
     }
 
     /// Splits an income by percents. Floors each share; the rounding remainder goes to the largest jar, so shares sum to `amount`.
@@ -154,7 +158,8 @@ struct Ledger<ID: Hashable> {
     }
 
     private func jarDeltas(_ e: Entry) -> [(ID, Int)] {
-        switch e.kind {
+        if e.excluded && (e.kind == .expense || e.kind == .income) { return [] }
+        return switch e.kind {
         case .expense: e.jar.map { [($0, -e.amount)] } ?? []
         case .income: e.splits.map { ($0.key, $0.value) }
         case .jarTransfer: [(e.jar, -e.amount), (e.toJar, e.amount)].compactMap { id, d in id.map { ($0, d) } }

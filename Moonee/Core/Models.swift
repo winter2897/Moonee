@@ -113,6 +113,9 @@ private func displayName(key: String?, customName: String?) -> String {
     var externalID: String?
     @Attribute(.externalStorage) var attachment: Data?
     var createdAt: Date = Date.now
+    /// "Don't count in reports" (P1-2): still moves its wallet, never counts in income/spending, reports, jars or limits.
+    /// Money someone pays back (work expenses) and balance adjustments.
+    var excludedFromReport: Bool = false
 
     var category: Category?
     /// Source wallet; for income/borrow it is where the money lands.
@@ -196,7 +199,7 @@ private func displayName(key: String?, customName: String?) -> String {
     /// SF Symbol name.
     var icon: String = "tag.fill"
     var colorHex: Int = 0x64748B
-    /// .expense or .income only.
+    /// .expense or .income. The fixed `category.adjustment` is .transfer, so no category picker or jar mapping lists it.
     var kindRaw: String = TxKind.expense.rawValue
     var order: Int = 0
     /// Picks which copy of a default survives when two installs meet in iCloud (`Seed.mergeDuplicates`).
@@ -487,7 +490,8 @@ extension Ledger where ID == PersistentIdentifier {
                   jar: t.jar?.persistentModelID,
                   toJar: t.toJar?.persistentModelID, debt: t.debt?.persistentModelID,
                   splits: Dictionary((t.splits ?? []).compactMap { s in s.jar.map { ($0.persistentModelID, s.amount) } },
-                                     uniquingKeysWith: +))
+                                     uniquingKeysWith: +),
+                  excluded: t.excludedFromReport)
         }
         self.init(entries: entries,
                   walletOpening: Dictionary(uniqueKeysWithValues: wallets.map { ($0.persistentModelID, $0.initialBalance) }),

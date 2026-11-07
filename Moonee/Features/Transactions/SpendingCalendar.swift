@@ -36,13 +36,13 @@ struct SpendingCalendar {
     /// Expenses only, keyed by start of day.
     static func dailyTotals(_ txns: [Txn], in interval: DateInterval, calendar: Calendar = .current) -> [Date: Int] {
         txns.reduce(into: [:]) { totals, t in
-            guard t.kind == .expense, interval.start <= t.date, t.date < interval.end else { return }
+            guard t.isSpending, interval.start <= t.date, t.date < interval.end else { return }
             totals[calendar.startOfDay(for: t.date), default: 0] += t.amount
         }
     }
 
     /// Spent on one day's txns (the day sheet's header).
-    static func spent(_ txns: [Txn]) -> Int { txns.reduce(0) { $1.kind == .expense ? $0 + $1.amount : $0 } }
+    static func spent(_ txns: [Txn]) -> Int { txns.reduce(0) { $1.isSpending ? $0 + $1.amount : $0 } }
 
     /// Heat level per daily total: 0 for nothing, else 1–4 by rank among the month's distinct totals (quantiles),
     /// so one huge day doesn't wash out the rest. The smallest is 1, the largest 4.
