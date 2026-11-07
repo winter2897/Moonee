@@ -56,7 +56,7 @@ struct Ledger<ID: Hashable> {
     private let jarOpening: [ID: Int]
 
     init(entries: [Entry], walletOpening: [ID: Int] = [:], offBudget: Set<ID> = [], jarOpening: [ID: Int] = [:],
-         debtDirections: [ID: DebtDirection] = [:]) {
+         debtDirections: [ID: DebtDirection] = [:], settledDebts: Set<ID> = []) {
         self.entries = entries
         self.offBudget = offBudget
         self.debtDirections = debtDirections
@@ -74,6 +74,7 @@ struct Ledger<ID: Hashable> {
                 }
             }
         }
+        for id in settledDebts { debtRemaining[id] = nil } // closed by hand: nobody owes it any more
     }
 
     func walletBalance(_ id: ID) -> Int { walletBalances[id] ?? 0 }

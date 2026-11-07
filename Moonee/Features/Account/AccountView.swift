@@ -31,6 +31,9 @@ struct AccountView: View {
                     NavigationLink { BudgetSetupView() } label: {
                         SettingsLabel("Categories, jars & wallets", symbol: "square.stack.3d.up.fill", color: .orange)
                     }
+                    NavigationLink { DebtBookView() } label: {
+                        SettingsLabel("Debt book", symbol: "person.2.fill", color: .indigo)
+                    }
                 } header: {
                     Text("General", tableName: "Account")
                 }

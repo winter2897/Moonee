@@ -12,11 +12,11 @@ struct MooneeTools: Sendable {
     var search = WebSearch.current()
     var prices = MarketPrices()
 
-    var all: [AITool] { [monthBudget, spendingSummary, listTransactions, jarBalances, splitIncome, savingsPlan, monthClose, webSearch, marketPrice] }
+    var all: [AITool] { [monthBudget, spendingSummary, listTransactions, jarBalances, splitIncome, savingsPlan, monthClose, webSearch, marketPrice, debtBook] }
 
     /// Every tool name, for skill files and the skill editor (a test keeps it equal to `all`).
     static let allNames = ["monthBudget", "spendingSummary", "listTransactions", "jarBalances", "splitIncome", "savingsPlan", "monthClose",
-                           "webSearch", "marketPrice"]
+                           "webSearch", "marketPrice", "debtBook"]
 
     /// In the order given (a skill lists its most useful tool first).
     func named(_ names: [String]) -> [AITool] {
@@ -221,6 +221,18 @@ struct MooneeTools: Sendable {
         }
     }
 
+    var debtBook: AITool {
+        AITool(name: "debtBook",
+               description: "The debt book: who owes the user money (theyOweMe) and whom the user owes (iOwe), each open debt with what is still owed and the due date (null = no due date), plus both totals. Settled debts are not listed.",
+               parameters: .object([])) { (_: ToolArgs) -> DebtReply in
+            let debts = try await ledger.debts()
+            let row = { (d: LedgerDebt) in DebtReply.Row(person: d.person, left: money(d.remaining), due: d.dueDate.map(day)) }
+            let mine = debts.filter(\.theyOweMe), theirs = debts.filter { !$0.theyOweMe }
+            return DebtReply(today: day(now()), owedToMe: money(mine.reduce(0) { $0 + $1.remaining }), theyOweMe: mine.map(row),
+                             owedByMe: money(theirs.reduce(0) { $0 + $1.remaining }), iOwe: theirs.map(row))
+        }
+    }
+
     // MARK: Helpers
 
     private func top(_ spending: [LedgerTxn], total: Int) -> [Summary.Category] {
@@ -285,6 +297,14 @@ struct BudgetReply: Encodable {
     var billsDueThisMonth: [Due]
     var jars: [Jar]
     var advice: [Advice]
+}
+
+struct DebtReply: Codable {
+    struct Row: Codable { var person, left: String; var due: String? }
+    var today, owedToMe: String
+    var theyOweMe: [Row]
+    var owedByMe: String
+    var iOwe: [Row]
 }
 
 struct Summary: Encodable {

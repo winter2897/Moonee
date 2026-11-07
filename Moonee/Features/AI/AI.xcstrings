@@ -178,6 +178,28 @@
         }
       }
     },
+    "Debt book": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sổ nợ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สมุดหนี้"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປຶ້ມໜີ້"
+          }
+        }
+      }
+    },
     "Delete skill": {
       "localizations": {
         "lo": {
@@ -1164,6 +1186,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Khi bạn hỏi về giá cả, tỷ giá hay tin tức, nội dung tìm kiếm được gửi tới %@."
+          }
+        }
+      }
+    },
+    "Who owes you, whom you owe, and when it's due.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ai nợ bạn, bạn nợ ai và khi nào tới hạn."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใครติดเงินคุณ คุณติดเงินใคร และครบกำหนดเมื่อไร"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃຜຕິດໜີ້ທ່ານ, ທ່ານຕິດໜີ້ໃຜ ແລະ ຄົບກຳນົດເມື່ອໃດ."
           }
         }
       }

@@ -8,7 +8,8 @@ enum EntryKind: String, CaseIterable, Codable, Sendable {
 /// One transaction read from chat text. A plain value: no SwiftData.
 struct ParsedTxn: Equatable, Sendable {
     /// `kind`: a transfer to / from a person read from a photo: spending, a loan or a repayment? (`DocRead.Kind.sent`).
-    enum Field: String, Codable, Sendable { case amount, person, toWallet, jar, toJar, kind }
+    /// `dueDate`: asked after a lend/borrow is saved ("When will Nam pay you back?"); never blocks the save.
+    enum Field: String, Codable, Sendable { case amount, person, toWallet, jar, toJar, kind, dueDate }
 
     /// Minor units of `currency` (VND: đồng, USD: cents). Nil = ask the user (spec §3.2), never guess.
     var amount: Int?
@@ -30,6 +31,8 @@ struct ParsedTxn: Equatable, Sendable {
     var missing: [Field] = []
     /// A document's transaction id (photos): the same screenshot is not saved twice (`Txn.externalID`).
     var reference: String?
+    /// Lend / borrow: when it is due back, as answered to Moonee's question (nil = no due date).
+    var dueDate: Date?
 
     static func missing(of t: ParsedTxn) -> [Field] {
         var out: [Field] = []

@@ -70,7 +70,8 @@ struct ChatCardLine: Codable, Equatable {
         date = t.date
         amount = t.amount
         currency = t.currencyCode
-        income = t.kind == .income || t.kind == .borrow
+        // Money in: income, a loan to me, or being paid back for money I lent.
+        income = t.kind == .income || t.kind == .borrow || (t.kind == .repay && t.debt?.direction == .lent)
     }
 
     private static func symbol(_ kind: TxKind) -> String {
@@ -128,6 +129,11 @@ struct ChatCardLine: Codable, Equatable {
             return nil
         }
 
+        /// What Moonee is asking about `p`: what blocks the save, else when a saved loan is due back.
+        func asking(_ p: ParsedTxn) -> ParsedTxn.Field? {
+            unresolved(p) ?? (p.missing.contains(.dueDate) ? .dueDate : nil)
+        }
+
         /// Names to offer as quick replies for `field`.
         func choices(_ field: ParsedTxn.Field, for p: ParsedTxn) -> [String] {
             switch field {
@@ -135,6 +141,10 @@ struct ChatCardLine: Codable, Equatable {
             case .jar: jars.map(\.name)
             case .toJar: jars.filter { $0 != jar(p.jar) }.map(\.name)
             case .kind: ChatBook.kindChoices(p).map(\.title)
+            case .dueDate:
+                // This weekend · End of month · Pick a date… · No due date
+                DebtBook.dueChoices(now: .now, calendar: .current).map(\.title).dropLast() + [DebtBook.pickDateTitle]
+                    + DebtBook.dueChoices(now: .now, calendar: .current).map(\.title).suffix(1)
             case .amount, .person: []
             }
         }
@@ -162,9 +172,47 @@ struct ChatCardLine: Codable, Equatable {
             p.kind = kind
         case .person:
             return false
+        case .dueDate:
+            // A chip ("End of month", "No due date") or a date ("15/11", "thứ 6"); a new transaction is not an answer.
+            if let choice = DebtBook.dueChoice(in: input, now: context.now, calendar: context.calendar) {
+                p.dueDate = choice
+            } else if QuickParser.parse(input, context: context).allSatisfy({ $0.amount == nil }), let day = QuickParser.date(in: input, context: context) {
+                p.dueDate = context.calendar.startOfDay(for: day)
+            } else {
+                return false
+            }
+            p.missing = []
+            return true
         }
         p.missing = ParsedTxn.missing(of: p)
         return true
+    }
+
+    /// After a new lend/borrow with a person: ask when it is due back (a debt that already has a date or other loans
+    /// on it is not asked again).
+    static func dueQuestion(_ saved: [Txn]) -> ParsedTxn? {
+        guard let t = saved.first(where: { ($0.kind == .lend || $0.kind == .borrow) && $0.debt?.dueDate == nil && $0.debt?.txns?.count == 1 }),
+              let debt = t.debt else { return nil }
+        var p = ParsedTxn(amount: t.amount, currency: t.currencyCode, kind: t.kind == .lend ? .lend : .borrow, date: t.date, note: t.note)
+        p.person = debt.person
+        p.missing = [.dueDate]
+        return p
+    }
+
+    /// Saves the answer as the debt's due date (nil = no due date).
+    static func setDue(_ p: ParsedTxn, in context: ModelContext) {
+        let debts = (try? context.fetch(FetchDescriptor<Debt>())) ?? []
+        guard let person = p.person, let debt = DebtBook.find(person, p.kind == .lend ? .lent : .borrowed, in: debts) else { return }
+        debt.dueDate = p.dueDate
+        try? context.save()
+    }
+
+    /// After a repayment: what is still owed on that debt, or that it's all settled.
+    static func debtLeft(_ saved: [Txn], in context: ModelContext) -> String? {
+        guard let debt = saved.last(where: { $0.kind == .repay })?.debt else { return nil }
+        let line = DebtBook.line(debt, in: context)
+        return ChatLines.debtLeft(person: debt.person, theyOweMe: line.theyOweMe,
+                                  left: line.isOpen ? Money(line.remaining, debt.currencyCode).formatted() : nil)
     }
 
     /// What a transfer to / from a person can be, for the quick replies: money out is spending, a loan or paying a debt
@@ -202,9 +250,7 @@ struct ChatCardLine: Codable, Equatable {
         func debt(_ person: String?, _ kind: TxKind, _ currency: String) -> Debt? {
             guard let person else { return nil }
             let direction: DebtDirection? = kind == .lend ? .lent : kind == .borrow ? .borrowed : nil // repay settles either
-            if let d = debts.first(where: { $0.person.localizedCaseInsensitiveCompare(person) == .orderedSame && (direction == nil || $0.direction == direction) }) {
-                return d
-            }
+            if let d = DebtBook.find(person, direction, in: debts) { return d }
             guard let direction else { return nil }
             let d = Debt(person: person, direction: direction, currencyCode: currency)
             context.insert(d)
@@ -221,8 +267,25 @@ struct ChatCardLine: Codable, Equatable {
             return key.flatMap { k in categories.first { $0.parserKey == k && $0.kind == kind } } ?? categories.first { $0.key == fallback }
         }
 
+        /// "Nam trả 200k": the rules can't tell a person from a shop before "trả", but a name with an open debt is a repayment.
+        func repayment(_ p: ParsedTxn) -> ParsedTxn {
+            guard p.kind == .expense || p.kind == .income, p.person == nil else { return p }
+            let note = p.note.trimmingCharacters(in: .whitespaces)
+            let rest = { (d: Debt) in note.range(of: d.person, options: [.caseInsensitive, .diacriticInsensitive, .anchored]).map { String(note[$0.upperBound...]) } }
+            guard let d = debts.first(where: { $0.settledAt == nil && rest($0) != nil }), let words = rest(d)?.lowercased()
+            else { return p }
+            let first = words.split(separator: " ").first.map(String.init) ?? ""
+            // Thai and Lao have no spaces between words: a prefix is enough there.
+            guard DebtBook.repayWords.contains(where: { first == $0 || (!$0.unicodeScalars.allSatisfy(\.isASCII) && words.hasPrefix($0)) })
+            else { return p }
+            var r = p
+            (r.kind, r.person, r.categoryKey) = (.repay, d.person, nil)
+            r.missing = ParsedTxn.missing(of: r)
+            return r
+        }
+
         var out: [Txn] = []
-        for p in fresh(parsed, in: context).fresh where book.unresolved(p) == nil {
+        for p in fresh(parsed, in: context).fresh.map(repayment) where book.unresolved(p) == nil {
             let kind = TxKind(rawValue: p.kind.rawValue) ?? .expense
             let t = Txn(amount: p.amount ?? 0, kind: kind, currencyCode: p.currency, date: p.date, note: p.note, source: source, rawInput: rawInput,
                         category: category(p, kind), wallet: book.source(p))
@@ -374,6 +437,22 @@ struct ChatCardLine: Codable, Equatable {
                 }
                 if !s("source").isEmpty { text += "\n" + s("source") } // "Reference prices on the internet"
                 return text
+            case "debtBook":
+                guard let d = try? JSONDecoder().decode(DebtReply.self, from: Data(f.json.utf8)) else { continue }
+                guard !d.theyOweMe.isEmpty || !d.iOwe.isEmpty else {
+                    return String(localized: "Your debt book is clear: nobody owes you and you owe nobody.", table: "Chat")
+                }
+                func rows(_ r: [DebtReply.Row]) -> [String] {
+                    r.map { row in
+                        let due = row.due.flatMap { try? Date($0, strategy: .iso8601.year().month().day()) }
+                            .map { " " + String(localized: "(due \($0.formatted(.dateTime.day().month(.defaultDigits))))", table: "Chat") }
+                        return "• \(row.person): **\(row.left)**" + (due ?? "")
+                    }
+                }
+                var parts: [String] = []
+                if !d.theyOweMe.isEmpty { parts += [String(localized: "To collect: **\(d.owedToMe)**", table: "Chat")] + rows(d.theyOweMe) }
+                if !d.iOwe.isEmpty { parts += [String(localized: "To pay back: **\(d.owedByMe)**", table: "Chat")] + rows(d.iOwe) }
+                return parts.joined(separator: "\n")
             case "savingsPlan":
                 return String(localized: "Put aside **\(s("perWeek"))** a week (**\(s("perMonth"))** a month) to reach \(s("target")) by \(s("deadline")).", table: "Chat")
             default: continue

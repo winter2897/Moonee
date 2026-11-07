@@ -51,6 +51,24 @@ enum BudgetDemo {
             r.category = cat(c)
             r.wallet = bank
         }
+
+        // Debt book: Nam owes 300k (due in 5 days), Hùng 500k with no date, I owe Lan 2tr; Minh paid back in full.
+        func debt(_ person: String, _ direction: DebtDirection, _ amount: Int, due: Int?, repaid: Int = 0) {
+            let d = Debt(person: person, direction: direction, dueDate: due.flatMap { cal.date(byAdding: .day, value: $0, to: cal.startOfDay(for: .now)) })
+            context.insert(d)
+            let t = Txn(amount: amount, kind: direction == .lent ? .lend : .borrow, date: day(3), wallet: bank)
+            context.insert(t)
+            t.debt = d
+            if repaid > 0 {
+                let r = Txn(amount: repaid, kind: .repay, date: day(5), wallet: cash)
+                context.insert(r)
+                r.debt = d
+            }
+        }
+        debt("Nam", .lent, 500_000, due: 5, repaid: 200_000)
+        debt("Hùng", .lent, 500_000, due: nil)
+        debt("Lan", .borrowed, 2_000_000, due: 12)
+        debt("Minh", .lent, 150_000, due: nil, repaid: 150_000)
     }
 
     @MainActor private static func owner(bank: Int, in context: ModelContext) {

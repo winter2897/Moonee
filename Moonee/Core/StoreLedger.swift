@@ -9,6 +9,7 @@ struct StoreLedger: LedgerReading {
     let jarList: [LedgerJar]
     let txns: [LedgerTxn]
     let budgetFacts: BudgetFacts
+    let debtList: [LedgerDebt]
 
     @MainActor init(_ context: ModelContext, currency: String = Money.defaultCurrency, now: Date = .now, calendar: Calendar = .current) {
         let txns = (try? context.fetch(FetchDescriptor<Txn>())) ?? []
@@ -18,6 +19,10 @@ struct StoreLedger: LedgerReading {
         budgetFacts = BudgetFacts(txns: txns, wallets: wallets, jars: jars,
                                   recurrings: (try? context.fetch(FetchDescriptor<Recurring>())) ?? [], now: now, calendar: calendar)
         self.currency = currency
+        debtList = ((try? context.fetch(FetchDescriptor<Debt>(sortBy: [SortDescriptor(\.createdAt)]))) ?? []).compactMap { d in
+            guard let left = ledger.debtRemaining[d.persistentModelID], left > 0 else { return nil }
+            return LedgerDebt(person: d.person, theyOweMe: d.direction == .lent, remaining: left, dueDate: d.dueDate)
+        }
         jarList = jars.map { LedgerJar(key: $0.parserKey, name: $0.name, percent: $0.percent, balance: ledger.jarBalance($0.persistentModelID)) }
         self.txns = txns.filter { $0.currencyCode == currency }.map { t in
             LedgerTxn(date: t.date, amount: t.amount, kind: EntryKind(rawValue: t.kindRaw) ?? .expense,
@@ -30,6 +35,7 @@ struct StoreLedger: LedgerReading {
 
     func jars() async throws -> [LedgerJar] { jarList }
     func budget() async throws -> BudgetFacts? { budgetFacts }
+    func debts() async throws -> [LedgerDebt] { debtList }
     func transactions(in i: DateInterval) async throws -> [LedgerTxn] { txns.filter { $0.date >= i.start && $0.date < i.end } }
 }
 

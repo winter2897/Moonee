@@ -291,6 +291,28 @@
         }
       }
     },
+    "%@ is due to pay you back %@ today. A gentle nudge?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hôm nay %1$@ hẹn trả bạn %2$@. Nhắc nhẹ nhé?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "วันนี้ %1$@ นัดคืนเงินคุณ %2$@ ทวงเบาๆ ไหม?"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ມື້ນີ້ %1$@ ນັດສົ່ງເງິນຄືນທ່ານ %2$@. ເຕືອນເບົາໆບໍ?"
+          }
+        }
+      }
+    },
     "%@ is going fast": {
       "localizations": {
         "lo": {
@@ -419,6 +441,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ để lại chưa chia, bù cho số các lọ đang giữ."
+          }
+        }
+      }
+    },
+    "%@ still owes you %@. A gentle reminder?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ vẫn còn nợ bạn %2$@, nhắc nhẹ nhé?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ ยังติดเงินคุณ %2$@ ทวงเบาๆ ไหม?"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ ຍັງຕິດໜີ້ທ່ານ %2$@, ເຕືອນເບົາໆບໍ?"
           }
         }
       }
@@ -1591,25 +1635,46 @@
         }
       }
     },
-    "Debt due today": {
-      "extractionState": "manual",
+    "Debt book": {
       "localizations": {
-        "lo": {
+        "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "ໜີ້ຄົບກຳນົດມື້ນີ້"
+            "value": "Sổ nợ"
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "หนี้ครบกำหนดวันนี้"
+            "value": "สมุดหนี้"
           }
         },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປຶ້ມໜີ້"
+          }
+        }
+      }
+    },
+    "Debt due": {
+      "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Khoản nợ tới hạn hôm nay"
+            "value": "Nợ tới hạn"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "หนี้ครบกำหนด"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໜີ້ຄົບກຳນົດ"
           }
         }
       }
@@ -1633,6 +1698,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dư nợ lúc thêm"
+          }
+        }
+      }
+    },
+    "Debts due soon with %@. Open the debt book in Budget.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sắp tới hạn nợ với %@. Mở Sổ nợ trong Ngân sách nhé."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใกล้ครบกำหนดหนี้กับ %@ เปิดสมุดหนี้ในงบประมาณ"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃກ້ຄົບກຳນົດໜີ້ກັບ %@. ເປີດປຶ້ມໜີ້ໃນງົບປະມານ."
           }
         }
       }
@@ -4592,6 +4679,28 @@
         }
       }
     },
+    "Still open in your debt book: %@.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vẫn còn trong sổ nợ: %@."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยังค้างในสมุดหนี้: %@"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍັງຄ້າງໃນປຶ້ມໜີ້: %@."
+          }
+        }
+      }
+    },
     "Suggest": {
       "extractionState": "manual",
       "localizations": {
@@ -4935,25 +5044,46 @@
         }
       }
     },
-    "Today is the due date with %@.": {
-      "extractionState": "manual",
+    "Today you're due to pay %@ back %@.": {
       "localizations": {
-        "lo": {
+        "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "ມື້ນີ້ຄົບກຳນົດໜີ້ກັບ %@ ແລ້ວເດີ."
+            "value": "Hôm nay đến hạn trả %1$@ %2$@ đó."
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "วันนี้ครบกำหนดหนี้กับ %@ แล้วนะ"
+            "value": "วันนี้ครบกำหนดคืนเงิน %1$@ %2$@"
           }
         },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ມື້ນີ້ຄົບກຳນົດສົ່ງເງິນຄືນ %1$@ %2$@."
+          }
+        }
+      }
+    },
+    "Tomorrow you're due to pay %@ back %@.": {
+      "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hôm nay tới hạn khoản nợ với %@ đó."
+            "value": "Ngày mai đến hạn trả %1$@ %2$@ nhé."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "พรุ่งนี้ครบกำหนดคืนเงิน %1$@ %2$@"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ມື້ອື່ນຄົບກຳນົດສົ່ງເງິນຄືນ %1$@ %2$@."
           }
         }
       }
@@ -5343,6 +5473,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bạn còn giữ được %@ trong các lọ."
+          }
+        }
+      }
+    },
+    "You still owe %@ %@. Pay it back when you can?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn vẫn còn nợ %1$@ %2$@, sắp xếp trả khi tiện nhé?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คุณยังติดเงิน %1$@ อยู่ %2$@ คืนเมื่อสะดวกนะ"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທ່ານຍັງຕິດໜີ້ %1$@ %2$@, ສົ່ງຄືນເມື່ອສະດວກເດີ້?"
           }
         }
       }
