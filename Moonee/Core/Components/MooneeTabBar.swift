@@ -96,6 +96,23 @@ private struct FABStyle: ButtonStyle {
     }
 }
 
+/// The system tab bar under `MooneeTabBar` is a real `UITabBar`, only hidden. UIKit hit-testing doesn't see SwiftUI overlays:
+/// whenever iOS shows it again, a tap on our bar goes to the system's 5 slots (the chat's included) instead, which is how
+/// double-tapping Overview landed on Budget on a device. It is never used, so it takes no touches and no VoiceOver focus.
+private struct SystemTabBarOff: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> Controller { Controller() }
+    func updateUIViewController(_ vc: Controller, context: Context) {}
+
+    final class Controller: UIViewController {
+        override func viewIsAppearing(_ animated: Bool) {
+            super.viewIsAppearing(animated)
+            guard let bar = tabBarController?.tabBar else { return }
+            bar.isUserInteractionEnabled = false
+            bar.accessibilityElementsHidden = true
+        }
+    }
+}
+
 extension View {
     /// Per tab, under the floating `MooneeTabBar`: keeps the last row scrollable above the bar and
     /// (`contentMargins`, because a `safeAreaInset`/`safeAreaPadding` here doesn't reach through the tab's NavigationStack)
@@ -104,6 +121,7 @@ extension View {
     func mooneeTabContent(barHeight: CGFloat) -> some View {
         self
             .toolbarVisibility(.hidden, for: .tabBar)
+            .background { SystemTabBarOff().frame(width: 0, height: 0).accessibilityHidden(true) }
             .contentMargins(.bottom, barHeight, for: .scrollContent)
             .statusBarScrim()
     }
