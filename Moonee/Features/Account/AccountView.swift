@@ -169,6 +169,11 @@ private struct AboutView: View {
                 .listRowBackground(Color.clear)
             }
             Section {
+                NavigationLink { TermsView() } label: {
+                    Label { Text("Terms & disclaimer", tableName: "Terms") } icon: { SettingsIcon(symbol: "doc.text.fill", color: .gray) }
+                }
+            }
+            Section {
                 Text("Moonee has no server and no account. Your data stays on this iPhone (and in your own iCloud when sync is on). Nothing is sent anywhere unless you pick a cloud AI with your own key; AI settings show exactly what is sent.", tableName: "Account")
             } header: {
                 Text("Privacy", tableName: "Account")

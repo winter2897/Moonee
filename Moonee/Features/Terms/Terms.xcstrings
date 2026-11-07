@@ -1,0 +1,336 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "AI answers can be wrong. They only analyse the numbers you enter." : {
+      "localizations" : {
+        "lo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ຄຳຕອບຂອງ AI ອາດຜິດໄດ້ ແລະ ວິເຄາະສະເພາະຕົວເລກທີ່ເຈົ້າປ້ອນເທົ່ານັ້ນ."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำตอบของ AI อาจผิดได้ และวิเคราะห์เฉพาะตัวเลขที่คุณกรอกเท่านั้น"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Câu trả lời của AI có thể sai. AI chỉ phân tích những con số bạn nhập."
+          }
+        }
+      }
+    },
+    "Before we start" : {
+      "localizations" : {
+        "lo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ກ່ອນເລີ່ມຕົ້ນ"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ก่อนเริ่มต้น"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trước khi bắt đầu"
+          }
+        }
+      }
+    },
+    "Done" : {
+      "localizations" : {
+        "lo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ແລ້ວໆ"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เสร็จ"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xong"
+          }
+        }
+      }
+    },
+    "I agree" : {
+      "localizations" : {
+        "lo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ຂ້ອຍຍອມຮັບ"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ฉันยอมรับ"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tôi đồng ý"
+          }
+        }
+      }
+    },
+    "I am 18 or older and I agree to the Terms of Use and AI disclaimer." : {
+      "localizations" : {
+        "lo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ຂ້ອຍມີອາຍຸ 18 ປີຂຶ້ນໄປ ແລະ ຍອມຮັບຂໍ້ກຳນົດການນຳໃຊ້ ແລະ ຂໍ້ຈຳກັດຄວາມຮັບຜິດຊອບກ່ຽວກັບ AI."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ฉันอายุ 18 ปีขึ้นไป และยอมรับข้อกำหนดการใช้งานและข้อจำกัดความรับผิดชอบเรื่อง AI"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tôi từ 18 tuổi trở lên và đồng ý với Điều khoản sử dụng và miễn trừ trách nhiệm về AI."
+          }
+        }
+      }
+    },
+    "Moonee is a record-keeping and budgeting tool, not a financial, investment, tax or legal adviser." : {
+      "localizations" : {
+        "lo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moonee ແມ່ນເຄື່ອງມືບັນທຶກ ແລະ ວາງງົບ, ບໍ່ແມ່ນທີ່ປຶກສາດ້ານການເງິນ, ການລົງທຶນ, ພາສີ ຫຼື ກົດໝາຍ."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moonee เป็นเครื่องมือจดบันทึกและวางงบ ไม่ใช่ที่ปรึกษาด้านการเงิน การลงทุน ภาษี หรือกฎหมาย"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moonee là công cụ ghi chép và lập ngân sách, không phải chuyên gia tư vấn tài chính, đầu tư, thuế hay pháp lý."
+          }
+        }
+      }
+    },
+    "Moonee never tells you to buy, sell or hold stocks, crypto, gold or currencies, and never predicts prices." : {
+      "localizations" : {
+        "lo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moonee ບໍ່ແນະນຳໃຫ້ຊື້, ຂາຍ ຫຼື ຖືຮຸ້ນ, ຄຣິບໂຕ, ຄຳ ຫຼື ເງິນຕາຕ່າງປະເທດ, ແລະ ບໍ່ທຳນາຍລາຄາ."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moonee ไม่แนะนำให้ซื้อ ขาย หรือถือหุ้น คริปโต ทองคำ หรือเงินตราต่างประเทศ และไม่ทำนายราคา"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moonee không bao giờ khuyên bạn mua, bán hay giữ cổ phiếu, crypto, vàng hay ngoại tệ, và không dự đoán giá."
+          }
+        }
+      }
+    },
+    "Please read and accept these points to use Moonee." : {
+      "localizations" : {
+        "lo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ອ່ານ ແລະ ຍອມຮັບຂໍ້ຕໍ່ໄປນີ້ເພື່ອໃຊ້ Moonee ເດີ."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "อ่านและยอมรับข้อต่อไปนี้เพื่อใช้ Moonee นะ"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bạn đọc và đồng ý những điểm dưới đây để dùng Moonee nhé."
+          }
+        }
+      }
+    },
+    "Read the full terms" : {
+      "localizations" : {
+        "lo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ອ່ານຂໍ້ກຳນົດສະບັບເຕັມ"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "อ่านข้อกำหนดฉบับเต็ม"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đọc toàn bộ điều khoản"
+          }
+        }
+      }
+    },
+    "Reference information, not investment advice." : {
+      "localizations" : {
+        "lo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ຂໍ້ມູນເພື່ອອ້າງອີງ, ບໍ່ແມ່ນຄຳແນະນຳການລົງທຶນ."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ข้อมูลเพื่ออ้างอิง ไม่ใช่คำแนะนำการลงทุน"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thông tin tham khảo, không phải lời khuyên đầu tư."
+          }
+        }
+      }
+    },
+    "Terms & disclaimer" : {
+      "localizations" : {
+        "lo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ຂໍ້ກຳນົດ ແລະ ຂໍ້ຈຳກັດຄວາມຮັບຜິດຊອບ"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ข้อกำหนดและข้อจำกัดความรับผิดชอบ"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Điều khoản & miễn trừ trách nhiệm"
+          }
+        }
+      }
+    },
+    "We updated our terms" : {
+      "localizations" : {
+        "lo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ພວກເຮົາປັບປຸງຂໍ້ກຳນົດແລ້ວ"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เราปรับปรุงข้อกำหนดแล้ว"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moonee đã cập nhật điều khoản"
+          }
+        }
+      }
+    },
+    "You accepted version %lld on %@." : {
+      "localizations" : {
+        "lo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ເຈົ້າຍອມຮັບສະບັບທີ %1$lld ເມື່ອ %2$@."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คุณยอมรับฉบับที่ %1$lld เมื่อ %2$@"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bạn đã đồng ý phiên bản %1$lld ngày %2$@."
+          }
+        }
+      }
+    },
+    "Your data stays on this iPhone and your iCloud. With your own AI key, messages go to the provider you chose." : {
+      "localizations" : {
+        "lo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ຂໍ້ມູນຢູ່ໃນ iPhone ເຄື່ອງນີ້ ແລະ iCloud ຂອງເຈົ້າ. ຖ້າໃຊ້ກະແຈ AI ຂອງເຈົ້າເອງ, ຂໍ້ຄວາມຈະສົ່ງໄປຫາຜູ້ໃຫ້ບໍລິການທີ່ເຈົ້າເລືອກ."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ข้อมูลอยู่บน iPhone เครื่องนี้และ iCloud ของคุณ หากใช้คีย์ AI ของคุณเอง ข้อความจะส่งไปยังผู้ให้บริการที่คุณเลือก"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dữ liệu nằm trên iPhone này và iCloud của bạn. Khi dùng khoá AI riêng, tin nhắn được gửi tới nhà cung cấp bạn chọn."
+          }
+        }
+      }
+    },
+    "Your money decisions are yours alone. The app maker, AI model makers and AI providers are not liable for them." : {
+      "localizations" : {
+        "lo" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ການຕັດສິນໃຈເລື່ອງເງິນເປັນຂອງເຈົ້າຜູ້ດຽວ. ຜູ້ພັດທະນາແອັບ, ຜູ້ສ້າງໂມເດລ AI ແລະ ຜູ້ໃຫ້ບໍລິການ AI ບໍ່ຕ້ອງຮັບຜິດຕໍ່ການຕັດສິນໃຈນັ້ນ."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "การตัดสินใจเรื่องเงินเป็นของคุณคนเดียว ผู้พัฒนาแอป ผู้สร้างโมเดล AI และผู้ให้บริการ AI ไม่ต้องรับผิดต่อการตัดสินใจนั้น"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quyết định về tiền bạc là của riêng bạn. Nhà phát triển app, bên làm mô hình AI và nhà cung cấp AI không chịu trách nhiệm về các quyết định đó."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

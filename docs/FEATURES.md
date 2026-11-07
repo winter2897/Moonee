@@ -84,6 +84,7 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
   - **Không nêu tên nhà cung cấp giá** (quyết định 06/11): mọi chữ user thấy (câu trả lời, số liệu, mục "Dữ liệu nào rời khỏi iPhone", Tìm kiếm web) chỉ nói "giá tham khảo trên internet"; sản phẩm vàng gọi chung (vàng miếng 999.9, nhẫn trơn 999.9); chip nguồn ghi "Internet". Bài viết từ tìm web vẫn giữ link và tên trang.
   - Câu khác (chứng khoán, lãi suất, tin tức) mà không có 1 hoặc 2 thì Moonee nói thật và chỉ cách bật. Mục "Tìm kiếm web" trong Cài đặt AI ghi rõ đang dùng đường nào.
 - **Model nhỏ** (model local) nhận **prompt rút gọn** (persona + skill bản ngắn + FACTS cắt gọn + 4 lượt chat gần nhất); tràn context thì thử lại không kèm lịch sử. Lỗi thì chuyển sang bộ parse quy tắc và số liệu của app (chế độ Lai: sang model cloud cho câu hỏi), kèm một câu báo thân thiện trong chat. Không tự chuyển sang cloud khi user chọn Model local.
+- **Không tư vấn đầu tư** (quyết định 07/11): Moonee không bao giờ khuyên mua, bán hay giữ cổ phiếu, quỹ, crypto, vàng, ngoại tệ cụ thể và không dự đoán giá; được hỏi thì từ chối nhẹ nhàng, nói chỉ phân tích được số liệu user nhập và gợi ý hỏi chuyên gia có giấy phép (luật cứng trong persona + skill `market-lookup`, `jar-budgeting`, mọi ngôn ngữ, bản đầy đủ và bản ngắn). Tính toán ngân sách trên số của user (lọ, tỷ lệ tiết kiệm, quỹ khẩn cấp) vẫn làm. Câu trả lời về thị trường hay đầu tư (skill `market-lookup` hoặc câu hỏi có từ đầu tư/cổ phiếu/vàng/crypto…) có dòng cuối in nghiêng "Thông tin tham khảo, không phải lời khuyên đầu tư"; câu khác thì không.
 - **Giọng Moonee**: nói như bạn thân nhắn tin, tự nhiên, ấm, 1–3 câu, không emoji, ở mọi câu trả lời và câu hỏi lại. Ghi giao dịch xong thì tóm tắt một câu ("Moonee ghi lại 40.000 ₫ ăn sáng ở GS25 hôm nay rồi nhé").
 - "Tháng này mình ăn uống hết bao nhiêu?", "Còn bao nhiêu để hưởng thụ?"
 - Gợi ý cân đối lọ cuối tháng dựa trên thu nhập và thói quen chi.
@@ -223,9 +224,11 @@ Moonee hành xử như một người hiểu tài chính cá nhân, trừ khi us
 
 ### 6.5 Khác
 - Hỗ trợ / góp ý, Giới thiệu, chính sách quyền riêng tư, đánh giá app
+- Giới thiệu có dòng **Điều khoản & miễn trừ trách nhiệm**: toàn văn `docs/TERMS.md` (ngày user đã đồng ý ở cuối).
 
 ## 7. Onboarding (qua chat)
 
+00. **Điều khoản** (màn riêng, trước mọi bước, không bỏ qua được): thẻ tóm tắt các ý chính (công cụ ghi chép và ngân sách, không phải chuyên gia tư vấn; AI có thể sai và chỉ phân tích số user nhập; không khuyên mua bán đầu tư, không dự đoán giá; user tự chịu trách nhiệm, nhà phát triển app, bên làm model AI và nhà cung cấp AI không chịu trách nhiệm; dữ liệu ở máy và iCloud của user, BYOK thì tin nhắn đi tới nhà cung cấp user chọn), link đọc toàn văn, ô "Tôi từ 18 tuổi trở lên và đồng ý…" bắt buộc, nút "Tôi đồng ý" chỉ bật khi đã tick. Lưu phiên bản đã đồng ý + ngày (`Terms.version`). Khi `Terms.version` tăng, user cũ thấy lại màn này lúc mở app ("Moonee đã cập nhật điều khoản").
 0. **Thiết lập hồ sơ** (màn riêng, không phải chat): tên hiển thị + chọn avatar có sẵn, chỉ lưu trên máy, không đăng nhập. Có nút "Để sau".
 1. Moonee chào và giới thiệu ngắn (nhân vật xuất hiện).
 2. Hỏi thu nhập hằng tháng (khoảng) và cố định hay không đều, rồi **ngày nhận lương**. Có ngày thì tạo khoản thu định kỳ (mục 4.3), ngày nhận đầu tiên là sau hôm nay (tiền đã nhận nằm trong số dư ví ở bước 3).
