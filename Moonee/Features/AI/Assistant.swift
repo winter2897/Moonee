@@ -178,6 +178,9 @@ struct Assistant: Sendable {
     /// Runs every tool of the skill with what the question says (period, category, jar, amount). Failing tools are skipped.
     func prefetch(_ tools: [AITool], text: String, context: ParserContext) async -> [ToolResult] {
         let h = QuickParser.hints(in: text, context: context)
+        let periods = QuickParser.periods(in: text, context: context)
+        let tokens = Token.split(text)
+        let asksDue = [Phrase](phrases: context.lexicons.flatMap(\.dueCues)).contained(in: tokens)
         var args = ToolArgs()
         args.period = h.period.flatMap(LedgerPeriod.init(rawValue:))
         args.month = args.period == .lastMonth ? .lastMonth : nil
@@ -195,6 +198,10 @@ struct Assistant: Sendable {
             // A question about one jar ("hưởng thụ còn bao nhiêu") is not about the whole month's budget. One about a
             // category keeps it: the category's limit line answers "ăn uống còn bao nhiêu?" (no limit: spendingSummary does).
             if tool.name == "monthBudget", h.jarKey != nil { continue }
+            // "Sắp tới phải trả gì?": the bills and debts due soon answer it. Asked about another period ("tuần này",
+            // "so với tháng trước"), the spending summary does: the month budget is this month's money left.
+            if tool.name == "comingUp", !asksDue { continue }
+            if tool.name == "monthBudget", asksDue || periods.contains(where: { $0 != "today" && $0 != "thisMonth" }) { continue }
             if let json = try? await tool.run(data) { out.append(.init(tool: tool.name, json: json)) }
         }
         return out

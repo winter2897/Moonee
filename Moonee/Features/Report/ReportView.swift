@@ -355,7 +355,7 @@ private struct TrendCard: View {
     }
 }
 
-/// The report in its own navigation stack with a Done button, for sheets (chat's "See monthly report").
+/// The report in its own navigation stack with a Done button, for sheets (the chat's "See last month's report" tile).
 struct ReportSheet: View {
     @Environment(\.dismiss) private var dismiss
 

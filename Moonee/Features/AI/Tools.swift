@@ -12,11 +12,11 @@ struct MooneeTools: Sendable {
     var search = WebSearch.current()
     var prices = MarketPrices()
 
-    var all: [AITool] { [monthBudget, spendingSummary, listTransactions, jarBalances, splitIncome, savingsPlan, monthClose, webSearch, marketPrice, debtBook] }
+    var all: [AITool] { [monthBudget, spendingSummary, listTransactions, jarBalances, splitIncome, savingsPlan, monthClose, webSearch, marketPrice, debtBook, comingUp] }
 
     /// Every tool name, for skill files and the skill editor (a test keeps it equal to `all`).
     static let allNames = ["monthBudget", "spendingSummary", "listTransactions", "jarBalances", "splitIncome", "savingsPlan", "monthClose",
-                           "webSearch", "marketPrice", "debtBook"]
+                           "webSearch", "marketPrice", "debtBook", "comingUp"]
 
     /// In the order given (a skill lists its most useful tool first).
     func named(_ names: [String]) -> [AITool] {
@@ -38,7 +38,7 @@ struct MooneeTools: Sendable {
             let due = { (d: BudgetFacts.Due) in BudgetReply.Due(name: d.name, amount: money(d.amount), date: day(d.date), estimate: d.isEstimate ? true : nil) }
             return BudgetReply(
                 month: "\(day(b.month.start)) – \(day(b.month.end.addingTimeInterval(-1)))", today: day(now()),
-                totalBudget: money(b.budget), spent: money(b.spent), left: money(b.left),
+                totalBudget: money(b.budget), spent: money(b.spent), left: money(b.left), perDay: b.perDay > 0 ? money(b.perDay) : nil,
                 billsStillDue: money(b.billsTotal), leftAfterBills: money(b.left - b.billsTotal),
                 unallocated: money(b.unallocated), incomeReceived: money(b.income),
                 expectedIncome: b.expectedIncome.map(due), billsDueThisMonth: b.bills.map(due),
@@ -98,12 +98,14 @@ struct MooneeTools: Sendable {
 
     var jarBalances: AITool {
         AITool(name: "jarBalances",
-               description: "Every jar's balance now, what came in and went out this month, and how much of this month's money is used (warning from 80%).",
-               parameters: .object([])) { (_: ToolArgs) -> [JarRow] in
+               description: "Every jar's balance now (or only jarKey's), what came in and went out this month, how much of this month's money is used (warning from 80%), about how much a day it allows until the month ends, and Moonee's advice for the jar (a move to cover it when below zero, a daily pace when it goes fast).",
+               parameters: .object([Self.jar])) { (a: ToolArgs) -> [JarRow] in
             let month = LedgerPeriod.thisMonth.interval(now: now(), calendar: calendar)
             let since = try await ledger.transactions(in: DateInterval(start: month.start, end: .distantFuture))
             let all = JarFlows(since), inMonth = JarFlows(since.filter { month.has($0.date) })
-            return try await ledger.jars().map { j in
+            let facts = try await ledger.budget()
+            let jars = try await ledger.jars()
+            return jars.filter { j in a.jarKey == nil || j.key == a.jarKey || !jars.contains { $0.key == a.jarKey } }.map { j in
                 let opening = j.balance - all.net(j.key)
                 let funded = inMonth.inflow[j.key, default: 0], spent = inMonth.outflow[j.key, default: 0]
                 let base = opening + funded
@@ -111,7 +113,9 @@ struct MooneeTools: Sendable {
                 return JarRow(key: j.key, name: j.name, percent: "\(j.percent)%", balance: money(j.balance),
                               fundedThisMonth: money(funded), spentThisMonth: money(spent),
                               usedThisMonth: base > 0 ? "\(Int((used * 100).rounded()))%" : nil,
-                              status: j.balance < 0 ? "negative" : used > 1 ? "over" : used >= 0.8 ? "warning" : "ok")
+                              status: j.balance < 0 ? "negative" : used > 1 ? "over" : used >= 0.8 ? "warning" : "ok",
+                              perDay: facts.map { $0.advisor.perDay(j.balance) }.flatMap { $0 > 0 ? money($0) : nil },
+                              advice: facts?.advice.first { $0.ref == j.key && [.negativeJar, .pace].contains($0.kind) }.map { "\($0.title). \($0.text)" })
             }
         }
     }
@@ -197,6 +201,7 @@ struct MooneeTools: Sendable {
             let spending = inMonth.filter { $0.kind == .expense }
             let income = inMonth.filter { $0.kind == .income }.sum, spent = spending.sum
             return Close(
+                period: (a.month ?? .thisMonth).rawValue,
                 month: "\(day(m.start)) – \(day(m.end.addingTimeInterval(-1)))", income: money(income), spent: money(spent),
                 saved: money(income - spent), savingsRate: income > 0 ? signedPercent(income - spent, of: income) : nil,
                 jars: start.map {
@@ -240,6 +245,32 @@ struct MooneeTools: Sendable {
             return DebtReply(today: day(now()), owedToMe: money(mine.reduce(0) { $0 + $1.remaining }), theyOweMe: mine.map(row),
                              owedByMe: money(theirs.reduce(0) { $0 + $1.remaining }), iOwe: theirs.map(row))
         }
+    }
+
+    var comingUp: AITool {
+        AITool(name: "comingUp",
+               description: "What the user has to pay in the next 7 days, overdue ones included: unpaid bills and debts the user owes with a due date, soonest first, with the total.",
+               parameters: .object([])) { (_: ToolArgs) -> DueReply in
+            let items = Self.dueSoon(bills: try await ledger.budget()?.bills ?? [], debts: try await ledger.debts(), now: now(), calendar: calendar)
+            let today = calendar.startOfDay(for: now())
+            return DueReply(today: day(now()), total: money(items.reduce(0) { $0 + $1.amount }), items: items.map {
+                .init(name: $0.name, kind: $0.isDebt ? "debt" : "bill", amount: money($0.amount), due: day($0.date),
+                      overdue: $0.date < today ? true : nil, estimate: $0.isEstimate ? true : nil)
+            })
+        }
+    }
+
+    /// Unpaid bills and debts the user owes due within `days` days (overdue included), soonest first. The chat's
+    /// "What do I have to pay soon?" chip shows when this is not empty, and `comingUp` answers it.
+    /// ponytail: `BudgetFacts.bills` stops at the month's end; a bill due on the 2nd is missed on the 28th.
+    static func dueSoon(bills: [BudgetFacts.Due], debts: [LedgerDebt], days: Int = 7, now: Date, calendar: Calendar) -> [BudgetFacts.Due.Soon] {
+        let until = calendar.date(byAdding: .day, value: days + 1, to: calendar.startOfDay(for: now))!
+        let owed = debts.compactMap { d -> BudgetFacts.Due.Soon? in
+            guard !d.theyOweMe, let due = d.dueDate else { return nil }
+            return .init(name: d.person, amount: d.remaining, date: due, isDebt: true)
+        }
+        return (bills.map { .init(name: $0.name, amount: $0.amount, date: $0.date, isEstimate: $0.isEstimate) } + owed)
+            .filter { $0.date < until }.sorted { $0.date < $1.date }
     }
 
     // MARK: Helpers
@@ -308,13 +339,34 @@ struct BudgetReply: Encodable {
     struct Limit: Encodable { var name: String; var spent, limit, left, over, status: String? }
     /// `BudgetAdvisor` output: numbers already in the text.
     struct Advice: Encodable { var kind, title, text: String; var why: String? }
-    var month, today, totalBudget, spent, left, billsStillDue, leftAfterBills, unallocated, incomeReceived: String
+    var month, today, totalBudget, spent, left: String
+    /// "About X a day": left ÷ the days left in the month (today included); nil when nothing is left.
+    var perDay: String?
+    var billsStillDue, leftAfterBills, unallocated, incomeReceived: String
     var expectedIncome: [Due]
     var billsDueThisMonth: [Due]
     var jars: [Jar]
     /// The category asked about (`categoryKey`), else nil.
     var category: Limit?
     var advice: [Advice]
+}
+
+struct DueReply: Codable {
+    /// kind: bill or debt (name = the person to pay back).
+    struct Item: Codable { var name, kind, amount, due: String; var overdue, estimate: Bool? }
+    var today, total: String
+    var items: [Item]
+}
+
+extension BudgetFacts.Due {
+    /// Something to pay soon: a bill, or a debt the user owes (`name` = the person).
+    struct Soon: Sendable, Equatable {
+        var name: String
+        var amount: Int
+        var date: Date
+        var isDebt = false
+        var isEstimate = false
+    }
 }
 
 struct DebtReply: Codable {
@@ -346,6 +398,10 @@ struct JarRow: Encodable {
     var usedThisMonth: String?
     /// ok, warning (≥80%), over (>100%), negative
     var status: String
+    /// "About X a day" until the month ends (nil: nothing left, or no budget numbers).
+    var perDay: String?
+    /// Moonee's advice for this jar (`BudgetAdvisor`, the Budget card's): its numbers are final.
+    var advice: String?
 }
 
 struct Split: Encodable {
@@ -363,6 +419,8 @@ struct Plan: Encodable {
 struct Close: Encodable {
     struct JarLine: Encodable { var name, opening, funded, spent, closing: String }
     struct Move: Encodable { var from, to, amount: String }
+    /// thisMonth or lastMonth.
+    var period: String
     var month, income, spent, saved: String
     var savingsRate: String?
     var jars: [JarLine]

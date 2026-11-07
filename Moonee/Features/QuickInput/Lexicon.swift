@@ -53,6 +53,8 @@ struct Lexicon: Sendable {
     var questionCues: [String] = []
     /// Skill id → phrases that ask for it ("chốt sổ" → close-management).
     var skillCues: [(skill: String, words: [String])] = []
+    /// "phải trả", "due": a question about what to pay soon, answered by the `comingUp` tool (bills and debts in 7 days).
+    var dueCues: [String] = []
     /// Period phrases in questions → `LedgerPeriod` raw value ("tháng này" → "thisMonth").
     var periods: [String: String] = [:]
     /// Receipt lines that hold the total ("tổng cộng", "total"). Longest first.

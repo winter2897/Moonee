@@ -76,6 +76,7 @@ extension Lexicon {
                                "giá cổ phiếu", "chứng khoán", "vn-index", "vnindex", "bitcoin", "btc", "ethereum", "eth",
                                "tiền ảo", "crypto", "tin tức", "giá xăng", "tìm trên mạng", "tra cứu"]),
         ],
+        dueCues: ["phải trả", "sắp tới", "đến hạn", "tới hạn"],
         periods: [
             "hôm nay": "today", "tuần này": "thisWeek", "tuần trước": "lastWeek", "tuần rồi": "lastWeek",
             "tháng này": "thisMonth", "tháng trước": "lastMonth", "tháng rồi": "lastMonth",

@@ -1,144 +1,44 @@
 import SwiftUI
 
 extension View {
-    /// Animated opening on a cold launch: Moonee (a still image) pops up, "Moonee" springs in letter by letter with a shimmer,
-    /// the tagline tracks in, then the splash fades into the app (≈1.9 s, a tap skips it). Apply once, outermost, so it
-    /// also covers onboarding and the app lock (Face ID can run underneath; nothing behind it ever flashes).
+    /// The opening on a cold launch: the launch screen's picture (Moonee over the word "Moonee", `moonee.splash`) stays
+    /// for a moment once the app is up, then fades into it (≈0.4 s in all). Apply once, outermost, so it also covers
+    /// onboarding and the app lock (Face ID can run underneath; nothing behind it ever flashes).
     /// Launch with `-splash.off YES` to skip it (screenshots).
     func splash() -> some View { modifier(SplashModifier()) }
 }
 
 private struct SplashModifier: ViewModifier {
-    // @State on the root view survives background → foreground, so the splash only plays on a cold launch.
+    // @State on the root view survives background → foreground, so the splash only shows on a cold launch.
     @State private var showing = !UserDefaults.standard.bool(forKey: "splash.off")
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     func body(content: Content) -> some View {
         content
             .accessibilityHidden(showing)
             .overlay {
                 if showing {
-                    SplashView { withAnimation(.easeOut(duration: 0.35)) { showing = false } }
-                        .transition(.asymmetric(insertion: .identity,
-                                                removal: reduceMotion ? .opacity : .opacity.combined(with: .scale(scale: 1.08))))
+                    SplashView()
+                        .transition(.opacity)
+                        .task {
+                            // The app is drawn underneath by now; a short beat so iOS's own launch fade doesn't double up.
+                            try? await Task.sleep(for: .milliseconds(150))
+                            withAnimation(.easeOut(duration: 0.25)) { showing = false }
+                        }
                 }
             }
     }
 }
 
-/// The first frame is the launch screen (`UILaunchScreen`: LaunchBackground + the `moonee.happy` image at its own size,
-/// centred), so the hand-off from iOS is seamless. Moonee is a still image that pops on that very first frame, then lifts
-/// for the name. Motion follows the Animos styles.
+/// Exactly the launch screen (`UILaunchScreen`: LaunchBackground + `moonee.splash` at its own size, centred),
+/// so there is no jump from iOS's picture to the app's.
 struct SplashView: View {
-    var finish: () -> Void
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    /// 0 launch frame · 1 Moonee lifts · 2 name springs in · 3 shimmer + tagline.
-    @State private var stage = 0
-    @State private var finished = false
-    /// Moonee's in-place pop that starts on the first frame.
-    @State private var pop = false
-
-    private let letters = Array("Moonee")
-
     var body: some View {
-        let lift: CGFloat = reduceMotion ? 0 : -64
         ZStack {
             Color.brandMint // = LaunchBackground
-            MooneeBackground().opacity(stage >= 1 ? 1 : 0)
-            // Soft glow that blooms behind Moonee.
-            Circle()
-                .fill(RadialGradient(colors: [Color.brandPrimaryLight.opacity(0.45), .clear], center: .center, startRadius: 0, endRadius: 150))
-                .frame(width: 300, height: 300)
-                .scaleEffect(stage >= 1 ? 1 : 0.5)
-                .opacity(stage >= 1 ? 1 : 0)
-                .offset(y: lift)
-            Image("moonee.happy") // = UILaunchScreen.UIImageName
-                .scaleEffect(pop ? 1.12 : 1)
-                .offset(y: stage >= 1 ? lift : 0)
-            VStack(spacing: 4) {
-                title
-                Text("Your AI Money Buddy", tableName: "Splash")
-                    .font(.subheadline.weight(.medium))
-                    .foregroundStyle(Color.inkSecondary)
-                    .tracking(stage >= 3 || reduceMotion ? 0.2 : 8)
-                    .blur(radius: stage >= 3 || reduceMotion ? 0 : 5)
-                    .opacity(stage >= 3 ? 1 : 0)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.6)
-            }
-            .padding(.horizontal, 24)
-            .offset(y: reduceMotion ? 130 : 56)
+            Image("moonee.splash") // = UILaunchScreen.UIImageName
         }
         .ignoresSafeArea()
-        .contentShape(.rect)
-        .onTapGesture(perform: end)
         .accessibilityElement()
-        .accessibilityLabel(Text(verbatim: "Moonee: Your AI Money Buddy")) // brand line, never translated
-        .accessibilityAddTraits(.isStaticText)
-        .task { await play() }
-    }
-
-    /// "Moonee": letters rise, unblur and spring in one after another, then a light sweeps across.
-    private var title: some View {
-        let shown = stage >= 2
-        return letterRow(shown: shown)
-            .overlay {
-                GeometryReader { g in
-                    LinearGradient(colors: [.clear, .white.opacity(0.85), .clear], startPoint: .leading, endPoint: .trailing)
-                        .frame(width: g.size.width * 0.4)
-                        .rotationEffect(.degrees(12))
-                        .offset(x: stage >= 3 ? g.size.width * 1.1 : -g.size.width * 0.5)
-                        .animation(reduceMotion ? nil : .easeInOut(duration: 0.8), value: stage)
-                }
-                .mask(letterRow(shown: shown))
-                .allowsHitTesting(false)
-            }
-    }
-
-    private func letterRow(shown: Bool) -> some View {
-        HStack(spacing: 0) {
-            ForEach(letters.indices, id: \.self) { i in
-                Text(String(letters[i]))
-                    .font(.largeTitle.bold())
-                    .foregroundStyle(Color.brandDeep)
-                    .opacity(shown ? 1 : 0)
-                    .offset(y: shown || reduceMotion ? 0 : 26)
-                    .scaleEffect(shown || reduceMotion ? 1 : 0.6, anchor: .bottom)
-                    .blur(radius: shown || reduceMotion ? 0 : 8)
-                    .animation(reduceMotion ? .easeOut(duration: 0.3)
-                                            : .spring(duration: 0.55, bounce: 0.45).delay(Double(i) * 0.06), value: shown)
-            }
-        }
-        .fixedSize()
-    }
-
-    private func play() async {
-        if reduceMotion {
-            // A still Moonee and a simple fade.
-            try? await Task.sleep(for: .milliseconds(150))
-            withAnimation(.easeOut(duration: 0.4)) { stage = 3 }
-            try? await Task.sleep(for: .milliseconds(1100))
-            end()
-            return
-        }
-        withAnimation(.spring(duration: 0.45, bounce: 0.4)) { pop = true }  // moves from the app's very first frame
-        // In place until iOS has faded its launch picture out (≈0.25 s); lifting earlier leaves a ghost under Moonee.
-        try? await Task.sleep(for: .milliseconds(280))
-        withAnimation(.spring(duration: 0.55, bounce: 0.35)) {             // lifts with its glow, settles
-            pop = false
-            stage = 1
-        }
-        try? await Task.sleep(for: .milliseconds(330))
-        withAnimation(.spring(duration: 0.5, bounce: 0.3)) { stage = 2 }   // settle; name springs in
-        try? await Task.sleep(for: .milliseconds(520))
-        withAnimation(.easeOut(duration: 0.6)) { stage = 3 }               // shimmer + tagline
-        try? await Task.sleep(for: .milliseconds(800))
-        end()
-    }
-
-    private func end() {
-        guard !finished else { return }
-        finished = true
-        finish()
+        .accessibilityLabel(Text(verbatim: "Moonee"))
     }
 }

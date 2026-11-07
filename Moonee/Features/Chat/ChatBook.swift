@@ -478,6 +478,15 @@ struct ChatCardLine: Codable, Equatable {
                     return "• \(s("name", j)): **\(s("balance", j))**" + note
                 }
                 guard !rows.isEmpty else { continue }
+                if let rows = json as? [[String: Any]], rows.count == 1, let j = rows.first { // "Lọ Hưởng thụ sắp hết, làm sao?"
+                    var text = s("status", j) == "negative"
+                        ? String(localized: "**\(s("name", j))** is below zero: **\(s("balance", j))**.", table: "Chat")
+                        : String(localized: "**\(s("name", j))** has **\(s("balance", j))** left.", table: "Chat")
+                    if let used = j["usedThisMonth"] as? String { text += " " + String(localized: "\(used) of this month's money is used.", table: "Chat") }
+                    if let perDay = j["perDay"] as? String { text += " " + String(localized: "That's about **\(perDay)** a day until the month ends.", table: "Chat") }
+                    if let advice = j["advice"] as? String { text += "\n\n" + advice }
+                    return text
+                }
                 return ([String(localized: "Here's what's in your jars right now:", table: "Chat")] + rows).joined(separator: "\n")
             case "monthBudget":
                 if let c = o["category"] as? [String: Any] { // "ăn uống còn bao nhiêu?": its limit, else the spending summary
@@ -487,6 +496,7 @@ struct ChatCardLine: Codable, Equatable {
                         : String(localized: "\(s("name", c)): **\(s("left", c))** left of its **\(s("limit", c))** limit this month (spent **\(s("spent", c))**).", table: "Chat")
                 }
                 var text = String(localized: "This month you have **\(s("left"))** left to spend of **\(s("totalBudget"))** (spent **\(s("spent"))**).", table: "Chat")
+                if let perDay = o["perDay"] as? String { text += " " + String(localized: "That's about **\(perDay)** a day until the month ends.", table: "Chat") }
                 if (o["billsDueThisMonth"] as? [Any])?.isEmpty == false {
                     text += " " + String(localized: "After the bills still due: **\(s("leftAfterBills"))**.", table: "Chat")
                 }
@@ -498,7 +508,21 @@ struct ChatCardLine: Codable, Equatable {
                 }
                 return text
             case "monthClose":
-                return String(localized: "This month: income **\(s("income"))**, spent **\(s("spent"))**, saved **\(s("saved"))**.", table: "Chat")
+                let top = (o["topCategories"] as? [[String: Any]] ?? []).map { "• \(s("name", $0)): **\(s("spent", $0))** (\(s("share", $0)))" }
+                let line = s("period") == "lastMonth"
+                    ? String(localized: "Last month: income **\(s("income"))**, spent **\(s("spent"))**, saved **\(s("saved"))**.", table: "Chat")
+                    : String(localized: "This month: income **\(s("income"))**, spent **\(s("spent"))**, saved **\(s("saved"))**.", table: "Chat")
+                return ([line] + top).joined(separator: "\n")
+            case "comingUp":
+                guard let d = try? JSONDecoder().decode(DueReply.self, from: Data(f.json.utf8)) else { continue }
+                guard !d.items.isEmpty else { return String(localized: "Nothing to pay in the next 7 days.", table: "Chat") }
+                let rows = d.items.map { i in
+                    let name = i.kind == "debt" ? String(localized: "Pay back \(i.name)", table: "Chat") : i.name
+                    let date = (try? Date(i.due, strategy: .iso8601.year().month().day()))?.formatted(.dateTime.day().month(.defaultDigits)) ?? i.due
+                    let when = i.overdue == true ? String(localized: "(overdue since \(date))", table: "Chat") : String(localized: "(due \(date))", table: "Chat")
+                    return "• \(name): **\(i.amount)** \(when)"
+                }
+                return ([String(localized: "To pay in the next 7 days: **\(d.total)**", table: "Chat")] + rows).joined(separator: "\n")
             case "splitIncome":
                 let rows = (o["jars"] as? [[String: Any]] ?? []).map { "• \(s("name", $0)) (\(s("percent", $0))): **\(s("amount", $0))**" }
                 return ([String(localized: "Here's how **\(s("amount"))** splits into your jars:", table: "Chat")] + rows).joined(separator: "\n")
