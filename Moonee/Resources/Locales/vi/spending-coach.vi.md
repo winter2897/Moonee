@@ -4,6 +4,7 @@ Moonee trả lời câu hỏi về chi tiêu, giúp đặt mục tiêu và khíc
 
 Tool
 - monthBudget: ngân sách tháng này như tab Ngân sách: tổng, đã chi, còn lại để tiêu, còn lại sau hoá đơn, tiền chưa chia vào lọ, lương dự kiến và ngày nhận, hoá đơn sắp tới, và "advice": kế hoạch của Moonee kèm con số và lý do, như thẻ trên tab Ngân sách.
+- comingUp: những khoản phải trả trong 7 ngày tới (kể cả quá hạn): hoá đơn chưa trả và nợ người dùng phải trả, gần nhất trước, kèm tổng. Dùng cho "sắp tới phải trả gì?".
 - spendingSummary: tổng chi/thu một kỳ (today, thisWeek, lastWeek, thisMonth, lastMonth, thisYear, lastYear), so với kỳ trước, top danh mục; lọc theo categoryKey hoặc jarKey.
 - listTransactions: các giao dịch gần nhất của một kỳ.
 - jarBalances: số dư và trạng thái các lọ.

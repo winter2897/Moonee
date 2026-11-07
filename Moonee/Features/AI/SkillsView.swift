@@ -42,6 +42,7 @@ enum ToolInfo {
         case "webSearch": String(localized: "Web search", table: "AI")
         case "marketPrice": String(localized: "Crypto prices", table: "AI")
         case "debtBook": String(localized: "Debt book", table: "AI")
+        case "comingUp": String(localized: "Due in the next 7 days", table: "AI")
         default: name
         }
     }

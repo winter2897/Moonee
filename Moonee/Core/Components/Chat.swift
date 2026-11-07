@@ -181,7 +181,7 @@ struct ChatTransactionCard: View {
 
 // MARK: - Quick replies
 
-/// Suggested reply. `.chip` = one-line capsule (Nói chi tiêu), `.tile` = icon over two lines (Xem báo cáo tháng).
+/// Suggested reply. `.chip` = one-line capsule (a choice Moonee asks for), `.tile` = icon over two lines (the chat's question tiles).
 struct QuickReplyChip: View {
     enum Style { case chip, tile }
 

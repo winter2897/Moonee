@@ -2579,28 +2579,6 @@
         }
       }
     },
-    "Version %@": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ເວີຊັນ %@"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "เวอร์ชัน %@"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Phiên bản %@"
-          }
-        }
-      }
-    },
     "Wallets": {
       "localizations": {
         "lo": {
@@ -3125,6 +3103,204 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chỉ có trên Simulator: người dùng mẫu Minh với 3 tháng chi tiêu, hũ, hoá đơn, sổ nợ và trò chuyện."
+          }
+        }
+      }
+    },
+    "Version %@ (%@)": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phiên bản %1$@ (%2$@)"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เวอร์ชัน %1$@ (%2$@)"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເວີຊັນ %1$@ (%2$@)"
+          }
+        }
+      }
+    },
+    "Moonee is a money buddy you chat with. Tell it what you spent in a few words, and it keeps your books, splits your money into jars and tells you what you can still spend.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee là người bạn tài chính để bạn trò chuyện. Chỉ cần nói vài chữ về khoản vừa chi, Moonee ghi sổ, chia tiền vào các lọ và cho bạn biết còn tiêu được bao nhiêu."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee คือเพื่อนคู่คิดเรื่องเงินที่คุยด้วยได้ บอกสั้น ๆ ว่าใช้อะไรไป Moonee จะจดบัญชี แบ่งเงินลงโหล และบอกว่ายังใช้ได้อีกเท่าไร"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ແມ່ນໝູ່ດ້ານການເງິນທີ່ທ່ານລົມນຳໄດ້. ບອກສັ້ນໆວ່າໃຊ້ຫຍັງໄປ, Moonee ຈະບັນທຶກບັນຊີ, ແບ່ງເງິນໃສ່ໂຖ ແລະ ບອກວ່າຍັງໃຊ້ໄດ້ອີກເທົ່າໃດ."
+          }
+        }
+      }
+    },
+    "Chat to record": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chat để ghi chép"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แชตเพื่อจดบันทึก"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແຊັດເພື່ອບັນທຶກ"
+          }
+        }
+      }
+    },
+    "Type, say or snap a receipt: Moonee files it in seconds.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gõ, nói hay chụp hoá đơn: Moonee ghi lại trong vài giây."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "พิมพ์ พูด หรือถ่ายใบเสร็จ: Moonee จดให้ในไม่กี่วินาที"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ພິມ, ເວົ້າ ຫຼື ຖ່າຍໃບບິນ: Moonee ບັນທຶກໃຫ້ໃນບໍ່ເທົ່າໃດວິນາທີ."
+          }
+        }
+      }
+    },
+    "Money jars": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Các lọ tiền"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "โหลเงิน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໂຖເງິນ"
+          }
+        }
+      }
+    },
+    "Every income is split into jars, so you always know what is left for each part of life.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mỗi khoản thu được chia vào các lọ, nên bạn luôn biết mỗi phần của cuộc sống còn bao nhiêu."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายได้ทุกก้อนถูกแบ่งลงโหล คุณจึงรู้เสมอว่าแต่ละด้านของชีวิตเหลือเท่าไร"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຮັບທຸກກ້ອນຖືກແບ່ງໃສ່ໂຖ, ທ່ານຈຶ່ງຮູ້ສະເໝີວ່າແຕ່ລະດ້ານຂອງຊີວິດເຫຼືອເທົ່າໃດ."
+          }
+        }
+      }
+    },
+    "Private on your iPhone": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riêng tư trên iPhone của bạn"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เป็นส่วนตัวบน iPhone ของคุณ"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເປັນສ່ວນຕົວໃນ iPhone ຂອງທ່ານ"
+          }
+        }
+      }
+    },
+    "No account, no server: your books stay on this iPhone and your own iCloud.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không tài khoản, không máy chủ: sổ sách nằm trên iPhone này và iCloud của riêng bạn."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มีบัญชี ไม่มีเซิร์ฟเวอร์: บัญชีของคุณอยู่บน iPhone เครื่องนี้และ iCloud ของคุณเอง"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ມີບັນຊີຜູ້ໃຊ້, ບໍ່ມີເຊີບເວີ: ບັນຊີຂອງທ່ານຢູ່ໃນ iPhone ນີ້ ແລະ iCloud ຂອງທ່ານເອງ."
+          }
+        }
+      }
+    },
+    "Ask anything about your money. Every number is computed by the app; the AI only explains it.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hỏi bất cứ điều gì về tiền của bạn. Mọi con số do ứng dụng tính; AI chỉ giải thích."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ถามอะไรก็ได้เรื่องเงินของคุณ ทุกตัวเลขแอปคำนวณเอง AI แค่อธิบาย"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຖາມຫຍັງກໍໄດ້ກ່ຽວກັບເງິນຂອງທ່ານ. ທຸກຕົວເລກແອັບຄິດໄລ່ເອງ; AI ພຽງແຕ່ອະທິບາຍ."
           }
         }
       }

@@ -70,6 +70,7 @@ extension Lexicon {
             ("market-lookup", ["gold price", "price of gold", "exchange rate", "interest rate", "stock price", "share price",
                                "bitcoin", "btc", "ethereum", "eth", "crypto", "news", "gas price", "search the web", "look up"]),
         ],
+        dueCues: ["have to pay", "due", "coming up", "upcoming"],
         periods: [
             "today": "today", "this week": "thisWeek", "last week": "lastWeek", "this month": "thisMonth",
             "last month": "lastMonth", "this year": "thisYear", "last year": "lastYear",

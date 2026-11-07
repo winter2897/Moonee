@@ -35,6 +35,8 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 
 ---
 
+**Màn hình mở app** (quyết định 07/11): đơn giản và nhanh như Money Lover. Moonee (ảnh tĩnh) ở giữa, chữ "Moonee" bên dưới, nền màu thương hiệu, không hiệu ứng chữ; launch screen của iOS giống hệt nên không bị giật, mờ dần vào app khi sẵn sàng (≤ ~0,5 giây khi mở nguội, bỏ qua khi quay lại app).
+
 ## 1. Thanh tab
 
 ```
@@ -95,6 +97,7 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 - **Không tư vấn đầu tư** (quyết định 07/11): Moonee không bao giờ khuyên mua, bán hay giữ cổ phiếu, quỹ, crypto, vàng, ngoại tệ cụ thể và không dự đoán giá; được hỏi thì từ chối nhẹ nhàng, nói chỉ phân tích được số liệu user nhập và gợi ý hỏi chuyên gia có giấy phép (luật cứng trong persona + skill `market-lookup`, `jar-budgeting`, mọi ngôn ngữ, bản đầy đủ và bản ngắn). Tính toán ngân sách trên số của user (lọ, tỷ lệ tiết kiệm, quỹ khẩn cấp) vẫn làm. Câu trả lời về thị trường hay đầu tư (skill `market-lookup` hoặc câu hỏi có từ đầu tư/cổ phiếu/vàng/crypto…) có dòng cuối in nghiêng "Thông tin tham khảo, không phải lời khuyên đầu tư"; câu khác thì không.
 - **Giọng Moonee**: nói như bạn thân nhắn tin, tự nhiên, ấm, 1–3 câu, không emoji, ở mọi câu trả lời và câu hỏi lại. Ghi giao dịch xong thì tóm tắt một câu ("Moonee ghi lại 40.000 ₫ ăn sáng ở GS25 hôm nay rồi nhé").
 - "Tháng này mình ăn uống hết bao nhiêu?", "Còn bao nhiêu để hưởng thụ?"
+- **3 ô gợi ý câu hỏi** dưới tin nhắn cuối của Moonee (quyết định 07/11), chọn từ dữ liệu của user theo thứ tự: tối đa 2 việc cần làm ngay (chỉ khi đúng: "Chia 2tr chưa chia vào lọ" → mở phần Chia ở tab Ngân sách; "Sắp tới phải trả gì?" khi có hoá đơn/khoản nợ phải trả trong 7 ngày hoặc quá hạn; "Lọ X sắp hết, làm sao?" khi lọ dùng ≥ 80% hoặc âm; "Ai đang nợ mình?" khi có khoản cho mượn quá hạn; "Ăn uống còn bao nhiêu?" khi danh mục dùng ≥ 80% hạn mức), rồi "Hôm nay còn tiêu được bao nhiêu?", rồi một câu để hiểu tháng ("Tuần này mình tiêu nhiều nhất vào đâu?"; 5 ngày đầu tháng "Xem báo cáo tháng trước" mở báo cáo, còn lại "Tháng này so với tháng trước thế nào?"). Câu nào cũng trả lời được offline bằng số Swift tính.
 - Gợi ý cân đối lọ cuối tháng dựa trên thu nhập và thói quen chi.
 - Hướng dẫn đạt mục tiêu: "Muốn mua laptop 30tr trước Tết thì mỗi tuần cần để dành bao nhiêu?"
 
@@ -257,6 +260,7 @@ Tab tên **Tài sản** (en "Assets", icon `chart.line.uptrend.xyaxis`; trước
 
 ### 6.5 Khác
 - Hỗ trợ / góp ý, Giới thiệu, chính sách quyền riêng tư, đánh giá app
+- Giới thiệu mở đầu bằng phần giới thiệu app (Moonee, "Moonee: Your AI Money Buddy", phiên bản (build), một đoạn Moonee là gì và 4 điểm chính: chat để ghi, các lọ, riêng tư trên iPhone, trợ lý AI), sau đó mới tới các dòng bên dưới.
 - Giới thiệu có dòng **Điều khoản & miễn trừ trách nhiệm**: toàn văn `docs/TERMS.md` (ngày user đã đồng ý ở cuối).
 
 ## 7. Onboarding (qua chat)

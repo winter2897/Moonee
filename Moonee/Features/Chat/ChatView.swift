@@ -38,6 +38,7 @@ struct ChatView: View {
     @State private var attachments: [ChatAttachment] = []
     @State private var savedCount = 0
     @State private var showReport = false
+    @State private var suggestions: [ChatSuggestion] = []
     /// "Pick a date…" under "When will Nam pay you back?".
     @State private var pickingDue = false
     @State private var dueDay = Calendar.current.date(byAdding: .day, value: 7, to: .now)!
@@ -83,6 +84,7 @@ struct ChatView: View {
                 .defaultScrollAnchor(.bottom, for: .sizeChanges)
                 .defaultScrollAnchor(.top, for: .alignment) // a short chat sits under the hero, as in the mockup
                 .onChange(of: messages.count) { withAnimation { proxy.scrollTo("bottom", anchor: .bottom) } }
+                .onChange(of: messages.count, initial: true) { refreshSuggestions() }
                 .onChange(of: busy) { withAnimation { proxy.scrollTo("bottom", anchor: .bottom) } }
             }
             ChatComposer(text: $text, focus: $focused, isRecording: speech.isActive,
@@ -95,10 +97,11 @@ struct ChatView: View {
         .onAppear {
             ChatThreads.migrate(in: context)
             showToday()
+            refreshSuggestions() // back from Budget after a split: the tiles follow
             // Opens as the idle pill (owner's reference): type, or hold the voice button to talk.
         }
         // The tab stays alive for days: back from the background or past midnight, a new day gets its own thread.
-        .onChange(of: scenePhase) { _, phase in if phase == .active { showToday() } }
+        .onChange(of: scenePhase) { _, phase in if phase == .active { showToday(); refreshSuggestions() } }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.significantTimeChangeNotification)) { _ in showToday() }
         .task(id: composeRequest) {
             guard composeRequest != handledCompose else { return }
@@ -165,22 +168,9 @@ struct ChatView: View {
 
     // MARK: Messages
 
+    /// Moonee's hello. No shortcut chips under it: the composer already has the mic, camera and text field.
     private var greeting: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            ChatBubble(.moonee, String(localized: "**Hi there!**\nWhat can Moonee do for you today? Log a spend, ask about your money, or snap a receipt.", table: "Chat"))
-            // One row when the three fit (mockup), else the third wraps: never cut off at the edge (UI review C-3).
-            let say = QuickReplyChip(title: String(localized: "Say a spend", table: "Chat"), symbol: "mic", action: startVoice)
-            let scan = QuickReplyChip(title: String(localized: "Scan a receipt", table: "Chat"), symbol: "camera", action: openCamera)
-            let type = QuickReplyChip(title: String(localized: "Type it in", table: "Chat"), symbol: "pencil") { focused = true }
-            ViewThatFits(in: .horizontal) {
-                HStack(spacing: 8) { say; scan; type }
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack(spacing: 8) { say; scan }
-                    type
-                }
-            }
-            .padding(.vertical, 4)
-        }
+        ChatBubble(.moonee, String(localized: "**Hi there!**\nWhat can Moonee do for you today? Log a spend, ask about your money, or snap a receipt.", table: "Chat"))
     }
 
     @ViewBuilder private func row(_ i: Int) -> some View {
@@ -283,19 +273,25 @@ struct ChatView: View {
         }
     }
 
+    /// Three questions picked from the books (`ChatSuggestion.pick`), refreshed after each message.
     private var tiles: some View {
         HStack(alignment: .top, spacing: 10) {
-            QuickReplyChip(title: String(localized: "See monthly report", table: "Chat"), symbol: "chart.bar.fill", style: .tile) {
-                showReport = true // S10: opens the report screen (Features/Report)
-            }
-            QuickReplyChip(title: String(localized: "How much is left in my Play jar?", table: "Chat"), symbol: "takeoutbag.and.cup.and.straw.fill", style: .tile) {
-                send(String(localized: "How much is left in my Play jar?", table: "Chat"))
-            }
-            QuickReplyChip(title: String(localized: "Month-end saving tips", table: "Chat"), symbol: "target", style: .tile) {
-                send(String(localized: "Month-end saving tips", table: "Chat"))
+            ForEach(suggestions) { s in
+                QuickReplyChip(title: s.title, symbol: s.symbol, style: .tile) {
+                    switch s.action {
+                    case .ask: send(s.title)
+                    case .openSplit: AppRoute.shared.tab = .budget // the Budget header's "Split now" (Moonee's plan, by %, one jar)
+                    case .openReport: showReport = true
+                    }
+                }
             }
         }
         .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private func refreshSuggestions() {
+        let books = StoreLedger(context)
+        suggestions = ChatSuggestion.pick(facts: books.budgetFacts, debts: books.debtList, currency: books.currency)
     }
 
     // MARK: Actions

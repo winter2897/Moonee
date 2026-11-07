@@ -127,10 +127,22 @@ enum QuickParser {
     /// What a question is about: period ("tháng này"), category ("ăn uống") and jar ("hưởng thụ").
     static func hints(in text: String, context: ParserContext = .init()) -> (period: String?, categoryKey: String?, jarKey: String?) {
         let tokens = Token.split(text), lx = Compiled(context.lexicons)
-        let period = lx.periods.first { $0.0.find(in: tokens) != nil }?.1
+        let period = periods(tokens, lx).first
         let jars = context.jars.map { (key: $0.value, phrases: [Phrase(phrase: $0.key)]) } + lx.jars
         let jar = jars.compactMap { j in j.phrases.lazy.compactMap { $0.find(in: tokens) }.min().map { ($0, j.key) } }.min { $0.0 < $1.0 }?.1
         return (period, parse(text, context: context).first?.categoryKey, jar)
+    }
+
+    /// Every period a question names, in the order written: "tháng này so với tháng trước" → [thisMonth, lastMonth].
+    static func periods(in text: String, context: ParserContext = .init()) -> [String] {
+        periods(Token.split(text), Compiled(context.lexicons))
+    }
+
+    private static func periods(_ tokens: [Token], _ lx: Compiled) -> [String] {
+        // At the same place the longest phrase wins.
+        let found = lx.periods.compactMap { p in p.0.find(in: tokens).map { (at: $0, length: p.0.count, key: p.1) } }
+            .sorted { ($0.at, -$0.length) < ($1.at, -$1.length) }
+        return found.reduce(into: []) { out, f in if !out.contains(f.key) { out.append(f.key) } }
     }
 
     /// "đặt hạn mức ăn uống 3tr" / "set food limit 3m": a monthly limit for one expense category (spec P1-1), or nil.

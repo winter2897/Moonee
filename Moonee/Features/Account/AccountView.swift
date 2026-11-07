@@ -162,14 +162,24 @@ private struct BudgetSetupView: View {
 private struct AboutView: View {
     var body: some View {
         Form {
+            // The app introduction comes first, then Terms and Privacy.
             Section {
-                VStack(spacing: 8) {
-                    Image("Logo").resizable().frame(width: 80, height: 80).clipShape(.rect(cornerRadius: 18))
-                    Text(verbatim: "Moonee").font(.title2.bold())
-                    Text("Version \(AppInfo.version)", tableName: "Account").font(.subheadline).foregroundStyle(.secondary)
+                VStack(spacing: 6) {
+                    Image("moonee.happy").resizable().scaledToFit().frame(height: 110).accessibilityHidden(true)
+                    Text(verbatim: "Moonee: Your AI Money Buddy").font(.title3.bold()).foregroundStyle(Color.brandDeep) // brand line, never translated
+                        .multilineTextAlignment(.center)
+                    Text("Version \(AppInfo.number) (\(AppInfo.build))", tableName: "Account").font(.subheadline).foregroundStyle(.secondary)
                 }
                 .frame(maxWidth: .infinity)
                 .listRowBackground(Color.clear)
+            }
+            Section {
+                Text("Moonee is a money buddy you chat with. Tell it what you spent in a few words, and it keeps your books, splits your money into jars and tells you what you can still spend.", tableName: "Account")
+                    .font(.subheadline)
+                feature("bubble.left.and.text.bubble.right.fill", .green, Text("Chat to record", tableName: "Account"), Text("Type, say or snap a receipt: Moonee files it in seconds.", tableName: "Account"))
+                feature("square.stack.3d.up.fill", .mint, Text("Money jars", tableName: "Account"), Text("Every income is split into jars, so you always know what is left for each part of life.", tableName: "Account"))
+                feature("lock.shield.fill", .blue, Text("Private on your iPhone", tableName: "Account"), Text("No account, no server: your books stay on this iPhone and your own iCloud.", tableName: "Account"))
+                feature("sparkles", .purple, Text("AI assistant", tableName: "Account"), Text("Ask anything about your money. Every number is computed by the app; the AI only explains it.", tableName: "Account"))
             }
             Section {
                 NavigationLink { TermsView() } label: {
@@ -184,5 +194,15 @@ private struct AboutView: View {
         }
         .navigationTitle(Text("About Moonee", tableName: "Account"))
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private func feature(_ symbol: String, _ color: Color, _ title: Text, _ text: Text) -> some View {
+        Label {
+            VStack(alignment: .leading, spacing: 2) {
+                title.font(.subheadline.weight(.semibold))
+                text.font(.footnote).foregroundStyle(.secondary)
+            }
+        } icon: { SettingsIcon(symbol: symbol, color: color) }
+        .accessibilityElement(children: .combine)
     }
 }

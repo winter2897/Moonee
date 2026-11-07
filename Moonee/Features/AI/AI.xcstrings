@@ -1365,6 +1365,28 @@
           }
         }
       }
+    },
+    "Due in the next 7 days": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đến hạn trong 7 ngày tới"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ครบกำหนดใน 7 วันข้างหน้า"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄົບກຳນົດໃນ 7 ມື້ຂ້າງໜ້າ"
+          }
+        }
+      }
     }
   }
 }
