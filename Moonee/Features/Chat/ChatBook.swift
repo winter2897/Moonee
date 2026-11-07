@@ -53,6 +53,8 @@ struct ChatCardLine: Codable, Equatable {
     var amount: Int
     var currency: String
     var income: Bool
+    /// Wallet or jar transfer: neither money in nor out. Optional so cards saved before it still decode.
+    var neutral: Bool? = nil
 
     init(_ t: Txn) {
         let label = t.category?.name ?? t.kind.title
@@ -72,6 +74,7 @@ struct ChatCardLine: Codable, Equatable {
         currency = t.currencyCode
         // Money in: income, a loan to me, or being paid back for money I lent.
         income = t.kind == .income || t.kind == .borrow || (t.kind == .repay && t.debt?.direction == .lent)
+        neutral = t.kind == .transfer || t.kind == .jarTransfer
     }
 
     private static func symbol(_ kind: TxKind) -> String {
@@ -92,7 +95,7 @@ struct ChatCardLine: Codable, Equatable {
             : calendar.isDateInYesterday(date) ? String(localized: "Yesterday", table: "Chat")
             : date.formatted(.dateTime.day().month())
         return .init(id: id, title: title, symbol: symbol, color: Color(hex: colorHex), category: category, jar: jar,
-                     when: when, amount: amount, currency: currency, income: income)
+                     when: when, amount: amount, currency: currency, income: income, neutral: neutral ?? false)
     }
 }
 
