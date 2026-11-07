@@ -61,26 +61,20 @@ func loc(_ key: String.LocalizationValue) -> String { String(localized: key, tab
     }
 
     /// Spec §4.3 "Paid": records the expense (pinned to its category's jar) and moves the bill one period on.
-    /// An income recurring (salary) is "Received" the same way: an income split into the jars by `splits`
-    /// (Moonee's plan, see `receive`) or else by percent (`allocate`). Received early, the next payday still moves on.
+    /// An income recurring (salary) is "Received" the same way: an income that `receive` splits by the help level
+    /// (spec §4.1, P0-1). Received early, the next payday still moves on.
     @discardableResult
-    static func markPaid(_ bill: Recurring, amount: Int? = nil, date: Date = .now, jars: [Jar], splits: [Jar: Int]? = nil,
+    static func markPaid(_ bill: Recurring, amount: Int? = nil, date: Date = .now, jars: [Jar], level: AdvisorLevel = .current,
                          in context: ModelContext, calendar: Calendar = .current) -> Txn {
         let t = Txn(amount: amount ?? bill.amount, kind: bill.isIncome ? .income : .expense, currencyCode: bill.currencyCode,
                     date: date, note: bill.name, category: bill.category, wallet: bill.wallet ?? defaultWallet(income: bill.isIncome, in: context))
         context.insert(t)
-        if bill.isIncome, let splits, splits.values.reduce(0, +) == t.amount {
-            for (jar, share) in splits where share > 0 {
-                let s = IncomeSplit(amount: share, jar: jar)
-                context.insert(s)
-                s.txn = t
-            }
-        }
-        t.allocate(jars: jars, in: context)
+        if !bill.isIncome { t.allocate(jars: jars, in: context) }
         bill.lastPaid = date
         let anchor = bill.dueDay ?? calendar.component(.day, from: bill.nextDue)
         bill.dueDay = anchor
         bill.nextDue = nextDue(after: bill.nextDue, bill.frequency, day: anchor, calendar: calendar)
+        if bill.isIncome { receive(income: t, level: level, date: date, in: context, calendar: calendar) } // after: plans to the next payday
         return t
     }
 

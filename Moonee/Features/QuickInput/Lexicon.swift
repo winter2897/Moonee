@@ -43,6 +43,8 @@ struct Lexicon: Sendable {
     /// Words that also split one message into several transactions (besides , ; and new lines).
     var separators: [String] = []
     var categories: [(key: String, words: [String])] = []
+    /// Bill names → category, checked before `categories` for a bill ("nước" is the water bill there, not a drink).
+    var bills: [(key: String, words: [String])] = []
     var jars: [(key: String, words: [String])] = []
     /// A word meaning "jar" ("lọ"): a transfer that names one is a jar transfer.
     var jarWords: [String] = []

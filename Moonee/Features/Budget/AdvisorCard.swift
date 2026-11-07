@@ -34,7 +34,9 @@ struct AdvisorSection: View {
             HStack(spacing: 8) {
                 actions(a)
                 Spacer(minLength: 0)
-                if a.kind != .pace, a.kind != .monthEnd {
+                if a.kind == .unallocated, a.amount > 0 { // waits, never mutes the kind
+                    Button(loc("Later")) { withAnimation { AdvisorMemory.handle(a) } }.buttonStyle(.borderless).foregroundStyle(Color.inkSecondary)
+                } else if a.kind != .pace, a.kind != .monthEnd {
                     Button(loc("Skip")) { withAnimation { AdvisorMemory.dismiss(a) } }.buttonStyle(.borderless).foregroundStyle(Color.inkSecondary)
                 }
             }
@@ -71,16 +73,13 @@ struct AdvisorSection: View {
         case .cardDue:
             if let card = wallets.first(where: { $0.ref == a.ref }) { primary(loc("Pay in full")) { sheet = .payCard(card, debt: a.amount) } }
         case .unallocated:
-            primary(a.amount > 0 ? loc("Agree") : loc("Move")) { apply(a) }
+            // New money waiting (spec §4.1, Suggest): the same choices as the chat card. "Later" is the Skip button.
+            primary(a.amount > 0 ? loc("Split as suggested") : loc("Move")) { apply(a) }
             if a.amount > 0 {
-                Menu(loc("Other ways")) {
-                    Button(loc("Split by percent"), systemImage: "percent") {
-                        done(a) { BudgetActions.splitUnallocated(a.amount, jars: jars, in: context) }
-                    }
-                    Menu(loc("All into one jar")) {
-                        ForEach(jars) { j in Button(j.name) { done(a) { BudgetActions.allocate([j: a.amount], note: loc("Split into jars"), in: context) } } }
-                    }
-                }
+                secondary(loc("By %")) { done(a) { BudgetActions.splitUnallocated(a.amount, jars: jars, in: context) } }
+                Menu {
+                    ForEach(jars) { j in Button(j.name) { done(a) { BudgetActions.allocate([j: a.amount], note: loc("Split into jars"), in: context) } } }
+                } label: { Image(systemName: "ellipsis").accessibilityLabel(loc("All into one jar")) }
                 .buttonStyle(.bordered)
             }
         case .billDue:
@@ -316,8 +315,10 @@ struct SetAsideSheet: View {
         case .sell:
             guard let asset else { return }
             BudgetActions.bringBack(amount, into: wallet, asset: asset, quantity: quantity ?? asset.quantity, in: context)
+            if wallet.inBudget { BudgetActions.receive(amount, in: context) } // money in: the one rule (spec §4.1)
         case .withdraw:
             BudgetActions.bringBack(amount, into: wallet, from: account, in: context)
+            if wallet.inBudget, account?.inBudget != true { BudgetActions.receive(amount, in: context) }
         }
         dismiss()
     }

@@ -425,7 +425,7 @@ struct OnboardingChat: View {
         VStack(alignment: .leading, spacing: 8) {
             ForEach([AdvisorLevel.suggest, .automatic, .manual]) { level in
                 optionRow(title: level.title, detail: level.summary, badge: level == .suggest ? L("Default") : nil) {
-                    UserDefaults.standard.set(level.rawValue, forKey: Prefs.advisorLevel)
+                    OnboardingBook.chooseLevel(level, in: context)
                     answer(level.title, next: .aiMode)
                 }
             }

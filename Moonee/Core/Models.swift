@@ -160,6 +160,8 @@ private func displayName(key: String?, customName: String?) -> String {
     /// Call once whenever a txn is created (chat, form, import, onboarding): pins an expense to its category's jar
     /// and splits an income by the jars' current percents, so later percent edits or category remaps keep history.
     /// Skips what is already set, so a manual split or jar choice wins.
+    /// A new income in the app goes through `BudgetActions.receive(income:)` instead (spec §4.1: the help level decides;
+    /// "Do it myself" lands here). Splitting by percent directly is for sample data.
     /// A jarTransfer with no jars is a split of unallocated money (`BudgetActions.splitUnallocated`): split like an income.
     func allocate(jars: [Jar], in context: ModelContext) {
         switch kind {
@@ -441,7 +443,7 @@ enum Seed {
             Category(key: "category.entertainment", icon: "gamecontroller.fill", colorHex: 0xEC4899, jar: play),
             Category(key: "category.education", icon: "book.fill", colorHex: 0x8B5CF6, jar: growth),
             Category(key: "category.charity", icon: "heart.fill", colorHex: 0xEF4444, jar: giving),
-            Category(key: "category.other", icon: "ellipsis", colorHex: 0x64748B),
+            Category(key: "category.other", icon: "ellipsis", colorHex: 0x64748B, jar: needs), // no orphan spending (P0-2)
             Category(key: "category.salary", icon: "dollarsign.circle.fill", colorHex: 0x22C55E, kind: .income),
             Category(key: "category.bonus", icon: "gift.fill", colorHex: 0xF59E0B, kind: .income),
             Category(key: "category.otherIncome", icon: "plus.circle.fill", colorHex: 0x64748B, kind: .income),
@@ -452,6 +454,25 @@ enum Seed {
 
         // A wallet name is user data, so it is stored already translated.
         context.insert(Wallet(name: String(localized: "Cash wallet"), type: .cash))
+    }
+}
+
+extension Prefs {
+    /// Bool. `Seed.assignOrphanCategories` ran on this install.
+    static let categoryJarsAssigned = "seed.categoryJarsAssigned"
+}
+
+extension Seed {
+    /// P0-2, once per install: every expense category draws from a jar. The old seed left "Other" without one, so its
+    /// spending silently ate Unallocated and Budget's "Spent" missed it. Orphans go to Essentials; past txns keep the
+    /// jar they were pinned to (`allocate`). A category made "Not in any jar" later (Advanced) is left alone.
+    @MainActor static func assignOrphanCategories(_ context: ModelContext, defaults: UserDefaults = .standard) {
+        guard !defaults.bool(forKey: Prefs.categoryJarsAssigned) else { return }
+        let jars = (try? context.fetch(FetchDescriptor<Jar>(sortBy: [SortDescriptor(\.order)]))) ?? []
+        guard let essentials = jars.first(where: { $0.key == "jar.essentials" }) ?? jars.first else { return } // no jars yet
+        for c in (try? context.fetch(FetchDescriptor<Category>())) ?? [] where c.kind == .expense && c.jar == nil { c.jar = essentials }
+        if context.hasChanges { try? context.save() }
+        defaults.set(true, forKey: Prefs.categoryJarsAssigned)
     }
 }
 

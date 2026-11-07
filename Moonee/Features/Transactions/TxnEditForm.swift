@@ -3,11 +3,13 @@ import SwiftUI
 
 /// Edit or delete one transaction: the one editor for the chat card and the ledger. The kind stays fixed.
 /// Saving goes through `TxnEdit.apply`: an expense's new category re-pins its jar and teaches Moonee (merchant rule),
-/// an income's new amount rescales its stored jar splits (same proportions, history otherwise untouched).
+/// an income's new amount rescales its stored jar splits (same proportions, history otherwise untouched), and an income's
+/// "Split into jars" section sets what each jar gets (what no jar gets waits in Unallocated, spec §4.1).
 struct TxnEditForm: View {
     let txn: Txn
     @Query(sort: \Wallet.order) private var wallets: [Wallet]
     @Query(sort: \Category.order) private var categories: [Category]
+    @Query(sort: \Jar.order) private var jars: [Jar]
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @State private var amount: Decimal = 0
@@ -17,10 +19,21 @@ struct TxnEditForm: View {
     @State private var wallet: Wallet?
     @State private var toWallet: Wallet?
     @State private var confirmDelete = false
+    /// income: major units per jar; `splitEdited` once the user touched it (else a new amount rescales the old split).
+    @State private var split: [PersistentIdentifier: Decimal] = [:]
+    @State private var splitEdited = false
 
     private var hasCategory: Bool { txn.kind == .expense || txn.kind == .income }
     /// A transfer must land in another wallet, or the money goes nowhere.
-    private var canSave: Bool { amount > 0 && (txn.kind != .transfer || (toWallet != nil && toWallet != wallet)) }
+    private var canSave: Bool {
+        amount > 0 && (txn.kind != .transfer || (toWallet != nil && toWallet != wallet)) && (!splitEdited || unallocated >= 0)
+    }
+    private var amountMinor: Int { Money(major: amount, txn.currencyCode).minor }
+    private var splitMinor: [Jar: Int] {
+        Dictionary(jars.compactMap { j in split[j.persistentModelID].map { (j, Money(major: $0, txn.currencyCode).minor) } }, uniquingKeysWith: +)
+    }
+    /// What no jar gets: it waits in Unallocated.
+    private var unallocated: Int { amountMinor - splitMinor.values.reduce(0, +) }
 
     var body: some View {
         NavigationStack {
@@ -37,7 +50,8 @@ struct TxnEditForm: View {
                 Section {
                     if hasCategory {
                         Picker(selection: $category) {
-                            Text("None", tableName: "Transactions").tag(Category?.none)
+                            // Every spend belongs to a jar through its category (P0-2): an expense can't drop it.
+                            if txn.kind != .expense || txn.category == nil { Text("None", tableName: "Transactions").tag(Category?.none) }
                             ForEach(categories.filter { $0.kind == txn.kind }) { Label($0.name, systemImage: $0.icon).tag(Optional($0)) }
                         } label: { Text("Category", tableName: "Transactions") }
                     }
@@ -61,6 +75,7 @@ struct TxnEditForm: View {
                 } footer: {
                     if hasCategory { Text("Moonee remembers your category for next time.", tableName: "Transactions") }
                 }
+                if txn.kind == .income { splitSection }
                 Section {
                     Button(role: .destructive) { confirmDelete = true } label: { Text("Delete transaction", tableName: "Transactions") }
                 }
@@ -87,13 +102,43 @@ struct TxnEditForm: View {
                 category = txn.category
                 wallet = txn.wallet
                 toWallet = txn.toWallet
+                for s in txn.splits ?? [] {
+                    if let j = s.jar { split[j.persistentModelID, default: 0] += Money(s.amount, txn.currencyCode).major }
+                }
             }
         }
     }
 
+    private var splitSection: some View {
+        Section {
+            ForEach(jars) { j in
+                LabeledContent {
+                    TextField(value: Binding(get: { split[j.persistentModelID] ?? 0 },
+                                             set: { split[j.persistentModelID] = $0; splitEdited = true }), format: .number) { Text(verbatim: "0") }
+                        .keyboardType(.decimalPad).multilineTextAlignment(.trailing)
+                } label: { Label { Text(j.name) } icon: { Image(systemName: j.icon).foregroundStyle(j.color) } }
+            }
+            LabeledContent {
+                Text(Money(unallocated, txn.currencyCode).formatted()).foregroundStyle(unallocated < 0 ? Color.expense : Color.inkSecondary)
+            } label: { Text("Unallocated", tableName: "Transactions") }
+            Button { fill(Ledger<Jar>.split(amountMinor, by: jars.map { ($0, $0.percent) })) } label: { Text("By percent", tableName: "Transactions") }
+            Button { fill([:]) } label: { Text("Leave it all in Unallocated", tableName: "Transactions") }
+        } header: {
+            Text("Split into jars", tableName: "Transactions")
+        } footer: {
+            unallocated < 0 ? Text("The jars get more than this income.", tableName: "Transactions")
+                            : Text("What no jar gets waits in Unallocated.", tableName: "Transactions")
+        }
+    }
+
+    private func fill(_ shares: [Jar: Int]) {
+        split = Dictionary(shares.map { ($0.key.persistentModelID, Money($0.value, txn.currencyCode).major) }, uniquingKeysWith: +)
+        splitEdited = true
+    }
+
     private func save() {
-        TxnEdit.apply(to: txn, amount: Money(major: amount, txn.currencyCode).minor, date: date, note: note,
-                      category: category, wallet: wallet, toWallet: toWallet, in: context)
+        TxnEdit.apply(to: txn, amount: amountMinor, date: date, note: note, category: category, wallet: wallet, toWallet: toWallet,
+                      splits: txn.kind == .income && splitEdited ? splitMinor : nil, in: context)
         try? context.save()
         dismiss()
     }
@@ -101,9 +146,18 @@ struct TxnEditForm: View {
 
 /// The writes behind `TxnEditForm`, kept apart so they are testable.
 @MainActor enum TxnEdit {
+    /// `splits`: an income's new split per jar (what no jar gets waits in Unallocated); nil keeps it, rescaled to a new amount.
     static func apply(to txn: Txn, amount: Int, date: Date, note: String, category: Category?, wallet: Wallet?, toWallet: Wallet?,
-                      in context: ModelContext) {
-        if txn.kind == .income, amount != txn.amount {
+                      splits newSplits: [Jar: Int]? = nil, in context: ModelContext) {
+        if txn.kind == .income, let newSplits {
+            (txn.splits ?? []).forEach(context.delete)
+            txn.splits = []
+            for (jar, share) in newSplits where share > 0 {
+                let s = IncomeSplit(amount: share, jar: jar)
+                context.insert(s)
+                s.txn = txn
+            }
+        } else if txn.kind == .income, amount != txn.amount {
             let splits = txn.splits ?? []
             for (s, share) in zip(splits, rescaleSplits(splits.map(\.amount), to: amount)) { s.amount = share }
         }

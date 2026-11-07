@@ -112,15 +112,20 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 ### 4.1 Các lọ (envelope)
 - Mặc định 6 lọ: Thiết yếu 55% · Đầu tư 10% · Tiết kiệm 10% · Phát triển bản thân 10% · Hưởng thụ 10% · Từ thiện 5%.
 - Thêm, bớt, đổi tên, đổi màu/icon và sửa % (tổng phải đủ 100%).
-- **Mỗi khoản thu mới** được chia ngay vào lọ theo %, không cần bấm gì (ví dụ "nhận thưởng 5tr" trong chat). Sửa tay được cho từng khoản (ví dụ thưởng cho 100% vào Đầu tư). Lương định kỳ thì chia theo kế hoạch của Moonee tuỳ mức hỗ trợ (mục 4.6).
-- **Chi tiêu trừ thẳng vào lọ**, xác định qua danh mục (mỗi danh mục thuộc một lọ).
+- **Một luật duy nhất cho tiền vào** (quyết định 07/11, P0-1): mọi tiền vào ngân sách đi qua một hàm `BudgetActions.receive`, chỉ phụ thuộc mức hỗ trợ (mục 4.6). Gồm: khoản thu nhắn trong chat hoặc thêm bằng form, lương bấm **Đã nhận**, số dư ban đầu ở onboarding (áp khi user chọn mức hỗ trợ), ví mới, bán tài sản, rút tiết kiệm.
+  - **Tự động:** áp kế hoạch a–d (mục 4.6) ngay. Thẻ giao dịch trong chat ghi "Moonee đã chia: Thiết yếu 8,3tr · …" kèm **Hoàn tác** (về Chưa chia vào lọ) và **Sửa**; tiền vào Chưa chia (ví mới, bán tài sản…) hiện thẻ "Moonee đã chia tiền" có **Hoàn tác** ở tab Ngân sách.
+  - **Gợi ý (mặc định):** tiền nằm ở Chưa chia vào lọ. Ngay dưới thẻ giao dịch trong chat có **Chia theo gợi ý của Moonee** (một chạm = kế hoạch a–d), **Theo %**, **Để sau**; thẻ Moonee gợi ý ở tab Ngân sách có cùng lựa chọn (**Chia theo gợi ý**, **Theo %**, **Để sau**, ⋯ bỏ hết vào một lọ).
+  - **Tự làm:** chia theo % ngay.
+  - Không đổi model: chia một khoản thu lưu bằng `IncomeSplit`; khoản thu không có phần chia (hoặc chia thiếu) thì phần còn lại nằm ở Chưa chia vào lọ. Khoản thu cùng danh mục với lương (ví dụ "nhận lương 15tr") vẫn khớp vào dòng lương (mục 4.3).
+  - Sửa một khoản thu (form sửa giao dịch) có mục **Chia vào lọ**: số cho từng lọ, nút **Chia theo %** và **Để hết ở Chưa chia vào lọ**; phần không vào lọ nào nằm ở Chưa chia.
+- **Chi tiêu trừ thẳng vào lọ**, xác định qua danh mục. **Mọi danh mục chi đều thuộc một lọ** (P0-2): "Khác" thuộc Thiết yếu; bản cũ được gán một lần lúc mở app (danh mục chi chưa có lọ → Thiết yếu; giao dịch cũ giữ lọ đã ghim). Tạo/sửa danh mục chi phải chọn lọ; "Không thuộc lọ nào" nằm ở phần Nâng cao, kèm giải thích (chi ở đó trừ vào Chưa chia vào lọ và không tính vào Đã chi). Nhờ vậy **Đã chi** ở Ngân sách bằng **Chi** ở Tổng quan.
 - Số dư **cộng dồn** sang tháng sau. Lọ âm thì Moonee gợi ý lấy từ lọ nào, bao nhiêu (mục 4.6).
 - **Chuyển giữa các lọ** bằng thao tác tay hoặc qua chat.
 - **Không có tiền nằm ngoài lọ** (quyết định 06/11, kiểu envelope như YNAB "Ready to assign"):
   - **Chỉ tiền để tiêu mới vào lọ** (quyết định 06/11, đợt 2): **ví tính vào ngân sách = tổng các lọ + Chưa chia vào lọ**, luôn đúng.
   - **Chưa chia vào lọ** = tổng số dư các ví bật "Tính vào ngân sách" (thẻ tín dụng tính âm) − tổng số dư các lọ. Tài khoản tiết kiệm/đầu tư (tắt "Tính vào ngân sách"), tài sản (vàng, cổ phiếu, crypto) và tiền cho mượn chỉ tính vào tài sản ròng (Quan tâm), không bao giờ vào lọ hay Chưa chia. Vì thế cho mượn làm con số này giảm (tiền rời ví), đi vay làm nó tăng; chuyển giữa các ví ngân sách, rút ATM, nạp ví, trả thẻ không đổi gì.
   - Khác 0 thì tab Ngân sách hiện dòng **Chưa chia vào lọ** ngay đầu mục "Tháng này", với menu **Chia vào các lọ**: **Kế hoạch của Moonee** (mục 4.6), **Chia theo %**, hoặc **Bỏ hết vào một lọ**. Mỗi cách ghi thành một giao dịch chuyển lọ có ngày (không có lọ nguồn, mỗi lọ một phần chia), nên lịch sử các tháng trước không đổi. Âm nghĩa là các lọ hứa nhiều hơn tiền thật: Moonee gợi ý lấy bớt từ lọ nào.
-  - **Tiền có sẵn** (số dư ban đầu, ví mới, sửa số dư, bán tài sản, rút tiết kiệm) đều vào đây và user quyết một lần. Onboarding cũng không tự chia nữa: số dư ví nằm ở Chưa chia vào lọ và thẻ Moonee gợi ý ở tab Ngân sách đưa kế hoạch (chế độ Tự động thì Moonee tự áp dụng).
+  - **Tiền có sẵn** (số dư ban đầu, ví mới, sửa số dư, bán tài sản, rút tiết kiệm) đều vào đây rồi theo luật tiền vào ở trên (Gợi ý: thẻ Moonee gợi ý đưa kế hoạch; Tự động: Moonee áp dụng; Tự làm: chia theo %). Sửa số dư ví chưa đi qua luật này (S28).
 - **Số trên tab Ngân sách** (một struct `BudgetFacts`, trợ lý đọc đúng struct này):
   - **Thu nhập** = các khoản thu trong tháng (Tổng quan dùng cùng con số).
   - **Tổng ngân sách** = số dư các lọ đầu tháng + tiền vào lọ trong tháng (chia thu nhập, chia tiền chưa chia, chuyển lọ). **Đã chi** = chi từ các lọ trong tháng. **Còn lại** = Tổng ngân sách − Đã chi = tổng số dư các lọ cuối tháng.
@@ -139,8 +144,9 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 - Tiền nhà, điện, nước, internet, bảo hiểm, subscription, trả góp.
 - Lưu chu kỳ, ngày đến hạn, số tiền (cố định hoặc ước tính), ví và lọ.
 - Nhắc trước N ngày. Đến hạn thì có nút "Đã trả" để tạo giao dịch ngay.
+- Hoá đơn tạo ở onboarding đoán danh mục theo tên (điện, nước, nhà, internet, học phí, Netflix…) bằng từ điển `Lexicon.bills` rồi từ chi tiêu, không gán thẳng "Khác".
 - Tạo nhanh qua chat: "Nhắc mình đóng tiền nhà 5tr ngày 5 hàng tháng".
-- **Khoản thu định kỳ (lương)** (quyết định 06/11): là một khoản định kỳ có danh mục thu (Lương). Tab Ngân sách luôn hiện "Lương · Dự kiến 10/11" với nút **Đã nhận** thấy rõ, bấm lúc nào cũng được (không chỉ vào ngày nhận): tạo khoản thu vào ví (ví của khoản đó, không có thì tài khoản ngân hàng đầu tiên trong ngân sách) và chia vào các lọ theo kế hoạch của Moonee (Tự động, Gợi ý) hoặc theo % (Tự làm). Nhận sớm thì ghi và chia ngay, ngày nhận chuyển sang kỳ sau. Chế độ Tự động thì Moonee tự ghi vào ngày nhận (mục 4.6); hai chế độ còn lại chỉ ghi khi user xác nhận. Khoản thu không cố định là ước tính, bấm Đã nhận thì nhập số thực nhận.
+- **Khoản thu định kỳ (lương)** (quyết định 06/11): là một khoản định kỳ có danh mục thu (Lương). Tab Ngân sách luôn hiện "Lương · Dự kiến 10/11" với nút **Đã nhận** thấy rõ, bấm lúc nào cũng được (không chỉ vào ngày nhận): tạo khoản thu vào ví (ví của khoản đó, không có thì tài khoản ngân hàng đầu tiên trong ngân sách) rồi theo luật tiền vào (mục 4.1): Tự động chia theo kế hoạch của Moonee, Gợi ý để ở Chưa chia vào lọ và thẻ gợi ý đưa kế hoạch, Tự làm chia theo %. Bấm **Ghi và chia** trên thẻ ngày lương là đồng ý kế hoạch nên chia ngay. Nhận sớm thì ghi ngay, ngày nhận chuyển sang kỳ sau. Chế độ Tự động thì Moonee tự ghi vào ngày nhận (mục 4.6); hai chế độ còn lại chỉ ghi khi user xác nhận. Khoản thu không cố định là ước tính, bấm Đã nhận thì nhập số thực nhận.
   - Đã ghi khoản thu cùng danh mục (ví dụ qua chat "nhận lương 15tr") từ 7 ngày trước ngày nhận trở đi thì coi như đã nhận: không hỏi lại, ngày nhận tự chuyển sang kỳ sau.
   - Khoản thu định kỳ không tính vào "hoá đơn sắp đến hạn" và không nhắc như hoá đơn.
 
@@ -159,8 +165,8 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 Moonee hành xử như một người hiểu tài chính cá nhân, trừ khi user tắt.
 - **Mức hỗ trợ của Moonee** (onboarding và Tài khoản; `Prefs.advisorLevel`):
   - **Tự động:** Moonee tự ghi lương vào ngày nhận và áp dụng kế hoạch (chia tiền chưa chia, bù lọ âm), rồi báo bằng thẻ "Moonee đã ghi Lương" có **Hoàn tác** và **Sửa số tiền**. App không chạy nền: Moonee làm khi app được mở từ ngày nhận trở đi, thông báo sáng ngày lương nói vậy.
-  - **Gợi ý (mặc định):** Moonee đưa kế hoạch cụ thể có số và một dòng "vì sao"; user bấm **Đồng ý / Sửa / Bỏ qua**. Không có gì di chuyển khi chưa đồng ý.
-  - **Tự làm:** không gợi ý, chỉ cảnh báo (lọ âm, ví chưa có tiền, hoá đơn và thẻ đến hạn).
+  - **Gợi ý (mặc định):** Moonee đưa kế hoạch cụ thể có số và một dòng "vì sao"; user bấm **Đồng ý / Sửa / Bỏ qua**. Không có gì di chuyển khi chưa đồng ý (tiền vào nằm ở Chưa chia vào lọ, mục 4.1).
+  - **Tự làm:** không gợi ý, chỉ cảnh báo (lọ âm, ví chưa có tiền, hoá đơn và thẻ đến hạn). Tiền vào chia theo % ngay.
 - **Mọi con số tính trong Swift** bằng `BudgetAdvisor` (thuần, có unit test). Văn bản là mẫu trong String Catalog; LLM chỉ diễn đạt lại (tool `monthBudget` trả `advice`), không có model thì dùng mẫu.
 - **Các thời điểm**, theo thứ tự ưu tiên (thẻ ở đầu là thẻ hiện):
   1. **Ngày lương** ("Lương 40tr về chưa? Moonee đề xuất chia…"): kế hoạch cho cả khoản lương, đến kỳ lương sau. Một chạm ghi và chia. Thông báo sáng ngày lương.
@@ -234,7 +240,7 @@ Moonee hành xử như một người hiểu tài chính cá nhân, trừ khi us
 2. Hỏi thu nhập hằng tháng (khoảng) và cố định hay không đều, rồi **ngày nhận lương**. Có ngày thì tạo khoản thu định kỳ (mục 4.3), ngày nhận đầu tiên là sau hôm nay (tiền đã nhận nằm trong số dư ví ở bước 3).
 3. Hỏi các ví đang dùng, số dư ban đầu (bỏ qua được).
 4. Hỏi các hoá đơn cố định.
-5. Đề xuất % cho các lọ. User chấp nhận hoặc chỉnh. Số dư ví **không tự chia**: nằm ở Chưa chia vào lọ để user quyết một lần ở tab Ngân sách (mục 4.1; Tự động thì Moonee áp dụng kế hoạch).
+5. Đề xuất % cho các lọ. User chấp nhận hoặc chỉnh. Số dư ví theo luật tiền vào (mục 4.1) khi user chọn mức hỗ trợ: Gợi ý thì nằm ở Chưa chia vào lọ để quyết ở tab Ngân sách, Tự động thì Moonee áp dụng kế hoạch, Tự làm thì chia theo %.
 5b. Chọn **mức hỗ trợ của Moonee**: Gợi ý (mặc định), Tự động hoặc Tự làm (mục 4.6).
 6. Chọn chế độ AI (gợi ý theo đời máy) và mức nhắc nhở.
 7. Bật Face ID (tuỳ chọn) và xin quyền thông báo.

@@ -150,7 +150,7 @@ extension BudgetActions {
         switch a.kind {
         case .payday:
             guard let r = ((try? context.fetch(FetchDescriptor<Recurring>())) ?? []).first(where: { $0.ref == a.ref }) else { return [] }
-            return [markPaid(r, amount: a.amount, date: date, jars: jars, splits: shares(a.moves, jars), in: context, calendar: calendar)]
+            return [receive(r, amount: a.amount, date: date, level: .automatic, in: context, calendar: calendar)]
         case .unallocated, .negativeJar, .monthEnd:
             var out: [Txn] = []
             let fromUnallocated = a.moves.filter { $0.from == nil }
@@ -191,18 +191,69 @@ extension BudgetActions {
         return t
     }
 
-    /// "Received" on an income recurring: split by Moonee's plan (Automatic / Suggest) or by percent (Do it myself).
+    /// P0-1, spec §4.1: the one rule for money coming into the budget, whatever brought it. Call it right after the write:
+    /// an income txn (`income`, its jar split is written on it) or `amount` that just landed in Unallocated (opening balances,
+    /// a new wallet, selling an asset, taking money out of savings). Only the help level decides:
+    /// - Automatic: Moonee's a–d plan now (money in Unallocated: a tagged jarTransfer the Budget card can undo).
+    /// - Suggest: it waits in Unallocated; the chat card and the Budget card offer the plan, by percent, or later.
+    /// - Do it myself: by percent now.
+    /// Returns the txn holding the split (the income or a jarTransfer); nil when nothing moved.
+    @discardableResult
+    static func receive(_ amount: Int, income: Txn? = nil, level: AdvisorLevel = .current, date: Date = .now,
+                        in context: ModelContext, calendar: Calendar = .current) -> Txn? {
+        guard amount > 0, (income?.splits ?? []).isEmpty else { return nil }
+        let jars = (try? context.fetch(FetchDescriptor<Jar>(sortBy: [SortDescriptor(\.order)]))) ?? []
+        switch level {
+        case .suggest:
+            return nil
+        case .manual:
+            guard let income else { return splitUnallocated(amount, jars: jars, date: date, in: context) }
+            income.allocate(jars: jars, in: context)
+            return income
+        case .automatic:
+            let (advisor, plan) = plan(for: amount, date: date, in: context, calendar: calendar)
+            let split = shares(plan.moves, jars)
+            guard let income else {
+                guard let t = allocate(split, date: date, in: context) else { return nil }
+                Autopilot.record([t], id: "received", kind: .unallocated, title: loc("Moonee moved your money"),
+                                 text: advisor.suggestion(plan), now: date, notify: false)
+                return t
+            }
+            for (jar, share) in split where share > 0 {
+                let s = IncomeSplit(amount: share, jar: jar)
+                context.insert(s)
+                s.txn = income
+            }
+            return income
+        }
+    }
+
+    /// An income just saved (chat, form, "Received"): `receive` with its amount.
+    @discardableResult
+    static func receive(income t: Txn, level: AdvisorLevel = .current, date: Date = .now, in context: ModelContext,
+                        calendar: Calendar = .current) -> Txn? {
+        receive(t.amount, income: t, level: level, date: date, in: context, calendar: calendar)
+    }
+
+    /// "Received" on an income recurring: records the income, moves the payday on, then `receive` splits it by the level.
     @discardableResult
     static func receive(_ r: Recurring, amount: Int? = nil, date: Date = .now, level: AdvisorLevel = .current, in context: ModelContext,
                         calendar: Calendar = .current) -> Txn {
         let jars = (try? context.fetch(FetchDescriptor<Jar>(sortBy: [SortDescriptor(\.order)]))) ?? []
-        var splits: [Jar: Int]?
-        if level != .manual {
-            let advisor = BudgetFacts(context, now: date, calendar: calendar).advisor
-            let next = nextDue(after: r.nextDue, r.frequency, day: r.dueDay, calendar: calendar)
-            splits = shares(advisor.plan(amount ?? r.amount, until: next).moves, jars)
-        }
-        return markPaid(r, amount: amount, date: date, jars: jars, splits: splits, in: context, calendar: calendar)
+        return markPaid(r, amount: amount, date: date, jars: jars, level: level, in: context, calendar: calendar)
+    }
+
+    /// Moonee's a–d plan for `amount` of new money that is already in the books (an income with no split yet, or money
+    /// that landed in Unallocated), made on the books as they were before it came in.
+    static func plan(for amount: Int, date: Date = .now, in context: ModelContext,
+                     calendar: Calendar = .current) -> (advisor: BudgetAdvisor, plan: BudgetAdvisor.Plan) {
+        var input = BudgetFacts(context, now: date, calendar: calendar).advisor.input
+        input.unallocated -= amount
+        input.budgetBalance -= amount
+        let advisor = BudgetAdvisor(input)
+        // Until the next payday (a salary just received points at the one after), else the month's end.
+        let until = input.income.map { $0.due > date ? $0.due : $0.next } ?? calendar.dateInterval(of: .month, for: date)!.end
+        return (advisor, advisor.plan(amount, until: until))
     }
 
     /// Spec §4.2 rule A.5: buying an asset or putting money into an off-budget wallet takes it out of `jar`
@@ -260,16 +311,23 @@ extension BudgetActions {
         let previousDue = a.kind == .payday ? facts.advisor.input.income?.due : nil
         let txns = BudgetActions.apply(a, date: now, in: context, calendar: calendar)
         guard !txns.isEmpty else { return nil }
-        let tag = "auto:\(a.id).\(Int(now.timeIntervalSince1970))"
-        txns.forEach { $0.externalID = tag }
         let title = a.kind == .payday ? String(localized: "Moonee recorded \(facts.advisor.input.income?.name ?? "")", table: "Budget")
                                       : loc("Moonee moved your money")
-        let record = AdvisorMemory.AutoRecord(tag: tag, kind: a.kind.rawValue, title: title, text: a.text, date: now, previousDue: previousDue)
-        AdvisorMemory.setAutoRecords(Array((AdvisorMemory.autoRecords + [record]).suffix(5)))
         AdvisorMemory.handle(a, now: now)
+        return record(txns, id: a.id, kind: a.kind, title: title, text: a.text, previousDue: previousDue, now: now, notify: notify)
+    }
+
+    /// Tags what Automatic wrote and remembers it for the Budget card's Undo (and a notification when it ran by itself).
+    @discardableResult
+    static func record(_ txns: [Txn], id: String, kind: BudgetAdvisor.Kind, title: String, text: String, previousDue: Date? = nil,
+                       now: Date, notify: Bool) -> AdvisorMemory.AutoRecord {
+        let tag = "auto:\(id).\(Int(now.timeIntervalSince1970))"
+        txns.forEach { $0.externalID = tag }
+        let record = AdvisorMemory.AutoRecord(tag: tag, kind: kind.rawValue, title: title, text: text, date: now, previousDue: previousDue)
+        AdvisorMemory.setAutoRecords(Array((AdvisorMemory.autoRecords + [record]).suffix(5)))
         if notify {
             let content = UNMutableNotificationContent()
-            (content.title, content.body) = (title, a.text)
+            (content.title, content.body) = (title, text)
             UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: "\(Reminders.prefix)\(tag)", content: content,
                                                                          trigger: UNTimeIntervalNotificationTrigger(timeInterval: 2, repeats: false)))
         }

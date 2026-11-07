@@ -20,8 +20,9 @@ import Testing
         return c
     }
 
-    func say(_ text: String) -> [Txn] {
-        ChatBook.save(QuickParser.parse(text, context: parser()), source: .text, rawInput: text, in: context)
+    /// Incomes split by percent unless a test asks for another help level (spec §4.1).
+    func say(_ text: String, level: AdvisorLevel = .manual) -> [Txn] {
+        ChatBook.save(QuickParser.parse(text, context: parser()), source: .text, rawInput: text, level: level, in: context)
     }
 
     func category(_ key: String) throws -> Moonee.Category { try #require(context.fetch(FetchDescriptor<Moonee.Category>()).first { $0.key == key }) }
@@ -41,6 +42,11 @@ import Testing
         #expect(income.kind == .income)
         #expect((income.splits ?? []).map(\.amount).reduce(0, +) == 10_000_000)
         #expect((income.splits ?? []).count == 6)
+        // Suggest (the default): it waits in Unallocated and Moonee says so.
+        let waiting = try #require(say("thưởng 2tr", level: .suggest).first)
+        #expect((waiting.splits ?? []).isEmpty)
+        #expect(ChatLines.saved([waiting], variant: 0).contains("Unallocated"))
+        #expect(!ChatLines.saved([income], variant: 0).contains("Unallocated"))
     }
 
     @Test func missingAmountIsNotSaved() {

@@ -51,6 +51,10 @@ extension Lexicon {
             ("category.salary", ["เงินเดือน"]),
             ("category.bonus", ["โบนัส"]),
         ],
+        bills: [ // specific first: "học phí nhà trường" is tuition
+            ("category.entertainment", ["netflix", "spotify", "youtube"]),
+            ("category.housing", ["ไฟ", "น้ำ", "บ้าน", "เน็ต", "โทรศัพท์", "ค่าเช่า"]),
+        ],
         jars: [
             ("jar.essentials", ["จำเป็น", "ค่าใช้จ่ายจำเป็น"]), ("jar.investing", ["ลงทุน", "อิสรภาพทางการเงิน"]),
             ("jar.savings", ["เงินออม", "เก็บออม"]), ("jar.growth", ["พัฒนาตัวเอง", "การศึกษา"]),

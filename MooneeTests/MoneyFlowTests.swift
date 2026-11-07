@@ -64,7 +64,7 @@ import Testing
         #expect(BudgetActions.dueIncome([salary], txns: [], now: at(11, 25), calendar: cal) == [salary])
 
         // Payday: "Received" records income into the bank and splits it into the jars.
-        let pay = BudgetActions.markPaid(salary, date: at(11, 25), jars: jars, in: context, calendar: cal)
+        let pay = BudgetActions.markPaid(salary, date: at(11, 25), jars: jars, level: .manual, in: context, calendar: cal)
         #expect(pay.kind == .income && pay.wallet?.name == "ACB")
         #expect((pay.splits ?? []).reduce(0) { $0 + $1.amount } == 15_000_000)
         #expect(salary.nextDue == day(12, 25))

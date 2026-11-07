@@ -130,6 +130,13 @@ enum QuickParser {
         return (period, parse(text, context: context).first?.categoryKey, jar)
     }
 
+    /// A bill's category from its name (onboarding: "Điện", "Nước", "Học phí"): bill words first, then spending words.
+    static func billCategory(_ name: String, context: ParserContext = .init()) -> String? {
+        let tokens = Token.split(name)
+        return context.lexicons.flatMap(\.bills).first { [Phrase](phrases: $0.words).contained(in: tokens) }?.key
+            ?? parse(name, context: context).first?.categoryKey
+    }
+
     static func isQuestion(_ text: String, lexicons: [Lexicon] = Lexicon.all) -> Bool {
         text.contains("?") || [Phrase](phrases: lexicons.flatMap(\.questionCues)).contained(in: Token.split(text))
     }

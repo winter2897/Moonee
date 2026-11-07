@@ -69,6 +69,7 @@ extension Seed {
         for category in categories {
             guard let key = category.key else { continue }
             guard let keep = keptCategories[key] else { keptCategories[key] = category; continue }
+            if keep.jar == nil, category.kind == .expense { keep.jar = category.jar } // an old "Other" meets the new seed's jar (P0-2)
             (category.txns ?? []).forEach { $0.category = keep }
             (category.recurrings ?? []).forEach { $0.category = keep }
             (category.rules ?? []).forEach { $0.category = keep }

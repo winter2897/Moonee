@@ -33,8 +33,11 @@ enum ChatLines {
             return pick([String(localized: "Moonee noted **\(amount)** for \(what) \(when).", table: "Chat"),
                          String(localized: "Got it, **\(amount)** on \(what) \(when) is in your books.", table: "Chat"),
                          String(localized: "Done! **\(amount)** for \(what) \(when), all saved.", table: "Chat")], variant)
+        case .income where (t.splits ?? []).isEmpty: // Suggest: it waits in Unallocated, the card offers the split
+            return pick([String(localized: "Nice, **\(amount)** came in from \(what) \(when). It's waiting in Unallocated.", table: "Chat"),
+                         String(localized: "Money in! **\(amount)** from \(what) \(when). Split it into your jars below?", table: "Chat")], variant)
         case .income:
-            return pick([String(localized: "Nice, **\(amount)** came in from \(what) \(when).", table: "Chat"),
+            return pick([String(localized: "Nice, **\(amount)** came in from \(what) \(when), split into your jars.", table: "Chat"),
                          String(localized: "Money in! **\(amount)** from \(what) \(when), split into your jars.", table: "Chat")], variant)
         case .transfer:
             let from = t.wallet?.name ?? "", to = t.toWallet?.name ?? ""

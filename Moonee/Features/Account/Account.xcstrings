@@ -2820,6 +2820,204 @@
           }
         }
       }
+    },
+    "Not in any jar": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không thuộc lọ nào"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่อยู่ในกระปุกไหน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ຢູ່ໃນກະປຸກໃດ"
+          }
+        }
+      }
+    },
+    "Name": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tên"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ชื่อ"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊື່"
+          }
+        }
+      }
+    },
+    "Jar": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lọ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กระปุก"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກະປຸກ"
+          }
+        }
+      }
+    },
+    "Save": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lưu"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บันทึก"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບັນທຶກ"
+          }
+        }
+      }
+    },
+    "New category": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Danh mục mới"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "หมวดหมู่ใหม่"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໝວດໝູ່ໃໝ່"
+          }
+        }
+      }
+    },
+    "Edit category": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sửa danh mục"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แก้ไขหมวดหมู่"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແກ້ໄຂໝວດໝູ່"
+          }
+        }
+      }
+    },
+    "Spending in this category comes out of this jar.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chi tiêu trong danh mục này sẽ trừ vào lọ này."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายจ่ายในหมวดนี้จะหักจากกระปุกนี้"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຈ່າຍໃນໝວດນີ້ຈະຫັກຈາກກະປຸກນີ້."
+          }
+        }
+      }
+    },
+    "Spending here comes out of Unallocated, not a jar, and Budget's Spent leaves it out.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chi tiêu ở đây trừ vào Chưa chia vào lọ, không trừ lọ nào, và không tính vào Đã chi của Ngân sách."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายจ่ายตรงนี้หักจากยังไม่แบ่งลงกระปุก ไม่ใช่กระปุกไหน และไม่นับในใช้ไปของงบประมาณ"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຈ່າຍຢູ່ນີ້ຫັກຈາກຍັງບໍ່ໄດ້ແບ່ງໃສ່ກະປຸກ, ບໍ່ແມ່ນກະປຸກໃດ, ແລະ ບໍ່ນັບໃນໃຊ້ໄປຂອງງົບປະມານ."
+          }
+        }
+      }
+    },
+    "Spending in these categories is not counted in any jar. Pick one, or keep it out in the category's Advanced settings.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chi tiêu trong các danh mục này không tính vào lọ nào. Hãy chọn một lọ, hoặc giữ nguyên trong phần Nâng cao của danh mục."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายจ่ายในหมวดเหล่านี้ไม่นับในกระปุกไหน เลือกกระปุก หรือคงไว้ในตั้งค่าขั้นสูงของหมวด"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຈ່າຍໃນໝວດເຫຼົ່ານີ້ບໍ່ນັບໃນກະປຸກໃດ. ເລືອກກະປຸກ ຫຼື ຄົງໄວ້ໃນການຕັ້ງຄ່າຂັ້ນສູງຂອງໝວດ."
+          }
+        }
+      }
     }
   },
   "version": "1.0"
