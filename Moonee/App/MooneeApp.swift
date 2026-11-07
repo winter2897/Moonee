@@ -28,7 +28,10 @@ struct MooneeApp: App {
                 .task { DevSecrets.load() }
                 // iCloud just delivered records (e.g. a reinstall meeting its old data): fold duplicate defaults.
                 .onReceive(NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange)
-                    .debounce(for: .seconds(2), scheduler: RunLoop.main)) { _ in Seed.mergeDuplicates(container.mainContext) }
+                    .debounce(for: .seconds(2), scheduler: RunLoop.main)) { _ in
+                    Seed.mergeDuplicates(container.mainContext)
+                    Autopilot.dropDuplicatePosts(container.mainContext) // P1-4: two devices posted the same bill date
+                }
         }
         .modelContainer(container)
     }

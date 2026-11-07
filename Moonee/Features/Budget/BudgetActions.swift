@@ -71,11 +71,16 @@ func loc(_ key: String.LocalizationValue) -> String { String(localized: key, tab
         context.insert(t)
         if !bill.isIncome { t.allocate(jars: jars, in: context) }
         bill.lastPaid = date
-        let anchor = bill.dueDay ?? calendar.component(.day, from: bill.nextDue)
-        bill.dueDay = anchor
-        bill.nextDue = nextDue(after: bill.nextDue, bill.frequency, day: anchor, calendar: calendar)
+        advance(bill, calendar: calendar)
         if bill.isIncome { receive(income: t, level: level, date: date, in: context, calendar: calendar) } // after: plans to the next payday
         return t
+    }
+
+    /// Moves a recurring one period on, keeping its day of the month.
+    static func advance(_ r: Recurring, calendar: Calendar = .current) {
+        let anchor = r.dueDay ?? calendar.component(.day, from: r.nextDue)
+        r.dueDay = anchor
+        r.nextDue = nextDue(after: r.nextDue, r.frequency, day: anchor, calendar: calendar)
     }
 
     /// An income recurring counts as received for its current payday once an income of its category is logged

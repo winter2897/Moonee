@@ -13,6 +13,8 @@ extension Prefs {
     static let advisorAuto = "advisor.auto"
     /// Int, bumped on every change above so views using `@AppStorage` refresh.
     static let advisorVersion = "advisor.version"
+    /// [String]: auto-posted bill dates (`auto:bill:…` tags) undone on this device; never posted again.
+    static let autoPostUndone = "autopost.undone"
 }
 
 extension BudgetAdvisor: Equatable {
@@ -303,6 +305,7 @@ extension BudgetActions {
 
     @discardableResult
     static func run(_ context: ModelContext, now: Date = .now, calendar: Calendar = .current, notify: Bool = true) -> AdvisorMemory.AutoRecord? {
+        postBills(context, now: now, calendar: calendar) // P1-4: every help level
         guard AdvisorLevel.current == .automatic else { return nil }
         let handled = AdvisorMemory.handledToday(now: now)
         let facts = BudgetFacts(context, now: now, calendar: calendar)
@@ -326,8 +329,8 @@ extension BudgetActions {
     /// Tags what Automatic wrote and remembers it for the Budget card's Undo (and a notification when it ran by itself).
     @discardableResult
     static func record(_ txns: [Txn], id: String, kind: BudgetAdvisor.Kind, title: String, text: String, previousDue: Date? = nil,
-                       now: Date, notify: Bool) -> AdvisorMemory.AutoRecord {
-        let tag = "auto:\(id).\(Int(now.timeIntervalSince1970))"
+                       now: Date, notify: Bool, tag: String? = nil) -> AdvisorMemory.AutoRecord {
+        let tag = tag ?? "auto:\(id).\(Int(now.timeIntervalSince1970))"
         txns.forEach { $0.externalID = tag }
         let record = AdvisorMemory.AutoRecord(tag: tag, kind: kind.rawValue, title: title, text: text, date: now, previousDue: previousDue)
         AdvisorMemory.setAutoRecords(Array((AdvisorMemory.autoRecords + [record]).suffix(5)))
@@ -340,19 +343,98 @@ extension BudgetActions {
         return record
     }
 
-    /// Undo: deletes what it wrote and puts the salary back on its payday.
+    /// Undo: deletes what it wrote and puts the salary back on its payday (an auto-posted bill back to due, its chat card
+    /// struck through).
     static func undo(_ record: AdvisorMemory.AutoRecord, in context: ModelContext) {
         let tag: String? = record.tag
         let txns = (try? context.fetch(FetchDescriptor<Txn>(predicate: #Predicate { $0.externalID == tag }))) ?? []
         if let due = record.previousDue, let category = txns.first(where: { $0.kind == .income })?.category {
             for r in (try? context.fetch(FetchDescriptor<Recurring>())) ?? [] where r.isIncome && r.category == category { r.nextDue = due }
         }
-        txns.forEach(context.delete)
+        unpost(txns, in: context)
+        let loose = txns.filter { $0.chatMessage == nil }
+        Set(txns.compactMap(\.chatMessage)).forEach { ChatBook.undo($0, in: context) }
+        loose.forEach(context.delete)
         AdvisorMemory.setAutoRecords(AdvisorMemory.autoRecords.filter { $0.tag != record.tag })
     }
 
     /// "OK": hides the record (the money stays).
     static func acknowledge(_ record: AdvisorMemory.AutoRecord) {
         AdvisorMemory.setAutoRecords(AdvisorMemory.autoRecords.filter { $0.tag != record.tag })
+    }
+}
+
+/// P1-4: bills that record themselves (`Recurring.autoPost`), at every help level.
+extension Autopilot {
+    nonisolated static let billPrefix = "auto:bill:"
+
+    /// `Txn.externalID` of one auto-posted due date: name + local day, the same on every device, so a second iPhone finds
+    /// it instead of posting again. ponytail: two bills with the same name due the same day post once; add a synced
+    /// `Recurring` id if that ever happens.
+    nonisolated static func postTag(_ name: String, due: Date, calendar: Calendar = .current) -> String {
+        let c = calendar.dateComponents([.year, .month, .day], from: due)
+        return billPrefix + name + ":" + String(format: "%04d-%02d-%02d", c.year ?? 0, c.month ?? 0, c.day ?? 0)
+    }
+
+    /// Records every `autoPost` bill due by the end of today (the first date is the one the user set, today included;
+    /// missed periods are caught up once each), moves it on, and says so on the Budget card and in today's chat, with Undo.
+    /// A date already posted (another device, then iCloud) only moves the bill on; an undone date stays due.
+    @discardableResult
+    static func postBills(_ context: ModelContext, now: Date = .now, calendar: Calendar = .current) -> [AdvisorMemory.AutoRecord] {
+        dropDuplicatePosts(context)
+        let bills = ((try? context.fetch(FetchDescriptor<Recurring>())) ?? []).filter { $0.autoPost && !$0.isEstimate && !$0.isIncome && $0.amount > 0 }
+        guard !bills.isEmpty else { return [] }
+        let tomorrow = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: now))!
+        let undone = Set(UserDefaults.standard.stringArray(forKey: Prefs.autoPostUndone) ?? [])
+        let jars = (try? context.fetch(FetchDescriptor<Jar>(sortBy: [SortDescriptor(\.order)]))) ?? []
+        var records: [AdvisorMemory.AutoRecord] = []
+        for r in bills {
+            var left = 400 // ponytail: caps a long-missed daily bill at 400 posts per run
+            while r.nextDue < tomorrow, left > 0 {
+                left -= 1
+                let due = r.nextDue, tag = postTag(r.name, due: due, calendar: calendar)
+                if undone.contains(tag) { break }
+                let id: String? = tag
+                if ((try? context.fetchCount(FetchDescriptor<Txn>(predicate: #Predicate { $0.externalID == id }))) ?? 0) > 0 {
+                    BudgetActions.advance(r, calendar: calendar)
+                    continue
+                }
+                let t = BudgetActions.markPaid(r, date: min(due, now), jars: jars, in: context, calendar: calendar)
+                let title = String(localized: "Recorded \(r.name) \(AmountFormat.string(t.amount, t.currencyCode, short: true))", table: "Budget")
+                let text = String(localized: "It was due \(due.formatted(.dateTime.day().month())). Tap Undo if you haven't paid it.", table: "Budget")
+                records.append(record([t], id: "", kind: .billDue, title: title, text: text, previousDue: due, now: now, notify: false, tag: tag))
+                let m = ChatMessage(fromUser: false, text: "\(title). \(text)", date: now)
+                context.insert(m)
+                ChatThreads.add(m, to: ChatThreads.forNewMessage(open: nil, resumed: false, now: now, calendar: calendar, in: context))
+                t.chatMessage = m
+            }
+        }
+        return records
+    }
+
+    /// Two devices that posted the same date before syncing: keep the oldest (every device picks the same one).
+    static func dropDuplicatePosts(_ context: ModelContext) {
+        let tagged = (try? context.fetch(FetchDescriptor<Txn>(predicate: #Predicate { $0.externalID != nil }))) ?? []
+        let posts = Dictionary(grouping: tagged.filter { $0.externalID?.hasPrefix(billPrefix) == true }) { $0.externalID ?? "" }
+        for (_, txns) in posts where txns.count > 1 {
+            txns.sorted { ($0.createdAt, $0.amount) < ($1.createdAt, $1.amount) }.dropFirst().forEach(context.delete)
+        }
+    }
+
+    /// Undo of an auto-posted bill (Budget card or chat card), before its txns are deleted: the bill is due again on that
+    /// date (Coming up shows it with Mark paid) and this device never posts that date again.
+    static func unpost(_ txns: [Txn], in context: ModelContext) {
+        let posted = txns.filter { $0.externalID?.hasPrefix(billPrefix) == true }
+        guard !posted.isEmpty else { return }
+        let tags = posted.compactMap(\.externalID)
+        let d = UserDefaults.standard
+        d.set(Array(Set(d.stringArray(forKey: Prefs.autoPostUndone) ?? []).union(tags)), forKey: Prefs.autoPostUndone)
+        let bills = (try? context.fetch(FetchDescriptor<Recurring>())) ?? []
+        for t in posted {
+            guard let tag = t.externalID, let r = bills.first(where: { tag.hasPrefix(billPrefix + $0.name + ":") }) else { continue }
+            r.nextDue = min(r.nextDue, t.date)
+            if r.lastPaid == t.date { r.lastPaid = nil }
+        }
+        AdvisorMemory.setAutoRecords(AdvisorMemory.autoRecords.filter { !tags.contains($0.tag) })
     }
 }
