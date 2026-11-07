@@ -24,6 +24,28 @@
         }
       }
     },
+    "3M": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3 ເດືອນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3 เดือน"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3T"
+          }
+        }
+      }
+    },
     "6M": {
       "localizations": {
         "lo": {
@@ -108,28 +130,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Thêm tài sản đầu tiên"
-          }
-        }
-      }
-    },
-    "All": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ທັງໝົດ"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ทั้งหมด"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tất cả"
           }
         }
       }

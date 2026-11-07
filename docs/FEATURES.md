@@ -203,7 +203,8 @@ Tab tên **Tài sản** (en "Assets", icon `chart.line.uptrend.xyaxis`; trước
 
 - **Theo dõi giá:** giá vàng SJC/PNJ, bạc, cổ phiếu VN, tỷ giá USD, crypto (tuỳ chọn).
 - **Tài sản đang giữ:** "2 lượng SJC", "500 cổ FPT", "1000 USD" → định giá theo giá hiện tại.
-- **Net worth** = số dư các ví + tài sản − nợ (thẻ tín dụng, sổ nợ). Có biểu đồ theo thời gian.
+- **Net worth** = số dư các ví + tài sản − nợ (thẻ tín dụng, sổ nợ).
+- Luôn có **hai biểu đồ**: cơ cấu tài sản (donut) và **đường net worth theo tháng**, có ngay từ ngày đầu. Mỗi tháng là giá trị cuối tháng: snapshot đã lưu nếu có, không thì dựng lại từ sổ giao dịch (số dư ví, nợ tại ngày đó) + giá trị tài sản hiện tại (tài sản chưa có lịch sử giá). Bắt đầu từ tháng trước dữ liệu đầu tiên ("trước Moonee"), nên người mới cũng thấy tháng trước → tháng này. Chọn kỳ 3T / 6T / 1N, chạm để xem từng tháng, dòng thay đổi so với tháng trước.
 - **Cảnh báo giá** theo ngưỡng (ví dụ SJC trên 90tr/lượng).
 - ⚠️ **Cần chốt nguồn dữ liệu** và điều khoản sử dụng: giá vàng (SJC/PNJ công bố trên web), cổ phiếu VN (API của công ty chứng khoán hoặc bên cung cấp dữ liệu), tỷ giá. Vì app mua đứt và không có server, nên xem xét có cần một backend nhỏ hay proxy để cache giá không.
 

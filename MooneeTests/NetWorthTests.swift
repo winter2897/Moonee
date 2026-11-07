@@ -54,26 +54,47 @@ struct NetWorthTests {
         #expect(asked == [month(2026, 7), month(2026, 9), month(2026, 11)]) // estimated at each month's end
     }
 
-    @Test func historyStartsAtTheFirstData() {
+    @Test func historyStartsOneMonthBeforeTheFirstData() {
         let now = day(2026, 11, 5)
         let p = { (since: Date?, snaps: [(Date, Int)]) in
             NetWorthHistory.points(snaps.map { (month: $0.0, total: $0.1) }, current: 4, since: since,
                                    estimate: { _ in 0 }, now: now, calendar: self.cal).map(\.month)
         }
-        #expect(p(nil, []) == [month(2026, 11)])               // new user: one point, no sparkline
-        #expect(p(day(2026, 11, 2), []) == [month(2026, 11)])  // first txn this month
-        #expect(p(day(2026, 10, 20), []) == [month(2026, 10), month(2026, 11)])
-        #expect(p(nil, [(month(2026, 9), 1)]) == [9, 10, 11].map { month(2026, $0) })
+        // A new user still gets a trend: last month (before Moonee) → this month.
+        #expect(p(nil, []) == [month(2026, 10), month(2026, 11)])
+        #expect(p(day(2026, 11, 2), []) == [month(2026, 10), month(2026, 11)])
+        #expect(p(day(2026, 10, 20), []) == [9, 10, 11].map { month(2026, $0) })
+        #expect(p(nil, [(month(2026, 9), 1)]) == [8, 9, 10, 11].map { month(2026, $0) })
+        #expect(NetWorthHistory.points([], current: 4, since: day(2025, 1), estimate: { _ in 0 }, now: now, months: 3,
+                                       calendar: cal).map(\.month) == [9, 10, 11].map { month(2026, $0) }) // 3T range
     }
 
-    @Test func changeIsOverThePointsShown() throws {
+    @Test func historyRebuildsMonthEndsFromTheLedger() {
+        // Salary 10tr on 20 Oct, spent 3tr on 3 Nov, lent 1tr on 4 Nov (still owned), gold worth 5tr today.
+        let entries: [L.Entry] = [
+            .init(kind: .income, amount: 10_000_000, date: day(2026, 10, 20), wallet: "bank"),
+            .init(kind: .expense, amount: 3_000_000, date: day(2026, 11, 3), wallet: "bank"),
+            .init(kind: .lend, amount: 1_000_000, date: day(2026, 11, 4), wallet: "bank", debt: "nam"),
+        ]
+        let gold = 5_000_000
+        let now = day(2026, 11, 5)
+        let points = NetWorthHistory.points([], current: L(entries: entries, debtDirections: ["nam": .lent]).netWorth(assets: gold), since: day(2026, 10, 20),
+                                            estimate: { end in L(entries: entries.filter { $0.date < end }, debtDirections: ["nam": .lent]).netWorth(assets: gold) },
+                                            now: now, calendar: cal)
+        #expect(points.map(\.total) == [5_000_000, 15_000_000, 12_000_000]) // Sep: gold only · Oct end · Nov now
+        let change = NetWorthHistory.change(points)
+        #expect(change?.amount == -3_000_000) // vs October, not vs September
+        #expect(change?.percent == -0.2)
+    }
+
+    @Test func changeIsVsThePreviousMonth() throws {
         let pts = { (totals: [Int]) in totals.enumerated().map { NetWorthHistory.Point(month: self.month(2026, 5 + $0.offset), total: $0.element) } }
-        let up = try #require(NetWorthHistory.change(pts([200, 120, 250])))
+        let up = try #require(NetWorthHistory.change(pts([999, 200, 250])))
         #expect(up.amount == 50)
         #expect(up.percent == 0.25)
         #expect(NetWorthHistory.change(pts([-200, -100]))?.percent == 0.5) // less negative = up
         #expect(NetWorthHistory.change(pts([0, 100]))?.percent == nil)
-        #expect(NetWorthHistory.change(pts([250])) == nil) // new user: nothing to compare
+        #expect(NetWorthHistory.change(pts([250])) == nil)
     }
 
     @Test func selectionPicksTheMonthTouched() {
