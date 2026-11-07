@@ -1,3 +1,4 @@
+#if targetEnvironment(simulator)
 import Foundation
 import SwiftData
 import Testing
@@ -81,3 +82,4 @@ import Testing
         #expect(try summary() == summary())
     }
 }
+#endif

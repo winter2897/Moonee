@@ -3107,24 +3107,24 @@
         }
       }
     },
-    "Test builds only: a sample user, Minh, with 3 months of spending, jars, bills, debts and chats.": {
+    "Simulator only: a sample user, Minh, with 3 months of spending, jars, bills, debts and chats.": {
       "localizations": {
         "lo": {
           "stringUnit": {
             "state": "translated",
-            "value": "ສະເພາະເວີຊັນທົດສອບ: ຜູ້ໃຊ້ຕົວຢ່າງຊື່ Minh ພ້ອມລາຍຈ່າຍ 3 ເດືອນ, ໂຖເງິນ, ບິນ, ໜີ້ ແລະ ແຊັດ"
+            "value": "ສະເພາະ Simulator: ຜູ້ໃຊ້ຕົວຢ່າງຊື່ Minh ພ້ອມລາຍຈ່າຍ 3 ເດືອນ, ໂຖເງິນ, ບິນ, ໜີ້ ແລະ ແຊັດ"
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "เฉพาะเวอร์ชันทดสอบ: ผู้ใช้ตัวอย่างชื่อ Minh พร้อมรายจ่าย 3 เดือน โถเงิน บิล หนี้ และแชต"
+            "value": "เฉพาะ Simulator: ผู้ใช้ตัวอย่างชื่อ Minh พร้อมรายจ่าย 3 เดือน โถเงิน บิล หนี้ และแชต"
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chỉ có ở bản thử nghiệm: người dùng mẫu Minh với 3 tháng chi tiêu, hũ, hoá đơn, sổ nợ và trò chuyện."
+            "value": "Chỉ có trên Simulator: người dùng mẫu Minh với 3 tháng chi tiêu, hũ, hoá đơn, sổ nợ và trò chuyện."
           }
         }
       }

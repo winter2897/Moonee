@@ -1,20 +1,13 @@
 import Foundation
 import SwiftData
 
+#if targetEnvironment(simulator)
 /// One realistic sample user so every screen has data: Minh, an office worker in TP.HCM (VND, salary 25tr on the 5th),
 /// with ~3 months of books up to `now` (dates are relative, so it never goes stale). Deterministic: a seeded generator.
-/// Account › Data "Load sample data" (Debug and TestFlight builds), or launch with `-demoUser YES` (Debug, empty store).
+/// Simulator builds only (the owner's call: never on a device, TestFlight included): Account › Data "Load sample data",
+/// or launch with `-demoUser YES` (Debug, empty store).
 /// Every write goes through the app's own writers: `allocate`, `BudgetActions.receive`/`payCard`/`setAside`/`moveBetweenJars`.
 @MainActor enum DemoUser {
-    /// Debug and TestFlight (sandbox receipt) builds; never App Store ones.
-    static var isAvailable: Bool {
-        #if DEBUG
-        true
-        #else
-        Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
-        #endif
-    }
-
     /// Erases everything (`DataReset.deleteAll`), then seeds Minh.
     static func load(into context: ModelContext) throws {
         try DataReset.deleteAll(context)
@@ -278,3 +271,4 @@ struct SeededRandom: RandomNumberGenerator {
         return z ^ (z >> 31)
     }
 }
+#endif

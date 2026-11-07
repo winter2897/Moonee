@@ -67,7 +67,9 @@ struct DataSettings: View {
     @Query private var txns: [Txn]
     @State private var exportURL: URL?
     @State private var confirmStep = 0
+    #if targetEnvironment(simulator)
     @State private var confirmDemo = false
+    #endif
     @State private var error: String?
     @State private var cloud = CloudSync.Status.off
     @AppStorage(Prefs.iCloudSync) private var syncOn = true
@@ -106,22 +108,22 @@ struct DataSettings: View {
         }
         .task(id: txns.count) { exportURL = try? CSVExport.file(txns) }
 
-        if DemoUser.isAvailable {
-            Section {
-                Button { confirmDemo = true } label: {
-                    Label { Text("Load sample data", tableName: "Account") } icon: { SettingsIcon(symbol: "person.crop.circle.badge.plus", color: .purple) }
-                }
-            } footer: {
-                Text("Test builds only: a sample user, Minh, with 3 months of spending, jars, bills, debts and chats.", tableName: "Account")
+        #if targetEnvironment(simulator)
+        Section {
+            Button { confirmDemo = true } label: {
+                Label { Text("Load sample data", tableName: "Account") } icon: { SettingsIcon(symbol: "person.crop.circle.badge.plus", color: .purple) }
             }
-            .confirmationDialog(Text("Load sample data?", tableName: "Account"), isPresented: $confirmDemo, titleVisibility: .visible) {
-                Button(String(localized: "Erase and load", table: "Account"), role: .destructive) {
-                    do { try DemoUser.load(into: context) } catch { self.error = error.localizedDescription }
-                }
-            } message: {
-                Text("Everything on this iPhone is erased first. This cannot be undone.", tableName: "Account")
-            }
+        } footer: {
+            Text("Simulator only: a sample user, Minh, with 3 months of spending, jars, bills, debts and chats.", tableName: "Account")
         }
+        .confirmationDialog(Text("Load sample data?", tableName: "Account"), isPresented: $confirmDemo, titleVisibility: .visible) {
+            Button(String(localized: "Erase and load", table: "Account"), role: .destructive) {
+                do { try DemoUser.load(into: context) } catch { self.error = error.localizedDescription }
+            }
+        } message: {
+            Text("Everything on this iPhone is erased first. This cannot be undone.", tableName: "Account")
+        }
+        #endif
 
         Section {
             Button(role: .destructive) { confirmStep = 1 } label: {
