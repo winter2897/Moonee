@@ -5,6 +5,8 @@ import SwiftUI
 /// The Moonee chat (spec §3.1–3.3), opened by the (+) tab: type, say or snap a transaction, ask about money.
 struct ChatView: View {
     var onBack: (() -> Void)? = nil
+    /// Raised by the `moonee://chat` deep link: focus the composer.
+    var composeRequest = 0
 
     @Environment(\.modelContext) private var context
     @Query(sort: \ChatMessage.date) private var allMessages: [ChatMessage]
@@ -33,6 +35,8 @@ struct ChatView: View {
     @State private var attachments: [ChatAttachment] = []
     @State private var savedCount = 0
     @State private var showReport = false
+    /// The last `composeRequest` that focused the composer, so coming back to the tab does not raise the keyboard again.
+    @State private var handledCompose = 0
 
     var body: some View {
         VStack(spacing: 0) {
@@ -86,6 +90,11 @@ struct ChatView: View {
             ChatThreads.migrate(in: context)
             if thread == nil { thread = ChatThreads.todays(in: context) }
             // Opens as the idle pill (owner's reference): type, or hold the voice button to talk.
+        }
+        .task(id: composeRequest) {
+            guard composeRequest != handledCompose else { return }
+            handledCompose = composeRequest
+            focused = true // the widget's quick add: straight to typing
         }
         .onChange(of: speech.transcript) { _, t in
             guard !t.isEmpty, speech.isRecording else { return }

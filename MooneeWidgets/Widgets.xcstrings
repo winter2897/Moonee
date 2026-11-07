@@ -1,0 +1,335 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "%@ left": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Còn %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เหลือ %@"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຫຼືອ %@"
+          }
+        }
+      }
+    },
+    "Balance hidden": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã ẩn số dư"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ซ่อนยอดเงินอยู่"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຊື່ອງຍອດເງິນໄວ້"
+          }
+        }
+      }
+    },
+    "Left this month": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Còn lại tháng này"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เหลือเดือนนี้"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຫຼືອເດືອນນີ້"
+          }
+        }
+      }
+    },
+    "Log a transaction": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ghi giao dịch"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บันทึกรายการ"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບັນທຶກລາຍການ"
+          }
+        }
+      }
+    },
+    "Open Moonee to see your budget.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mở Moonee để xem ngân sách."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เปิด Moonee เพื่อดูงบ"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເປີດ Moonee ເພື່ອເບິ່ງງົບປະມານ"
+          }
+        }
+      }
+    },
+    "Opens Moonee's chat to log what you spent.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mở chat Moonee để ghi khoản vừa chi."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เปิดแชท Moonee เพื่อบันทึกสิ่งที่คุณใช้ไป"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເປີດແຊັດ Moonee ເພື່ອບັນທຶກສິ່ງທີ່ເຈົ້າໃຊ້ໄປ"
+          }
+        }
+      }
+    },
+    "Spent this month": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã chi tháng này"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใช้ไปเดือนนี้"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃຊ້ໄປເດືອນນີ້"
+          }
+        }
+      }
+    },
+    "Spent today": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hôm nay đã chi"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใช้ไปวันนี้"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃຊ້ໄປມື້ນີ້"
+          }
+        }
+      }
+    },
+    "Tell Moonee what you spent.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kể Moonee nghe bạn vừa chi gì."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บอก Moonee ว่าคุณใช้อะไรไป"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບອກ Moonee ວ່າເຈົ້າໃຊ້ຫຍັງໄປ"
+          }
+        }
+      }
+    },
+    "Today %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hôm nay %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "วันนี้ %@"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ມື້ນີ້ %@"
+          }
+        }
+      }
+    },
+    "What's left this month, today's spending and your top jars.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Số còn lại tháng này, chi tiêu hôm nay và các lọ chi nhiều nhất."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยอดเหลือเดือนนี้ ยอดใช้วันนี้ และกระปุกที่ใช้มากที่สุด"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍອດເຫຼືອເດືອນນີ້, ຍອດໃຊ້ມື້ນີ້ ແລະ ກະປຸກທີ່ໃຊ້ຫຼາຍທີ່ສຸດ"
+          }
+        }
+      }
+    },
+    "jar.essentials": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Essentials"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thiết yếu"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "จำเป็น"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຈຳເປັນ"
+          }
+        }
+      }
+    },
+    "jar.growth": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Self-growth"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phát triển bản thân"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "พัฒนาตัวเอง"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ພັດທະນາຕົນເອງ"
+          }
+        }
+      }
+    },
+    "jar.play": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hưởng thụ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ความสุข"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຄວາມສຸກ"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

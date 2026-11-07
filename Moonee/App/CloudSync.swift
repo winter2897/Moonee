@@ -9,15 +9,22 @@ import SwiftData
     /// The store was opened with CloudKit mirroring. False = local-only fallback (CloudKit could not start).
     private(set) static var isOn = false
 
+    /// The store stays in the app's own Application Support (`default.store`), where every build so far put it.
+    /// With the App Group entitlement (widgets) SwiftData's `.automatic` would open a new, empty store in the group
+    /// container instead, so it is pinned. The widgets never open the store: they read `WidgetSnapshot`.
+    static let groupContainer = ModelConfiguration.GroupContainer.none
+
     static func makeContainer() throws -> ModelContainer {
         do {
             let container = try ModelContainer(for: Schema.moonee,
-                                               configurations: ModelConfiguration(schema: Schema.moonee, cloudKitDatabase: .private(containerID)))
+                                               configurations: ModelConfiguration(schema: Schema.moonee, groupContainer: groupContainer,
+                                                                                  cloudKitDatabase: .private(containerID)))
             isOn = true
             return container
         } catch {
             print("iCloud sync off, local store only: \(error)")
-            return try ModelContainer(for: Schema.moonee, configurations: ModelConfiguration(schema: Schema.moonee, cloudKitDatabase: .none))
+            return try ModelContainer(for: Schema.moonee, configurations: ModelConfiguration(schema: Schema.moonee, groupContainer: groupContainer,
+                                                                                         cloudKitDatabase: .none))
         }
     }
 
