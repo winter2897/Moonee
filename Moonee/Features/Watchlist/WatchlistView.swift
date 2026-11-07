@@ -49,7 +49,7 @@ struct WatchlistView: View {
                 }
             }
             .background(MooneeBackground())
-            .navigationTitle(String(localized: "Watchlist", table: "Watchlist"))
+            .navigationTitle(String(localized: "Assets", table: "Watchlist"))
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Menu {

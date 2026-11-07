@@ -21,7 +21,7 @@
 | Mô hình lọ | Số dư thật, cộng dồn qua các tháng (envelope) |
 | Chia thu nhập | Tự chia theo từng lần nhận, sửa tay được cho từng khoản |
 | Ngân hàng | Ví tạo thủ công + import sao kê; **không** liên kết API trong MVP |
-| Quan tâm | Watchlist + tài sản đang giữ → net worth, có cảnh báo giá |
+| Tài sản | Tài sản đang giữ (+ theo dõi giá) → net worth, có cảnh báo giá |
 | Bảo mật | Face ID/passcode, ẩn số dư, che màn hình khi chuyển app, xoá toàn bộ dữ liệu |
 | Import/Export | CSV/Excel hai chiều |
 | Onboarding | Thiết lập qua chat |
@@ -38,7 +38,7 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 ## 1. Thanh tab
 
 ```
-[ Tổng quan ]  [ Ngân sách ]  [ (+) Moonee ]  [ Quan tâm ]  [ Tài khoản ]
+[ Tổng quan ]  [ Ngân sách ]  [ (+) Moonee ]  [ Tài sản ]  [ Tài khoản ]
 ```
 
 - Mở app thì vào **Tổng quan**.
@@ -57,9 +57,11 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
   - **Cách xem:** theo ngày (đầu mục có tổng chi của ngày), theo danh mục (tổng và %, xếp theo số tiền), theo lọ, lịch chi tiêu.
   - **Lọc:** ví, lọ, danh mục, loại (chi / thu / chuyển / nợ), khoảng số tiền; bộ lọc đang bật hiện thành chip dưới ô tìm, chạm để bỏ.
   - **Sắp tới:** khi kỳ chứa hôm nay, hoá đơn, lương và khoản định kỳ trong 1 / 3 / 12 tháng tới hiện thành dòng mờ; chạm để sửa khoản định kỳ.
-- Thẻ **Net worth** (tóm tắt từ mục Quan tâm)
+- Thẻ **Net worth** (tóm tắt từ tab Tài sản)
 - Lời nhắn ngắn từ Moonee (một câu insight, theo mức nhắc nhở)
 - Thẻ báo cáo cuối kỳ khi có (tuần/tháng/năm)
+- **Mỗi thẻ mở chi tiết** (có dấu ›, nhấn thì thẻ hơi lún), giữ kỳ Tuần/Tháng/Năm đang chọn: Tổng số dư → danh sách ví; Net worth → tab Tài sản; Thu nhập → sổ giao dịch lọc thu nhập của kỳ; Tiết kiệm → sổ giao dịch của kỳ; biểu đồ chi tiêu → sổ giao dịch (chi) của kỳ, chạm một cột → ngày đó (tuần/tháng) hoặc tháng đó (năm), giữ và kéo vẫn để xem số; Chi theo danh mục → sổ giao dịch xem theo danh mục, chạm một danh mục → lọc danh mục đó; Các lọ → tab Ngân sách, chạm một lọ → chi tiết lọ; lời nhắn Moonee và hoá đơn → tab Ngân sách.
+- Lịch chi tiêu (thẻ Giao dịch và chế độ Lịch của sổ giao dịch): hôm nay và ngày đang chọn viền **vàng** thương hiệu.
 
 ## 3. Moonee (chat + nhập liệu)
 
@@ -139,7 +141,7 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 - Các loại: tiền mặt, tài khoản ngân hàng, ví điện tử (MoMo, ZaloPay...), **thẻ tín dụng**.
 - Lọ và ví độc lập nhau: lọ trả lời "tiền dành cho việc gì", ví trả lời "tiền đang nằm ở đâu". Chi từ ví nào cũng trừ lọ của danh mục.
 - **Tính vào ngân sách** (công tắc ở mỗi ví, quyết định 06/11): mặc định bật cho tiền mặt, ngân hàng, ví điện tử, thẻ tín dụng; tắt cho hai loại mới **Tài khoản tiết kiệm** và **Tài khoản đầu tư**. Ví tắt chỉ tính vào tài sản ròng. Danh sách ví hiện thêm dòng "Trong ngân sách" khi có ví tắt.
-- **Mua tài sản / Gửi tiết kiệm** (nút + ở Ngân sách, nút + ở Quan tâm): tiền rời ngân sách thì lấy từ một lọ user chọn (mặc định Đầu tư khi mua tài sản, Tiết kiệm khi gửi tiết kiệm), ghi thành chuyển tiền có lọ (ví −, lọ −) và tăng `Asset` (số lượng, giá mua làm giá đơn vị, cộng vào giá vốn) hoặc ví tiết kiệm. **Bán tài sản / Rút tiết kiệm** đưa tiền về ví ngân sách thành Chưa chia vào lọ. Màn này nhắc quỹ khẩn cấp (mục 4.6) và nguyên tắc đầu tư, kèm câu "Moonee không phải chuyên gia tư vấn đầu tư có giấy phép".
+- **Mua tài sản / Gửi tiết kiệm** (nút + ở Ngân sách, nút + ở Tài sản): tiền rời ngân sách thì lấy từ một lọ user chọn (mặc định Đầu tư khi mua tài sản, Tiết kiệm khi gửi tiết kiệm), ghi thành chuyển tiền có lọ (ví −, lọ −) và tăng `Asset` (số lượng, giá mua làm giá đơn vị, cộng vào giá vốn) hoặc ví tiết kiệm. **Bán tài sản / Rút tiết kiệm** đưa tiền về ví ngân sách thành Chưa chia vào lọ. Màn này nhắc quỹ khẩn cấp (mục 4.6) và nguyên tắc đầu tư, kèm câu "Moonee không phải chuyên gia tư vấn đầu tư có giấy phép".
 - **Thẻ tín dụng:**
   - Lưu ngày sao kê, ngày đến hạn và hạn mức.
   - Quẹt thẻ được tính là chi tiêu (trừ lọ, tăng dư nợ thẻ).
@@ -195,9 +197,11 @@ Moonee hành xử như một người hiểu tài chính cá nhân, trừ khi us
 - **Đầu tư:** chỉ nguyên tắc và giới hạn rủi ro (quỹ khẩn cấp trước, chỉ đầu tư tiền 3–5 năm không dùng, phân tán, không vay để đầu tư), luôn kèm "Moonee không phải chuyên gia tư vấn đầu tư có giấy phép". Không bao giờ bảo nên mua gì.
 - **Trợ lý:** skill `jar-budgeting`, `spending-coach`, `close-management` đọc `advice` của `monthBudget` và nói lại đúng số; `monthClose` gợi ý bù lọ âm theo cùng thứ tự.
 
-## 5. Quan tâm
+## 5. Tài sản
 
-- **Watchlist:** giá vàng SJC/PNJ, bạc, cổ phiếu VN, tỷ giá USD, crypto (tuỳ chọn).
+Tab tên **Tài sản** (en "Assets", icon `chart.line.uptrend.xyaxis`; trước đây là "Quan tâm"/Watchlist).
+
+- **Theo dõi giá:** giá vàng SJC/PNJ, bạc, cổ phiếu VN, tỷ giá USD, crypto (tuỳ chọn).
 - **Tài sản đang giữ:** "2 lượng SJC", "500 cổ FPT", "1000 USD" → định giá theo giá hiện tại.
 - **Net worth** = số dư các ví + tài sản − nợ (thẻ tín dụng, sổ nợ). Có biểu đồ theo thời gian.
 - **Cảnh báo giá** theo ngưỡng (ví dụ SJC trên 90tr/lượng).
@@ -414,7 +418,7 @@ MerchantRule  (pattern, categoryId)                    // học từ các lần 
 - Báo cáo tuần/năm
 - Widget + Lock Screen
 - Import CSV/Excel + skill `reconciliation` (đối chiếu sao kê)
-- Quan tâm: watchlist, tài sản, net worth, cảnh báo giá + skill `financial-statements`
+- Tài sản: theo dõi giá, tài sản, net worth, cảnh báo giá + skill `financial-statements`
 - Skill `variance-analysis`, `goal-planning`, `debt-tracking`
 - Mở rộng danh mục model local; import skill tự viết
 

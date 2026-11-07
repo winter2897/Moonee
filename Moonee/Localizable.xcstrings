@@ -224,6 +224,28 @@
         }
       }
     },
+    "Assets": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊັບສິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สินทรัพย์"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tài sản"
+          }
+        }
+      }
+    },
     "Assign categories": {
       "localizations": {
         "lo": {
@@ -1364,28 +1386,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ví"
-          }
-        }
-      }
-    },
-    "Watchlist": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ຕິດຕາມ"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ติดตาม"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Quan tâm"
           }
         }
       }
