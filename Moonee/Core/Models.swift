@@ -303,6 +303,8 @@ private func displayName(key: String?, customName: String?) -> String {
     var lastPaid: Date?
     /// Day of month the bill is due (31 stays 31; short months use their last day). nil = the day of `nextDue`.
     var dueDay: Int?
+    /// P1-4: Moonee records the expense itself on the due day (fixed bills; estimates keep asking). `Autopilot.postBills`.
+    var autoPost: Bool = false
     var wallet: Wallet?
     var category: Category?
 

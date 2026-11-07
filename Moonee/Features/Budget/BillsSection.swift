@@ -137,6 +137,7 @@ private struct BillRow: View {
                 AmountText(bill.amount, currency: bill.currencyCode, plus: bill.isIncome)
                     .foregroundStyle(bill.isIncome ? Color.income : Color.ink)
                 if bill.isEstimate { Text(loc("Estimate")).font(.caption).foregroundStyle(Color.inkSecondary) }
+                else if bill.autoPost && !bill.isIncome { Text(loc("Records itself")).font(.caption).foregroundStyle(Color.inkSecondary) }
             }
         }
     }
@@ -193,6 +194,8 @@ struct RecurringForm: View {
     @State private var name = ""
     @State private var amount = 0
     @State private var isEstimate = false
+    /// P1-4: on for a new fixed bill (Netflix, rent); estimates keep asking for the real amount.
+    @State private var autoPost = true
     @State private var frequency = Frequency.monthly
     @State private var nextDue = Date.now
     @State private var remindDaysBefore = 1
@@ -206,6 +209,7 @@ struct RecurringForm: View {
         _name = State(initialValue: bill.name)
         _amount = State(initialValue: bill.amount)
         _isEstimate = State(initialValue: bill.isEstimate)
+        _autoPost = State(initialValue: bill.autoPost)
         _frequency = State(initialValue: bill.frequency)
         _nextDue = State(initialValue: bill.nextDue)
         _remindDaysBefore = State(initialValue: bill.remindDaysBefore)
@@ -220,6 +224,18 @@ struct RecurringForm: View {
                     TextField(loc("Name, e.g. Rent"), text: $name)
                     AmountField(title: loc("Amount"), minor: $amount, currency: bill?.currencyCode ?? Money.defaultCurrency)
                     Toggle(loc("Amount varies (estimate)"), isOn: $isEstimate)
+                        .onChange(of: isEstimate) { _, estimate in autoPost = !estimate }
+                    if category?.kind != .income {
+                        Toggle(loc("Record on the due day"), isOn: $autoPost).disabled(isEstimate)
+                    }
+                } footer: {
+                    if category?.kind == .income {
+                        EmptyView()
+                    } else if isEstimate {
+                        Text(loc("Moonee asks for the real amount when it's due."))
+                    } else if autoPost {
+                        Text(loc("Moonee records it on the due day, today included. You can undo it."))
+                    }
                 }
                 Section {
                     Picker(loc("Repeats"), selection: $frequency) {
@@ -282,6 +298,7 @@ struct RecurringForm: View {
         b.name = name.trimmingCharacters(in: .whitespaces)
         b.amount = amount
         b.isEstimate = isEstimate
+        b.autoPost = autoPost && !isEstimate && category?.kind != .income
         b.frequency = frequency
         // Only a new due date resets the anchor day (editing a 31st bill in February keeps 31).
         if bill == nil || !Calendar.current.isDate(b.nextDue, inSameDayAs: nextDue) {

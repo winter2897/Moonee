@@ -311,6 +311,7 @@ struct ChatCardLine: Codable, Equatable {
     /// A debt left with no transactions (made by this message's lend/borrow) goes too.
     static func undo(_ message: ChatMessage, in context: ModelContext) {
         let txns = message.savedTxns
+        Autopilot.unpost(txns, in: context) // a bill Moonee recorded by itself is due again
         let ids = Set(txns.map(\.persistentModelID))
         message.undoneLines = try? JSONEncoder().encode(txns.map(ChatCardLine.init))
         message.undone = true

@@ -6134,6 +6134,182 @@
           }
         }
       }
+    },
+    "It was due %@. Tap Undo if you haven't paid it.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຮອດກຳນົດ %@. ແຕະ ຍົກເລີກ ຖ້າທ່ານຍັງບໍ່ໄດ້ຈ່າຍ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ครบกำหนด %@ แตะ ยกเลิก หากคุณยังไม่ได้จ่าย"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đến hạn %@. Bấm Hoàn tác nếu bạn chưa trả."
+          }
+        }
+      }
+    },
+    "Moonee asks for the real amount when it's due.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເມື່ອຮອດກຳນົດ Moonee ຈະຖາມຈຳນວນແທ້."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เมื่อถึงกำหนด Moonee จะถามยอดจริง"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đến hạn, Moonee sẽ hỏi số tiền thực."
+          }
+        }
+      }
+    },
+    "Moonee records %@ today. Open Moonee to check it or undo.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ບັນທຶກ %@ ມື້ນີ້. ເປີດ Moonee ເພື່ອກວດ ຫຼື ຍົກເລີກ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee บันทึก %@ วันนี้ เปิด Moonee เพื่อตรวจดูหรือยกเลิก"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ghi %@ hôm nay. Mở Moonee để xem hoặc hoàn tác."
+          }
+        }
+      }
+    },
+    "Moonee records it on the due day, today included. You can undo it.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ບັນທຶກໃຫ້ໃນວັນຮອດກຳນົດ ລວມທັງມື້ນີ້. ທ່ານຍົກເລີກໄດ້."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee บันทึกให้ในวันครบกำหนด รวมถึงวันนี้ และยกเลิกได้"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee tự ghi vào ngày đến hạn, kể cả hôm nay. Bạn có thể hoàn tác."
+          }
+        }
+      }
+    },
+    "Record on the due day": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບັນທຶກເອງເມື່ອຮອດວັນກຳນົດ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บันทึกเองเมื่อถึงวันครบกำหนด"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tự ghi khi đến ngày"
+          }
+        }
+      }
+    },
+    "Recorded %@ %@": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບັນທຶກ %1$@ %2$@ ແລ້ວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บันทึก %1$@ %2$@ แล้ว"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã ghi %1$@ %2$@"
+          }
+        }
+      }
+    },
+    "Recorded for you": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບັນທຶກໃຫ້ແລ້ວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บันทึกให้แล้ว"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã ghi giúp bạn"
+          }
+        }
+      }
+    },
+    "Records itself": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບັນທຶກເອງ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บันทึกเอง"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tự ghi"
+          }
+        }
+      }
     }
   }
 }
