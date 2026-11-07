@@ -23,7 +23,7 @@ struct OverviewView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
+            ScrollViewReader { proxy in ScrollView {
                 if txns.isEmpty {
                     EmptyState(mood: .sleepy, title: String(localized: "No transactions yet", table: "Overview"),
                                message: String(localized: "Tap + and tell Moonee “lunch 45k” to log your first one.", table: "Overview"))
@@ -34,6 +34,15 @@ struct OverviewView: View {
                 } else {
                     dashboard.padding(.horizontal, 16).padding(.bottom, 24)
                 }
+            }
+            #if DEBUG
+            // Screenshots: `-overviewCalendar YES` scrolls to the spending calendar.
+            .task {
+                guard UserDefaults.standard.bool(forKey: "overviewCalendar") else { return }
+                try? await Task.sleep(for: .seconds(1))
+                proxy.scrollTo("calendar", anchor: .top)
+            }
+            #endif
             }
             .background(MooneeBackground())
             .navigationTitle(String(localized: "Overview", table: "Overview"))
@@ -62,6 +71,7 @@ struct OverviewView: View {
             MooneeNoteCard(mood: note.mood, text: note.text, animated: true).card(padding: 12).reveal(0)
             BalanceCard(stats: s, currency: currency, periodNote: comparedWith).reveal(1)
             SpendingCard(stats: s, currency: currency).reveal(2)
+            SpendingCalendarCard(txns: txns).id("calendar").reveal(3)
             ReportCard(txns: txns).reveal(3)
             if !s.categories.isEmpty { CategoriesCard(categories: s.categories, currency: currency).reveal(4) }
             if !s.jars.isEmpty { JarRingsCard(rows: s.jars, currency: currency).reveal(5) }

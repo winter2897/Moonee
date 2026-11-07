@@ -353,6 +353,28 @@
         }
       }
     },
+    "Done": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແລ້ວ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เสร็จ"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xong"
+          }
+        }
+      }
+    },
     "Expenses": {
       "localizations": {
         "lo": {
@@ -683,6 +705,50 @@
         }
       }
     },
+    "Less": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໜ້ອຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "น้อย"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ít"
+          }
+        }
+      }
+    },
+    "More": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຫຼາຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "มาก"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhiều"
+          }
+        }
+      }
+    },
     "Net worth": {
       "localizations": {
         "lo": {
@@ -705,6 +771,50 @@
         }
       }
     },
+    "Next month": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເດືອນໜ້າ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เดือนถัดไป"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tháng sau"
+          }
+        }
+      }
+    },
+    "No spending": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ມີລາຍຈ່າຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มีรายจ่าย"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không chi tiêu"
+          }
+        }
+      }
+    },
     "No spending in this period.": {
       "localizations": {
         "lo": {
@@ -723,6 +833,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chưa có khoản chi nào trong kỳ này."
+          }
+        }
+      }
+    },
+    "No transactions on this day.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ມີລາຍການໃນມື້ນີ້"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มีรายการในวันนี้"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có giao dịch nào trong ngày này."
           }
         }
       }
@@ -837,6 +969,50 @@
         }
       }
     },
+    "Previous month": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເດືອນກ່ອນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เดือนก่อน"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tháng trước"
+          }
+        }
+      }
+    },
+    "Receipt": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃບບິນ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใบเสร็จ"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoá đơn"
+          }
+        }
+      }
+    },
     "Recent transactions": {
       "localizations": {
         "lo": {
@@ -943,6 +1119,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chi theo danh mục"
+          }
+        }
+      }
+    },
+    "Spending calendar": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປະຕິທິນລາຍຈ່າຍ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปฏิทินการใช้จ่าย"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lịch chi tiêu"
           }
         }
       }
