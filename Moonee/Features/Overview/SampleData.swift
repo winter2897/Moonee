@@ -23,10 +23,12 @@ enum SampleData {
         let monthStart = cal.dateInterval(of: .month, for: .now)!.start
         let lastMonth = cal.date(byAdding: .month, value: -1, to: monthStart)!
 
-        func add(_ amount: Int, _ kind: TxKind, _ key: String?, _ note: String, _ date: Date, _ wallet: Wallet) {
+        @discardableResult
+        func add(_ amount: Int, _ kind: TxKind, _ key: String?, _ note: String, _ date: Date, _ wallet: Wallet) -> Txn {
             let t = Txn(amount: amount, kind: kind, date: date, note: note, category: key.flatMap { cat[$0] }, wallet: wallet)
             context.insert(t)
             t.allocate(jars: jars, in: context)
+            return t
         }
         add(18_000_000, .income, "category.salary", "", lastMonth.addingTimeInterval(86_400 * 4), bank)
         add(18_000_000, .income, "category.salary", "", monthStart, bank)
@@ -35,7 +37,13 @@ enum SampleData {
         add(1_200_000, .expense, "category.shopping", "Giày chạy bộ", day(6), card)
         add(850_000, .expense, "category.food", "Đi chợ", day(4), cash)
         add(320_000, .expense, "category.transport", "Đổ xăng", day(2), cash)
-        add(112_000, .expense, "category.food", "Cà phê", day(1, 9), cash)
+        // A stand-in receipt photo, so the spending calendar's day sheet shows a thumbnail.
+        add(112_000, .expense, "category.food", "Cà phê", day(1, 9), cash).attachment =
+            UIGraphicsImageRenderer(size: CGSize(width: 120, height: 160)).pngData { ctx in
+                UIColor.white.setFill()
+                ctx.fill(CGRect(x: 0, y: 0, width: 120, height: 160))
+                UIImage(systemName: "receipt")?.withTintColor(.darkGray).draw(in: CGRect(x: 20, y: 30, width: 80, height: 100))
+            }
         add(120_000, .expense, "category.education", "Mua sách", day(1, 19), bank)
         add(65_000, .expense, "category.food", "Ăn trưa", day(0, 12), cash)
         // Daily meals and rides over the last ~6 weeks, so the period charts have a shape to compare.

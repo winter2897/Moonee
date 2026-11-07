@@ -18,12 +18,13 @@ struct OverviewView: View {
     @Environment(\.modelContext) private var context
     @State private var period = Period.month
     @State private var editing: Txn?
+    @State private var ledger: LedgerRoute?
 
     private var currency: String { Money.defaultCurrency }
 
     var body: some View {
         NavigationStack {
-            ScrollView {
+            ScrollViewReader { proxy in ScrollView {
                 if txns.isEmpty {
                     EmptyState(mood: .sleepy, title: String(localized: "No transactions yet", table: "Overview"),
                                message: String(localized: "Tap + and tell Moonee “lunch 45k” to log your first one.", table: "Overview"))
@@ -35,11 +36,25 @@ struct OverviewView: View {
                     dashboard.padding(.horizontal, 16).padding(.bottom, 24)
                 }
             }
+            #if DEBUG
+            // Screenshots: `-overviewLedger YES` scrolls to the transactions card, `-overviewLedgerDay 6` opens the ledger on day 6 (0: whole month).
+            .task {
+                let d = UserDefaults.standard
+                guard d.bool(forKey: "overviewLedger") else { return }
+                try? await Task.sleep(for: .seconds(1))
+                proxy.scrollTo("ledger", anchor: .top)
+                guard d.object(forKey: "overviewLedgerDay") != nil, let start = Calendar.current.dateInterval(of: .month, for: .now)?.start else { return }
+                let day = d.integer(forKey: "overviewLedgerDay") // 0 = the whole month
+                ledger = LedgerRoute(day: day > 0 ? Calendar.current.date(byAdding: .day, value: day - 1, to: start) : nil)
+            }
+            #endif
+            }
             .background(MooneeBackground())
             .navigationTitle(String(localized: "Overview", table: "Overview"))
             // The dashboard draws its own header (date, greeting, avatar); pushed screens keep the bar.
             .toolbarVisibility(txns.isEmpty ? .automatic : .hidden, for: .navigationBar)
             .sheet(item: $editing) { TxnEditForm(txn: $0) }
+            .navigationDestination(item: $ledger) { TransactionLedgerView(mode: .calendar, day: $0.day) }
         }
         #if DEBUG
         .task { SampleData.insertIfRequested(context) }
@@ -66,7 +81,7 @@ struct OverviewView: View {
             if !s.categories.isEmpty { CategoriesCard(categories: s.categories, currency: currency).reveal(4) }
             if !s.jars.isEmpty { JarRingsCard(rows: s.jars, currency: currency).reveal(5) }
             if !due.isEmpty { BillsCard(bills: due).reveal(6) }
-            recentCard.reveal(7)
+            recentCard.id("ledger").reveal(7)
         }
         .animation(.smooth, value: period)
     }
@@ -79,12 +94,32 @@ struct OverviewView: View {
         }
     }
 
-    // MARK: - Recent
+    // MARK: - Transactions
 
+    /// The ledger's front door: this month's spending heatmap and total (tap → ledger in Calendar mode, a day → that day),
+    /// the 5 latest transactions (tap → edit), then "All transactions".
     private var recentCard: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            CardHeader(title: Text("Recent transactions", tableName: "Overview"), symbol: "clock.fill", tint: JarPalette.color(6))
-                .padding(.bottom, 4)
+        let month = SpendingCalendar(txns: txns, month: .now)
+        return VStack(alignment: .leading, spacing: 8) {
+            Button { ledger = LedgerRoute() } label: {
+                VStack(alignment: .leading, spacing: 12) {
+                    CardHeader(title: Text("Transactions", tableName: "Transactions"), symbol: "calendar", tint: .brandDeep) {
+                        Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(Color.brandDeep)
+                    }
+                    HStack(alignment: .firstTextBaseline) {
+                        Text("Spent this month", tableName: "Overview").font(.subheadline).foregroundStyle(Color.inkSecondary)
+                        Spacer()
+                        AmountText(month.total, currency: currency).font(.subheadline.weight(.semibold)).foregroundStyle(Color.ink)
+                    }
+                }
+                .contentShape(.rect)
+            }
+            .buttonStyle(.plain)
+            .padding(.bottom, 4)
+            SpendingHeatmap(calendar: month, compact: true) { ledger = LedgerRoute(day: $0) }
+            Divider().padding(.vertical, 6)
+            Text("Recent transactions", tableName: "Overview").font(.footnote.weight(.semibold)).foregroundStyle(Color.inkSecondary)
+                .accessibilityAddTraits(.isHeader)
             ForEach(txns.prefix(5)) { t in
                 Button { editing = t } label: { TxnRow(txn: t, showDay: true).contentShape(.rect) }
                     .buttonStyle(.plain)
@@ -105,6 +140,11 @@ struct OverviewView: View {
         }
         .card()
     }
+}
+
+/// Opens the ledger in Calendar mode, on `day` when set.
+private struct LedgerRoute: Hashable {
+    var day: Date?
 }
 
 /// Dashboard header: today's date in brand green, a greeting by time of day with the profile name, the avatar.
