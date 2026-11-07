@@ -68,6 +68,28 @@
         }
       }
     },
+    "All types": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tất cả loại"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ทุกประเภท"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທຸກປະເພດ"
+          }
+        }
+      }
+    },
     "All wallets": {
       "localizations": {
         "lo": {
@@ -108,6 +130,116 @@
           "stringUnit": {
             "state": "translated",
             "value": "Số tiền (%@)"
+          }
+        }
+      }
+    },
+    "Amount range": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khoảng số tiền"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ช่วงจำนวนเงิน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊ່ວງຈຳນວນເງິນ"
+          }
+        }
+      }
+    },
+    "Amount range…": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khoảng số tiền…"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ช่วงจำนวนเงิน…"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊ່ວງຈຳນວນເງິນ…"
+          }
+        }
+      }
+    },
+    "At least": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Từ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "อย่างน้อย"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຢ່າງໜ້ອຍ"
+          }
+        }
+      }
+    },
+    "At most": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đến"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่เกิน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ເກີນ"
+          }
+        }
+      }
+    },
+    "Back to today": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Về hôm nay"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กลับไปวันนี้"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກັບໄປມື້ນີ້"
           }
         }
       }
@@ -156,6 +288,28 @@
         }
       }
     },
+    "Categories": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Danh mục"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "หมวดหมู่"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໝວດໝູ່"
+          }
+        }
+      }
+    },
     "Category": {
       "localizations": {
         "lo": {
@@ -174,6 +328,50 @@
           "stringUnit": {
             "state": "translated",
             "value": "Danh mục"
+          }
+        }
+      }
+    },
+    "Change": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thay đổi"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เปลี่ยนแปลง"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປ່ຽນແປງ"
+          }
+        }
+      }
+    },
+    "Choose week, month, year or a date range": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chọn tuần, tháng, năm hoặc khoảng ngày"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เลือกสัปดาห์ เดือน ปี หรือช่วงวันที่"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເລືອກອາທິດ, ເດືອນ, ປີ ຫຼື ຊ່ວງວັນທີ"
           }
         }
       }
@@ -200,6 +398,94 @@
         }
       }
     },
+    "Closing balance": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Số dư cuối kỳ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยอดปลายงวด"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍອດທ້າຍງວດ"
+          }
+        }
+      }
+    },
+    "Coming up": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sắp tới"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เร็วๆ นี้"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໄວໆນີ້"
+          }
+        }
+      }
+    },
+    "Custom range": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khoảng tuỳ chọn"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ช่วงที่กำหนดเอง"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊ່ວງທີ່ກຳນົດເອງ"
+          }
+        }
+      }
+    },
+    "Custom range…": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tuỳ chọn…"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กำหนดเอง…"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກຳນົດເອງ…"
+          }
+        }
+      }
+    },
     "Date": {
       "localizations": {
         "lo": {
@@ -218,6 +504,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ngày"
+          }
+        }
+      }
+    },
+    "Days": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngày"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "วัน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ວັນ"
           }
         }
       }
@@ -354,6 +662,28 @@
         }
       }
     },
+    "From": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Từ ngày"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตั้งแต่"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕັ້ງແຕ່"
+          }
+        }
+      }
+    },
     "From wallet": {
       "localizations": {
         "lo": {
@@ -372,6 +702,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Từ ví"
+          }
+        }
+      }
+    },
+    "Income": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thu nhập"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายรับ"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຮັບ"
           }
         }
       }
@@ -398,24 +750,24 @@
         }
       }
     },
-    "Last month": {
+    "Jars": {
       "localizations": {
-        "lo": {
+        "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "ເດືອນແລ້ວ"
+            "value": "Lọ"
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "เดือนที่แล้ว"
+            "value": "กระปุก"
           }
         },
-        "vi": {
+        "lo": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tháng trước"
+            "value": "ກະປຸກ"
           }
         }
       }
@@ -442,24 +794,90 @@
         }
       }
     },
-    "List": {
+    "Loans & debts": {
       "localizations": {
-        "lo": {
+        "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "ແບບລາຍການ"
+            "value": "Vay & nợ"
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "แบบรายการ"
+            "value": "กู้ยืมและหนี้"
           }
         },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກູ້ຢືມ ແລະ ໜີ້"
+          }
+        }
+      }
+    },
+    "Money in": {
+      "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Danh sách"
+            "value": "Tiền vào"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เงินเข้า"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເງິນເຂົ້າ"
+          }
+        }
+      }
+    },
+    "Money out": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiền ra"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เงินออก"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເງິນອອກ"
+          }
+        }
+      }
+    },
+    "Month": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tháng"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เดือน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເດືອນ"
           }
         }
       }
@@ -508,24 +926,108 @@
         }
       }
     },
-    "Next month": {
+    "Net": {
       "localizations": {
-        "lo": {
+        "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "ເດືອນໜ້າ"
+            "value": "Chênh lệch"
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "เดือนถัดไป"
+            "value": "ส่วนต่าง"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ສ່ວນຕ່າງ"
+          }
+        }
+      }
+    },
+    "Next %lld months": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Next month"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Next %lld months"
+                }
+              }
+            }
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tháng sau"
+            "value": "%lld tháng tới"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld เดือนข้างหน้า"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ເດືອນຂ້າງໜ້າ"
+          }
+        }
+      }
+    },
+    "Next period": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kỳ sau"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ช่วงถัดไป"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊ່ວງຖັດໄປ"
+          }
+        }
+      }
+    },
+    "No jar": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không thuộc lọ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มีกระปุก"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ມີກະປຸກ"
           }
         }
       }
@@ -596,6 +1098,28 @@
         }
       }
     },
+    "No transactions in this period.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có giao dịch nào trong kỳ này."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มีรายการในช่วงนี้"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ມີລາຍການໃນຊ່ວງນີ້"
+          }
+        }
+      }
+    },
     "No transactions on this day.": {
       "localizations": {
         "lo": {
@@ -662,6 +1186,28 @@
         }
       }
     },
+    "Not counted in income & spending": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không tính vào thu chi"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่นับเป็นรายรับรายจ่าย"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ນັບເປັນລາຍຮັບລາຍຈ່າຍ"
+          }
+        }
+      }
+    },
     "Note": {
       "localizations": {
         "lo": {
@@ -684,24 +1230,68 @@
         }
       }
     },
-    "Previous month": {
+    "Nothing due in this time.": {
       "localizations": {
-        "lo": {
+        "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "ເດືອນກ່ອນ"
+            "value": "Không có khoản nào đến hạn trong thời gian này."
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "เดือนก่อน"
+            "value": "ไม่มีรายการครบกำหนดในช่วงนี้"
           }
         },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ມີລາຍການຄົບກຳນົດໃນຊ່ວງນີ້"
+          }
+        }
+      }
+    },
+    "Opening balance": {
+      "localizations": {
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tháng trước"
+            "value": "Số dư đầu kỳ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ยอดต้นงวด"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍອດຕົ້ນງວດ"
+          }
+        }
+      }
+    },
+    "Previous period": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kỳ trước"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ช่วงก่อนหน้า"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຊ່ວງກ່ອນ"
           }
         }
       }
@@ -724,6 +1314,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hoá đơn"
+          }
+        }
+      }
+    },
+    "Remove filter %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bỏ lọc %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ลบตัวกรอง %@"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລຶບຕົວກອງ %@"
           }
         }
       }
@@ -772,6 +1384,28 @@
         }
       }
     },
+    "Spending": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chi tiêu"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายจ่าย"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍຈ່າຍ"
+          }
+        }
+      }
+    },
     "Spent": {
       "localizations": {
         "lo": {
@@ -816,68 +1450,24 @@
         }
       }
     },
-    "This month": {
+    "To": {
       "localizations": {
-        "lo": {
+        "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "ເດືອນນີ້"
+            "value": "Đến ngày"
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "เดือนนี้"
+            "value": "ถึง"
           }
         },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tháng này"
-          }
-        }
-      }
-    },
-    "This week": {
-      "localizations": {
         "lo": {
           "stringUnit": {
             "state": "translated",
-            "value": "ອາທິດນີ້"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "สัปดาห์นี้"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tuần này"
-          }
-        }
-      }
-    },
-    "This year": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ປີນີ້"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ปีนี้"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Năm nay"
+            "value": "ເຖິງ"
           }
         }
       }
@@ -948,6 +1538,28 @@
         }
       }
     },
+    "Transfers": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chuyển tiền"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "การโอน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ການໂອນ"
+          }
+        }
+      }
+    },
     "Type": {
       "localizations": {
         "lo": {
@@ -966,6 +1578,50 @@
           "stringUnit": {
             "state": "translated",
             "value": "Loại"
+          }
+        }
+      }
+    },
+    "Uncategorized": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa phân loại"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มีหมวดหมู่"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ມີໝວດໝູ່"
+          }
+        }
+      }
+    },
+    "Upcoming": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sắp tới"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กำลังจะมาถึง"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກຳລັງຈະມາເຖິງ"
           }
         }
       }
@@ -1014,6 +1670,50 @@
         }
       }
     },
+    "Wallet transfers, jar transfers and loans aren't counted as income or spending.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chuyển ví, chuyển lọ và vay/cho vay không tính vào thu chi."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "การโอนระหว่างกระเป๋า การโอนระหว่างกระปุก และการกู้ยืม/ให้ยืม ไม่นับเป็นรายรับหรือรายจ่าย"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ການໂອນລະຫວ່າງກະເປົາ, ການໂອນລະຫວ່າງກະປຸກ ແລະ ການກູ້ຢືມ/ໃຫ້ຢືມ ບໍ່ນັບເປັນລາຍຮັບ ຫຼື ລາຍຈ່າຍ"
+          }
+        }
+      }
+    },
+    "Week": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tuần"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "สัปดาห์"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ອາທິດ"
+          }
+        }
+      }
+    },
     "Whole month": {
       "localizations": {
         "lo": {
@@ -1032,6 +1732,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cả tháng"
+          }
+        }
+      }
+    },
+    "Year": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Năm"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ปี"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ປີ"
           }
         }
       }

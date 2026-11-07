@@ -54,9 +54,11 @@ struct MonthReport {
         month = m
         func expenses(_ i: DateInterval) -> [Txn] { txns.filter { $0.kind == .expense && $0.date >= i.start && $0.date < i.end } }
         let now = expenses(m), before = expenses(prev)
-        spent = now.reduce(0) { $0 + $1.amount }
-        previousSpent = before.reduce(0) { $0 + $1.amount }
-        income = txns.filter { $0.kind == .income && $0.date >= m.start && $0.date < m.end }.reduce(0) { $0 + $1.amount }
+        // The same function as the ledger's totals card and the Overview, so the numbers always match.
+        let flow = CashFlow(txns, in: m)
+        spent = flow.expense
+        previousSpent = CashFlow(txns, in: prev).expense
+        income = flow.income
 
         byJar = Dictionary(grouping: now) { $0.jar?.persistentModelID }.map { id, list in
             let jar = list.first?.jar
@@ -79,7 +81,7 @@ struct MonthReport {
         trend = (0..<6).reversed().map { back in
             let start = calendar.date(byAdding: .month, value: -back, to: m.start)!
             let i = calendar.dateInterval(of: .month, for: start)!
-            return MonthTotal(month: i.start, spent: expenses(i).reduce(0) { $0 + $1.amount })
+            return MonthTotal(month: i.start, spent: CashFlow(txns, in: i).expense)
         }
 
         // Entries up to the month's end only, so `balance` is the balance carried over at that point.

@@ -114,15 +114,16 @@ import Testing
         let move = txn(200, .transfer, day(11, 5), wallet: bank)
         move.toWallet = cash
         let all = [lunch, salary, move]
-        func run(_ f: TxnFilter, now: Date = .now) -> [Txn] { all.filter { f.matches($0, now: now, calendar: cal) } }
+        func run(_ f: TxnFilter) -> [Txn] { all.filter { f.matches($0) } }
+        func run(_ p: TxnPeriod) -> [Txn] { all.filter { p.contains($0.date) } }
 
         #expect(run(TxnFilter(wallet: cash)) == [lunch, move])
         #expect(run(TxnFilter(jar: needs)) == [lunch, salary]) // expense jar + income split
         #expect(run(TxnFilter(category: food)) == [lunch])
-        #expect(run(TxnFilter(range: .thisMonth), now: day(11, 20)) == [lunch, salary, move])
-        #expect(run(TxnFilter(range: .lastMonth), now: day(12, 2)) == [lunch, salary, move])
-        #expect(run(TxnFilter(range: .thisWeek), now: day(11, 4)).isEmpty == false) // Sun 1 – Sat 7 Nov
-        #expect(run(TxnFilter(range: .thisWeek), now: day(11, 10)).isEmpty)
+        #expect(run(TxnPeriod.current(.month, now: day(11, 20), calendar: cal)) == [lunch, salary, move])
+        #expect(run(TxnPeriod.current(.month, now: day(12, 2), calendar: cal).moved(-1, calendar: cal)) == [lunch, salary, move])
+        #expect(run(TxnPeriod.current(.week, now: day(11, 4), calendar: cal)).isEmpty == false) // Sun 1 – Sat 7 Nov
+        #expect(run(TxnPeriod.current(.week, now: day(11, 10), calendar: cal)).isEmpty)
         #expect(run(TxnFilter(text: "pho")) == [lunch])        // diacritic-insensitive
         #expect(run(TxnFilter(text: "bank")) == [salary, move])
         #expect(!TxnFilter(text: "x").isActive)

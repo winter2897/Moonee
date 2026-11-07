@@ -1,29 +1,27 @@
 import Foundation
 
-/// Ledger search + filters (spec §2: by wallet / jar / category / date).
+/// Ledger search + filters (spec §2: by wallet / jar / category / type / amount). The period lives in `LedgerPeriod`.
 struct TxnFilter {
-    /// Date presets for the toolbar menu (a menu can't hold date pickers).
-    enum Range: String, CaseIterable, Identifiable {
-        case all, thisWeek, thisMonth, lastMonth, thisYear
+    /// The type filter: money out, money in, moves between my own wallets / jars, the debt book.
+    enum Kind: String, CaseIterable, Identifiable {
+        case expense, income, transfer, debt
         var id: String { rawValue }
 
         var title: String {
             switch self {
-            case .all: String(localized: "All time", table: "Transactions")
-            case .thisWeek: String(localized: "This week", table: "Transactions")
-            case .thisMonth: String(localized: "This month", table: "Transactions")
-            case .lastMonth: String(localized: "Last month", table: "Transactions")
-            case .thisYear: String(localized: "This year", table: "Transactions")
+            case .expense: String(localized: "Spending", table: "Transactions")
+            case .income: String(localized: "Income", table: "Transactions")
+            case .transfer: String(localized: "Transfers", table: "Transactions")
+            case .debt: String(localized: "Loans & debts", table: "Transactions")
             }
         }
 
-        func interval(now: Date = .now, calendar: Calendar = .current) -> DateInterval? {
+        func matches(_ k: TxKind) -> Bool {
             switch self {
-            case .all: nil
-            case .thisWeek: calendar.dateInterval(of: .weekOfYear, for: now)
-            case .thisMonth: calendar.dateInterval(of: .month, for: now)
-            case .lastMonth: calendar.date(byAdding: .month, value: -1, to: now).flatMap { calendar.dateInterval(of: .month, for: $0) }
-            case .thisYear: calendar.dateInterval(of: .year, for: now)
+            case .expense: k == .expense
+            case .income: k == .income
+            case .transfer: k == .transfer || k == .jarTransfer
+            case .debt: k == .lend || k == .borrow || k == .repay
             }
         }
     }
@@ -32,15 +30,20 @@ struct TxnFilter {
     var wallet: Wallet?
     var jar: Jar?
     var category: Category?
-    var range = Range.all
+    var kind: Kind?
+    /// Amount range in minor units; 0 = no bound.
+    var minAmount = 0
+    var maxAmount = 0
 
-    var isActive: Bool { wallet != nil || jar != nil || category != nil || range != .all }
+    var isActive: Bool { wallet != nil || jar != nil || category != nil || kind != nil || minAmount > 0 || maxAmount > 0 }
 
-    func matches(_ t: Txn, now: Date = .now, calendar: Calendar = .current) -> Bool {
+    func matches(_ t: Txn) -> Bool {
         if let wallet, t.wallet != wallet, t.toWallet != wallet { return false }
         if let jar, t.jar != jar, t.toJar != jar, !(t.splits ?? []).contains(where: { $0.jar == jar }) { return false }
         if let category, t.category != category { return false }
-        if let i = range.interval(now: now, calendar: calendar), !(i.start <= t.date && t.date < i.end) { return false }
+        if let kind, !kind.matches(t.kind) { return false }
+        if minAmount > 0, t.amount < minAmount { return false }
+        if maxAmount > 0, t.amount > maxAmount { return false }
         let q = text.trimmingCharacters(in: .whitespaces)
         guard !q.isEmpty else { return true }
         return [t.note, t.category?.name, t.wallet?.name, t.toWallet?.name, t.debt?.person, t.rawInput]
