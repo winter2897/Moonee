@@ -21,7 +21,10 @@ import Testing
     }
 
     func facts(_ context: ModelContext, now: Date, level: AdvisorLevel = .suggest) throws -> BudgetFacts {
-        BudgetFacts(txns: try context.fetch(FetchDescriptor<Txn>()), wallets: try context.fetch(FetchDescriptor<Wallet>()),
+        // The suite's budgets are VND whatever the runner's region (CI is en_US: USD steps would round differently).
+        let wallets = try context.fetch(FetchDescriptor<Wallet>())
+        for w in wallets { w.currencyCode = "VND" }
+        return BudgetFacts(txns: try context.fetch(FetchDescriptor<Txn>()), wallets: wallets,
                     jars: try context.fetch(FetchDescriptor<Jar>()), recurrings: try context.fetch(FetchDescriptor<Recurring>()),
                     now: now, calendar: cal, level: level, muted: [])
     }
