@@ -5,6 +5,8 @@ import SwiftUI
 /// The Moonee chat (spec §3.1–3.3), opened by the (+) tab: type, say or snap a transaction, ask about money.
 struct ChatView: View {
     var onBack: (() -> Void)? = nil
+    /// Raised by the `moonee://chat` deep link: focus the composer.
+    var composeRequest = 0
 
     @Environment(\.modelContext) private var context
     @Query(sort: \ChatMessage.date) private var allMessages: [ChatMessage]
@@ -39,6 +41,8 @@ struct ChatView: View {
     /// "Pick a date…" under "When will Nam pay you back?".
     @State private var pickingDue = false
     @State private var dueDay = Calendar.current.date(byAdding: .day, value: 7, to: .now)!
+    /// The last `composeRequest` that focused the composer, so coming back to the tab does not raise the keyboard again.
+    @State private var handledCompose = 0
 
     var body: some View {
         VStack(spacing: 0) {
@@ -96,6 +100,11 @@ struct ChatView: View {
         // The tab stays alive for days: back from the background or past midnight, a new day gets its own thread.
         .onChange(of: scenePhase) { _, phase in if phase == .active { showToday() } }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.significantTimeChangeNotification)) { _ in showToday() }
+        .task(id: composeRequest) {
+            guard composeRequest != handledCompose else { return }
+            handledCompose = composeRequest
+            focused = true // the widget's quick add: straight to typing
+        }
         .onChange(of: speech.transcript) { _, t in
             guard !t.isEmpty, speech.isRecording else { return }
             text = t

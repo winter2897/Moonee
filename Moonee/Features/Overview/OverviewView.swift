@@ -424,6 +424,13 @@ private struct CategoriesCard: View {
     @State private var grow = 0.0
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
+    /// One category's share of the bar (2 pt gaps between segments). A function so the type checker stays fast on CI.
+    private func segmentWidth(_ amount: Int, of total: Int, in width: CGFloat) -> CGFloat {
+        let usable: CGFloat = width - CGFloat(categories.count - 1) * 2
+        let share: CGFloat = CGFloat(amount) / CGFloat(total)
+        return max(0, usable * share * grow)
+    }
+
     var body: some View {
         let total = max(categories.reduce(0) { $0 + $1.amount }, 1)
         let top = max(categories.map(\.amount).max() ?? 1, 1)
@@ -433,7 +440,7 @@ private struct CategoriesCard: View {
                 HStack(spacing: 2) {
                     ForEach(categories) { c in
                         Rectangle().fill(c.color.gradient)
-                            .frame(width: max(0, (geo.size.width - CGFloat(categories.count - 1) * 2) * CGFloat(c.amount) / CGFloat(total) * grow))
+                            .frame(width: segmentWidth(c.amount, of: total, in: geo.size.width))
                     }
                     Spacer(minLength: 0)
                 }

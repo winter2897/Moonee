@@ -329,12 +329,17 @@ enum DocumentReader {
         /// A name on a row ("Nguyễn Phước Thịnh", "HIGHLANDS COFFEE"): the first OCR piece with 3+ letters that is not
         /// money, a masked number ("****899"), initials ("PT"), a label or a status bar ("19:38  5G").
         func name(in text: String) -> String? {
-            let labels = all.toLabels + all.fromLabels + all.merchantLabels + all.referenceLabels + all.amountLabels
-            return text.components(separatedBy: "  ").lazy.map { $0.trimmingCharacters(in: .whitespaces) }.first { piece in
-                piece.filter(\.isLetter).count >= 3 && !(piece.count <= 3 && piece == piece.uppercased())
-                    && !piece.contains("*") && !money(piece) && piece.filter(\.isNumber).count * 2 < piece.count
-                    && Words.rest(piece, after: labels) == nil
-            }.map { String($0.components(separatedBy: " - ")[0]) }
+            // Spelled out so the type checker stays fast on CI.
+            let labels: [String] = [all.toLabels, all.fromLabels, all.merchantLabels, all.referenceLabels, all.amountLabels].flatMap { $0 }
+            let pieces: [String] = text.components(separatedBy: "  ").map { $0.trimmingCharacters(in: .whitespaces) }
+            let found = pieces.first { (piece: String) -> Bool in
+                let letters: Int = piece.filter(\.isLetter).count
+                let digits: Int = piece.filter(\.isNumber).count
+                let initials: Bool = piece.count <= 3 && piece == piece.uppercased()
+                guard letters >= 3, !initials, !piece.contains("*"), digits * 2 < piece.count else { return false }
+                return !money(piece) && Words.rest(piece, after: labels) == nil
+            }
+            return found.map { String($0.components(separatedBy: " - ")[0]) }
         }
     }
 }
