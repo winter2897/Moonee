@@ -52,6 +52,11 @@ Chi tiết về các chế độ AI, model on-device và skill ở **mục 9**.
 - Số dư từng lọ (dạng vòng hoặc thanh tiến độ)
 - Hoá đơn sắp đến hạn (7 ngày tới)
 - Giao dịch gần đây → **Sổ giao dịch** đầy đủ (tìm kiếm, lọc theo ví/lọ/danh mục/ngày, sửa, xoá)
+  - **Kỳ:** mở là **tháng này**; ‹ › hoặc vuốt để đổi kỳ; menu Tuần / Tháng / Năm / Toàn bộ / Tuỳ chọn (hai ngày). Chế độ Lịch luôn theo tháng.
+  - **Thẻ tổng:** Tiền vào · Tiền ra · Chênh lệch của kỳ, cùng một hàm (`CashFlow`) với Tổng quan và báo cáo tháng nên ba nơi luôn khớp. Chuyển ví, chuyển lọ và vay/cho vay không tính vào thu chi (ghi chú dưới thẻ; dòng chuyển có chữ "Không tính vào thu chi" và mũi tên hai chiều). Lọc theo một ví: thẻ thành **số dư đầu kỳ → cuối kỳ** của ví.
+  - **Cách xem:** theo ngày (đầu mục có tổng chi của ngày), theo danh mục (tổng và %, xếp theo số tiền), theo lọ, lịch chi tiêu.
+  - **Lọc:** ví, lọ, danh mục, loại (chi / thu / chuyển / nợ), khoảng số tiền; bộ lọc đang bật hiện thành chip dưới ô tìm, chạm để bỏ.
+  - **Sắp tới:** khi kỳ chứa hôm nay, hoá đơn, lương và khoản định kỳ trong 1 / 3 / 12 tháng tới hiện thành dòng mờ; chạm để sửa khoản định kỳ.
 - Thẻ **Net worth** (tóm tắt từ mục Quan tâm)
 - Lời nhắn ngắn từ Moonee (một câu insight, theo mức nhắc nhở)
 - Thẻ báo cáo cuối kỳ khi có (tuần/tháng/năm)

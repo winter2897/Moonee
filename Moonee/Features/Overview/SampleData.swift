@@ -30,7 +30,13 @@ enum SampleData {
             t.allocate(jars: jars, in: context)
             return t
         }
+        add(18_000_000, .income, "category.salary", "", cal.date(byAdding: .month, value: -1, to: lastMonth)!.addingTimeInterval(86_400 * 4), bank)
         add(18_000_000, .income, "category.salary", "", lastMonth.addingTimeInterval(86_400 * 4), bank)
+        // Moves that aren't income or spending: the ledger marks them "not counted".
+        add(2_000_000, .transfer, nil, "Rút tiền mặt", day(5), bank).toWallet = cash
+        add(1_450_000, .transfer, nil, "Trả thẻ Visa", day(8), bank).toWallet = card
+        let move = add(300_000, .jarTransfer, nil, "", day(7), cash)
+        (move.wallet, move.jar, move.toJar) = (nil, jars.first, jars.last)
         add(18_000_000, .income, "category.salary", "", monthStart, bank)
         add(4_500_000, .expense, "category.housing", "Tiền nhà", lastMonth.addingTimeInterval(86_400 * 5), bank)
         add(4_500_000, .expense, "category.housing", "Tiền nhà", day(3), bank)
@@ -46,9 +52,9 @@ enum SampleData {
             }
         add(120_000, .expense, "category.education", "Mua sách", day(1, 19), bank)
         add(65_000, .expense, "category.food", "Ăn trưa", day(0, 12), cash)
-        // Daily meals and rides over the last ~6 weeks, so the period charts have a shape to compare.
+        // Daily meals and rides over the last ~10 weeks, so the period charts have a shape to compare.
         let meals = [45_000, 55_000, 38_000, 60_000, 42_000, 70_000, 50_000]
-        for back in 2...45 {
+        for back in 2...75 {
             add(meals[back % meals.count], .expense, "category.food", back % 3 == 0 ? "Phở" : "Cơm trưa", day(back, 12), cash)
             if back % 4 == 0 { add(35_000 + back * 500, .expense, "category.transport", "Grab", day(back, 8), cash) }
             if back % 9 == 0 { add(250_000, .expense, "category.entertainment", "Xem phim", day(back, 20), card) }
@@ -58,7 +64,9 @@ enum SampleData {
         let internet = Recurring(name: "Internet", amount: 199_000, nextDue: day(-2))
         internet.category = cat["category.housing"]
         let visa = Recurring(name: "Visa", amount: 2_500_000, nextDue: day(-4))
-        [internet, visa, Recurring(name: "Netflix", amount: 260_000, nextDue: day(-15))].forEach(context.insert)
+        let salary = Recurring(name: String(localized: "category.salary"), amount: 18_000_000, nextDue: cal.date(byAdding: .month, value: 1, to: monthStart)!)
+        salary.category = cat["category.salary"]
+        [internet, visa, salary, Recurring(name: "Netflix", amount: 260_000, nextDue: day(-15))].forEach(context.insert)
         context.insert(Asset(symbol: "SJC", kind: .gold, quantity: 2, unitPrice: 85_000_000))
         try? context.save()
     }

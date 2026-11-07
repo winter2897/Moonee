@@ -52,13 +52,12 @@ struct DashboardStats {
         interval = calendar.dateInterval(of: period.component, for: now)!
         previousInterval = calendar.dateInterval(of: period.component, for: interval.start.addingTimeInterval(-1))!
 
-        func total(_ kind: TxKind, in i: DateInterval) -> Int {
-            txns.reduce(0) { $1.kind == kind && i.start <= $1.date && $1.date < i.end ? $0 + $1.amount : $0 }
-        }
-        income = total(.income, in: interval)
-        expense = total(.expense, in: interval)
-        previousIncome = total(.income, in: previousInterval)
-        previousExpense = total(.expense, in: previousInterval)
+        // The same function as the ledger's totals card and the monthly report, so the numbers always match.
+        let flow = CashFlow(txns, in: interval), previousFlow = CashFlow(txns, in: previousInterval)
+        income = flow.income
+        expense = flow.expense
+        previousIncome = previousFlow.income
+        previousExpense = previousFlow.expense
 
         let ledger = Ledger(txns: txns, wallets: wallets, jars: jars)
         walletTotal = wallets.reduce(0) { $0 + ledger.walletBalance($1.persistentModelID) }
