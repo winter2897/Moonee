@@ -1,7 +1,8 @@
 import SwiftData
 import SwiftUI
 
-/// Budget tab (spec §4.1–4.3): one inset-grouped list — jars, wallets (with credit cards), recurring bills.
+/// Budget tab (spec §4.1–4.3, P0-3): one inset-grouped list, top down — what is left to spend (or money to split),
+/// Moonee's one suggestion, the jars, what is coming up before month end, then one row each for wallets and the debt book.
 /// Adding things lives in the + menu; per-row actions are swipes and context menus.
 struct BudgetView: View {
     @State private var path = NavigationPath()
@@ -12,11 +13,14 @@ struct BudgetView: View {
     var body: some View {
         NavigationStack(path: $path) {
             List {
+                BudgetHeader(month: $month)
                 AdvisorSection(sheet: $sheet)
-                JarsSection(month: $month, sheet: $sheet, path: $path)
-                WalletsSection(sheet: $sheet)
-                BillsSection(sheet: $sheet)
-                DebtsSection(path: $path)
+                JarsSection(month: month, sheet: $sheet, path: $path)
+                ComingUpSection(sheet: $sheet, path: $path)
+                Section {
+                    WalletsSummaryRow()
+                    DebtsSection()
+                }
             }
             .listStyle(.insetGrouped)
             .scrollContentBackground(.hidden)
@@ -67,6 +71,8 @@ enum BudgetRoute: Hashable {
     case reminders
     case advisor
     case debts
+    case wallets
+    case bills
 
     @ViewBuilder var view: some View {
         switch self {
@@ -76,6 +82,8 @@ enum BudgetRoute: Hashable {
         case .reminders: ReminderSettingsView()
         case .advisor: AdvisorSettingsView()
         case .debts: DebtBookView()
+        case .wallets: WalletsView()
+        case .bills: BillsView()
         }
     }
 }

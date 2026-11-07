@@ -2253,29 +2253,6 @@
         }
       }
     },
-    "Expected %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ຄາດວ່າ %@"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "คาดว่า %@"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dự kiến %@"
-          }
-        }
-      }
-    },
     "From": {
       "extractionState": "manual",
       "localizations": {
@@ -2433,29 +2410,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Trong ngân sách"
-          }
-        }
-      }
-    },
-    "Income": {
-      "extractionState": "manual",
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ລາຍຮັບ"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "รายรับ"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Thu nhập"
           }
         }
       }
@@ -2643,29 +2597,6 @@
         }
       }
     },
-    "Left": {
-      "extractionState": "manual",
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ເຫຼືອ"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "เหลือ"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Còn lại"
-          }
-        }
-      }
-    },
     "Limit": {
       "extractionState": "manual",
       "localizations": {
@@ -2730,7 +2661,7 @@
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Đánh dấu đã trả"
+            "value": "Đã trả"
           }
         }
       }
@@ -2800,29 +2731,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tiền để dành (tiết kiệm, đầu tư): chỉ tính vào tài sản ròng, không vào lọ."
-          }
-        }
-      }
-    },
-    "Month": {
-      "extractionState": "manual",
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ເດືອນ"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "เดือน"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tháng"
           }
         }
       }
@@ -3532,29 +3440,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Không"
-          }
-        }
-      }
-    },
-    "Not in a jar yet.": {
-      "extractionState": "manual",
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ຍັງບໍ່ໄດ້ຢູ່ໃນກະປຸກໃດ"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ยังไม่ได้อยู่ในกระปุกไหน"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chưa nằm trong lọ nào."
           }
         }
       }
@@ -4975,29 +4860,6 @@
         }
       }
     },
-    "This month": {
-      "extractionState": "manual",
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ເດືອນນີ້"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "เดือนนี้"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tháng này"
-          }
-        }
-      }
-    },
     "Time to adjust your split?": {
       "extractionState": "manual",
       "localizations": {
@@ -5084,29 +4946,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "ມື້ອື່ນຄົບກຳນົດສົ່ງເງິນຄືນ %1$@ %2$@."
-          }
-        }
-      }
-    },
-    "Total budget": {
-      "extractionState": "manual",
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ງົບທັງໝົດ"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "งบทั้งหมด"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tổng ngân sách"
           }
         }
       }
@@ -5742,6 +5581,556 @@
           "stringUnit": {
             "state": "translated",
             "value": "ໄວ້ພາຍຫຼັງ"
+          }
+        }
+      }
+    },
+    "%@ from Unallocated into %@.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ từ tiền chưa chia vào %@."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ จากเงินที่ยังไม่แบ่ง เข้า %@"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ຈາກເງິນທີ່ຍັງບໍ່ແບ່ງ ເຂົ້າ %@"
+          }
+        }
+      }
+    },
+    "%@ is below zero: cover it from this money.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ đang âm: bù từ khoản này nhé."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ติดลบ: เติมจากเงินก้อนนี้ได้เลย"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ຕິດລົບ: ເຕີມຈາກເງິນກ້ອນນີ້ໄດ້ເລີຍ"
+          }
+        }
+      }
+    },
+    "%@/day left": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "còn %@/ngày"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เหลือ %@/วัน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຫຼືອ %@/ມື້"
+          }
+        }
+      }
+    },
+    "About %@ a day": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mỗi ngày còn khoảng %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "วันละประมาณ %@"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ມື້ລະປະມານ %@"
+          }
+        }
+      }
+    },
+    "All recurring & bills": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tất cả khoản định kỳ & hoá đơn"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "รายการประจำและบิลทั้งหมด"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ລາຍການປະຈຳ ແລະ ບິນທັງໝົດ"
+          }
+        }
+      }
+    },
+    "At this pace you'll spend about %@ by month end.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Với tốc độ này, cuối tháng chi khoảng %@."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ด้วยความเร็วนี้ สิ้นเดือนจะใช้ประมาณ %@"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ດ້ວຍຄວາມໄວນີ້ ທ້າຍເດືອນຈະໃຊ້ປະມານ %@"
+          }
+        }
+      }
+    },
+    "Available this month": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Có trong tháng"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "มีในเดือนนี้"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ມີໃນເດືອນນີ້"
+          }
+        }
+      }
+    },
+    "Coming up": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sắp tới"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กำลังจะมาถึง"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ກຳລັງຈະມາ"
+          }
+        }
+      }
+    },
+    "Cover from unallocated": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bù từ tiền chưa chia"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เติมจากเงินที่ยังไม่แบ่ง"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຕີມຈາກເງິນທີ່ຍັງບໍ່ແບ່ງ"
+          }
+        }
+      }
+    },
+    "Left at month end": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Còn lại cuối tháng"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เหลือ ณ สิ้นเดือน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເຫຼືອທ້າຍເດືອນ"
+          }
+        }
+      }
+    },
+    "Left to spend this month": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Còn tiêu được tháng này"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ใช้ได้อีกในเดือนนี้"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຍັງໃຊ້ໄດ້ໃນເດືອນນີ້"
+          }
+        }
+      }
+    },
+    "Moonee covered a jar below zero": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee đã bù lọ bị âm"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee เติมโถที่ติดลบแล้ว"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ເຕີມໂຖທີ່ຕິດລົບແລ້ວ"
+          }
+        }
+      }
+    },
+    "Moonee has a plan to split it into your jars.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee có sẵn kế hoạch chia vào các lọ."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee มีแผนแบ่งลงโถไว้ให้แล้ว"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moonee ມີແຜນແບ່ງໃສ່ໂຖໄວ້ໃຫ້ແລ້ວ"
+          }
+        }
+      }
+    },
+    "Next month": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tháng sau"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เดือนถัดไป"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເດືອນໜ້າ"
+          }
+        }
+      }
+    },
+    "Nothing due before the month ends": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có gì đến hạn trước cuối tháng"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ไม่มีรายการครบกำหนดก่อนสิ้นเดือน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບໍ່ມີລາຍການຮອດກຳນົດກ່ອນທ້າຍເດືອນ"
+          }
+        }
+      }
+    },
+    "Per day until month end": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mỗi ngày đến cuối tháng"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ต่อวันจนสิ้นเดือน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ຕໍ່ມື້ຈົນທ້າຍເດືອນ"
+          }
+        }
+      }
+    },
+    "Previous month": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tháng trước"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "เดือนก่อน"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເດືອນກ່ອນ"
+          }
+        }
+      }
+    },
+    "Record it and Moonee splits it into your jars.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ghi lại và Moonee chia vào các lọ cho bạn."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "บันทึกแล้ว Moonee จะแบ่งลงโถให้"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ບັນທຶກແລ້ວ Moonee ຈະແບ່ງໃສ່ໂຖໃຫ້"
+          }
+        }
+      }
+    },
+    "Set aside": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã để dành"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "กันเก็บไว้แล้ว"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເກັບໄວ້ແລ້ວ"
+          }
+        }
+      }
+    },
+    "Split it into jars to see what you can spend.": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chia vào các lọ để biết mình còn tiêu được bao nhiêu."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แบ่งลงโถเพื่อดูว่ายังใช้ได้เท่าไร"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແບ່ງໃສ່ໂຖເພື່ອເບິ່ງວ່າຍັງໃຊ້ໄດ້ເທົ່າໃດ"
+          }
+        }
+      }
+    },
+    "Split now": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chia ngay"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "แบ่งเลย"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ແບ່ງເລີຍ"
+          }
+        }
+      }
+    },
+    "Why?": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vì sao?"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ทำไม?"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ເປັນຫຍັງ?"
+          }
+        }
+      }
+    },
+    "You have %@ not in a jar yet": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bạn có %@ chưa chia vào lọ"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "คุณมี %@ ที่ยังไม่ได้แบ่งลงโถ"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ທ່ານມີ %@ ທີ່ຍັງບໍ່ໄດ້ແບ່ງໃສ່ໂຖ"
+          }
+        }
+      }
+    },
+    "card debt %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nợ thẻ %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "หนี้บัตร %@"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໜີ້ບັດ %@"
+          }
+        }
+      }
+    },
+    "in budget %@": {
+      "localizations": {
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "trong ngân sách %@"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ในงบ %@"
+          }
+        },
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ໃນງົບ %@"
           }
         }
       }

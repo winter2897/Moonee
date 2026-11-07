@@ -19,17 +19,25 @@ struct AdvisorSection: View {
                                 level: AdvisorLevel(rawValue: level) ?? .suggest)
         if let record = AdvisorMemory.autoRecords.last(where: { $0.date > .now.addingTimeInterval(-3 * 86_400) }) {
             Section { autoCard(record) } header: { Text(loc("Moonee")) }
-        } else if let a = AdvisorMemory.pick(facts.advice) {
+        } else if let a = AdvisorMemory.pick(facts.advice.filter { a in
+            // Money waiting in Unallocated, and a jar below zero it can refill, are the header's call to action (P0-3).
+            !(a.kind == .unallocated && a.amount > 0) && !(a.kind == .negativeJar && facts.advisor.unallocatedCover != nil)
+        }) {
             Section { card(a) } header: { Text(a.kind.isWarning ? loc("Moonee") : loc("Moonee suggests")) }
         }
     }
 
     private func card(_ a: BudgetAdvisor.Advice) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            MooneeNoteCard(mood: a.kind.isWarning ? .worried : .thinking, text: a.text, title: a.title)
-            if let why = a.why, !why.isEmpty {
-                Label { Text(why) } icon: { Image(systemName: "lightbulb.fill").foregroundStyle(Color.mooneeYellow) }
-                    .font(.footnote).foregroundStyle(Color.inkSecondary)
+            MooneeNoteCard(mood: a.kind.isWarning ? .worried : .thinking, text: a.line, title: a.title)
+            if let detail = a.detail {
+                DisclosureGroup {
+                    Text(detail).font(.footnote).foregroundStyle(Color.inkSecondary).fixedSize(horizontal: false, vertical: true)
+                } label: {
+                    Label { Text(loc("Why?")) } icon: { Image(systemName: "lightbulb.fill").foregroundStyle(Color.mooneeYellow) }
+                        .font(.footnote.weight(.semibold))
+                }
+                .tint(Color.brandDeep)
             }
             HStack(spacing: 8) {
                 actions(a)
@@ -134,6 +142,23 @@ struct AdvisorSection: View {
 
     private func recurring(_ ref: String?) -> Recurring? { recurrings.first { $0.ref == ref } }
     private func jar(_ id: String?) -> Jar? { id.flatMap { id in jars.first { $0.parserKey == id } } }
+}
+
+extension BudgetAdvisor.Advice {
+    /// The card's one line (P0-3). A plan (payday, money to split) says what tapping does; its numbers move to `detail`.
+    var line: String {
+        switch kind {
+        case .payday: loc("Record it and Moonee splits it into your jars.")
+        case .unallocated where amount > 0: loc("Moonee has a plan to split it into your jars.")
+        default: text
+        }
+    }
+
+    /// Folded under "Why?": the plan's numbers and its reasons (a–d), or the one line of why.
+    var detail: String? {
+        let parts = (line == text ? [] : [text]) + [why].compactMap { $0 }.filter { !$0.isEmpty }
+        return parts.isEmpty ? nil : parts.joined(separator: "\n\n")
+    }
 }
 
 /// Account / Budget ⋯ → "Moonee's help": Automatic, Suggest or Do it myself, and forgetting what was skipped.
