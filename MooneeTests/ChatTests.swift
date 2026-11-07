@@ -233,6 +233,22 @@ import Testing
         #expect(ChatThreads.forNewMessage(open: nil, resumed: false, now: at(6, 10), calendar: cal, in: context) === next)
     }
 
+    @Test func theChatRollsOverToTodayWhenTheDayChanges() {
+        let cal = Self.hcm
+        let late = ChatThreads.forNewMessage(open: nil, resumed: false, now: at(5, 23, 58), calendar: cal, in: context)
+        // Same day: whatever is open stays, a thread reopened from history too.
+        let same = ChatThreads.onScreen(open: late, resumed: true, lastCheck: at(5, 23, 58), now: at(5, 23, 59), calendar: cal, in: context)
+        #expect(same.thread === late && same.resumed)
+        // Past midnight (or back the next morning): today's thread, none yet, so the first message starts it.
+        let next = ChatThreads.onScreen(open: late, resumed: true, lastCheck: at(5, 23, 59), now: at(6, 0, 1), calendar: cal, in: context)
+        #expect(next.thread == nil && !next.resumed)
+        // A "New chat" yesterday doesn't swallow today's messages; today's existing thread is shown.
+        let manual = ChatThreads.start(now: at(5, 22), calendar: cal, in: context)
+        let today = ChatThreads.forNewMessage(open: nil, resumed: false, now: at(6, 8), calendar: cal, in: context)
+        let shown = ChatThreads.onScreen(open: manual, resumed: true, lastCheck: at(5, 22), now: at(6, 9), calendar: cal, in: context)
+        #expect(shown.thread === today && !shown.resumed)
+    }
+
     @Test func newChatAddsASecondThreadToday() {
         let cal = Self.hcm
         let first = ChatThreads.forNewMessage(open: nil, resumed: false, now: at(6, 9), calendar: cal, in: context)

@@ -1500,28 +1500,6 @@
         }
       }
     },
-    "Moonee's finance skills adapt ideas from the finance plugin of anthropics/knowledge-work-plugins (Apache-2.0).": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ທັກສະດ້ານການເງິນຂອງ Moonee ດັດແປງແນວຄິດມາຈາກປລັກອິນ finance ຂອງ anthropics/knowledge-work-plugins (Apache-2.0)."
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ทักษะด้านการเงินของ Moonee ดัดแปลงแนวคิดมาจากปลั๊กอิน finance ของ anthropics/knowledge-work-plugins (Apache-2.0)"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Các skill tài chính của Moonee dựa trên ý tưởng từ plugin finance của anthropics/knowledge-work-plugins (Apache-2.0)."
-          }
-        }
-      }
-    },
     "Moonee's help": {
       "extractionState": "manual",
       "localizations": {
@@ -1695,28 +1673,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Không gửi gì lên cloud. Moonee không có server."
-          }
-        }
-      }
-    },
-    "Off": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ປິດ"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ปิด"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tắt"
           }
         }
       }
@@ -2293,6 +2249,28 @@
         }
       }
     },
+    "Takes effect the next time Moonee starts: close it from the App Switcher and open it again.": {
+      "localizations": {
+        "lo": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ມີຜົນເມື່ອ Moonee ເລີ່ມໃໝ່: ປິດແອັບຈາກໂຕສະຫຼັບແອັບ ແລ້ວເປີດໃໝ່."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "มีผลเมื่อ Moonee เริ่มใหม่: ปิดแอปจากตัวสลับแอปแล้วเปิดอีกครั้ง"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Có hiệu lực khi Moonee khởi động lại: vuốt tắt app trong trình chuyển app rồi mở lại."
+          }
+        }
+      }
+    },
     "Test connection": {
       "localizations": {
         "lo": {
@@ -2333,28 +2311,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kiểm tra key"
-          }
-        }
-      }
-    },
-    "Thanks": {
-      "localizations": {
-        "lo": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ຂອບໃຈ"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ขอบคุณ"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cảm ơn"
           }
         }
       }

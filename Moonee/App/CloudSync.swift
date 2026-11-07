@@ -9,16 +9,22 @@ import SwiftData
     /// The store was opened with CloudKit mirroring. False = local-only fallback (CloudKit could not start).
     private(set) static var isOn = false
 
+    /// `Prefs.iCloudSync` when the store opened: the Account toggle takes effect on the next launch.
+    private(set) static var requested = true
+
     static func makeContainer() throws -> ModelContainer {
-        do {
-            let container = try ModelContainer(for: Schema.moonee,
-                                               configurations: ModelConfiguration(schema: Schema.moonee, cloudKitDatabase: .private(containerID)))
-            isOn = true
-            return container
-        } catch {
-            print("iCloud sync off, local store only: \(error)")
-            return try ModelContainer(for: Schema.moonee, configurations: ModelConfiguration(schema: Schema.moonee, cloudKitDatabase: .none))
+        requested = UserDefaults.standard.object(forKey: Prefs.iCloudSync) as? Bool ?? true
+        if requested {
+            do {
+                let container = try ModelContainer(for: Schema.moonee,
+                                                   configurations: ModelConfiguration(schema: Schema.moonee, cloudKitDatabase: .private(containerID)))
+                isOn = true
+                return container
+            } catch {
+                print("iCloud sync off, local store only: \(error)")
+            }
         }
+        return try ModelContainer(for: Schema.moonee, configurations: ModelConfiguration(schema: Schema.moonee, cloudKitDatabase: .none))
     }
 
     enum Status { case on, noAccount, unavailable, off }

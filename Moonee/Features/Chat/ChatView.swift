@@ -12,6 +12,9 @@ struct ChatView: View {
     @State private var thread: ChatThread?
     /// Reopened from history: it keeps going even on a later day.
     @State private var resumed = false
+    /// When `showToday` last ran: a later day replaces the open thread with today's.
+    @State private var lastDayCheck = Date.now
+    @Environment(\.scenePhase) private var scenePhase
     @State private var text = ""
     @State private var inputSource = TxSource.text
     @FocusState private var focused: Bool
@@ -84,9 +87,12 @@ struct ChatView: View {
         .background(MooneeBackground())
         .onAppear {
             ChatThreads.migrate(in: context)
-            if thread == nil { thread = ChatThreads.todays(in: context) }
+            showToday()
             // Opens as the idle pill (owner's reference): type, or hold the voice button to talk.
         }
+        // The tab stays alive for days: back from the background or past midnight, a new day gets its own thread.
+        .onChange(of: scenePhase) { _, phase in if phase == .active { showToday() } }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.significantTimeChangeNotification)) { _ in showToday() }
         .onChange(of: speech.transcript) { _, t in
             guard !t.isEmpty, speech.isRecording else { return }
             text = t
@@ -223,6 +229,12 @@ struct ChatView: View {
                 }
             }
         }
+    }
+
+    private func showToday() {
+        let shown = ChatThreads.onScreen(open: thread, resumed: resumed, lastCheck: lastDayCheck, in: context)
+        if shown.thread != thread { (pending, editingCard) = (nil, nil) }
+        (thread, resumed, lastDayCheck) = (shown.thread, shown.resumed, .now)
     }
 
     private func newChat() {

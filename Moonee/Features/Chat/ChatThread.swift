@@ -41,6 +41,15 @@ import SwiftData
         return t
     }
 
+    /// What the chat shows when it appears, returns to the foreground or passes midnight (`lastCheck` = the previous check).
+    /// Within a day the open thread stays, even one reopened from history; once the day changed, today's thread takes over
+    /// (nil = today's starts with the first message) and the old one stays in history.
+    static func onScreen(open: ChatThread?, resumed: Bool, lastCheck: Date, now: Date = .now, calendar: Calendar = .current,
+                         in context: ModelContext) -> (thread: ChatThread?, resumed: Bool) {
+        if let open, calendar.isDate(lastCheck, inSameDayAs: now) || calendar.isDate(open.day, inSameDayAs: now) { return (open, resumed) }
+        return (todays(now: now, calendar: calendar, in: context), false)
+    }
+
     /// The newest thread of today, if any (what the chat shows when it opens).
     static func todays(now: Date = .now, calendar: Calendar = .current, in context: ModelContext) -> ChatThread? {
         let today = calendar.startOfDay(for: now)
@@ -62,7 +71,7 @@ import SwiftData
         if thread.title.isEmpty, message.fromUser { thread.title = title(from: message.text) }
     }
 
-    /// "Transactions dd/MM/yy" (vi: "Ghi nhận giao dịch ngày dd/MM/yy"), the same digits in every language.
+    /// "Transactions dd/MM/yy" (vi: "Ghi nhận giao dịch dd/MM/yy"), the same digits in every language.
     nonisolated static func dailyTitle(_ day: Date, calendar: Calendar = .current) -> String {
         let f = DateFormatter()
         f.calendar = calendar

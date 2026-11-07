@@ -82,6 +82,8 @@ enum Prefs {
     static let profileAvatar = "profile.avatar"
     /// String: "low" | "medium" | "high". Reminder level (spec §3.4), default medium.
     static let reminderLevel = "reminders.level"
+    /// Bool, default on. iCloud sync (spec §6.3); `CloudSync.makeContainer()` reads it, so a change applies on the next launch.
+    static let iCloudSync = "sync.iCloud"
 }
 
 // ponytail: delete once every tab has its real screen
